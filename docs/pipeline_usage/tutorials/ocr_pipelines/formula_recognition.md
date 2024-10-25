@@ -173,7 +173,6 @@ sudo apt-get update
 sudo apt-get install texlive
 sudo apt-get install texlive-latex-base
 sudo apt-get install texlive-latex-extra
-python -m pip install PyMuPDF==1.24.12
 ```
 之后，使用 `save_to_img` 方法对可视化图片进行保存。具体命令如下：
 ```python

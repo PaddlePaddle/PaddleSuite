@@ -54,7 +54,7 @@ class FormulaRecResult(CVResult):
             render_width, render_height = img_formula.size
             resize_height = render_height
             resize_width = int(resize_height * image_width / image_height)
-            image = image.resize((resize_width, resize_height), Image.ANTIALIAS)
+            image = image.resize((resize_width, resize_height), Image.LANCZOS)
 
             new_image_width = image.width + int(render_width) + 10
             new_image = Image.new(
@@ -174,28 +174,15 @@ def generate_tex_file(tex_file_path, equation):
 
 def generate_pdf_file(tex_path, pdf_dir, is_debug=False):
     if os.path.exists(tex_path):
+        command = "pdflatex -halt-on-error -output-directory={} {}".format(
+            pdf_dir, tex_path
+        )
         if is_debug:
-            subprocess.check_call(
-                [
-                    "pdflatex",
-                    "-halt-on-error",
-                    "-output-directory={}".format(pdf_dir),
-                    tex_path,
-                ],
-                shell=True,
-            )
+            subprocess.check_call(command, shell=True)
         else:
             devNull = open(os.devnull, "w")
             subprocess.check_call(
-                [
-                    "pdflatex",
-                    "-halt-on-error",
-                    "-output-directory={}".format(pdf_dir),
-                    tex_path,
-                ],
-                stdout=subprocess.PIPE,
-                stderr=subprocess.STDOUT,
-                shell=True,
+                command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True
             )
 
 

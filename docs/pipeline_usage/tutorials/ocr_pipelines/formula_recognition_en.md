@@ -173,7 +173,6 @@ sudo apt-get update
 sudo apt-get install texlive
 sudo apt-get install texlive-latex-base
 sudo apt-get install texlive-latex-extra
-python -m pip install PyMuPDF==1.24.12
 ```
 After that, use the `save_to_img` method to save the visualization image. The specific command is as follows:
 ```python
