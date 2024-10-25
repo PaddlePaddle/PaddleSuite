@@ -37,6 +37,7 @@ from .table_recognition import TableRecPipeline
 from .seal_recognition import SealOCRPipeline
 from .ppchatocrv3 import PPChatOCRPipeline
 from .layout_parsing import LayoutParsingPipeline
+from .pp_shitu_v2 import ShiTuV2Pipeline
 
 
 def load_pipeline_config(pipeline: str) -> Dict[str, Any]:
@@ -79,7 +80,10 @@ def create_pipeline_from_config(
     elif "pp_option" in pipeline_setting:
         predictor_kwargs["pp_option"] = pipeline_setting.pop("pp_option")
 
-    device = device if device else pipeline_setting.pop("device", None)
+    if device:
+        pipeline_setting.pop("device", None)
+    else:
+        device = pipeline_setting.pop("device", None)
 
     pipeline_setting.update(kwargs)
     pipeline = BasePipeline.get(pipeline_name)(
