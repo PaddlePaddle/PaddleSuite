@@ -137,7 +137,7 @@ python main.py -c paddlex/configs/formula_recognition/LaTeX_OCR_rec.yaml \
 * `CheckDataset`:
   * `convert`:
     * `enable`: 是否进行数据集格式转换，公式识别支持 `MSTextRecDataset`格式的数据集转换为 `LaTeXOCRDataset`格式，默认为 `True`;
-    * `src_dataset_type`: 如果进行数据集格式转换，则需设置源数据集格式，默认为 `MSTextRecDataset`，可选值为 `MSTextRecDataset` ；
+    * `src_dataset_type`: 如果进行数据集格式转换，则需设置源数据集格式，默认为 `MSTextRecDataset`；
 
 例如，您想将 `MSTextRecDataset`格式的数据集转换为 `LaTeXOCRDataset`格式，则需将配置文件修改为：
 

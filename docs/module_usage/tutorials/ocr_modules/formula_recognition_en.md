@@ -137,7 +137,7 @@ The formula recognition supports converting `MSTextRecDataset` format datasets t
 * `CheckDataset`:
   * `convert`:
     * `enable`: Whether to perform dataset format conversion. Formula recognition supports converting `MSTextRecDataset` format datasets to `LaTeXOCRDataset` format, default is `True`;
-    * `src_dataset_type`: If dataset format conversion is performed, the source dataset format needs to be set, default is `MSTextRecDataset`, optional value is `MSTextRecDataset`;
+    * `src_dataset_type`: If dataset format conversion is performed, the source dataset format needs to be set, default is `MSTextRecDataset`;
 
 For example, if you want to convert a `MSTextRecDataset` format dataset to `LaTeXOCRDataset` format, you need to modify the configuration file as follows:
 

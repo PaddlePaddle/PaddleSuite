@@ -246,7 +246,7 @@ def draw_formula_module(img_size, box, formula, is_debug=False):
             return formula_img
         else:
             img_right_text = draw_box_txt_fine(
-                img_size, box, "渲染失败", PINGFANG_FONT_FILE_PATH
+                img_size, box, "Rendering Failed", PINGFANG_FONT_FILE_PATH
             )
         return img_right_text
 
@@ -293,6 +293,6 @@ def draw_box_formula_fine(img_size, box, formula, is_debug=False):
             )
         else:
             img_right_text = draw_box_txt_fine(
-                img_size, box, "渲染失败", PINGFANG_FONT_FILE_PATH
+                img_size, box, "Rendering Failed", PINGFANG_FONT_FILE_PATH
             )
         return img_right_text
