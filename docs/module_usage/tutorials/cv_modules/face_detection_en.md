@@ -8,11 +8,23 @@ Face detection is a fundamental task in object detection, aiming to automaticall
 ## II. Supported Model List
 
 
+<<<<<<< HEAD
 | Model | mAP（%）| GPU Inference Time (ms) | CPU Inference Time (ms) | Model Size (M) | Description |
 |-|-|-|-|-|-|
 | PicoDet_LCNet_x2_5_face | 35.8 | 33.7 | 537.0 | 28.9 | Face detection model based on PicoDet_LCNet_x2_5 |
 
 **Note: The evaluation set for the above accuracy metrics is wider_face dataset mAP(0.5:0.95). GPU inference time is based on an NVIDIA Tesla T4 machine with FP32 precision. CPU inference speed is based on an Intel(R) Xeon(R) Gold 5117 CPU @ 2.00GHz with 8 threads and FP32 precision.**
+=======
+| Model | AP (%)<br>Easy/Medium/Hard | GPU Inference Time (ms) | CPU Inference Time (ms) | Model Size (M) | Description |
+|:-:|:-:|:-:|:-:|:-:|:-:|
+| BlazeFace                | 77.7/73.4/49.5  |              |         | 0.447      |                             |
+| BlazeFace-FPN-SSH        | 83.2/80.5/60.5  |              |         | 0.606      | An improved model of BlazeFace, incorporating FPN and SSH structures |
+| PicoDet_LCNet_x2_5_face	 | 93.7/90.7/68.1  |              |         | 28.9       | Face Detection model based on PicoDet_LCNet_x2_5 |
+| PP-YOLOE_plus-S_face     | 93.9/91.8/79.8  |              |         | 26.5       |Face Detection model based on PP-YOLOE_plus-S |
+
+**Note: The above accuracy metrics are evaluated on the WIDER-FACE validation set with an input size of 640*640. GPU inference time is based on an NVIDIA Tesla T4 machine with FP32 precision. CPU inference speed is based on an Intel(R) Xeon(R) Gold 5117 CPU @ 2.00GHz with 8 threads and FP32 precision.**
+</details>
+>>>>>>> add face recognition docs
 
 ## III. Quick Integration  <a id="quick"> </a> 
 Before quick integration, you need to install the PaddleX wheel package. For the installation method of the wheel package, please refer to the [PaddleX Local Installation Tutorial](../../../installation/installation_en.md). After installing the wheel package, a few lines of code can complete the inference of the face detection module. You can switch models under this module freely, and you can also integrate the model inference of the face detection module into your project. Before running the following code, please download the [demo image](https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/face_detection.png) to your local machine.
@@ -238,7 +250,7 @@ The model can be directly integrated into the PaddleX pipeline or into your own 
 
 1. **Pipeline Integration**
 
-The face detection module can be integrated into PaddleX pipelines such as **Face Recognition** (coming soon). Simply replace the model path to update the face detection module of the relevant pipeline. In pipeline integration, you can use high-performance inference and service-oriented deployment to deploy your model.
+The face detection module can be integrated into PaddleX pipelines such as [**Face Recognition**](../../../pipeline_usage/tutorials/face_recognition_pipelines/face_recognition_en.md). Simply replace the model path to update the face detection module of the relevant pipeline. In pipeline integration, you can use high-performance inference and service-oriented deployment to deploy your model.
 
 2. **Module Integration**
 

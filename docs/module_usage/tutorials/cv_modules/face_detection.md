@@ -8,11 +8,21 @@
 ## 二、支持模型列表
 
 
-|模型|mAP（%）|GPU推理耗时（ms）|CPU推理耗时 (ms)|模型存储大小（M)|介绍|
-|-|-|-|-|-|-|
-|PicoDet_LCNet_x2_5_face|35.8|33.7|537.0|28.9|基于PicoDet_LCNet_x2_5的人脸检测模型|
+| 模型 | AP (%)<br>Easy/Medium/Hard | GPU推理耗时 (ms) | CPU推理耗时 | 模型存储大小 (M) | 介绍                          |
+|:-:|:-:|:-:|:-:|:-:|:-:|
+| BlazeFace                | 77.7/73.4/49.5  |              |         | 0.447      |                             |
+| BlazeFace-FPN-SSH        | 83.2/80.5/60.5  |              |         | 0.606      | BlazeFace的改进模型，增加FPN和SSH结构   |
+| PicoDet_LCNet_x2_5_face	 | 93.7/90.7/68.1  |              |         | 28.9       | 基于PicoDet_LCNet_x2_5的人脸检测模型 |
+| PP-YOLOE_plus-S_face     | 93.9/91.8/79.8  |              |         | 26.5       | 基于PP-YOLOE_plus-S的人脸检测模型    |
 
+注：以上精度指标是在WIDER-FACE验证集上，以640
+*640作为输入尺寸评估得到的。所有模型 GPU 推理耗时基于 NVIDIA Tesla T4 机器，精度类型为 FP32， CPU 推理速度基于 Intel(R) Xeon(R) Gold 5117 CPU @ 2.00GHz，线程数为8，精度类型为 FP32。
+
+<<<<<<< HEAD
 **注：以上精度指标为wider_face数据集 mAP(0.5:0.95)。所有模型 GPU 推理耗时基于 NVIDIA Tesla T4 机器，精度类型为 FP32， CPU 推理速度基于 Intel(R) Xeon(R) Gold 5117 CPU @ 2.00GHz，线程数为8，精度类型为 FP32。**
+=======
+</details>
+>>>>>>> add face recognition docs
 
 ## 三、快速集成
 > ❗ 在快速集成前，请先安装 PaddleX 的 wheel 包，详细请参考 [PaddleX本地安装教程](../../../installation/installation.md)
@@ -241,7 +251,7 @@ python main.py -c paddlex/configs/face_detection/PicoDet_LCNet_x2_5_face.yaml \
 
 1.**产线集成**
 
-人脸目标检测模块可以集成的PaddleX产线有**人脸识别**（comming soon），只需要替换模型路径即可完成相关产线的人脸检测模块的模型更新。在产线集成中，你可以使用高性能部署和服务化部署来部署你得到的模型。
+人脸目标检测模块可以集成的PaddleX产线有[**人脸识别**](../../../pipeline_usage/tutorials/face_recognition_pipelines/face_recognition.md)，只需要替换模型路径即可完成相关产线的人脸检测模块的模型更新。在产线集成中，你可以使用高性能部署和服务化部署来部署你得到的模型。
 
 2.**模块集成**
 
