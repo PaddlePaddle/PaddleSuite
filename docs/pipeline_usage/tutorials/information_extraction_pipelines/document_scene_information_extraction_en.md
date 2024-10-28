@@ -368,7 +368,7 @@ For all operations provided by the service:
 
 Operations provided by the service are as follows:
 
-- **`analyzeImage`**
+- **`analyzeImages`**
 
     Analyze images using computer vision models to obtain OCR, table recognition results, and extract key information from the images.
 
@@ -433,19 +433,26 @@ Operations provided by the service are as follows:
 
         | Name | Type | Description | Required |
         |-|-|-|-|
-        |`visionInfo`|`object`|Key information from the image. Provided by the `analyzeImage` operation.|Yes|
+        |`visionInfo`|`object`|Key information from the image. Provided by the `analyzeImages` operation.|Yes|
         |`minChars`|`integer`|Minimum data length to enable the vector database.|No|
         |`llmRequestInterval`|`number`|Interval time for calling the large language model API.|No|
         |`llmName`|`string`|Name of the large language model.|No|
         |`llmParams`|`object`|Parameters for the large language model API.|No|
 
-        Currently, `llmParams` can take the following form:
+        Currently, `llmParams` can take one of the the following forms:
 
         ```json
         {
           "apiType": "qianfan",
           "apiKey": "{qianfan API key}",
           "secretKey": "{qianfan secret key}"
+        }
+        ```
+
+        ```json
+        {
+          "apiType": "aistudio",
+          "accessToken": "{AI Studio access token}"
         }
         ```
 
@@ -470,13 +477,20 @@ Operations provided by the service are as follows:
         |`llmName`|`string`|Name of the large language model.|No|
         |`llmParams`|`object`|API parameters for the large language model.|No|
 
-        Currently, `llmParams` can take the following form:
+        Currently, `llmParams` can take one of the the following forms:
 
         ```json
         {
           "apiType": "qianfan",
-          "apiKey": "{Qianfan Platform API key}",
-          "secretKey": "{Qianfan Platform secret key}"
+          "apiKey": "{qianfan API key}",
+          "secretKey": "{qianfan secret key}"
+        }
+        ```
+
+        ```json
+        {
+          "apiType": "aistudio",
+          "accessToken": "{AI Studio access token}"
         }
         ```
 
@@ -497,23 +511,30 @@ Operations provided by the service are as follows:
         | Name | Type | Description | Required |
         |-|-|-|-|
         |`keys` | `array` | List of keywords. | Yes |
-        |`visionInfo` | `object` | Key information from images. Provided by the `analyzeImage` operation. | Yes |
+        |`visionInfo` | `object` | Key information from images. Provided by the `analyzeImages` operation. | Yes |
+        |`vectorStore` | `string` | Serialized result of the vector database. Provided by the `buildVectorStore` operation. | No |
+        |`retrievalResult` | `string` | Results of knowledge retrieval. Provided by the `retrieveKnowledge` operation. | No |
         |`taskDescription` | `string` | Task prompt. | No |
         |`rules` | `string` | Custom extraction rules, e.g., for output formatting. | No |
         |`fewShot` | `string` | Example prompts. | No |
-        |`vectorStore` | `string` | Serialized result of the vector database. Provided by the `buildVectorStore` operation. | No |
-        |`retrievalResult` | `string` | Results of knowledge retrieval. Provided by the `retrieveKnowledge` operation. | No |
-        |`returnPrompts` | `boolean` | Whether to return the prompts used. Enabled by default. | No |
         |`llmName` | `string` | Name of the large language model. | No |
         |`llmParams` | `object` | API parameters for the large language model. | No |
+        |`returnPrompts` | `boolean` | Whether to return the prompts used. Disabled by default. | No |
 
-        Currently, `llmParams` can take the following form:
+        Currently, `llmParams` can take one of the the following forms:
 
         ```json
         {
           "apiType": "qianfan",
-          "apiKey": "{Qianfan Platform API key}",
-          "secretKey": "{Qianfan Platform secret key}"
+          "apiKey": "{qianfan API key}",
+          "secretKey": "{qianfan secret key}"
+        }
+        ```
+
+        ```json
+        {
+          "apiType": "aistudio",
+          "accessToken": "{AI Studio access token}"
         }
         ```
 
@@ -627,14 +648,14 @@ result_retrieval = resp_retrieval.json()["result"]
 payload = {
     "keys": keys,
     "visionInfo": result_vision["visionInfo"],
+    "vectorStore": result_vector["vectorStore"],
+    "retrievalResult": result_retrieval["retrievalResult"],
     "taskDescription": "",
     "rules": "",
     "fewShot": "",
-    "vectorStore": result_vector["vectorStore"],
-    "retrievalResult": result_retrieval["retrievalResult"],
-    "returnPrompts": True,
     "llmName": LLM_NAME,
     "llmParams": LLM_PARAMS,
+    "returnPrompts": True,
 }
 resp_chat = requests.post(url=f"{API_BASE_URL}/chatocr-chat", json=payload)
 if resp_chat.status_code != 200:
@@ -718,4 +739,3 @@ pipeline = create_pipeline(
 ```
 
 If you want to use the PP-ChatOCRv3-doc Pipeline on more types of hardware, please refer to the [PaddleX Multi-Device Usage Guide](../../../other_devices_support/multi_devices_use_guide_en.md).
-

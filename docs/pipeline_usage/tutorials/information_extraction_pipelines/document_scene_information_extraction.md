@@ -361,7 +361,7 @@ chat_result.print()
 
 服务提供的操作如下：
 
-- **`analyzeImage`**
+- **`analyzeImages`**
 
     使用计算机视觉模型对图像进行分析，获得OCR、表格识别结果等，并提取图像中的关键信息。
 
@@ -426,19 +426,26 @@ chat_result.print()
 
         |名称|类型|含义|是否必填|
         |-|-|-|-|
-        |`visionInfo`|`object`|图像中的关键信息。由`analyzeImage`操作提供。|是|
+        |`visionInfo`|`object`|图像中的关键信息。由`analyzeImages`操作提供。|是|
         |`minChars`|`integer`|启用向量数据库的最小数据长度。|否|
         |`llmRequestInterval`|`number`|调用大语言模型API的间隔时间。|否|
         |`llmName`|`string`|大语言模型名称。|否|
         |`llmParams`|`object`|大语言模型API参数。|否|
 
-        当前，`llmParams` 可以采用如下形式：
+        当前，`llmParams` 可以采用如下形式之一：
 
         ```json
         {
           "apiType": "qianfan",
-          "apiKey": "{千帆平台API key}",
-          "secretKey": "{千帆平台secret key}"
+          "apiKey": "{千帆平台 API key}",
+          "secretKey": "{千帆平台 secret key}"
+        }
+        ```
+
+        ```json
+        {
+          "apiType": "aistudio",
+          "accessToken": "{星河社区 access token}"
         }
         ```
 
@@ -463,13 +470,20 @@ chat_result.print()
         |`llmName`|`string`|大语言模型名称。|否|
         |`llmParams`|`object`|大语言模型API参数。|否|
 
-        当前，`llmParams` 可以采用如下形式：
+        当前，`llmParams` 可以采用如下形式之一：
 
         ```json
         {
           "apiType": "qianfan",
-          "apiKey": "{千帆平台API key}",
-          "secretKey": "{千帆平台secret key}"
+          "apiKey": "{千帆平台 API key}",
+          "secretKey": "{千帆平台 secret key}"
+        }
+        ```
+
+        ```json
+        {
+          "apiType": "aistudio",
+          "accessToken": "{星河社区 access token}"
         }
         ```
 
@@ -490,23 +504,30 @@ chat_result.print()
         |名称|类型|含义|是否必填|
         |-|-|-|-|
         |`keys`|`array`|关键词列表。|是|
-        |`visionInfo`|`object`|图像中的关键信息。由`analyzeImage`操作提供。|是|
+        |`visionInfo`|`object`|图像中的关键信息。由`analyzeImages`操作提供。|是|
+        |`vectorStore`|`string`|向量数据库序列化结果。由`buildVectorStore`操作提供。|否|
+        |`retrievalResult`|`string`|知识检索结果。由`retrieveKnowledge`操作提供。|否|
         |`taskDescription`|`string`|提示词任务。|否|
         |`rules`|`string`|提示词规则。用于自定义信息抽取规则，例如规范输出格式。|否|
         |`fewShot`|`string`|提示词示例。|否|
-        |`vectorStore`|`string`|向量数据库序列化结果。由`buildVectorStore`操作提供。|否|
-        |`retrievalResult`|`string`|知识检索结果。由`retrieveKnowledge`操作提供。|否|
-        |`returnPrompts`|`boolean`|是否返回使用的提示词。默认启用。|否|
         |`llmName`|`string`|大语言模型名称。|否|
         |`llmParams`|`object`|大语言模型API参数。|否|
+        |`returnPrompts`|`boolean`|是否返回使用的提示词。默认禁用。|否|
 
-        当前，`llmParams` 可以采用如下形式：
+        当前，`llmParams` 可以采用如下形式之一：
 
         ```json
         {
           "apiType": "qianfan",
-          "apiKey": "{千帆平台API key}",
-          "secretKey": "{千帆平台secret key}"
+          "apiKey": "{千帆平台 API key}",
+          "secretKey": "{千帆平台 secret key}"
+        }
+        ```
+
+        ```json
+        {
+          "apiType": "aistudio",
+          "accessToken": "{星河社区 access token}"
         }
         ```
 
@@ -621,14 +642,14 @@ result_retrieval = resp_retrieval.json()["result"]
 payload = {
     "keys": keys,
     "visionInfo": result_vision["visionInfo"],
+    "vectorStore": result_vector["vectorStore"],
+    "retrievalResult": result_retrieval["retrievalResult"],
     "taskDescription": "",
     "rules": "",
     "fewShot": "",
-    "vectorStore": result_vector["vectorStore"],
-    "retrievalResult": result_retrieval["retrievalResult"],
-    "returnPrompts": True,
     "llmName": LLM_NAME,
     "llmParams": LLM_PARAMS,
+    "returnPrompts": True,
 }
 resp_chat = requests.post(url=f"{API_BASE_URL}/chatocr-chat", json=payload)
 if resp_chat.status_code != 200:

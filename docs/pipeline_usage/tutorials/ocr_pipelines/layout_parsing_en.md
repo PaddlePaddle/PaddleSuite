@@ -406,25 +406,22 @@ Operations provided by the service:
 import base64
 import requests
 
-API_URL = "http://localhost:8080/layout-parsing" # 服务URL
+API_URL = "http://localhost:8080/layout-parsing"
 
-# 对本地图像进行Base64编码
 with open(image_path, "rb") as file:
     image_bytes = file.read()
     image_data = base64.b64encode(image_bytes).decode("ascii")
 
 payload = {
-    "file": image_data, # Base64编码的文件内容或者文件URL
+    "file": image_data,
     "fileType": 1,
     "useImgOrientationCls": True,
     "useImgUnwrapping": True,
     "useSealTextDet": True,
 }
 
-# 调用API
 response = requests.post(API_URL, json=payload)
 
-# 处理接口返回数据
 assert response.status_code == 200
 result = response.json()["result"]
 print("\nDetected layout elements:")

@@ -411,6 +411,8 @@ import requests
 
 API_URL = "http://localhost:8080/layout-parsing" # 服务URL
 
+image_path = "./demo.jpg"
+
 # 对本地图像进行Base64编码
 with open(image_path, "rb") as file:
     image_bytes = file.read()

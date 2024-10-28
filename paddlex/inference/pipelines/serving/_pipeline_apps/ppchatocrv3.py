@@ -45,7 +45,7 @@ class InferenceParams(BaseModel):
     maxLongSide: Optional[Annotated[int, Field(gt=0)]] = None
 
 
-class AnalyzeImageRequest(BaseModel):
+class AnalyzeImagesRequest(BaseModel):
     file: str
     fileType: Optional[FileType] = None
     useImgOrientationCls: bool = True
@@ -78,20 +78,20 @@ class VisionResult(BaseModel):
     layoutImage: str
 
 
-class AnalyzeImageResult(BaseModel):
+class AnalyzeImagesResult(BaseModel):
     visionResults: List[VisionResult]
     visionInfo: dict
-
-
-class AIStudioParams(BaseModel):
-    accessToken: str
-    apiType: Literal["aistudio"] = "aistudio"
 
 
 class QianfanParams(BaseModel):
     apiKey: str
     secretKey: str
     apiType: Literal["qianfan"] = "qianfan"
+
+
+class AIStudioParams(BaseModel):
+    accessToken: str
+    apiType: Literal["aistudio"] = "aistudio"
 
 
 LLMName: TypeAlias = Literal[
@@ -105,7 +105,7 @@ LLMName: TypeAlias = Literal[
     "ernie-tiny-8k",
     "ernie-char-8k",
 ]
-LLMParams: TypeAlias = Union[AIStudioParams, QianfanParams]
+LLMParams: TypeAlias = Union[QianfanParams, AIStudioParams]
 
 
 class BuildVectorStoreRequest(BaseModel):
@@ -134,14 +134,14 @@ class RetrieveKnowledgeResult(BaseModel):
 class ChatRequest(BaseModel):
     keys: List[str]
     visionInfo: dict
+    vectorStore: Optional[str] = None
+    retrievalResult: Optional[str] = None
     taskDescription: Optional[str] = None
     rules: Optional[str] = None
     fewShot: Optional[str] = None
-    vectorStore: Optional[str] = None
-    retrievalResult: Optional[str] = None
-    returnPrompts: bool = True
     llmName: Optional[LLMName] = None
     llmParams: Optional[Annotated[LLMParams, Field(discriminator="apiType")]] = None
+    returnPrompts: bool = False
 
 
 class Prompts(BaseModel):
@@ -196,14 +196,14 @@ def _infer_file_type(url: str) -> FileType:
 
 
 def _llm_params_to_dict(llm_params: LLMParams) -> dict:
-    if llm_params.apiType == "aistudio":
-        return {"api_type": "aistudio", "access_token": llm_params.accessToken}
-    elif llm_params.apiType == "qianfan":
+    if llm_params.apiType == "qianfan":
         return {
             "api_type": "qianfan",
             "ak": llm_params.apiKey,
             "sk": llm_params.secretKey,
         }
+    if llm_params.apiType == "aistudio":
+        return {"api_type": "aistudio", "access_token": llm_params.accessToken}
     else:
         assert_never(llm_params.apiType)
 
@@ -265,12 +265,12 @@ def create_pipeline_app(pipeline: PPChatOCRPipeline, app_config: AppConfig) -> F
 
     @app.post(
         "/chatocr-vision",
-        operation_id="analyzeImage",
+        operation_id="analyzeImages",
         responses={422: {"model": Response}},
     )
-    async def _analyze_image(
-        request: AnalyzeImageRequest,
-    ) -> ResultResponse[AnalyzeImageResult]:
+    async def _analyze_images(
+        request: AnalyzeImagesRequest,
+    ) -> ResultResponse[AnalyzeImagesResult]:
         pipeline = ctx.pipeline
         aiohttp_session = ctx.aiohttp_session
 
@@ -371,7 +371,7 @@ def create_pipeline_app(pipeline: PPChatOCRPipeline, app_config: AppConfig) -> F
                 logId=serving_utils.generate_log_id(),
                 errorCode=0,
                 errorMsg="Success",
-                result=AnalyzeImageResult(
+                result=AnalyzeImagesResult(
                     visionResults=vision_results,
                     visionInfo=result[1],
                 ),
@@ -395,8 +395,6 @@ def create_pipeline_app(pipeline: PPChatOCRPipeline, app_config: AppConfig) -> F
             kwargs = {"visual_info": results.VisualInfoResult(request.visionInfo)}
             if request.minChars is not None:
                 kwargs["min_characters"] = request.minChars
-            else:
-                kwargs["min_characters"] = 0
             if request.llmRequestInterval is not None:
                 kwargs["llm_request_interval"] = request.llmRequestInterval
             if request.llmName is not None:
@@ -470,23 +468,23 @@ def create_pipeline_app(pipeline: PPChatOCRPipeline, app_config: AppConfig) -> F
                 "key_list": request.keys,
                 "visual_info": results.VisualInfoResult(request.visionInfo),
             }
-            if request.taskDescription is not None:
-                kwargs["user_task_description"] = request.taskDescription
-            if request.rules is not None:
-                kwargs["rules"] = request.rules
-            if request.fewShot is not None:
-                kwargs["few_shot"] = request.fewShot
             if request.vectorStore is not None:
                 kwargs["vector"] = results.VectorResult({"vector": request.vectorStore})
             if request.retrievalResult is not None:
                 kwargs["retrieval_result"] = results.RetrievalResult(
                     {"retrieval": request.retrievalResult}
                 )
-            kwargs["save_prompt"] = request.returnPrompts
+            if request.taskDescription is not None:
+                kwargs["user_task_description"] = request.taskDescription
+            if request.rules is not None:
+                kwargs["rules"] = request.rules
+            if request.fewShot is not None:
+                kwargs["few_shot"] = request.fewShot
             if request.llmName is not None:
                 kwargs["llm_name"] = request.llmName
             if request.llmParams is not None:
                 kwargs["llm_params"] = _llm_params_to_dict(request.llmParams)
+            kwargs["save_prompt"] = request.returnPrompts
 
             result = await serving_utils.call_async(pipeline.pipeline.chat, **kwargs)
 
