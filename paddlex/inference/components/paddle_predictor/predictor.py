@@ -148,6 +148,13 @@ No need to generate again."
         config.disable_glog_info()
         for del_p in self.option.delete_pass:
             config.delete_pass(del_p)
+
+        if self.option.device in ("gpu", "dcu"):
+            if paddle.is_compiled_with_rocm():
+                # Delete unsupported passes in dcu
+                config.delete_pass("conv2d_add_act_fuse_pass")
+                config.delete_pass("conv2d_add_fuse_pass")
+
         # Enable shared memory
         config.enable_memory_optim()
         config.switch_ir_optim(True)
@@ -205,12 +212,16 @@ class ImagePredictor(BasePaddlePredictor):
 
 class ImageDetPredictor(BasePaddlePredictor):
 
-    INPUT_KEYS = [["img", "scale_factors"], ["img", "scale_factors", "img_size"], ["img", "img_size"]]
+    INPUT_KEYS = [
+        ["img", "scale_factors"],
+        ["img", "scale_factors", "img_size"],
+        ["img", "img_size"],
+    ]
     OUTPUT_KEYS = [["boxes"], ["boxes", "masks"]]
     DEAULT_INPUTS = {"img": "img", "scale_factors": "scale_factors"}
     DEAULT_OUTPUTS = None
 
-    def to_batch(self, img, scale_factors=[[1., 1.]], img_size=None):
+    def to_batch(self, img, scale_factors=[[1.0, 1.0]], img_size=None):
         scale_factors = [scale_factor[::-1] for scale_factor in scale_factors]
         if img_size is None:
             return [
