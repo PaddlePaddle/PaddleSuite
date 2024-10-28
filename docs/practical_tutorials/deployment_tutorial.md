@@ -6,13 +6,13 @@
 
 PaddleX 的三种部署方式详细说明如下：
 
-* 高性能部署：在实际生产环境中，许多应用对部署策略的性能指标（尤其是响应速度）有着较严苛的标准，以确保系统的高效运行与用户体验的流畅性。为此，PaddleX 提供高性能推理插件，旨在对模型推理及前后处理进行深度性能优化，实现端到端流程的显著提速，详细的高性能部署流程请参考 [PaddleX 高性能推理指南](../pipeline_deploy/high_performance_inference.md)。
+* 高性能推理：在实际生产环境中，许多应用对部署策略的性能指标（尤其是响应速度）有着较严苛的标准，以确保系统的高效运行与用户体验的流畅性。为此，PaddleX 提供高性能推理插件，旨在对模型推理及前后处理进行深度性能优化，实现端到端流程的显著提速，详细的高性能推理流程请参考 [PaddleX 高性能推理指南](../pipeline_deploy/high_performance_inference.md)。
 * 服务化部署：服务化部署是实际生产环境中常见的一种部署形式。通过将推理功能封装为服务，客户端可以通过网络请求来访问这些服务，以获取推理结果。PaddleX 支持用户以低成本实现产线的服务化部署，详细的服务化部署流程请参考 [PaddleX 服务化部署指南](../pipeline_deploy/service_deploy.md)。
 * 端侧部署：端侧部署是一种将计算和数据处理功能放在用户设备本身上的方式，设备可以直接处理数据，而不需要依赖远程的服务器。PaddleX 支持将模型部署在 Android 等端侧设备上，详细的端侧部署流程请参考 [PaddleX端侧部署指南](../pipeline_deploy/edge_deploy.md)。
 
 本教程将举三个实际应用例子，来依次介绍 PaddleX 的三种部署方式。
 
-## 1 高性能部署示例
+## 1 高性能推理示例
 
 ### 1.1 获取序列号与激活
 
@@ -118,16 +118,9 @@ output = pipeline.predict("https://paddle-model-ecology.bj.bcebos.com/paddlex/im
 
 启用高性能推理插件得到的推理结果与未启用插件时一致。对于部分模型，在首次启用高性能推理插件时，可能需要花费较长时间完成推理引擎的构建。PaddleX 将在推理引擎的第一次构建完成后将相关信息缓存在模型目录，并在后续复用缓存中的内容以提升初始化速度。
 
-### 1.4 快速体验
+### 1.4 推理步骤
 
-快速体验基于下表的环境，其他环境可替换相应的指令。
-
-| 环境 | 详情 |
-| ----------- | ----------- |
-| 启用高性能插件方式 | PaddleX CLI |
-| 序列号激活方式 | 联网激活 |
-| python版本 | 3.10.0 |
-| 设备类型 | CPU |
+本推理步骤基于 **PaddleX CLI、联网激活序列号、Python 3.10.0、设备类型为CPU** 的方式使用高性能推理插件，其他使用方式（如不同 Python 版本、设备类型或 PaddleX Python API）可参考 [PaddleX 高性能推理指南](../pipeline_deploy/high_performance_inference.md) 替换相应的指令。
 
 ```bash
 # 安装高性能推理插件
@@ -139,6 +132,7 @@ paddlex --pipeline OCR --input https://paddle-model-ecology.bj.bcebos.com/paddle
 ```
 
 运行结果：
+
 <img src="https://raw.githubusercontent.com/cuicheng01/PaddleX_doc_images/main/images/practical_tutorials/deployment/01.png"  width="700" />
 <img src="https://raw.githubusercontent.com/cuicheng01/PaddleX_doc_images/main/images/practical_tutorials/deployment/02.png"  width="700" />
 
@@ -175,7 +169,7 @@ INFO:     Application startup complete.
 INFO:     Uvicorn running on http://0.0.0.0:8080 (Press CTRL+C to quit)
 ```
 
---pipeline可指定为官方产线名称或本地产线配置文件路径。PaddleX 以此构建产线并部署为服务。如需调整配置（如模型路径、batch_size、部署设备等），请参考[通用OCR产线使用教程](../pipeline_usage/tutorials/ocr_pipelines/OCR.md)中的 **“模型应用”** 部分。
+`--pipeline` 可指定为官方产线名称或本地产线配置文件路径。PaddleX 以此构建产线并部署为服务。如需调整配置（如模型路径、batch_size、部署设备等），请参考[通用OCR产线使用教程](../pipeline_usage/tutorials/ocr_pipelines/OCR.md)中的 **“模型应用”** 部分。
 与服务化部署相关的命令行选项如下：
 
 | 名称             | 说明                                                                                                                                                        |
@@ -187,129 +181,10 @@ INFO:     Uvicorn running on http://0.0.0.0:8080 (Press CTRL+C to quit)
 | `--use_hpip`       | 如果指定，则启用高性能推理插件。                                                                                                                            |
 | `--serial_number`  | 高性能推理插件使用的序列号。只在启用高性能推理插件时生效。 请注意，并非所有产线、模型都支持使用高性能推理插件，详细的支持情况请参考[PaddleX 高性能推理指南](./high_performance_inference.md)。 |
 | `--update_license` | 如果指定，则进行联网激活。只在启用高性能推理插件时生效。                                                                                                    |
+
 ### 2.3 调用服务
 
-下面是API参考和多语言服务调用示例：
-
-<details>
-<summary>API参考</summary>
-
-对于服务提供的所有操作：
-
-- 响应体以及POST请求的请求体均为JSON数据（JSON对象）。
-- 当请求处理成功时，响应状态码为`200`，响应体的属性如下：
-
-    |名称|类型|含义|
-    |-|-|-|
-    |`errorCode`|`integer`|错误码。固定为`0`。|
-    |`errorMsg`|`string`|错误说明。固定为`"Success"`。|
-
-    响应体还可能有`result`属性，类型为`object`，其中存储操作结果信息。
-
-- 当请求处理未成功时，响应体的属性如下：
-
-    |名称|类型|含义|
-    |-|-|-|
-    |`errorCode`|`integer`|错误码。与响应状态码相同。|
-    |`errorMsg`|`string`|错误说明。|
-
-服务提供的操作如下：
-
-- **`infer`**
-
-    获取图像OCR结果。
-
-    `POST /ocr`
-
-    - 请求体的属性如下：
-
-        |名称|类型|含义|是否必填|
-        |-|-|-|-|
-        |`image`|`string`|服务可访问的图像文件的URL或图像文件内容的Base64编码结果。|是|
-        |`inferenceParams`|`object`|推理参数。|否|
-
-        `inferenceParams`的属性如下：
-
-        |名称|类型|含义|是否必填|
-        |-|-|-|-|
-        |`maxLongSide`|`integer`|推理时，若文本检测模型的输入图像较长边的长度大于`maxLongSide`，则将对图像进行缩放，使其较长边的长度等于`maxLongSide`。|否|
-
-    - 请求处理成功时，响应体的`result`具有如下属性：
-
-        |名称|类型|含义|
-        |-|-|-|
-        |`texts`|`array`|文本位置、内容和得分。|
-        |`image`|`string`|OCR结果图，其中标注检测到的文本位置。图像为JPEG格式，使用Base64编码。|
-
-        `texts`中的每个元素为一个`object`，具有如下属性：
-
-        |名称|类型|含义|
-        |-|-|-|
-        |`poly`|`array`|文本位置。数组中元素依次为包围文本的多边形的顶点坐标。|
-        |`text`|`string`|文本内容。|
-        |`score`|`number`|文本识别得分。|
-
-        `result`示例如下：
-
-        ```json
-        {
-          "texts": [
-            {
-              "poly": [
-                [
-                  444,
-                  244
-                ],
-                [
-                  705,
-                  244
-                ],
-                [
-                  705,
-                  311
-                ],
-                [
-                  444,
-                  311
-                ]
-              ],
-              "text": "北京南站",
-              "score": 0.9
-            },
-            {
-              "poly": [
-                [
-                  992,
-                  248
-                ],
-                [
-                  1263,
-                  251
-                ],
-                [
-                  1263,
-                  318
-                ],
-                [
-                  992,
-                  315
-                ]
-              ],
-              "text": "天津站",
-              "score": 0.5
-            }
-          ],
-          "image": "xxxxxx"
-        }
-        ```
-
-</details>
-
-<details>
-<summary>多语言调用服务示例</summary>
-
-<details>
-<summary>Python</summary>
+此处只展示 Python 调用示例，API参考和其他语言服务调用示例可参考 [PaddleX服务化部署指南](../pipeline_deploy/service_deploy.md) 的 **1.3 调用服务** 中各产线使用教程的 **“开发集成/部署”** 部分。
 
 ```python
 import base64
@@ -339,363 +214,7 @@ print("\nDetected texts:")
 print(result["texts"])
 ```
 
-</details>
-
-<details>
-<summary>C++</summary>
-
-```cpp
-#include <iostream>
-#include "cpp-httplib/httplib.h" // https://github.com/Huiyicc/cpp-httplib
-#include "nlohmann/json.hpp" // https://github.com/nlohmann/json
-#include "base64.hpp" // https://github.com/tobiaslocker/base64
-
-int main() {
-    httplib::Client client("localhost:8080");
-    const std::string imagePath = "./demo.jpg";
-    const std::string outputImagePath = "./out.jpg";
-
-    httplib::Headers headers = {
-        {"Content-Type", "application/json"}
-    };
-
-    // 对本地图像进行Base64编码
-    std::ifstream file(imagePath, std::ios::binary | std::ios::ate);
-    std::streamsize size = file.tellg();
-    file.seekg(0, std::ios::beg);
-
-    std::vector<char> buffer(size);
-    if (!file.read(buffer.data(), size)) {
-        std::cerr << "Error reading file." << std::endl;
-        return 1;
-    }
-    std::string bufferStr(reinterpret_cast<const char*>(buffer.data()), buffer.size());
-    std::string encodedImage = base64::to_base64(bufferStr);
-
-    nlohmann::json jsonObj;
-    jsonObj["image"] = encodedImage;
-    std::string body = jsonObj.dump();
-
-    // 调用API
-    auto response = client.Post("/ocr", headers, body, "application/json");
-    // 处理接口返回数据
-    if (response && response->status == 200) {
-        nlohmann::json jsonResponse = nlohmann::json::parse(response->body);
-        auto result = jsonResponse["result"];
-
-        encodedImage = result["image"];
-        std::string decodedString = base64::from_base64(encodedImage);
-        std::vector<unsigned char> decodedImage(decodedString.begin(), decodedString.end());
-        std::ofstream outputImage(outPutImagePath, std::ios::binary | std::ios::out);
-        if (outputImage.is_open()) {
-            outputImage.write(reinterpret_cast<char*>(decodedImage.data()), decodedImage.size());
-            outputImage.close();
-            std::cout << "Output image saved at " << outPutImagePath << std::endl;
-        } else {
-            std::cerr << "Unable to open file for writing: " << outPutImagePath << std::endl;
-        }
-
-        auto texts = result["texts"];
-        std::cout << "\nDetected texts:" << std::endl;
-        for (const auto& text : texts) {
-            std::cout << text << std::endl;
-        }
-    } else {
-        std::cout << "Failed to send HTTP request." << std::endl;
-        return 1;
-    }
-
-    return 0;
-}
-```
-
-</details>
-
-<details>
-<summary>Java</summary>
-
-```java
-import okhttp3.*;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.Base64;
-
-public class Main {
-    public static void main(String[] args) throws IOException {
-        String API_URL = "http://localhost:8080/ocr"; // 服务URL
-        String imagePath = "./demo.jpg"; // 本地图像
-        String outputImagePath = "./out.jpg"; // 输出图像
-
-        // 对本地图像进行Base64编码
-        File file = new File(imagePath);
-        byte[] fileContent = java.nio.file.Files.readAllBytes(file.toPath());
-        String imageData = Base64.getEncoder().encodeToString(fileContent);
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        ObjectNode params = objectMapper.createObjectNode();
-        params.put("image", imageData); // Base64编码的文件内容或者图像URL
-
-        // 创建 OkHttpClient 实例
-        OkHttpClient client = new OkHttpClient();
-        MediaType JSON = MediaType.Companion.get("application/json; charset=utf-8");
-        RequestBody body = RequestBody.Companion.create(params.toString(), JSON);
-        Request request = new Request.Builder()
-                .url(API_URL)
-                .post(body)
-                .build();
-
-        // 调用API并处理接口返回数据
-        try (Response response = client.newCall(request).execute()) {
-            if (response.isSuccessful()) {
-                String responseBody = response.body().string();
-                JsonNode resultNode = objectMapper.readTree(responseBody);
-                JsonNode result = resultNode.get("result");
-                String base64Image = result.get("image").asText();
-                JsonNode texts = result.get("texts");
-
-                byte[] imageBytes = Base64.getDecoder().decode(base64Image);
-                try (FileOutputStream fos = new FileOutputStream(outputImagePath)) {
-                    fos.write(imageBytes);
-                }
-                System.out.println("Output image saved at " + outputImagePath);
-                System.out.println("\nDetected texts: " + texts.toString());
-            } else {
-                System.err.println("Request failed with code: " + response.code());
-            }
-        }
-    }
-}
-```
-
-</details>
-
-<details>
-<summary>Go</summary>
-
-```go
-package main
-
-import (
-    "bytes"
-    "encoding/base64"
-    "encoding/json"
-    "fmt"
-    "io/ioutil"
-    "net/http"
-)
-
-func main() {
-    API_URL := "http://localhost:8080/ocr"
-    imagePath := "./demo.jpg"
-    outputImagePath := "./out.jpg"
-
-    // 对本地图像进行Base64编码
-    imageBytes, err := ioutil.ReadFile(imagePath)
-    if err != nil {
-        fmt.Println("Error reading image file:", err)
-        return
-    }
-    imageData := base64.StdEncoding.EncodeToString(imageBytes)
-
-    payload := map[string]string{"image": imageData} // Base64编码的文件内容或者图像URL
-    payloadBytes, err := json.Marshal(payload)
-    if err != nil {
-        fmt.Println("Error marshaling payload:", err)
-        return
-    }
-
-    // 调用API
-    client := &http.Client{}
-    req, err := http.NewRequest("POST", API_URL, bytes.NewBuffer(payloadBytes))
-    if err != nil {
-        fmt.Println("Error creating request:", err)
-        return
-    }
-
-    res, err := client.Do(req)
-    if err != nil {
-        fmt.Println("Error sending request:", err)
-        return
-    }
-    defer res.Body.Close()
-
-    // 处理接口返回数据
-    body, err := ioutil.ReadAll(res.Body)
-    if err != nil {
-        fmt.Println("Error reading response body:", err)
-        return
-    }
-    type Response struct {
-        Result struct {
-            Image      string   `json:"image"`
-            Texts []map[string]interface{} `json:"texts"`
-        } `json:"result"`
-    }
-    var respData Response
-    err = json.Unmarshal([]byte(string(body)), &respData)
-    if err != nil {
-        fmt.Println("Error unmarshaling response body:", err)
-        return
-    }
-
-    outputImageData, err := base64.StdEncoding.DecodeString(respData.Result.Image)
-    if err != nil {
-        fmt.Println("Error decoding base64 image data:", err)
-        return
-    }
-    err = ioutil.WriteFile(outputImagePath, outputImageData, 0644)
-    if err != nil {
-        fmt.Println("Error writing image to file:", err)
-        return
-    }
-    fmt.Printf("Image saved at %s.jpg\n", outputImagePath)
-    fmt.Println("\nDetected texts:")
-    for _, text := range respData.Result.Texts {
-        fmt.Println(text)
-    }
-}
-```
-
-</details>
-
-<details>
-<summary>C#</summary>
-
-```csharp
-using System;
-using System.IO;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json.Linq;
-
-class Program
-{
-    static readonly string API_URL = "http://localhost:8080/ocr";
-    static readonly string imagePath = "./demo.jpg";
-    static readonly string outputImagePath = "./out.jpg";
-
-    static async Task Main(string[] args)
-    {
-        var httpClient = new HttpClient();
-
-        // 对本地图像进行Base64编码
-        byte[] imageBytes = File.ReadAllBytes(imagePath);
-        string image_data = Convert.ToBase64String(imageBytes);
-
-        var payload = new JObject{ { "image", image_data } }; // Base64编码的文件内容或者图像URL
-        var content = new StringContent(payload.ToString(), Encoding.UTF8, "application/json");
-
-        // 调用API
-        HttpResponseMessage response = await httpClient.PostAsync(API_URL, content);
-        response.EnsureSuccessStatusCode();
-
-        // 处理接口返回数据
-        string responseBody = await response.Content.ReadAsStringAsync();
-        JObject jsonResponse = JObject.Parse(responseBody);
-
-        string base64Image = jsonResponse["result"]["image"].ToString();
-        byte[] outputImageBytes = Convert.FromBase64String(base64Image);
-
-        File.WriteAllBytes(outputImagePath, outputImageBytes);
-        Console.WriteLine($"Output image saved at {outputImagePath}");
-        Console.WriteLine("\nDetected texts:");
-        Console.WriteLine(jsonResponse["result"]["texts"].ToString());
-    }
-}
-```
-
-</details>
-
-<details>
-<summary>Node.js</summary>
-
-```js
-const axios = require('axios');
-const fs = require('fs');
-
-const API_URL = 'http://localhost:8080/ocr'
-const imagePath = './demo.jpg'
-const outputImagePath = "./out.jpg";
-
-let config = {
-   method: 'POST',
-   maxBodyLength: Infinity,
-   url: API_URL,
-   data: JSON.stringify({
-    'image': encodeImageToBase64(imagePath)  // Base64编码的文件内容或者图像URL
-  })
-};
-
-// 对本地图像进行Base64编码
-function encodeImageToBase64(filePath) {
-  const bitmap = fs.readFileSync(filePath);
-  return Buffer.from(bitmap).toString('base64');
-}
-
-// 调用API
-axios.request(config)
-.then((response) => {
-    // 处理接口返回数据
-    const result = response.data["result"];
-    const imageBuffer = Buffer.from(result["image"], 'base64');
-    fs.writeFile(outputImagePath, imageBuffer, (err) => {
-      if (err) throw err;
-      console.log(`Output image saved at ${outputImagePath}`);
-    });
-    console.log("\nDetected texts:");
-    console.log(result["texts"]);
-})
-.catch((error) => {
-  console.log(error);
-});
-```
-
-</details>
-
-<details>
-<summary>PHP</summary>
-
-```php
-<?php
-
-$API_URL = "http://localhost:8080/ocr"; // 服务URL
-$image_path = "./demo.jpg";
-$output_image_path = "./out.jpg";
-
-// 对本地图像进行Base64编码
-$image_data = base64_encode(file_get_contents($image_path));
-$payload = array("image" => $image_data); // Base64编码的文件内容或者图像URL
-
-// 调用API
-$ch = curl_init($API_URL);
-curl_setopt($ch, CURLOPT_POST, true);
-curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-$response = curl_exec($ch);
-curl_close($ch);
-
-// 处理接口返回数据
-$result = json_decode($response, true)["result"];
-file_put_contents($output_image_path, base64_decode($result["image"]));
-echo "Output image saved at " . $output_image_path . "\n";
-echo "\nDetected texts:\n";
-print_r($result["texts"]);
-
-?>
-```
-
-</details>
-</details>
-<br/>
-
-### 2.4 快速体验
+### 2.4 部署步骤
 
 ```bash
 # 安装服务化部署插件
@@ -710,6 +229,7 @@ python fast_test.py
 ```
 
 运行结果：
+
 <img src="https://raw.githubusercontent.com/cuicheng01/PaddleX_doc_images/main/images/practical_tutorials/deployment/03.png"  width="700" />
 <img src="https://raw.githubusercontent.com/cuicheng01/PaddleX_doc_images/main/images/practical_tutorials/deployment/04.png"  width="700" />
 
@@ -821,6 +341,7 @@ python fast_test.py
 ```
 
 检测结果：
+
 <img src="https://raw.githubusercontent.com/cuicheng01/PaddleX_doc_images/main/images/practical_tutorials/deployment/05.png"  width="500" />
 
 识别结果：
