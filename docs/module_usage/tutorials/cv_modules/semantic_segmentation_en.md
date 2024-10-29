@@ -16,6 +16,7 @@ Semantic segmentation is a technique in computer vision that classifies each pix
 
 <details>
    <summary> 👉Model List Details</summary>
+
 |Model Name|mIoU (%)|GPU Inference Time (ms)|CPU Inference Time (ms)|Model Size (M)|
 |-|-|-|-|-|
 |Deeplabv3_Plus-R50 |80.36|61.0531|1513.58|94.9 M|
@@ -41,7 +42,9 @@ Semantic segmentation is a technique in computer vision that classifies each pix
 |SeaFormer_base(slice)|40.92|24.4073|397.574|30.8 M|
 |SeaFormer_large (slice)|43.66|27.8123|550.464|49.8 M|
 |SeaFormer_small (slice)|38.73|19.2295|358.343|14.3 M|
-|SeaFormer_tiny (slice)|34.58|13.9496|330.132|6.1M |
+|SeaFormer_tiny (slice)|34.58|13.9496|330.132|6.1 M |
+|MaskFormer_small (slice)|50.4| | |223 M |
+|MaskFormer_tiny (slice)|47.93| | |148 M |
 
 **The accuracy metrics of the SeaFormer series models are measured on the [ADE20k](https://groups.csail.mit.edu/vision/datasets/ADE20K/) dataset. GPU inference time is based on an NVIDIA Tesla T4 machine with FP32 precision. CPU inference speed is based on an Intel(R) Xeon(R) Gold 5117 CPU @ 2.00GHz with 8 threads and FP32 precision.**
 

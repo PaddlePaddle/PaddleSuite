@@ -261,6 +261,8 @@ PP-LCNet_x1_0_vehicle_attribute_infer.tar",
     "RT-DETR-H_layout_3cls": "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b1_v2/RT-DETR-H_layout_3cls_infer.tar",
     "RT-DETR-H_layout_17cls": "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b1_v2/RT-DETR-H_layout_17cls_infer.tar",
     "PicoDet_LCNet_x2_5_face": "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b1_v2/PicoDet_LCNet_x2_5_face_infer.tar",
+    "MaskFormer_tiny": "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b1_v2/MaskFormer_tiny_infer.tar",
+    "MaskFormer_small": "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b1_v2/MaskFormer_small_infer.tar",
 }
 
 

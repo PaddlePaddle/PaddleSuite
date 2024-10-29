@@ -250,6 +250,8 @@ PaddleX incorporates multiple pipelines, each containing several modules, and ea
 |SeaFormer_large (slice)|43.66|27.8123|550.464|49.8 M|[SeaFormer_large.yaml](../../paddlex/configs/semantic_segmentation/SeaFormer_large.yaml)|
 |SeaFormer_small (slice)|38.73|19.2295|358.343|14.3 M|[SeaFormer_small.yaml](../../paddlex/configs/semantic_segmentation/SeaFormer_small.yaml)|
 |SeaFormer_tiny (slice)|34.58|13.9496|330.132|6.1 M |[SeaFormer_tiny.yaml](../../paddlex/configs/semantic_segmentation/SeaFormer_tiny.yaml)|
+|MaskFormer_small (slice)|50.4|||223 M|[MaskFormer_small.yaml](../../paddlex/configs/semantic_segmentation/MaskFormer_small.yaml)|
+|MaskFormer_tiny (slice)|47.93|||148 M|[MaskFormer_tiny.yaml](../../paddlex/configs/semantic_segmentation/MaskFormer_tiny.yaml)|
 
 **Note: The above accuracy metrics are evaluated on the **[ADE20k](https://groups.csail.mit.edu/vision/datasets/ADE20K/)** dataset. "slice" indicates that the input image has been cropped.**
 

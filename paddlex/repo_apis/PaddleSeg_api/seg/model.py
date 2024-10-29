@@ -126,6 +126,10 @@ class SegModel(BaseModel):
         if log_iters is not None:
             cli_args.append(CLIArgument("--log_iters", log_iters))
 
+        input_shape = kwargs.pop("input_shape", None)
+        if input_shape is not None:
+            cli_args.append(CLIArgument("--input_shape", *input_shape))
+
         # Benchmarking mode settings
         benchmark = kwargs.pop("benchmark", None)
         if benchmark is not None:

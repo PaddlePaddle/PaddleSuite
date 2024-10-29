@@ -42,7 +42,9 @@
 |SeaFormer_base(slice)|40.92|24.4073|397.574|30.8 M|
 |SeaFormer_large (slice)|43.66|27.8123|550.464|49.8 M|
 |SeaFormer_small (slice)|38.73|19.2295|358.343|14.3 M|
-|SeaFormer_tiny (slice)|34.58|13.9496|330.132|6.1M |
+|SeaFormer_tiny (slice)|34.58|13.9496|330.132|6.1 M |
+|MaskFormer_small (slice)|50.4|||223 M|
+|MaskFormer_tiny (slice)|47.93|||148 M|
 
 **SeaFormer系列模型的精度指标测量自[ADE20k](https://groups.csail.mit.edu/vision/datasets/ADE20K/)数据集。GPU 推理耗时基于 NVIDIA Tesla T4 机器，精度类型为 FP32， CPU 推理速度基于 Intel(R) Xeon(R) Gold 5117 CPU @ 2.00GHz，线程数为 8，精度类型为 FP32。**
 

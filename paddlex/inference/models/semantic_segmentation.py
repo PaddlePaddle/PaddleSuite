@@ -30,7 +30,6 @@ class SegPredictor(BasicPredictor):
 
     def _build_components(self):
         self._add_component(ReadImage(format="RGB"))
-        self._add_component(ToCHWImage())
         for cfg in self.config["Deploy"]["transforms"]:
             tf_key = cfg["type"]
             func = self._FUNC_MAP[tf_key]
@@ -38,6 +37,7 @@ class SegPredictor(BasicPredictor):
             args = cfg
             op = func(self, **args) if args else func(self)
             self._add_component(op)
+        self._add_component(ToCHWImage())
 
         predictor = ImagePredictor(
             model_dir=self.model_dir,
@@ -62,16 +62,12 @@ class SegPredictor(BasicPredictor):
     @register("ResizeByLong")
     def build_resizebylong(self, long_size):
         assert long_size
-        return ResizeByLong(
-            target_long_edge=long_size, size_divisor=size_divisor, interp=interp
-        )
+        return ResizeByLong(target_long_edge=long_size, interp="NEAREST")
 
     @register("ResizeByShort")
-    def build_resizebylong(self, short_size):
+    def build_resizebyshort(self, short_size):
         assert short_size
-        return ResizeByLong(
-            target_long_edge=short_size, size_divisor=size_divisor, interp=interp
-        )
+        return ResizeByShort(target_short_edge=short_size, interp="NEAREST")
 
     @register("Normalize")
     def build_normalize(
