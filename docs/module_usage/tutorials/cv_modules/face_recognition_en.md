@@ -10,10 +10,10 @@ Face recognition models typically take standardized face images processed throug
 <details>
    <summary> 👉Details of Model List</summary>
 
-| Model           | Output Feature Dimension | AP (%)<br>AgeDB-30/CFP-FP/LFW | GPU Inference Time (ms) | CPU Inference Time | Model Size (M) | Description                                  |
+| Model           | Output Feature Dimension | Acc (%)<br>AgeDB-30/CFP-FP/LFW | GPU Inference Time (ms) | CPU Inference Time | Model Size (M) | Description                                  |
 |---------------|--------|-------------------------------|--------------|---------|------------|-------------------------------------|
 | MobileFaceNet | 128    | 96.28/96.71/99.58             |              |         | 4.1        | Face recognition model trained on MobileFaceNet with MS1Mv3 dataset |
-| ResNet50      | 512    | 98.12/98.56/99.77             |              |         | 87.2       | Face recognition model trained on ResNet50 with MS1Mv3 dataset      |
+| ResNet50_face    | 512    | 98.12/98.56/99.77             |              |         | 87.2       | Face recognition model trained on ResNet50 with MS1Mv3 dataset      |
 
 Note: The above accuracy metrics are Accuracy scores measured on the AgeDB-30, CFP-FP, and LFW datasets, respectively. All model GPU inference times are based on an NVIDIA Tesla T4 machine with FP32 precision. CPU inference speeds are based on an Intel(R) Xeon(R) Gold 5117 CPU @ 2.00GHz with 8 threads and FP32 precision.
 </details>
@@ -42,7 +42,7 @@ For more information on using the PaddleX single-model inference API, refer to t
 If you aim for higher accuracy with existing models, you can leverage PaddleX's custom development capabilities to develop better face recognition models. Before developing face recognition models with PaddleX, ensure you have installed the PaddleX PaddleClas plugin. The installation process can be found in the [PaddleX Local Installation Tutorial](../../../installation/installation_en.md)
 
 ### 4.1 Data Preparation
-Before model training, you need to prepare the dataset for the corresponding task module. PaddleX provides data validation functionality for each module, and **only data that passes validation can be used for model training**. Additionally, PaddleX provides demo datasets for each module, allowing you to complete subsequent development based on the official demo data. If you wish to use a private dataset for subsequent model training, the training dataset for the face recognition module is organized in a general image classification dataset format. You can refer to the [PaddleX Image Classification Task Module Data Annotation Tutorial](../../../data_annotations/cv_modules/image_classification_en.md). If you wish to use a private dataset for subsequent model evaluation, note that the validation dataset format for the face recognition module differs from the training dataset format. Please refer to [Section 4.1.4 Face Recognition Module Validation Set Data Organization](#414-face-recognition-module-validation-set-data-organization)
+Before model training, you need to prepare the dataset for the corresponding task module. PaddleX provides data validation functionality for each module, and **only data that passes validation can be used for model training**. Additionally, PaddleX provides demo datasets for each module, allowing you to complete subsequent development based on the official demo data. If you wish to use a private dataset for subsequent model training, the training dataset for the face recognition module is organized in a general image classification dataset format. You can refer to the [PaddleX Image Classification Task Module Data Annotation Tutorial](../../../data_annotations/cv_modules/image_classification_en.md). If you wish to use a private dataset for subsequent model evaluation, note that the validation dataset format for the face recognition module differs from the training dataset format. Please refer to [Section 4.1.4 Data Organization Face Recognition Module](#414-Data-Organization-for-Face-Recognition-Module)
 
 #### 4.1.1 Demo Data Download
 You can use the following commands to download the demo dataset to a specified folder:
@@ -119,7 +119,7 @@ The Face Recognition module does not support data format conversion or dataset s
 
 </details>
 
-#### 4.1.4 Data Organization for Face Recognition Module Validation Set
+#### 4.1.4 Data Organization for Face Recognition Module
 
 The format of the validation dataset for the Face Recognition module differs from the training dataset. If you need to evaluate model accuracy on private data, please organize your dataset as follows:
 
@@ -130,7 +130,7 @@ face_rec_dataroot      # Root directory of the dataset, the directory name can b
       ├── xxx.jpg      # Face image file
       ├── xxx.jpg      # Face image file
       ...
-   ├── label.txt       # Training set annotation file, the file name cannot be changed. Each line gives the relative path of the image to `train` and the face image class (face identity) id, separated by a space. Example content: images/image_06765.jpg 0
+   └──label.txt       # Training set annotation file, the file name cannot be changed. Each line gives the relative path of the image to `train` and the face image class (face identity) id, separated by a space. Example content: images/image_06765.jpg 0
 ├── val                # Directory for saving the validation dataset, the directory name cannot be changed
    ├── images          # Directory for saving images, the directory name can be changed but should correspond to the content in pair_label.txt
       ├── xxx.jpg      # Face image file 

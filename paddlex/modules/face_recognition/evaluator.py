@@ -13,13 +13,13 @@
 # limitations under the License.
 import os
 
-from paddlex.utils.misc import abspath
+from ...utils.misc import abspath
 from ..base import BaseEvaluator
 from .model_list import MODELS
 
 
 class FaceRecEvaluator(BaseEvaluator):
-    """Image Classification Model Evaluator"""
+    """Face Recognition Model Evaluator"""
 
     entities = MODELS
 
@@ -29,6 +29,7 @@ class FaceRecEvaluator(BaseEvaluator):
             self.pdx_config.update_log_interval(self.eval_config.log_interval)
         self.update_dataset_cfg()
         self.pdx_config.update_pretrained_weights(self.eval_config.weight_path)
+
     def update_dataset_cfg(self):
         val_dataset_dir = abspath(os.path.join(self.global_config.dataset_dir, "val"))
         val_list_path = abspath(os.path.join(val_dataset_dir, "pair_label.txt"))

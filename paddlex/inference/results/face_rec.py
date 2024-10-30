@@ -27,7 +27,6 @@ class FaceRecResult(CVResult):
                 "coordinate": box["coordinate"],
                 "label": box["labels"][0] if box["labels"] is not None else "Unknown",
                 "score": box["rec_scores"][0] if box["rec_scores"] is not None else 0,
-                "cls_id": box["rec_ids"][0] if box["rec_ids"] is not None else 0 # rec ids start from 1
             }
             for box in self["boxes"]
         ]

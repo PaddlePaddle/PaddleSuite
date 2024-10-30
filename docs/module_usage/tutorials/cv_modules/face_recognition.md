@@ -13,7 +13,7 @@
 | 模型            | 输出特征维度 | AP (%)<br>AgeDB-30/CFP-FP/LFW | GPU推理耗时 (ms) | CPU推理耗时 | 模型存储大小 (M) | 介绍                                  |
 |---------------|--------|-------------------------------|--------------|---------|------------|-------------------------------------|
 | MobileFaceNet | 128    | 96.28/96.71/99.58             |              |         | 4.1        | 基于MobileFaceNet在MS1Mv3数据集上训练的人脸识别模型 |
-| ResNet50      | 512    | 98.12/98.56/99.77             |              |         | 87.2       | 基于ResNet50在MS1Mv3数据集上训练的人脸识别模型      |
+| ResNet50_face      | 512    | 98.12/98.56/99.77             |              |         | 87.2       | 基于ResNet50在MS1Mv3数据集上训练的人脸识别模型      |
 
 注：以上精度指标是分别在AgeDB-30、CFP-FP和LFW数据集上测得的Accuracy。所有模型 GPU 推理耗时基于 NVIDIA Tesla T4 机器，精度类型为 FP32， CPU 推理速度基于 Intel(R) Xeon(R) Gold 5117 CPU @ 2.00GHz，线程数为8，精度类型为 FP32。
 </details>
@@ -41,7 +41,7 @@ for res in output:
 如果你追求更高精度的现有模型，可以使用PaddleX的二次开发能力，开发更好的人脸识别模型。在使用PaddleX开发人脸识别模型之前，请务必安装PaddleX的PaddleClas插件，安装过程可以参考 [PaddleX本地安装教程](../../../installation/installation.md)
 
 ### 4.1 数据准备
-在进行模型训练前，需要准备相应任务模块的数据集。PaddleX 针对每一个模块提供了数据校验功能，**只有通过数据校验的数据才可以进行模型训练**。此外，PaddleX为每一个模块都提供了demo数据集，您可以基于官方提供的 Demo 数据完成后续的开发。若您希望用私有数据集进行后续的模型训练，人脸识别模块的训练数据集采取通用图像分类数据集格式组织，可以参考[PaddleX图像分类任务模块数据标注教程](../../../data_annotations/cv_modules/image_classification.md)。若您希望用私有数据集进行后续的模型评估，请注意人脸识别模块的验证数据集格式与训练数据集的方式有所不同，请参考[4.1.4节 人脸识别模块验证集数据组织方式](#414-人脸识别模块验证集数据组织方式)
+在进行模型训练前，需要准备相应任务模块的数据集。PaddleX 针对每一个模块提供了数据校验功能，**只有通过数据校验的数据才可以进行模型训练**。此外，PaddleX为每一个模块都提供了demo数据集，您可以基于官方提供的 Demo 数据完成后续的开发。若您希望用私有数据集进行后续的模型训练，人脸识别模块的训练数据集采取通用图像分类数据集格式组织，可以参考[PaddleX图像分类任务模块数据标注教程](../../../data_annotations/cv_modules/image_classification.md)。若您希望用私有数据集进行后续的模型评估，请注意人脸识别模块的验证数据集格式与训练数据集的方式有所不同，请参考[4.1.4节 人脸识别模块数据集组织方式](#414-人脸识别模块数据集组织方式)
 
 #### 4.1.1 Demo 数据下载
 您可以参考下面的命令将 Demo 数据集下载到指定文件夹：
@@ -118,9 +118,9 @@ python main.py -c paddlex/configs/face_recognition/MobileFaceNet.yaml \
 
 </details>
 
-#### 4.1.4 人脸识别模块验证集数据组织方式
+#### 4.1.4 人脸识别模块数据集组织方式
 
-人脸识别模块验证数据集与训练数据集格式不同，若需要在私有数据上评估模型精度，请按照如下方式组织自己的数据集：
+人脸识别模块验证数据集与训练数据集格式不同，若需要在私有数据上训练模型和评估模型精度，请按照如下方式组织自己的数据集：
 
 ```bash
 face_rec_dataroot      # 数据集根目录，目录名称可以改变
@@ -129,13 +129,13 @@ face_rec_dataroot      # 数据集根目录，目录名称可以改变
       ├── xxx.jpg      # 人脸图像文件
       ├── xxx.jpg      # 人脸图像文件
       ...
-   ├── label.txt       # 训练集标注文件，文件名称不可改变。每行给出图像相对`train`的路径和人脸图像类别（人脸身份）id，使用空格分隔，内容举例：images/image_06765.jpg 0
+   └── label.txt       # 训练集标注文件，文件名称不可改变。每行给出图像相对`train`的路径和人脸图像类别（人脸身份）id，使用空格分隔，内容举例：images/image_06765.jpg 0
 ├── val                # 验证数据集的保存目录，目录名称不可以改变
    ├── images          # 图像的保存目录，目录名称可以改变，但要注意与pari_label.txt中的内容对应
       ├── xxx.jpg      # 人脸图像文件 
       ├── xxx.jpg      # 人脸图像文件 
       ...
-   └── pair_label.txt  # 验证数据集标注文件，文件名称不可改变。每行给出两个要对比的图像路径和一个表示该对图像是否属于同一个人的0、1标签，使用空格分隔。
+   └── pair_label.txt  # 验证数据集标注文件，文件名称不可改变。每行给出两个要比对的人脸图像路径和一个表示该对图像是否属于同一个人的0、1标签，使用空格分隔。
 ```
 
 验证集标注文件`pair_label.txt`的内容示例:
@@ -198,9 +198,9 @@ python main.py -c paddlex/configs/face_recognition/MobileFaceNet.yaml \
   <summary>👉 <b>更多说明（点击展开）</b></summary>
 
 
-在模型评估时，需要指定模型权重文件路径，每个配置文件中都内置了默认的权重保存路径，如需要改变，只需要通过追加命令行参数的形式进行设置即可，如`-o Evaluate.weight_path=``./output/best_model/best_model/model.pdparams`。
+在模型评估时，需要指定模型权重文件路径，每个配置文件中都内置了默认的权重保存路径，如需要改变，只需要通过追加命令行参数的形式进行设置即可，如`-o Evaluate.weight_path=./output/best_model/best_model/model.pdparams`。
 
-在完成模型评估后，会产出`evaluate_result.json，其记录了`评估的结果，具体来说，记录了评估任务是否正常完成，以及模型的评估指标，包含 Accuracy；
+在完成模型评估后，会产出`evaluate_result.json`，其记录了评估的结果，具体来说，记录了评估任务是否正常完成，以及模型的评估指标，包含 Accuracy；
 
 </details>
 
@@ -228,7 +228,7 @@ python main.py -c paddlex/configs/face_recognition/MobileFaceNet.yaml \
 
 1.**产线集成**
 
-人脸识别模块可以集成的PaddleX产线有[**人脸识别**](../../../pipeline_usage/tutorials/face_recognition_pipelines/face_recognition.md)，只需要替换模型路径即可完成相关产线的人脸识别模块的模型更新。在产线集成中，你可以使用高性能部署和服务化部署来部署你得到的模型。
+人脸识别模块可以集成的PaddleX产线有[**人脸识别**](../../../pipeline_usage/tutorials/cv_pipelines/face_recognition.md)，只需要替换模型路径即可完成相关产线的人脸识别模块的模型更新。在产线集成中，你可以使用高性能部署和服务化部署来部署你得到的模型。
 
 2.**模块集成**
 

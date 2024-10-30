@@ -126,4 +126,4 @@ DataLoader:
 
 Metric:
   Eval:
-    - BestAccuracy: {}
+    - FaceAccuracy: {}

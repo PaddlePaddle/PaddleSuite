@@ -1,7 +1,7 @@
 Global:
   model: MobileFaceNet
   mode: check_dataset # check_dataset/train/evaluate/predict
-  dataset_dir: "/paddle/dataset/paddlex/cls/face_train_examples"
+  dataset_dir: "/paddle/dataset/paddlex/cls/face_rec_examples"
   device: gpu:0,1,2,3
   output: "output"
 

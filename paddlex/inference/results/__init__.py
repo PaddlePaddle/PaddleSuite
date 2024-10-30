@@ -26,8 +26,5 @@ from .instance_seg import InstanceSegResult
 from .ts import TSFcResult, TSAdResult, TSClsResult
 from .warp import DocTrResult
 from .chat_ocr import *
-<<<<<<< HEAD
 from .shitu import ShiTuResult
-=======
 from .face_rec import FaceRecResult
->>>>>>> init commit with face recgnition pipeline

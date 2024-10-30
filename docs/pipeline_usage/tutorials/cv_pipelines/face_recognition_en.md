@@ -18,7 +18,7 @@ The face recognition pipeline is an end-to-end system dedicated to solving face 
 
 | Model | AP (%)<br>Easy/Medium/Hard | GPU Inference Time (ms) | CPU Inference Time | Model Size (M) | Description |
 |--------------------------|-----------------|--------------|---------|------------|-----------------------------|
-| BlazeFace                | 77.7/73.4/49.5  |              |         | 0.447      |                             |
+| BlazeFace                | 77.7/73.4/49.5  |              |         | 0.447      | A lightweight and efficient face detection model |
 | BlazeFace-FPN-SSH        | 83.2/80.5/60.5  |              |         | 0.606      | Improved BlazeFace with FPN and SSH structures |
 | PicoDet_LCNet_x2_5_face	 | 93.7/90.7/68.1  |              |         | 28.9       | Face detection model based on PicoDet_LCNet_x2_5 |
 | PP-YOLOE_plus-S_face     | 93.9/91.8/79.8  |              |         | 26.5       | Face detection model based on PP-YOLOE_plus-S |
@@ -30,7 +30,7 @@ Note: The above accuracy metrics are evaluated on the WIDER-FACE validation set 
 | Model           | Output Feature Dimension | AP (%)<br>AgeDB-30/CFP-FP/LFW | GPU Inference Time (ms) | CPU Inference Time | Model Size (M) | Description |
 |---------------|--------|-------------------------------|--------------|---------|------------|-------------------------------------|
 | MobileFaceNet | 128    | 96.28/96.71/99.58             |              |         | 4.1        | Face recognition model trained on MS1Mv3 based on MobileFaceNet |
-| ResNet50      | 512    | 98.12/98.56/99.77             |              |         | 87.2       | Face recognition model trained on MS1Mv3 based on ResNet50 |
+| ResNet50_face      | 512    | 98.12/98.56/99.77             |              |         | 87.2       | Face recognition model trained on MS1Mv3 based on ResNet50 |
 
 Note: The above accuracy metrics are Accuracy scores measured on the AgeDB-30, CFP-FP, and LFW datasets, respectively. All GPU inference times are based on an NVIDIA Tesla T4 machine with FP32 precision. CPU inference speeds are based on an Intel(R) Xeon(R) Gold 5117 CPU @ 2.00GHz with 8 threads and FP32 precision.
 
@@ -40,7 +40,8 @@ Note: The above accuracy metrics are Accuracy scores measured on the AgeDB-30, C
 The pre-trained model pipelines provided by PaddleX can be quickly experienced. You can experience the effects of the face recognition pipeline online or locally using command-line or Python.
 
 ### 2.1 Online Experience
-You can [experience online](https://aistudio.baidu.com/community/app/91)
+
+Oneline Experience is not supported at the moment.
 
 ### 2.2 Local Experience
 > ❗ Before using the facial recognition pipeline locally, please ensure that you have completed the installation of the PaddleX wheel package according to the [PaddleX Installation Guide](../../../installation/installation.md).
@@ -50,7 +51,7 @@ You can [experience online](https://aistudio.baidu.com/community/app/91)
 Command line experience is not supported at the moment.
 #### 2.2.2 Integration via Python Script
 
-Please download the [test image](https://paddle-model-ecology.bj.bcebos.com/paddlex/demo_data/friends1.jpg) for testing. In the example of running this pipeline, you need to pre-build a facial feature library. You can refer to the following instructions to download the official demo data []() to be used for subsequent construction of the facial feature library. You can use the following command to download the demo dataset to a specified folder:
+Please download the [test image](https://paddle-model-ecology.bj.bcebos.com/paddlex/demo_data/friends1.jpg) for testing. In the example of running this pipeline, you need to pre-build a facial feature library. You can refer to the following instructions to download the official demo data to be used for subsequent construction of the facial feature library. You can use the following command to download the demo dataset to a specified folder:
 
 ```bash
 cd /path/to/paddlex
@@ -124,6 +125,34 @@ for res in output:
     res.print()
     res.save_to_img("./output/")
 ```
+
+#### 2.2.3 Adding and Deleting Operations in the Face Feature Library
+
+If you wish to add more face images to the feature library, you can call the `add_index` method; to delete face image features, you can call the `delete_index` method.
+
+```python
+from paddlex import create_pipeline
+
+pipeline = create_pipeline(pipeline="face_recognition")
+
+pipeline.add_index(data_root="add_gallery", index_dir="face_gallery_index")
+
+pipeline.delete_index(data_root="delete_gallery", index_dir="face_gallery_index")
+```
+
+The `add_index` method parameters are described as follows:
+
+| Parameter    | Description                                                                                                                                                                                                                    | Type  | Default |
+|--------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------|---------|
+| `data_root`  | The root directory of the dataset to be added. The data organization method is the same as when building the feature library. Refer to [Section 2.3 Data Organization for Feature Library Construction](###2.3-Data-Organization-for-Feature-Library-Construction). | `str` | None    |
+| `index_dir`  | The save path of the feature library to which features are added. After successfully calling the `add_index` method, the face image features in `data_root` will be added to the face feature library originally saved at `index_dir`.                                 | `str` | None    |
+
+The `delete_index` method parameters are described as follows:
+
+| Parameter    | Description                                                                                                                                                                                                                         | Type  | Default |
+|--------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------|---------|
+| `data_root`  | The root directory of the dataset to be deleted. The data organization method is the same as when building the feature library. Refer to [Section 2.3 Data Organization for Feature Library Construction](#2.3-Data-Organization-for-Feature-Library-Construction). | `str` | None    |
+| `index_dir`  | The save path of the feature library from which features are deleted. After successfully calling the `delete_index` method, the face image features in `data_root` will be deleted from the face feature library originally saved at `index_dir`.                             | `str` | None    |
 
 ### 2.3 Data Organization for Feature Library Construction
 

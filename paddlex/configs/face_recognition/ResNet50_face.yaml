@@ -31,7 +31,7 @@ Evaluate:
   log_interval: 1
 
 Export:
-  weight_path: https://paddle-imagenet-models-name.bj.bcebos.com/dygraph/foundation_models/resnet50_face.pdparams 
+  weight_path: "https://paddle-imagenet-models-name.bj.bcebos.com/dygraph/foundation_models/resnet50_face.pdparams"
 
 Predict:
   batch_size: 1

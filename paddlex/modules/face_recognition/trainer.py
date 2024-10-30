@@ -15,13 +15,13 @@
 import os
 from pathlib import Path
 
-from paddlex.utils.misc import abspath
+from ...utils.misc import abspath
 from ..image_classification import ClsTrainer
 from .model_list import MODELS
 
 
 class FaceRecTrainer(ClsTrainer):
-    """Image Classification Model Trainer"""
+    """Face Recognition Model Trainer"""
 
     entities = MODELS
 

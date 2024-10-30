@@ -133,6 +133,14 @@ PaddleX incorporates multiple pipelines, each containing several modules, and ea
 
 **Note: The above accuracy metrics are Top-1 Acc on PaddleX's internal self-built dataset.**
 
+## [Face Recognition Module](../module_usage/tutorials/cv_modules/face_recognition_en.md)
+| Model Name        |Output Feature Dimension| Acc (%)<br>AgeDB-30/CFP-FP/LFW | GPU Inference Time (ms) | CPU Inference Time (ms) | Model Size (M) | YAML File   |
+|---------------|--------|-------------------------------|--------------|---------|------------|-------------------------------------|
+| MobileFaceNet | 128    | 96.28/96.71/99.58             |              |         | 4.1        | [MobileFaceNet.yaml](../../paddlex/configs/face_recognition/MobileFaceNet.yaml) |
+| ResNet50_face      | 512    | 98.12/98.56/99.77             |              |         | 87.2       | [ResNet50_face.yaml](../../paddlex/configs/face_recognition/ResNet50_face.yaml)|
+
+**Note: The above accuracy metrics are Accuracy scores measured on the AgeDB-30, CFP-FP, and LFW datasets, respectively.**
+
 ## [Main Body Detection Module](../module_usage/tutorials/cv_modules/mainbody_detection_en.md)
 | Model Name | mAP (%) | GPU Inference Time (ms) | CPU Inference Time (ms) | Model Size|YAML File|
 |-|-|-|-|-|-|
@@ -210,11 +218,14 @@ PaddleX incorporates multiple pipelines, each containing several modules, and ea
 **Note: The above accuracy metrics are mAP(0.5:0.95) on the [PPVehicle](https://github.com/PaddlePaddle/PaddleDetection/tree/develop/configs/ppvehicle) validation set.**
 
 ## [Face Detection Module](../module_usage/tutorials/cv_modules/face_detection_en.md)
-| Model Name | mAP (%) | GPU Inference Time (ms) | CPU Inference Time (ms)  | Model Size  |YAML File|
-|-|-|-|-|-|-|
-|PicoDet_LCNet_x2_5_face|35.8|33.7426|537.003|27.7 M|[PicoDet_LCNet_x2_5_face.yaml](../../paddlex/configs/face_detection/PicoDet_LCNet_x2_5_face.yaml)|
+| Model | AP (%)<br>Easy/Medium/Hard | GPU Inference Time (ms) | CPU Inference Time (ms) | Model Size (M) | YAML File |
+|-|:-:|-|-|-|-|
+| BlazeFace                | 77.7/73.4/49.5  |              |         | 0.447      | [BlazeFace.yaml](../../paddlex/configs/face_detection/BlazeFace.yaml)|
+| BlazeFace-FPN-SSH        | 83.2/80.5/60.5  |              |         | 0.606      | [BlazeFace-FPN-SSH.yaml](../../paddlex/configs/face_detection/BlazeFace-FPN-SSH.yaml) |
+| PicoDet_LCNet_x2_5_face	 | 93.7/90.7/68.1  |              |         | 28.9       | [PicoDet_LCNet_x2_5_face.yaml](../../paddlex/configs/face_detection/PicoDet_LCNet_x2_5_face.yaml) |
+| PP-YOLOE_plus-S_face     | 93.9/91.8/79.8  |              |         | 26.5       |[PP-YOLOE_plus-S_face](../../paddlex/configs/face_detection/PP-YOLOE_plus-S_face.yaml) |
 
-**Note: The above accuracy metrics are evaluated on the **[wider_face](https://github.com/PaddlePaddle/PaddleDetection/tree/develop/configs/ppvehicle)** dataset using mAP(0.5:0.95).**
+**Note: The above accuracy metrics are evaluated on the WIDER-FACE validation set with an input size of 640*640.**
 
 
 ## [Abnormality Detection Module](../module_usage/tutorials/cv_modules/anomaly_detection_en.md)

@@ -17,6 +17,6 @@ from .model_list import MODELS
 
 
 class FaceRecExportor(BaseExportor):
-    """Image Classification Model Exportor"""
+    """Face Recognition Model Exportor"""
 
     entities = MODELS
