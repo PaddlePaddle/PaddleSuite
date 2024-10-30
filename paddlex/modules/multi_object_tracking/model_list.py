@@ -13,6 +13,8 @@
 # limitations under the License.
 
 
-from .object_det import DetModel, DetRunner, register
-from .instance_seg import InstanceSegModel, InstanceSegRunner, register
-from .mot import MOTModel, MOTRunner, register
+MODELS = [
+    "ByteTrack_PP-YOLOE_L",
+    "DeepSORT_PP-YOLOE_ResNet",
+    "FairMOT-DLA-34",
+]

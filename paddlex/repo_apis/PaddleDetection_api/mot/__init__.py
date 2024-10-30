@@ -13,6 +13,7 @@
 # limitations under the License.
 
 
-from .object_det import DetModel, DetRunner, register
-from .instance_seg import InstanceSegModel, InstanceSegRunner, register
-from .mot import MOTModel, MOTRunner, register
+from .model import MOTModel
+from .runner import MOTRunner
+from . import register
+from .official_categories import official_categories
