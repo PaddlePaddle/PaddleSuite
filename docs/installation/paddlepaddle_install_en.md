@@ -11,14 +11,14 @@ If your Docker version >= 19.03, please use:
 
 ```bash
 # For CPU users:
-docker run --name paddlex -v $PWD:/paddle --shm-size=8G --network=host -it registry.baidubce.com/paddlepaddle/paddle:3.0.0b1 /bin/bash
+docker run --name paddlex -v $PWD:/paddle --shm-size=8G --network=host -it registry.baidubce.com/paddlepaddle/paddle:3.0.0b2 /bin/bash
 
 # For GPU users:
 # CUDA 11.8 users
-docker run --gpus all --name paddlex -v $PWD:/paddle --shm-size=8G --network=host -it registry.baidubce.com/paddlepaddle/paddle:3.0.0b1-gpu-cuda11.8-cudnn8.6-trt8.5 /bin/bash
+docker run --gpus all --name paddlex -v $PWD:/paddle --shm-size=8G --network=host -it registry.baidubce.com/paddlepaddle/paddle:3.0.0b2-gpu-cuda11.8-cudnn8.6-trt8.5 /bin/bash
 
 # CUDA 12.3 users
-docker run --gpus all --name paddlex -v $PWD:/paddle  --shm-size=8G --network=host -it registry.baidubce.com/paddlepaddle/paddle:3.0.0b1-gpu-cuda12.3-cudnn9.0-trt8.6 /bin/bash
+docker run --gpus all --name paddlex -v $PWD:/paddle  --shm-size=8G --network=host -it registry.baidubce.com/paddlepaddle/paddle:3.0.0b2-gpu-cuda12.3-cudnn9.0-trt8.6 /bin/bash
 ```
 
 * If your Docker version <= 19.03 and >= 17.06, please use:
@@ -28,14 +28,14 @@ docker run --gpus all --name paddlex -v $PWD:/paddle  --shm-size=8G --network=ho
 
 ```bash
 # For CPU users:
-docker run --name paddlex -v $PWD:/paddle --shm-size=8G --network=host -it registry.baidubce.com/paddlepaddle/paddle:3.0.0b1 /bin/bash
+docker run --name paddlex -v $PWD:/paddle --shm-size=8G --network=host -it registry.baidubce.com/paddlepaddle/paddle:3.0.0b2 /bin/bash
 
 # For GPU users:
 # CUDA 11.8 users
-nvidia-docker run --name paddlex -v $PWD:/paddle --shm-size=8G --network=host -it registry.baidubce.com/paddlepaddle/paddle:3.0.0b1-gpu-cuda11.8-cudnn8.6-trt8.5 /bin/bash
+nvidia-docker run --name paddlex -v $PWD:/paddle --shm-size=8G --network=host -it registry.baidubce.com/paddlepaddle/paddle:3.0.0b2-gpu-cuda11.8-cudnn8.6-trt8.5 /bin/bash
 
 # CUDA 12.3 users
-nvidia-docker run --name paddlex -v $PWD:/paddle  --shm-size=8G --network=host -it registry.baidubce.com/paddlepaddle/paddle:3.0.0b1-gpu-cuda12.3-cudnn9.0-trt8.6 /bin/bash
+nvidia-docker run --name paddlex -v $PWD:/paddle  --shm-size=8G --network=host -it registry.baidubce.com/paddlepaddle/paddle:3.0.0b2-gpu-cuda12.3-cudnn9.0-trt8.6 /bin/bash
 ```
 
 </details>
@@ -50,13 +50,13 @@ nvidia-docker run --name paddlex -v $PWD:/paddle  --shm-size=8G --network=host -
 
 ```bash
 # CPU
-python -m pip install paddlepaddle==3.0.0b1 -i https://www.paddlepaddle.org.cn/packages/stable/cpu/
+python -m pip install paddlepaddle==3.0.0b2 -i https://www.paddlepaddle.org.cn/packages/stable/cpu/
 
 # GPU, this command is only suitable for machines with CUDA version 11.8
-python -m pip install paddlepaddle-gpu==3.0.0b1 -i https://www.paddlepaddle.org.cn/packages/stable/cu118/
+python -m pip install paddlepaddle-gpu==3.0.0b2 -i https://www.paddlepaddle.org.cn/packages/stable/cu118/
 
 # GPU, this command is only suitable for machines with CUDA version 12.3
-python -m pip install paddlepaddle-gpu==3.0.0b1 -i https://www.paddlepaddle.org.cn/packages/stable/cu123/
+python -m pip install paddlepaddle-gpu==3.0.0b2 -i https://www.paddlepaddle.org.cn/packages/stable/cu123/
 ```
 Note: For more PaddlePaddle Wheel versions, please refer to the [PaddlePaddle official website](https://www.paddlepaddle.org.cn/install/quick?docurl=/documentation/docs/en/install/pip/linux-pip.html).
 
@@ -70,7 +70,7 @@ python -c "import paddle; print(paddle.__version__)"
 If the installation is successful, the following content will be output:
 
 ```bash
-3.0.0-beta1
+3.0.0-beta2
 ```
 
 > ❗ **Note**: If you encounter any issues during the installation process, feel free to [submit an issue](https://github.com/PaddlePaddle/Paddle/issues) in the Paddle repository.

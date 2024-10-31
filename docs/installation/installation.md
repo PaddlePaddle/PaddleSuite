@@ -80,14 +80,14 @@ paddlex --install PaddleXXX  # 例如PaddleOCR
 
 ```bash
 # 对于 CPU 用户
-docker run --name paddlex -v $PWD:/paddle --shm-size=8g --network=host -it registry.baidubce.com/paddlex/paddlex:paddlex3.0.0b1-paddlepaddle3.0.0b1-cpu /bin/bash
+docker run --name paddlex -v $PWD:/paddle --shm-size=8g --network=host -it registry.baidubce.com/paddlex/paddlex:paddlex3.0.0b2-paddlepaddle3.0.0b2-cpu /bin/bash
 
 # 对于 GPU 用户
 # 对于 CUDA11.8 用户
-docker run --gpus all --name paddlex -v $PWD:/paddle --shm-size=8g --network=host -it registry.baidubce.com/paddlex/paddlex:paddlex3.0.0b1-paddlepaddle3.0.0b1-gpu-cuda11.8-cudnn8.6-trt8.5 /bin/bash
+docker run --gpus all --name paddlex -v $PWD:/paddle --shm-size=8g --network=host -it registry.baidubce.com/paddlex/paddlex:paddlex3.0.0b2-paddlepaddle3.0.0b2-gpu-cuda11.8-cudnn8.6-trt8.5 /bin/bash
 
 # 对于 CUDA12.3 用户
-docker run --gpus all --name paddlex -v $PWD:/paddle --shm-size=8g --network=host -it registry.baidubce.com/paddlex/paddlex:paddlex3.0.0b1-paddlepaddle3.0.0b1-gpu-cuda12.3-cudnn9.0-trt8.6 /bin/bash
+docker run --gpus all --name paddlex -v $PWD:/paddle --shm-size=8g --network=host -it registry.baidubce.com/paddlex/paddlex:paddlex3.0.0b2-paddlepaddle3.0.0b2-gpu-cuda12.3-cudnn9.0-trt8.6 /bin/bash
 ```
 
 * 若您使用的 Docker 版本 <= 19.03 但 >= 17.06，请执行：
@@ -97,14 +97,14 @@ docker run --gpus all --name paddlex -v $PWD:/paddle --shm-size=8g --network=hos
 
 ```bash
 # 对于 CPU 用户
-docker run --name paddlex -v $PWD:/paddle --shm-size=8g --network=host -it registry.baidubce.com/paddlex/paddlex:paddlex3.0.0b1-paddlepaddle3.0.0b1-cpu /bin/bash
+docker run --name paddlex -v $PWD:/paddle --shm-size=8g --network=host -it registry.baidubce.com/paddlex/paddlex:paddlex3.0.0b2-paddlepaddle3.0.0b2-cpu /bin/bash
 
 # 对于 GPU 用户
 # 对于 CUDA11.8 用户
-nvidia-docker run --name paddlex -v $PWD:/paddle --shm-size=8g --network=host -it registry.baidubce.com/paddlex/paddlex:paddlex3.0.0b1-paddlepaddle3.0.0b1-gpu-cuda11.8-cudnn8.6-trt8.5 /bin/bash
+nvidia-docker run --name paddlex -v $PWD:/paddle --shm-size=8g --network=host -it registry.baidubce.com/paddlex/paddlex:paddlex3.0.0b2-paddlepaddle3.0.0b2-gpu-cuda11.8-cudnn8.6-trt8.5 /bin/bash
 
 # 对于 CUDA12.3 用户
-nvidia-docker run --name paddlex -v $PWD:/paddle --shm-size=8g --network=host -it registry.baidubce.com/paddlex/paddlex:paddlex3.0.0b1-paddlepaddle3.0.0b1-gpu-cuda12.3-cudnn9.0-trt8.6 /bin/bash
+nvidia-docker run --name paddlex -v $PWD:/paddle --shm-size=8g --network=host -it registry.baidubce.com/paddlex/paddlex:paddlex3.0.0b2-paddlepaddle3.0.0b2-gpu-cuda12.3-cudnn9.0-trt8.6 /bin/bash
 ```
 
 </details>
