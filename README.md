@@ -655,7 +655,9 @@ for res in output:
 
 <details>
   <summary> <b> 📝 产业实践教程&范例 </b></summary>
-
+  
+* [📑 文档场景信息抽取v3模型产线———论文文献信息抽取应用教程](./docs/practical_tutorials/document_scene_information_extraction(layout_detection)_tutorial.md)
+* [📑 文档场景信息抽取v3模型产线———印章信息抽取应用教程](./docs/practical_tutorials/document_scene_information_extraction(seal_recognition)_tutorial.md)
 * [🖼️ 通用图像分类模型产线———垃圾分类教程](./docs/practical_tutorials/image_classification_garbage_tutorial.md)
 * [🧩 通用实例分割模型产线———遥感图像实例分割教程](./docs/practical_tutorials/instance_segmentation_remote_sensing_tutorial.md)
 * [👥 通用目标检测模型产线———行人跌倒检测教程](./docs/practical_tutorials/object_detection_fall_tutorial.md)
