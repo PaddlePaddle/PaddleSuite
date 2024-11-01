@@ -649,6 +649,8 @@ For other pipelines in Python scripts, just adjust the `pipeline` parameter of t
 <details>
   <summary> <b> 📝 Tutorials & Examples </b></summary>
 
+* [📑 PP-ChatOCRv3 Model Line —— Paper Document Information Extract Tutorial](./docs/practical_tutorials/document_scene_information_extraction(layout_detection)_tutorial_en.md)
+* [📑 PP-ChatOCRv3 Model Line —— Seal Information Extract Tutorial](./docs/practical_tutorials/document_scene_information_extraction(seal_recognition)_tutorial_en.md)
 * [🖼️ General Image Classification Model Line —— Garbage Classification Tutorial](./docs/practical_tutorials/image_classification_garbage_tutorial_en.md)
 * [🧩 General Instance Segmentation Model Line —— Remote Sensing Image Instance Segmentation Tutorial](./docs/practical_tutorials/instance_segmentation_remote_sensing_tutorial_en.md)
 * [👥 General Object Detection Model Line —— Pedestrian Fall Detection Tutorial](./docs/practical_tutorials/object_detection_fall_tutorial_en.md)
