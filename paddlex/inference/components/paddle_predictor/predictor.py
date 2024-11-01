@@ -75,27 +75,14 @@ class BasePaddlePredictor(BaseComponent):
 
         if self.option.device in ("gpu", "dcu"):
             config.enable_use_gpu(200, self.option.device_id)
-            if paddle.is_compiled_with_rocm():
-                os.environ["FLAGS_conv_workspace_size_limit"] = "2000"
-            elif hasattr(config, "enable_new_ir"):
+            if hasattr(config, "enable_new_ir"):
                 config.enable_new_ir(self.option.enable_new_ir)
         elif self.option.device == "npu":
             config.enable_custom_device("npu")
-            os.environ["FLAGS_npu_jit_compile"] = "0"
-            os.environ["FLAGS_use_stride_kernel"] = "0"
-            os.environ["FLAGS_allocator_strategy"] = "auto_growth"
-            os.environ["CUSTOM_DEVICE_BLACK_LIST"] = (
-                "pad3d,pad3d_grad,set_value,set_value_with_tensor"
-            )
-            os.environ["FLAGS_npu_scale_aclnn"] = "True"
-            os.environ["FLAGS_npu_split_aclnn"] = "True"
         elif self.option.device == "xpu":
-            os.environ["BKCL_FORCE_SYNC"] = "1"
-            os.environ["BKCL_TIMEOUT"] = "1800"
-            os.environ["FLAGS_use_stride_kernel"] = "0"
+            pass
         elif self.option.device == "mlu":
             config.enable_custom_device("mlu")
-            os.environ["FLAGS_use_stride_kernel"] = "0"
         else:
             assert self.option.device == "cpu"
             config.disable_gpu()
