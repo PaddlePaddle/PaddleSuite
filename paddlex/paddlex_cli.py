@@ -36,12 +36,14 @@ def _install_serving_deps():
         "uvicorn>=0.16",
         "yarl>=1.9",
     ]
-    with tempfile.NamedTemporaryFile("w", suffix=".txt", encoding="utf-8") as f:
-        for dep in SERVING_DEPS:
-            f.write(dep + "\n")
-        f.flush()
+    with tempfile.TemporaryDirectory() as td:
+        req_file = os.path.join(td, "requirements.txt")
+        with open(req_file, "w", encoding="utf-8") as f:
+            for dep in SERVING_DEPS:
+                f.write(dep + "\n")
+            f.flush()
         return subprocess.check_call(
-            [sys.executable, "-m", "pip", "install", "-r", f.name]
+            [sys.executable, "-m", "pip", "install", "-r", req_file]
         )
 
 
