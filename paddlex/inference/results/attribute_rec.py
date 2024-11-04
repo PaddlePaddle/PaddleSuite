@@ -18,12 +18,12 @@ import numpy as np
 import PIL
 from PIL import Image, ImageDraw, ImageFont
 
+from .base import CVResult
 from ...utils.fonts import PINGFANG_FONT_FILE_PATH
 from ..utils.color_map import get_colormap, font_colormap
-from .base import CVResult
 
 
-def draw_box(img, boxes):
+def draw_attribute_result(img, boxes):
     """
     Args:
         img (PIL.Image.Image): PIL image
@@ -32,6 +32,8 @@ def draw_box(img, boxes):
         img (PIL.Image.Image): visualized image
     """
     font_size = int(0.024 * int(img.width)) + 2
+    if isinstance(boxes[0]["label"], list):
+        font_size = int(font_size * 0.7)
     font = ImageFont.truetype(PINGFANG_FONT_FILE_PATH, font_size, encoding="utf-8")
 
     draw_thickness = int(max(img.size) * 0.005)
@@ -41,51 +43,49 @@ def draw_box(img, boxes):
     color_list = get_colormap(rgb=True)
 
     for i, dt in enumerate(boxes):
-        # clsid = dt["cls_id"]
-        label, bbox, score = dt["label"], dt["coordinate"], dt["score"]
-        if label not in label2color:
+        text_lines, bbox, score = dt["label"], dt["coordinate"], dt["score"]
+        if i not in label2color:
             color_index = i % len(color_list)
-            label2color[label] = color_list[color_index]
-            catid2fontcolor[label] = font_colormap(color_index)
-        color = tuple(label2color[label])
-        font_color = tuple(catid2fontcolor[label])
+            label2color[i] = color_list[color_index]
+            catid2fontcolor[i] = font_colormap(color_index)
+        color = tuple(label2color[i]) + (255,)
+        font_color = tuple(catid2fontcolor[i])
 
         xmin, ymin, xmax, ymax = bbox
-        # draw bbox
+        # draw box
         draw.line(
             [(xmin, ymin), (xmin, ymax), (xmax, ymax), (xmax, ymin), (xmin, ymin)],
             width=draw_thickness,
             fill=color,
         )
-
         # draw label
-        text = "{} {:.2f}".format(dt["label"], score)
-        if tuple(map(int, PIL.__version__.split("."))) <= (10, 0, 0):
-            tw, th = draw.textsize(text, font=font)
-        else:
-            left, top, right, bottom = draw.textbbox((0, 0), text, font)
-            tw, th = right - left, bottom - top + 4
-        if ymin < th:
-            draw.rectangle([(xmin, ymin), (xmin + tw + 4, ymin + th + 1)], fill=color)
-            draw.text((xmin + 2, ymin - 2), text, fill=font_color, font=font)
-        else:
-            draw.rectangle([(xmin, ymin - th), (xmin + tw + 4, ymin + 1)], fill=color)
-            draw.text((xmin + 2, ymin - th - 2), text, fill=font_color, font=font)
+        current_y = ymin
+        for line in text_lines:
+            if tuple(map(int, PIL.__version__.split("."))) <= (10, 0, 0):
+                tw, th = draw.textsize(line, font=font)
+            else:
+                left, top, right, bottom = draw.textbbox((0, 0), line, font)
+                tw, th = right - left, bottom - top + 4
 
+            draw.text((5 + xmin + 1, current_y + 1), line, fill=(0, 0, 0), font=font)
+            draw.text((5 + xmin, current_y), line, fill=color, font=font)
+            current_y += th
     return img
 
 
-class DetResult(CVResult):
-    """Save Result Transform"""
-
-    _HARD_FLAG = False
+class AttributeRecResult(CVResult):
 
     def _to_img(self):
         """apply"""
-        boxes = self["boxes"]
         image = self._img_reader.read(self["input_path"])
-        if self._HARD_FLAG:
-            image_np = np.array(image)
-            image = Image.fromarray(image_np[:, :, ::-1])
-        image = draw_box(image, boxes)
+        boxes = [
+            {
+                "coordinate": box["coordinate"],
+                "label": box["labels"],
+                "score": box["det_score"],
+            }
+            for box in self["boxes"]
+            if box["det_score"] > 0.5
+        ]
+        image = draw_attribute_result(image, boxes)
         return image
