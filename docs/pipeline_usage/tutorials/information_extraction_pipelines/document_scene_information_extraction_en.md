@@ -229,7 +229,7 @@ In the above Python script, the following steps are executed:
 | `pipeline` | str | None | Pipeline name or pipeline configuration file path. If it's a pipeline name, it must be supported by PaddleX; |
 | `llm_name` | str | "ernie-3.5" | Large Language Model name, we support `ernie-4.0` and `ernie-3.5`, with more models on the way.|
 | `llm_params` | dict | `{}` | API configuration; |
-| `device(kwargs)` | str/`None` | `None` | Running device (`None` meaning automatic selection); |
+| `device(kwargs)` | str/`None` | `None` | Running device, support `cpu`, `gpu`, `gpu:0`, etc. `None` meaning automatic selection; |
 
 (2) Call the `visual_predict` of the PP-ChatOCRv3-doc pipeline object to visual predict, related parameters descriptions are as follows:
 
@@ -721,4 +721,3 @@ pipeline = create_pipeline(
 ```
 
 If you want to use the PP-ChatOCRv3-doc Pipeline on more types of hardware, please refer to the [PaddleX Multi-Device Usage Guide](../../../other_devices_support/multi_devices_use_guide_en.md).
-

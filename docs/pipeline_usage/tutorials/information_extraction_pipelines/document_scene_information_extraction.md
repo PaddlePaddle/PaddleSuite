@@ -233,7 +233,7 @@ chat_result.print()
 |`pipeline`|str|无|产线名称或是产线配置文件路径，如为产线名称，则必须为 PaddleX 所支持的产线；|
 |`llm_name`|str|"ernie-3.5"|大语言模型名称，目前支持`ernie-4.0`，`ernie-3.5`，更多模型支持中;|
 |`llm_params`|dict|`{}`|LLM相关API配置；|
-|`device`|str、None|`None`|运行设备（`None`为自动适配）；|
+|`device`|str、None|`None`|运行设备（`None`为自动适配）,支持传入'cpu'，'gpu'或'gpu:0'等；|
 
 （2）调用文档场景信息抽取v3产线对象的 `visual_predict` 方法进行视觉推理预测，相关参数说明如下：
 
