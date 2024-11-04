@@ -103,9 +103,9 @@ exporting!"
         Returns:
             str: device setting, such as: `gpu:0,1`, `npu:0,1`, `cpu`.
         """
+        set_env_for_device(self.global_config.device)
         if using_device_number:
             return update_device_num(self.global_config.device, using_device_number)
-        set_env_for_device(self.global_config.device)
         return self.global_config.device
 
     def update_config(self):
