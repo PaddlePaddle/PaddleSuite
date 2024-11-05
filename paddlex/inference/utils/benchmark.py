@@ -25,13 +25,16 @@ from ...utils import logging
 class Benchmark:
     def __init__(self, components):
         self._components = components
+        self._e2e_tic = None
+        self._e2e_elapse = None
 
     def reset(self):
         for name in self._components:
             cmp = self._components[name]
             cmp.timer.reset()
+        self._e2e_tic = time.time()
 
-    def gather(self):
+    def gather(self, e2e_num):
         # lazy import for avoiding circular import
         from ..components.paddle_predictor import BasePaddlePredictor
 
@@ -42,38 +45,50 @@ class Benchmark:
             cmp = self._components[name]
             times = cmp.timer.logs
             counts = len(times)
-            avg = np.mean(times) * 1000
+            avg = np.mean(times)
+            total = np.sum(times)
             detail.append((name, counts, avg))
             if isinstance(cmp, BasePaddlePredictor):
-                summary["inference"] += avg
+                summary["inference"] += total
                 op_tag = "postprocess"
             else:
-                summary[op_tag] += avg
+                summary[op_tag] += total
+
+        summary = [
+            ("PreProcess", e2e_num, summary["preprocess"] / e2e_num),
+            ("Inference", e2e_num, summary["inference"] / e2e_num),
+            ("PostProcess", e2e_num, summary["postprocess"] / e2e_num),
+            ("End2End", e2e_num, self._e2e_elapse / e2e_num),
+        ]
         return detail, summary
 
-    def collect(self):
-        detail, summary = self.gather()
-        table = PrettyTable(["Component", "Counts", "Average Time(ms)"])
-        table.add_rows([(name, cnts, f"{avg:.8f}") for name, cnts, avg in detail])
-        table.add_row(("***************", "******", "***************"))
-        table.add_row(("PreProcess", "\\", f"{summary['preprocess']:.8f}"))
-        table.add_row(("Inference", "\\", f"{summary['inference']:.8f}"))
-        table.add_row(("PostProcess", "\\", f"{summary['postprocess']:.8f}"))
+    def collect(self, e2e_num):
+        self._e2e_elapse = time.time() - self._e2e_tic
+        detail, summary = self.gather(e2e_num)
+
+        table = PrettyTable(["Component", "Call Counts", "Avg Time Per Call (ms)"])
+        table.add_rows(
+            [(name, cnts, f"{avg * 1000:.8f}") for name, cnts, avg in detail]
+        )
+        logging.info(table)
+
+        table = PrettyTable(["Stage", "Num of Instances", "Avg Time Per Instance (ms)"])
+        table.add_rows(
+            [(name, cnts, f"{avg * 1000:.8f}") for name, cnts, avg in summary]
+        )
         logging.info(table)
 
         if INFER_BENCHMARK_OUTPUT:
-            str_ = "Component, Counts, Average Time(ms)\n"
+            str_ = "Component, Call Counts, Avg Time Per Call (ms)\n"
             str_ += "\n".join(
-                [f"{name}, {cnts}, {avg:.18f}" for name, cnts, avg in detail]
+                [f"{name}, {cnts}, {avg * 1000:.18f}" for name, cnts, avg in detail]
             )
-            str_ += "\n***************, ***, ***************\n"
+            str_ += "\n" + "*" * 100 + "\n"
+            str_ += "Stage, Num of Instances, Avg Time Per Instance (ms)\n"
             str_ += "\n".join(
-                [
-                    f"PreProcess, \, {summary['preprocess']:.18f}",
-                    f"Inference, \, {summary['inference']:.18f}",
-                    f"PostProcess, \, {summary['postprocess']:.18f}",
-                ]
+                [f"{name}, {cnts}, {avg * 1000:.18f}" for name, cnts, avg in summary]
             )
+
             with open(INFER_BENCHMARK_OUTPUT, "w") as f:
                 f.write(str_)
 
