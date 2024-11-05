@@ -20,9 +20,10 @@ import random
 import tempfile
 import subprocess
 import numpy as np
+from pathlib import Path
 from PIL import Image, ImageDraw
 
-from .base import CVResult
+from .base import BaseResult, CVResult
 from ...utils import logging
 from .ocr import draw_box_txt_fine
 from ...utils.fonts import PINGFANG_FONT_FILE_PATH
@@ -36,6 +37,14 @@ class FormulaRecResult(CVResult):
         self,
     ):
         """Draw formula on image"""
+        try:
+            env_valid()
+        except subprocess.CalledProcessError as e:
+            logging.warning(
+                "Please refer to 2.3 Formula Recognition Pipeline Visualization in Formula Recognition Pipeline Tutorial to install the LaTeX rendering engine at first."
+            )
+            return None
+
         image = self._img_reader.read(self["input_path"])
         rec_formula = str(self["rec_text"])
         image = np.array(image.convert("RGB"))
@@ -64,9 +73,7 @@ class FormulaRecResult(CVResult):
             new_image.paste(img_formula, (image.width + 10, 0))
             return new_image
         except subprocess.CalledProcessError as e:
-            logging.warning(
-                "Please refer to 2.3 Formula Recognition Pipeline Visualization in Formula Recognition Pipeline Tutorial to install the LaTeX rendering engine at first."
-            )
+            logging.warning("Syntax error detected in formula, rendering failed.")
             return None
 
 
@@ -80,6 +87,13 @@ class FormulaResult(CVResult):
         self,
     ):
         """draw formula result"""
+        try:
+            env_valid()
+        except subprocess.CalledProcessError as e:
+            logging.warning(
+                "Please refer to 2.3 Formula Recognition Pipeline Visualization in Formula Recognition Pipeline Tutorial to install the LaTeX rendering engine at first."
+            )
+            return None
 
         boxes = self["dt_polys"]
         formulas = self["rec_formula"]
@@ -116,16 +130,59 @@ class FormulaResult(CVResult):
                 cv2.polylines(img_right_text, [pts], True, color, 1)
                 img_right = cv2.bitwise_and(img_right, img_right_text)
             except subprocess.CalledProcessError as e:
-                logging.warning(
-                    "Please refer to 2.3 Formula Recognition Pipeline Visualization in Formula Recognition Pipeline Tutorial to install the LaTeX rendering engine at first."
-                )
-                return None
+                logging.warning("Syntax error detected in formula, rendering failed.")
+                continue
 
         img_left = Image.blend(image, img_left, 0.5)
         img_show = Image.new("RGB", (int(w * 2), h), (255, 255, 255))
         img_show.paste(img_left, (0, 0, w, h))
         img_show.paste(Image.fromarray(img_right), (w, 0, w * 2, h))
         return img_show
+
+
+class FormulaVisualResult(BaseResult):
+
+    def __init__(self, data, page_id=None, src_input_name=None):
+        super().__init__(data)
+        self.page_id = page_id
+        self.src_input_name = src_input_name
+
+    def _to_str(self, *args, **kwargs):
+        return super()._to_str(*args, **kwargs).replace("\\\\", "\\")
+
+    def get_target_name(self, save_path):
+        if self.src_input_name.endswith(".pdf"):
+            save_path = (
+                Path(save_path)
+                / f"{Path(self.src_input_name).stem}_pdf"
+                / Path("page_{:04d}".format(self.page_id + 1))
+            )
+        else:
+            save_path = Path(save_path) / f"{Path(self.src_input_name).stem}"
+        return save_path
+
+    def save_to_json(self, save_path):
+        if not save_path.lower().endswith(("json")):
+            save_path = self.get_target_name(save_path)
+        else:
+            save_path = Path(save_path).stem
+
+        formula_save_path = f"{save_path}_formula.jpg"
+        self["input_path"] = formula_save_path
+        self["layout_result"]["input_path"] = formula_save_path
+        if not str(save_path).endswith(".json"):
+            save_path = "{}.json".format(save_path)
+        super().save_to_json(save_path)
+
+    def save_to_img(self, save_path):
+        if not save_path.lower().endswith((".jpg", ".png")):
+            save_path = self.get_target_name(save_path)
+        else:
+            save_path = Path(save_path).stem
+        formula_save_path = f"{save_path}_formula.jpg"
+        formula_result = self["formula_result"]
+        if formula_result:
+            formula_result.save_to_img(formula_save_path)
 
 
 def get_align_equation(equation):
@@ -249,6 +306,20 @@ def draw_formula_module(img_size, box, formula, is_debug=False):
                 img_size, box, "Rendering Failed", PINGFANG_FONT_FILE_PATH
             )
         return img_right_text
+
+
+def env_valid():
+    with tempfile.TemporaryDirectory() as td:
+        tex_file_path = os.path.join(td, "temp.tex")
+        pdf_file_path = os.path.join(td, "temp.pdf")
+        img_file_path = os.path.join(td, "temp.jpg")
+        formula = "a+b=c"
+        is_debug = False
+        generate_tex_file(tex_file_path, formula)
+        if os.path.exists(tex_file_path):
+            generate_pdf_file(tex_file_path, td, is_debug)
+        if os.path.exists(pdf_file_path):
+            formula_img = pdf2img(pdf_file_path, img_file_path, is_padding=False)
 
 
 def draw_box_formula_fine(img_size, box, formula, is_debug=False):

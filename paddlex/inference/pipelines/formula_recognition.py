@@ -13,8 +13,8 @@
 # limitations under the License.
 
 import numpy as np
-from ..components import CropByBoxes
-from ..results import FormulaResult
+from ..components import CropByBoxes, ReadImage
+from ..results import FormulaResult, FormulaVisualResult
 from .base import BasePipeline
 from ...utils import logging
 
@@ -39,6 +39,7 @@ class FormulaRecognitionPipeline(BasePipeline):
             layout_batch_size=layout_batch_size,
             formula_rec_batch_size=formula_rec_batch_size,
         )
+        self.img_reader = ReadImage(format="RGB")
 
     def _build_predictor(self, layout_model, formula_rec_model):
         self.layout_predictor = self._create(model=layout_model)
@@ -56,9 +57,11 @@ class FormulaRecognitionPipeline(BasePipeline):
             self.layout_predictor.set_predictor(device=device)
             self.formula_predictor.set_predictor(device=device)
 
-    def predict(self, x, **kwargs):
+    def predict(self, inputs, **kwargs):
         self.set_predictor(**kwargs)
-        for layout_pred in self.layout_predictor(x):
+        img_info_list = list(self.img_reader(inputs))[0]
+        img_list = [img_info["img"] for img_info in img_info_list]
+        for page_id, layout_pred in enumerate(self.layout_predictor(img_list)):
             single_img_res = {
                 "input_path": "",
                 "layout_result": {},
@@ -89,7 +92,9 @@ class FormulaRecognitionPipeline(BasePipeline):
                         single_img_res["rec_formula"].append(
                             str(formula_res["rec_text"])
                         )
-            yield FormulaResult(single_img_res)
+            single_img_res["formula_result"] = FormulaResult(single_img_res)
+            single_img_res["page_id"] = page_id + 1
+            yield FormulaVisualResult(single_img_res, page_id, inputs)
 
     def sorted_formula_box(self, x):
         coordinate = x["coordinate"]

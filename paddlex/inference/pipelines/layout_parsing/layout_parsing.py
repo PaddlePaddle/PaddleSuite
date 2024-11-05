@@ -179,6 +179,7 @@ class LayoutParsingPipeline(_TableRecPipeline):
         for idx, (img_info, layout_pred) in enumerate(
             zip(img_info_list, self.layout_predictor(img_list))
         ):
+            page_id = idx
             single_img_res = {
                 "input_path": "",
                 "layout_result": DetResult({}),
@@ -343,8 +344,8 @@ class LayoutParsingPipeline(_TableRecPipeline):
             single_img_res["ocr_result"] = ocr_res
             single_img_res["table_ocr_result"] = all_table_ocr_res
             single_img_res["layout_parsing_result"] = structure_res
-
-            yield VisualResult(single_img_res)
+            single_img_res["layout_parsing_result"]["page_id"] = page_id + 1
+            yield VisualResult(single_img_res, page_id, inputs)
 
 
 def get_formula_res(predictor, input):
