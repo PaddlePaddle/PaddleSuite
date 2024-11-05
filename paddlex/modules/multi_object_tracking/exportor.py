@@ -12,7 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from ..base import BaseExportor
+from .model_list import MODELS
 
-from .object_det import DetModel, DetRunner, register
-from .instance_seg import InstanceSegModel, InstanceSegRunner, register
-from .mot import MOTModel, MOTRunner, register
+
+class MOTExportor(BaseExportor):
+    """Object Detection Model Exportor"""
+
+    entities = MODELS

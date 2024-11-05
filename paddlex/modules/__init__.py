@@ -95,4 +95,11 @@ from .ts_classification import (
     TSCLSExportor,
 )
 
+from .multi_object_tracking import (
+    MOTDatasetChecker,
+    MOTTrainer,
+    MOTEvaluator,
+    MOTExportor,
+)
+
 from .ts_forecast import TSFCDatasetChecker, TSFCTrainer, TSFCEvaluator

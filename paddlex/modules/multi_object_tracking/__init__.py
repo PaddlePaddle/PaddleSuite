@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
-from .object_det import DetModel, DetRunner, register
-from .instance_seg import InstanceSegModel, InstanceSegRunner, register
-from .mot import MOTModel, MOTRunner, register
+from .trainer import MOTTrainer
+from .dataset_checker import MOTDatasetChecker
+from .evaluator import MOTEvaluator
+from .exportor import MOTExportor

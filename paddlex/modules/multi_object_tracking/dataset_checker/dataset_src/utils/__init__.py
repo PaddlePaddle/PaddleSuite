@@ -11,8 +11,3 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-
-from .object_det import DetModel, DetRunner, register
-from .instance_seg import InstanceSegModel, InstanceSegRunner, register
-from .mot import MOTModel, MOTRunner, register
