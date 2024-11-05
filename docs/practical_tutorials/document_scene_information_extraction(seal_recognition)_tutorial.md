@@ -198,9 +198,9 @@ python main.py -c paddlex/configs/text_detection_seal/PP-OCRv4_server_seal_det.y
 python main.py -c paddlex/configs/text_detection_seal/PP-OCRv4_server_seal_det.yaml \
     -o Global.mode=train \
     -o Global.dataset_dir=./dataset/practical_seal \
-    -o Global.epochs_iters=30 \
-    -o Global.batch_size=4 \
-    -o Global.learning_rate=0.0001
+    -o Train.epochs_iters=30 \
+    -o Train.batch_size=4 \
+    -o Train.learning_rate=0.0001
 ```
 
 在 PaddleX 中模型训练支持：修改训练超参数、单机单卡/多卡训练等功能，只需修改配置文件或追加命令行参数。

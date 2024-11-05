@@ -231,7 +231,7 @@ PaddleX 内置了多条产线，每条产线都包含了若干模块，每个模
 |OCRNet_HRNet-W18|80.67|48.2335|906.385|43.1 M|[OCRNet_HRNet-W18.yaml](../../paddlex/configs/semantic_segmentation/OCRNet_HRNet-W18.yaml)|
 |OCRNet_HRNet-W48|82.15|78.9976|2226.95|249.8 M|[OCRNet_HRNet-W48.yaml](../../paddlex/configs/semantic_segmentation/OCRNet_HRNet-W48.yaml)|
 |PP-LiteSeg-T|73.10|7.6827|138.683|28.5 M|[PP-LiteSeg-T.yaml](../../paddlex/configs/semantic_segmentation/PP-LiteSeg-T.yaml)|
-|PP-LiteSeg-B|75.25|-|-|47.0 M|[PP-LiteSeg-B.yaml](../../paddlex/configs/semantic_segmentation/PP-LiteSeg-B.yaml)|
+|PP-LiteSeg-B|75.25|10.9935|194.727|47.0 M|[PP-LiteSeg-B.yaml](../../paddlex/configs/semantic_segmentation/PP-LiteSeg-B.yaml)|
 |SegFormer-B0 (slice)|76.73|11.1946|268.929|13.2 M|[SegFormer-B0.yaml](../../paddlex/configs/semantic_segmentation/SegFormer-B0.yaml)|
 |SegFormer-B1 (slice)|78.35|17.9998|403.393|48.5 M|[SegFormer-B1.yaml](../../paddlex/configs/semantic_segmentation/SegFormer-B1.yaml)|
 |SegFormer-B2 (slice)|81.60|48.0371|1248.52|96.9 M|[SegFormer-B2.yaml](../../paddlex/configs/semantic_segmentation/SegFormer-B2.yaml)|
