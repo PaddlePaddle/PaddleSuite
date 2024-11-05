@@ -25,7 +25,7 @@ Semantic segmentation is a technique in computer vision that classifies each pix
 |OCRNet_HRNet-W18|80.67|48.2335|906.385|43.1 M|
 |OCRNet_HRNet-W48|82.15|78.9976|2226.95|249.8 M|
 |PP-LiteSeg-T|73.10|7.6827|138.683|28.5 M|
-|PP-LiteSeg-B|75.25|-|-|47.0 M|
+|PP-LiteSeg-B|75.25|10.9935|194.727|47.0 M|
 |SegFormer-B0 (slice)|76.73|11.1946|268.929|13.2 M|
 |SegFormer-B1 (slice)|78.35|17.9998|403.393|48.5 M|
 |SegFormer-B2 (slice)|81.60|48.0371|1248.52|96.9 M|

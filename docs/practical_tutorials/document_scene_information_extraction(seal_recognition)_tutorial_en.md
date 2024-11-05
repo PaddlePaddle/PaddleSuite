@@ -197,9 +197,9 @@ Before training, please ensure that you have validated the dataset. To complete 
 python main.py -c paddlex/configs/text_detection_seal/PP-OCRv4_server_seal_det.yaml \
     -o Global.mode=train \
     -o Global.dataset_dir=./dataset/practical_seal \
-    -o Global.epochs_iters=30 \
-    -o Global.batch_size=4 \
-    -o Global.learning_rate=0.0001
+    -o Train.epochs_iters=30 \
+    -o Train.batch_size=4 \
+    -o Train.learning_rate=0.0001
 ```
 
 
