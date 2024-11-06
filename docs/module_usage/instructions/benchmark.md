@@ -26,34 +26,40 @@ python main.py \
 在开启 Benchmark 后，将自动打印 benchmark 指标：
 
 ```
-+-------------------+--------+------------------+
-|     Component     | Counts | Average Time(ms) |
-+-------------------+--------+------------------+
-|      ReadCmp      |   10   |    7.86035061    |
-|       Resize      |   10   |    1.38545036    |
-|     Normalize     |   10   |    3.77433300    |
-|     ToCHWImage    |   10   |    0.00545979    |
-| ImageDetPredictor |   10   |   14.97282982    |
-|   DetPostProcess  |   10   |    0.06134510    |
-|  ***************  | ****** | ***************  |
-|     PreProcess    |   \    |   13.02559376    |
-|     Inference     |   \    |   14.97282982    |
-|    PostProcess    |   \    |    0.06134510    |
-+-------------------+--------+------------------+
++-------------------+-------------+------------------------+
+|     Component     | Call Counts | Avg Time Per Call (ms) |
++-------------------+-------------+------------------------+
+|      ReadCmp      |     1000    |      19.22814894       |
+|       Resize      |     1000    |       2.52388239       |
+|     Normalize     |     1000    |       1.33547258       |
+|     ToCHWImage    |     1000    |       0.00310326       |
+| ImageDetPredictor |     1000    |       6.83180261       |
+|   DetPostProcess  |     1000    |       0.03265357       |
++-------------------+-------------+------------------------+
++-------------+------------------+----------------------------+
+|    Stage    | Num of Instances | Avg Time Per Instance (ms) |
++-------------+------------------+----------------------------+
+|  PreProcess |       1000       |        23.09060717         |
+|  Inference  |       1000       |         6.83180261         |
+| PostProcess |       1000       |         0.03265357         |
+|   End2End   |       1000       |        30.48534989         |
++-------------+------------------+----------------------------+
 ```
 
-在 Benchmark 结果中，会统计该模型全部组件（`Component`）的平均执行耗时（`Average Time`，单位为“毫秒”）和调用次数（`Counts`），以及按预处理（`PreProcess`）、模型推理（`Inference`）和后处理（`PostProcess`）汇总得到的执行耗时，同时，保存相关指标会到本地 `./benchmark.txt` 文件中：
+在 Benchmark 结果中，会统计该模型全部组件（`Component`）的平均执行耗时（`Avg Time Per Call`，单位为“毫秒”）和调用次数（`Call Counts`），以及按预处理（`PreProcess`）、模型推理（`Inference`）、后处理（`PostProcess`）和端到端（`End2End`）汇总得到的单样本平均耗时（`Avg Time Per Instance`，单位为“毫秒”），同时，保存相关指标会到本地 `./benchmark.txt` 文件中：
 
 ```
-Component, Counts, Average Time(ms)
-ReadCmp, 10, 7.860350608825682706
-Resize, 10, 1.385450363159179688
-Normalize, 10, 3.774333000183105469
-ToCHWImage, 10, 0.005459785461425781
-ImageDetPredictor, 10, 14.972829818725585938
-DetPostProcess, 10, 0.061345100402832031
-***************, ***, ***************
-PreProcess, \, 13.025593757629394531
-Inference, \, 14.972829818725585938
-PostProcess, \, 0.061345100402832031
+Component, Call Counts, Avg Time Per Call (ms)
+ReadCmp, 1000, 19.329239845275878906
+Resize, 1000, 2.562829017639160156
+Normalize, 1000, 1.369090795516967773
+ToCHWImage, 1000, 0.003165960311889648
+ImageDetPredictor, 1000, 7.323185205459594727
+DetPostProcess, 1000, 0.033131122589111328
+****************************************************************************************************
+Stage, Num of Instances, Avg Time Per Instance (ms)
+PreProcess, 1000, 23.264325618743896484
+Inference, 1000, 7.323185205459594727
+PostProcess, 1000, 0.033131122589111328
+End2End, 1000, 31.181738615036010742
 ```

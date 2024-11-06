@@ -19,7 +19,11 @@ from copy import deepcopy
 import numpy as np
 import cv2
 
-from .....utils.flags import INFER_BENCHMARK, INFER_BENCHMARK_DATA_SIZE
+from .....utils.flags import (
+    INFER_BENCHMARK,
+    INFER_BENCHMARK_ITER,
+    INFER_BENCHMARK_DATA_SIZE,
+)
 from .....utils.cache import CACHE_DIR, temp_file_manager
 from ....utils.io import ImageReader, ImageWriter, PDFReader
 from ...base import BaseComponent
@@ -107,12 +111,13 @@ class ReadImage(_BaseRead):
 
         if INFER_BENCHMARK and img is None:
             size = int(INFER_BENCHMARK_DATA_SIZE)
-            yield [
-                process_ndarray(
-                    np.random.randint(0, 256, (size, size, 3), dtype=np.uint8)
-                )
-                for _ in range(self.batch_size)
-            ]
+            for _ in range(INFER_BENCHMARK_ITER):
+                yield [
+                    process_ndarray(
+                        np.random.randint(0, 256, (size, size, 3), dtype=np.uint8)
+                    )
+                    for _ in range(self.batch_size)
+                ]
 
         elif isinstance(img, np.ndarray):
             yield [process_ndarray(img)]

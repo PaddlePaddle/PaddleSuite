@@ -7,7 +7,6 @@
 
 ## 二、支持模型列表
 
-
 | 模型 | AP (%)<br>Easy/Medium/Hard | GPU推理耗时 (ms) | CPU推理耗时 | 模型存储大小 (M) | 介绍                          |
 |-|:-:|-|-|-|-|
 | BlazeFace                | 77.7/73.4/49.5  |              |         | 0.447      | 轻量高效的人脸检测模型                  |
@@ -246,7 +245,7 @@ python main.py -c paddlex/configs/face_detection/PicoDet_LCNet_x2_5_face.yaml \
 
 1.**产线集成**
 
-人脸目标检测模块可以集成的PaddleX产线有[**人脸识别**](../../../pipeline_usage/tutorials/cv_pipelines/face_recognition.md)，只需要替换模型路径即可完成相关产线的人脸检测模块的模型更新。在产线集成中，你可以使用高性能部署和服务化部署来部署你得到的模型。
+人脸检测模块可以集成的PaddleX产线有[**人脸识别**](../../../pipeline_usage/tutorials/cv_pipelines/face_recognition.md)，只需要替换模型路径即可完成相关产线的人脸检测模块的模型更新。在产线集成中，你可以使用高性能部署和服务化部署来部署你得到的模型。
 
 2.**模块集成**
 

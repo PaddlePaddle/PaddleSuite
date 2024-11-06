@@ -232,43 +232,43 @@ In addition, PaddleX provides developers with a full-process efficient model tra
         <td>🚧</td>
     </tr>
     <tr>
-        <td>Image Recognition</td>
+        <td><a href="./docs/pipeline_usage/tutorials/cv_pipelines/general_image_recognition_en.md>Image Recognition</a></td>
         <td>🚧</td>
+        <td>✅</td>
         <td>🚧</td>
+        <td>✅</td>
         <td>🚧</td>
-        <td>🚧</td>
-        <td>🚧</td>
-        <td>🚧</td>
-        <td>🚧</td>
-    </tr>
-    <tr>
-        <td>Pedestrian Attribute Recognition</td>
-        <td>🚧</td>
-        <td>🚧</td>
-        <td>🚧</td>
-        <td>🚧</td>
-        <td>🚧</td>
-        <td>🚧</td>
+        <td>✅</td>
         <td>🚧</td>
     </tr>
     <tr>
-        <td>Vehicle Attribute Recognition</td>
+        <td><a href="./docs/pipeline_usage/tutorials/cv_pipelines/pedestrian_attribute_en.md">Pedestrian Attribute Recognition</a></td>
         <td>🚧</td>
+        <td>✅</td>
         <td>🚧</td>
+        <td>✅</td>
         <td>🚧</td>
-        <td>🚧</td>
-        <td>🚧</td>
-        <td>🚧</td>
+        <td>✅</td>
         <td>🚧</td>
     </tr>
     <tr>
-        <td>Face Recognition</td>
+        <td><a href="./docs/pipeline_usage/tutorials/cv_pipelines/vehicle_attribute_en.md">Vehicle Attribute Recognition</a></td>
         <td>🚧</td>
+        <td>✅</td>
         <td>🚧</td>
+        <td>✅</td>
         <td>🚧</td>
+        <td>✅</td>
         <td>🚧</td>
+    </tr>
+    <tr>
+        <td><a href="./docs/pipeline_usage/tutorials/cv_pipelines/face_recognition_en.md">Face Recognition</a></td>
         <td>🚧</td>
+        <td>✅</td>
         <td>🚧</td>
+        <td>✅</td>
+        <td>🚧</td>
+        <td>✅</td>
         <td>🚧</td>
     </tr>
 </table>
@@ -361,13 +361,13 @@ In addition, PaddleX provides developers with a full-process efficient model tra
 
 ```bash
 # cpu
-python -m pip install paddlepaddle==3.0.0b1 -i https://www.paddlepaddle.org.cn/packages/stable/cpu/
+python -m pip install paddlepaddle==3.0.0b2 -i https://www.paddlepaddle.org.cn/packages/stable/cpu/
 
 # gpu，该命令仅适用于 CUDA 版本为 11.8 的机器环境
-python -m pip install paddlepaddle-gpu==3.0.0b1 -i https://www.paddlepaddle.org.cn/packages/stable/cu118/
+python -m pip install paddlepaddle-gpu==3.0.0b2 -i https://www.paddlepaddle.org.cn/packages/stable/cu118/
 
 # gpu，该命令仅适用于 CUDA 版本为 12.3 的机器环境
-python -m pip install paddlepaddle-gpu==3.0.0b1 -i https://www.paddlepaddle.org.cn/packages/stable/cu123/
+python -m pip install paddlepaddle-gpu==3.0.0b2 -i https://www.paddlepaddle.org.cn/packages/stable/cu123/
 ```
 > ❗For more PaddlePaddle versions, please refer to the [PaddlePaddle official website](https://www.paddlepaddle.org.cn/install/quick?docurl=/documentation./docs/zh/install/pip/linux-pip.html). 
 
@@ -441,7 +441,9 @@ To use the command line for other pipelines, simply adjust the `pipeline` parame
 | Semantic Segmentation| `paddlex --pipeline semantic_segmentation --input https://paddle-model-ecology.bj.bcebos.com/paddlex/PaddleX3.0/application/semantic_segmentation/makassaridn-road_demo.png --device gpu:0` |
 | Image Multi-label Classification | `paddlex --pipeline multi_label_image_classification --input https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/general_image_classification_001.jpg --device gpu:0`        |
 | Small Object Detection       | `paddlex --pipeline small_object_detection --input https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/small_object_detection.jpg --device gpu:0`                            |
-| Image Anomaly Detection      | `paddlex --pipeline anomaly_detection --input https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/uad_grid.png --device gpu:0 `                                              |
+| Image Anomaly Detection       | `paddlex --pipeline anomaly_detection --input https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/uad_grid.png --device gpu:0`                                              |
+| Pedestrian Attribute Recognition       | `paddlex --pipeline pedestrian_attribute --input https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/pedestrian_attribute_002.jpg --device gpu:0`                                              |
+| Vehicle Attribute Recognition       | `paddlex --pipeline vehicle_attribute --input https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/vehicle_attribute_002.jpg --device gpu:0`                                              |
 | OCR                  | `paddlex --pipeline OCR --input https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/general_ocr_002.png --device gpu:0`                                                      |
 | Table Recognition    | `paddlex --pipeline table_recognition --input https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/table_recognition.jpg --device gpu:0`                                      |
 | Layout Parsing       | `paddlex --pipeline layout_parsing --input https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/demo_paper.png --device gpu:0`                                      |
@@ -487,6 +489,10 @@ For other pipelines in Python scripts, just adjust the `pipeline` parameter of t
 |  Image Multi-Label Classification | `multilabel_classification` | [ Image Multi-Label Classification Pipeline Python Script Usage Instructions](./docs/pipeline_usage/tutorials/cv_pipelines/image_multi_label_classification_en.md) |
 | Small Object Detection         | `small_object_detection` | [Small Object Detection Pipeline Python Script Usage Instructions](./docs/pipeline_usage/tutorials/cv_pipelines/small_object_detection_en.md) |
 | Image Anomaly Detection       | `image_classification` | [Image Anomaly Detection Pipeline Python Script Usage Instructions](./docs/pipeline_usage/tutorials/cv_pipelines/image_anomaly_detection_en.md) |
+| Image Recognition       | `PP-ShiTuV2`                | [Image Recognition Pipeline Python Script Usage Instructions](./docs/pipeline_usage/tutorials/cv_pipelines/general_image_recognition_en.md)                              |
+| Face Recognition       | `face_recognition`                | [Face Recognition Pipeline Python Script Usage Instructions](./docs/pipeline_usage/tutorials/cv_pipelines/face_recognition_en.md)                              |
+| Pedestrian Attribute Recognition       | `pedestrian_attribute`                | [Pedestrian Attribute Recognition Pipeline Python Script Usage Instructions](./docs/pipeline_usage/tutorials/cv_pipelines/pedestrian_attribute_en.md)                              |
+|Vehicle Attribute Recognition       | `vehicle_attribute`                | [Vehicle Attribute Recognition Pipeline Python Script Usage Instructions](./docs/pipeline_usage/tutorials/cv_pipelines/vehicle_attribute_en.md)                              |
 |  OCR            | `OCR` | [ OCR Pipeline Python Script Usage Instructions](./docs/pipeline_usage/tutorials/ocr_pipelines/OCR_en.md) |
 |  Table Recognition       | `table_recognition` | [Table Recognition Pipeline Python Script Usage Instructions](./docs/pipeline_usage/tutorials/ocr_pipelines/table_recognition_en.md) |
 | Layout Parsing       | `layout_parsing`                | [Layout Parsing Pipeline Python Script Usage Instructions](./docs/pipeline_usage/tutorials/ocr_pipelines/layout_parsing_en.md)                                   |
@@ -537,6 +543,10 @@ For other pipelines in Python scripts, just adjust the `pipeline` parameter of t
    * [🏷️ Multi-label Image Classification Pipeline Tutorial](./docs/pipeline_usage/tutorials/cv_pipelines/image_multi_label_classification_en.md)
    * [🔍 Small Object Detection Pipeline Tutorial](./docs/pipeline_usage/tutorials/cv_pipelines/small_object_detection_en.md)
    * [🖼️ Image Anomaly Detection Pipeline Tutorial](./docs/pipeline_usage/tutorials/cv_pipelines/image_anomaly_detection_en.md)
+   * [🖼️ Image Recognition Pipeline Tutorial](./docs/pipeline_usage/tutorials/cv_pipelines/general_image_recognition_en.md)
+   * [🆔 Face Recognition Pipeline Tutorial](./docs/pipeline_usage/tutorials/cv_pipelines/face_recognition_en.md)
+   * [🚗 Vehicle Attribute Recognition Pipeline Tutorial](./docs/pipeline_usage/tutorials/cv_pipelines/vehicle_attribute_en.md)
+   * [🚶‍♀️ Pedestrian Attribute Recognition Pipeline Tutorial](./docs/pipeline_usage/tutorials/cv_pipelines/pedestrian_attribute_en.md)
   </details>
 
 * <details open>
@@ -586,7 +596,8 @@ For other pipelines in Python scripts, just adjust the `pipeline` parameter of t
 * <details open>
   <summary> <b> 🏞️ Image Features </b></summary>
 
-    * [🔗 Image Feature Module Tutorial](./docs/module_usage/tutorials/cv_modules//image_feature_en.md)
+    * [🔗 Image Feature Module Tutorial](./docs/module_usage/tutorials/cv_modules/image_feature_en.md)
+    * [😁 Face_Feature Module Tutorial](./docs/module_usage/tutorials/cv_modules/face_feature_en.md)
   </details>
 
 * <details open>

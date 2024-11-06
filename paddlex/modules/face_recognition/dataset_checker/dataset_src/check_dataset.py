@@ -110,6 +110,7 @@ def check_val(dataset_dir, output, sample_num=10):
     valid_num_parts = 3
 
     labels = []
+    sample_paths = []
     label_file = osp.join(dataset_dir, "pair_label.txt")
     if not osp.exists(label_file):
         raise DatasetFileNotFoundError(
@@ -147,10 +148,26 @@ def check_val(dataset_dir, output, sample_num=10):
                 raise CheckFailedError(
                     f"Ensure that the second number in each line in {label_file} should be int."
                 ) from e
+
+            vis_save_dir = osp.join(output, "demo_img")
+            if not osp.exists(vis_save_dir):
+                os.makedirs(vis_save_dir)
+
+            if len(sample_paths) < sample_num:
+                img = Image.open(left_img_path)
+                img = ImageOps.exif_transpose(img)
+                vis_path = osp.join(vis_save_dir, osp.basename(left_file_name))
+                img.save(vis_path)
+                sample_path = osp.join(
+                    "check_dataset", os.path.relpath(vis_path, output)
+                )
+                sample_paths.append(sample_path)
+
             labels.append(label)
     num_classes = max(labels) + 1
     attrs = {}
     attrs["val_label_file"] = osp.relpath(label_file, output)
     attrs["val_num_classes"] = num_classes
     attrs["val_samples"] = sample_cnts
+    attrs["val_sample_paths"] = sample_paths
     return attrs

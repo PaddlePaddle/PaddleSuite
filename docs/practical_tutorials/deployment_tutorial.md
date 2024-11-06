@@ -136,6 +136,48 @@ paddlex --pipeline OCR --input https://paddle-model-ecology.bj.bcebos.com/paddle
 <img src="https://raw.githubusercontent.com/cuicheng01/PaddleX_doc_images/main/images/practical_tutorials/deployment/01.png"  width="700" />
 <img src="https://raw.githubusercontent.com/cuicheng01/PaddleX_doc_images/main/images/practical_tutorials/deployment/02.png"  width="700" />
 
+### 1.5 更换产线或模型
+
+- 更换产线：
+
+  若想更换其他产线使用高性能推理插件，则替换 `--pipeline` 传入的值即可，以下以通用目标检测产线为例：
+
+  ```bash
+  paddlex --pipeline object_detection --input https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/general_object_detection_002.png --device gpu:0 --use_hpip --serial_number {序列号} --update_license True --save_path ./output
+  ```
+
+- 更换模型：
+
+  OCR 产线默认使用 PP-OCRv4_mobile_det、PP-OCRv4_mobile_rec 模型，若想更换其他模型，如 PP-OCRv4_server_det、PP-OCRv4_server_rec 模型，可参考 [通用OCR产线使用教程](../pipeline_usage/tutorials/ocr_pipelines/OCR.md)，具体操作如下：
+
+  ```bash
+  # 1. 获取 OCR 产线配置文件并保存到 ./OCR.yaml
+  paddlex --get_pipeline_config OCR --save_path ./OCR.yaml
+
+  # 2. 修改 ./OCR.yaml 配置文件
+  #    将 Pipeline.text_det_model 的值改为 PP-OCRv4_server_det 模型所在路径
+  #    将 Pipeline.text_rec_model 的值改为 PP-OCRv4_server_rec 模型所在路径
+
+  # 3. 执行推理时使用修改后的配置文件
+  paddlex --pipeline ./OCR.yaml --input https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/general_ocr_002.png --device gpu:0 --use_hpip --serial_number {序列号} --update_license True --save_path ./output
+  ```
+
+  通用目标检测产线默认使用 PicoDet-S 模型，若想更换其他模型，如 RT-DETR 模型，可参考 [通用目标检测产线使用教程](../pipeline_usage/tutorials/cv_pipelines/object_detection.md)，具体操作如下：
+
+  ```bash
+  # 1. 获取 OCR 产线配置文件并保存到 ./object_detection.yaml
+  paddlex --get_pipeline_config object_detection --save_path ./object_detection.yaml
+
+  # 2. 修改 ./object_detection.yaml 配置文件
+  #    将 Pipeline.model 的值改为 RT-DETR 模型所在路径
+
+  # 3. 执行推理时使用修改后的配置文件
+  paddlex --pipeline ./object_detection.yaml --input https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/general_ocr_002.png --device gpu:0 --use_hpip --serial_number {序列号} --update_license True --save_path ./output
+  ```
+
+  其他产线的操作与上述两条产线的操作类似，更多细节可参考产线使用教程。
+
+
 ## 2 服务化部署示例
 
 ### 2.1 安装服务化部署插件
@@ -221,9 +263,7 @@ print(result["texts"])
 paddlex --install serving
 # 启动服务
 paddlex --serve --pipeline OCR
-# 启动服务并使用高性能推理插件（可选）
-# paddlex --serve --pipeline OCR --use_hpip --serial_number {序列号}
-# 调用服务 | fast_test.py 内容为多语言调用服务示例中的 Python 调用示例
+# 调用服务 | fast_test.py 中代码为上一节的 Python 调用示例
 wget https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/general_ocr_002.png -O demo.jpg
 python fast_test.py
 ```
@@ -232,6 +272,53 @@ python fast_test.py
 
 <img src="https://raw.githubusercontent.com/cuicheng01/PaddleX_doc_images/main/images/practical_tutorials/deployment/03.png"  width="700" />
 <img src="https://raw.githubusercontent.com/cuicheng01/PaddleX_doc_images/main/images/practical_tutorials/deployment/04.png"  width="700" />
+
+### 2.5 更换产线或模型
+
+- 更换产线：
+
+  若想更换其他产线进行服务化部署，则替换 `--pipeline` 传入的值即可，以下以通用目标检测产线为例：
+
+  ```bash
+  paddlex --serve --pipeline object_detection
+  ```
+
+- 更换模型：
+
+  OCR 产线默认使用 PP-OCRv4_mobile_det、PP-OCRv4_mobile_rec 模型，若想更换其他模型，如 PP-OCRv4_server_det、PP-OCRv4_server_rec 模型，可参考 [通用OCR产线使用教程](../pipeline_usage/tutorials/ocr_pipelines/OCR.md)，具体操作如下：
+
+  ```bash
+  # 1. 获取 OCR 产线配置文件并保存到 ./OCR.yaml
+  paddlex --get_pipeline_config OCR --save_path ./OCR.yaml
+
+  # 2. 修改 ./OCR.yaml 配置文件
+  #    将 Pipeline.text_det_model 的值改为 PP-OCRv4_server_det 模型所在路径
+  #    将 Pipeline.text_rec_model 的值改为 PP-OCRv4_server_rec 模型所在路径
+
+  # 3. 启动服务时使用修改后的配置文件
+  paddlex --serve --pipeline ./OCR.yaml
+  # 4. 调用服务
+  wget https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/general_ocr_002.png -O demo.jpg
+  python fast_test.py
+  ```
+
+  通用目标检测产线默认使用 PicoDet-S 模型，若想更换其他模型，如 RT-DETR 模型，可参考 [通用目标检测产线使用教程](../pipeline_usage/tutorials/cv_pipelines/object_detection.md)，具体操作如下：
+
+  ```bash
+  # 1. 获取 OCR 产线配置文件并保存到 ./object_detection.yaml
+  paddlex --get_pipeline_config object_detection --save_path ./object_detection.yaml
+
+  # 2. 修改 ./object_detection.yaml 配置文件
+  #    将 Pipeline.model 的值改为 RT-DETR 模型所在路径
+
+  # 3. 启动服务时使用修改后的配置文件
+  paddlex --serve --pipeline ./object_detection.yaml
+  # 4. 调用服务 | fast_test.py 需要替换为通用目标检测产线使用教程中的 Python 调用示例
+  wget https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/general_ocr_002.png -O demo.jpg
+  python fast_test.py
+  ```
+
+  其他产线的操作与上述两条产线的操作类似，更多细节可参考产线使用教程。
 
 ## 3 端侧部署示例
 
@@ -293,7 +380,7 @@ python fast_test.py
     git clone -b feature/paddle-x https://github.com/PaddlePaddle/Paddle-Lite-Demo.git PaddleX-Lite-Deploy
     ```
 
-2. 填写 [ocr（文字识别）问卷](https://paddle.wjx.cn/vm/eaaBo0H.aspx#) 下载压缩包，将压缩包放到指定解压目录，切换到指定解压目录后执行解压命令。
+2. 填写 [问卷](https://paddle.wjx.cn/vm/eaaBo0H.aspx#) 下载压缩包，将压缩包放到指定解压目录，切换到指定解压目录后执行解压命令。
       ```shell
       # 1. 切换到指定解压目录
       cd PaddleX-Lite-Deploy/ocr/android/shell/ppocr_demo
