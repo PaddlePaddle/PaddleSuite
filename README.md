@@ -553,7 +553,7 @@ for res in output:
    * [🖼️ 通用图像识别产线使用教程](./docs/pipeline_usage/tutorials/cv_pipelines/general_image_recognition.md)
    * [🆔人脸识别产线使用教程](./docs/pipeline_usage/tutorials/cv_pipelines/face_recognition.md)
    * [🚗 车辆属性识别产线使用教程](./docs/pipeline_usage/tutorials/cv_pipelines/vehicle_attribute.md)
-   * [🚶‍♀️ 行人属性识别产线使用教程](./docs/pipeline_usage/tutorials/cv_pipelines/pedestrian_attribute.md)|
+   * [🚶‍♀️ 行人属性识别产线使用教程](./docs/pipeline_usage/tutorials/cv_pipelines/pedestrian_attribute.md)
 
 
 * <details open>
