@@ -1,9 +1,9 @@
-English | [简体中文](face_recognition.md)
+English | [简体中文](face_feature.md)
 
-# Face Recognition Module Usage Tutorial
+# Face Feature Module Usage Tutorial
 
 ## I. Overview
-Face recognition models typically take standardized face images processed through detection, extraction, and keypoint correction as input. These models extract highly discriminative facial features from these images for subsequent modules, such as face matching and verification tasks.
+Face feature models typically take standardized face images processed through detection, extraction, and keypoint correction as input. These models extract highly discriminative facial features from these images for subsequent modules, such as face matching and verification tasks.
 
 ## II. Supported Model List
 
@@ -12,8 +12,8 @@ Face recognition models typically take standardized face images processed throug
 
 | Model           | Output Feature Dimension | Acc (%)<br>AgeDB-30/CFP-FP/LFW | GPU Inference Time (ms) | CPU Inference Time | Model Size (M) | Description                                  |
 |---------------|--------|-------------------------------|--------------|---------|------------|-------------------------------------|
-| MobileFaceNet | 128    | 96.28/96.71/99.58             |              |         | 4.1        | Face recognition model trained on MobileFaceNet with MS1Mv3 dataset |
-| ResNet50_face    | 512    | 98.12/98.56/99.77             |              |         | 87.2       | Face recognition model trained on ResNet50 with MS1Mv3 dataset      |
+| MobileFaceNet | 128    | 96.28/96.71/99.58             |              |         | 4.1        | Face feature model trained on MobileFaceNet with MS1Mv3 dataset |
+| ResNet50_face    | 512    | 98.12/98.56/99.77             |              |         | 87.2       | Face feature model trained on ResNet50 with MS1Mv3 dataset      |
 
 Note: The above accuracy metrics are Accuracy scores measured on the AgeDB-30, CFP-FP, and LFW datasets, respectively. All model GPU inference times are based on an NVIDIA Tesla T4 machine with FP32 precision. CPU inference speeds are based on an Intel(R) Xeon(R) Gold 5117 CPU @ 2.00GHz with 8 threads and FP32 precision.
 </details>
@@ -21,7 +21,7 @@ Note: The above accuracy metrics are Accuracy scores measured on the AgeDB-30, C
 ## III. Quick Integration
 > ❗ Before quick integration, please install the PaddleX wheel package. For details, refer to the [PaddleX Local Installation Tutorial](../../../installation/installation_en.md)
 
-After installing the whl package, a few lines of code can complete the inference of the face recognition module. You can switch models under this module freely, and you can also integrate the model inference of the face recognition module into your project. Before running the following code, please download the [example image](https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/face_classification_001.jpg) to your local machine.
+After installing the whl package, a few lines of code can complete the inference of the face feature module. You can switch models under this module freely, and you can also integrate the model inference of the face feature module into your project. Before running the following code, please download the [example image](https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/face_recognition_001.jpg) to your local machine.
 
 ```python
 from paddlex import create_model
@@ -29,7 +29,7 @@ from paddlex import create_model
 model_name = "MobileFaceNet"
 
 model = create_model(model_name)
-output = model.predict("face_classification_001.jpg", batch_size=1)
+output = model.predict("face_recognition_001.jpg", batch_size=1)
 
 for res in output:
     res.print(json_format=False)
@@ -39,10 +39,10 @@ for res in output:
 For more information on using the PaddleX single-model inference API, refer to the [PaddleX Single Model Python Script Usage Instructions](../../instructions/model_python_API_en.md).
 
 ## IV. Custom Development
-If you aim for higher accuracy with existing models, you can leverage PaddleX's custom development capabilities to develop better face recognition models. Before developing face recognition models with PaddleX, ensure you have installed the PaddleX PaddleClas plugin. The installation process can be found in the [PaddleX Local Installation Tutorial](../../../installation/installation_en.md)
+If you aim for higher accuracy with existing models, you can leverage PaddleX's custom development capabilities to develop better face feature models. Before developing face feature models with PaddleX, ensure you have installed the PaddleX PaddleClas plugin. The installation process can be found in the [PaddleX Local Installation Tutorial](../../../installation/installation_en.md)
 
 ### 4.1 Data Preparation
-Before model training, you need to prepare the dataset for the corresponding task module. PaddleX provides data validation functionality for each module, and **only data that passes validation can be used for model training**. Additionally, PaddleX provides demo datasets for each module, allowing you to complete subsequent development based on the official demo data. If you wish to use a private dataset for subsequent model training, the training dataset for the face recognition module is organized in a general image classification dataset format. You can refer to the [PaddleX Image Classification Task Module Data Annotation Tutorial](../../../data_annotations/cv_modules/image_classification_en.md). If you wish to use a private dataset for subsequent model evaluation, note that the validation dataset format for the face recognition module differs from the training dataset format. Please refer to [Section 4.1.4 Data Organization Face Recognition Module](#414-Data-Organization-for-Face-Recognition-Module)
+Before model training, you need to prepare the dataset for the corresponding task module. PaddleX provides data validation functionality for each module, and **only data that passes validation can be used for model training**. Additionally, PaddleX provides demo datasets for each module, allowing you to complete subsequent development based on the official demo data. If you wish to use a private dataset for subsequent model training, the training dataset for the face feature module is organized in a general image classification dataset format. You can refer to the [PaddleX Image Classification Task Module Data Annotation Tutorial](../../../data_annotations/cv_modules/image_classification_en.md). If you wish to use a private dataset for subsequent model evaluation, note that the validation dataset format for the face feature module differs from the training dataset format. Please refer to [Section 4.1.4 Data Organization Face Feature Module](#414-Data-Organization-for-Face-Feature-Module)
 
 #### 4.1.1 Demo Data Download
 You can use the following commands to download the demo dataset to a specified folder:
@@ -115,13 +115,13 @@ After completing the data validation, you can convert the dataset format and re-
 <details>
   <summary>👉 <b>Details on Format Conversion / Dataset Splitting (Click to Expand)</b></summary>
 
-The Face Recognition module does not support data format conversion or dataset splitting.
+The face feature module does not support data format conversion or dataset splitting.
 
 </details>
 
-#### 4.1.4 Data Organization for Face Recognition Module
+#### 4.1.4 Data Organization for Face Feature Module
 
-The format of the validation dataset for the Face Recognition module differs from the training dataset. If you need to evaluate model accuracy on private data, please organize your dataset as follows:
+The format of the validation dataset for the face feature module differs from the training dataset. If you need to evaluate model accuracy on private data, please organize your dataset as follows:
 
 ```bash
 face_rec_dataroot      # Root directory of the dataset, the directory name can be changed
@@ -206,12 +206,12 @@ After completing the model evaluation, an `evaluate_result.json` file will be pr
 After completing model training and evaluation, you can use the trained model weights for inference predictions. In PaddleX, model inference predictions can be implemented through two methods: command line and wheel package.
 
 #### 4.4.1 Model Inference
-* To perform inference predictions through the command line, you only need the following command. Before running the following code, please download the [example image](https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/face_classification_001.jpg) to your local machine.
+* To perform inference predictions through the command line, you only need the following command. Before running the following code, please download the [example image](https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/face_recognition_001.jpg) to your local machine.
 ```bash
 python main.py -c paddlex/configs/face_recognition/MobileFaceNet.yaml \
     -o Global.mode=predict \
     -o Predict.model_dir="./output/best_model/inference" \
-    -o Predict.input="face_classification_001.jpg"
+    -o Predict.input="face_recognition_001.jpg"
 ```
 Similar to model training and evaluation, the following steps are required:
 
@@ -226,8 +226,8 @@ The model can be directly integrated into the PaddleX pipeline or into your own 
 
 1. **Pipeline Integration**
 
-The face recognition module can be integrated into the PaddleX pipeline for [**Face Recognition**](../../../pipeline_usage/tutorials/face_recognition_pipelines/face_recognition_en.md). You only need to replace the model path to update the face recognition module of the relevant pipeline. In pipeline integration, you can use high-performance deployment and service-oriented deployment to deploy the model you obtained.
+The face feature module can be integrated into the PaddleX pipeline for [**Face Recognition**](../../../pipeline_usage/tutorials/face_recognition_pipelines/face_recognition_en.md). You only need to replace the model path to update the face feature module of the relevant pipeline. In pipeline integration, you can use high-performance deployment and service-oriented deployment to deploy the model you obtained.
 
 2. **Module Integration**
 
-The weights you produced can be directly integrated into the face recognition module. You can refer to the Python example code in [Quick Integration](#III.-Quick-Integration) and only need to replace the model with the path to the model you trained.
+The weights you produced can be directly integrated into the face feature module. You can refer to the Python example code in [Quick Integration](#III.-Quick-Integration) and only need to replace the model with the path to the model you trained.

@@ -133,7 +133,7 @@ PaddleX incorporates multiple pipelines, each containing several modules, and ea
 
 **Note: The above accuracy metrics are Top-1 Acc on PaddleX's internal self-built dataset.**
 
-## [Face Recognition Module](../module_usage/tutorials/cv_modules/face_recognition_en.md)
+## [Face Feature Module](../module_usage/tutorials/cv_modules/face_feature_en.md)
 | Model Name        |Output Feature Dimension| Acc (%)<br>AgeDB-30/CFP-FP/LFW | GPU Inference Time (ms) | CPU Inference Time (ms) | Model Size (M) | YAML File   |
 |---------------|--------|-------------------------------|--------------|---------|------------|-------------------------------------|
 | MobileFaceNet | 128    | 96.28/96.71/99.58             |              |         | 4.1        | [MobileFaceNet.yaml](../../paddlex/configs/face_recognition/MobileFaceNet.yaml) |
