@@ -39,7 +39,7 @@ class FormulaRecognitionPipeline(BasePipeline):
             layout_batch_size=layout_batch_size,
             formula_rec_batch_size=formula_rec_batch_size,
         )
-        self.img_reader = ReadImage(format="RGB")
+        self.img_reader = ReadImage(format="BGR")
 
     def _build_predictor(self, layout_model, formula_rec_model):
         self.layout_predictor = self._create(model=layout_model)
