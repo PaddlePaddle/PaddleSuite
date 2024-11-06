@@ -19,7 +19,6 @@ from ....utils.subclass_register import AutoRegisterABCMetaClass
 from ....utils.flags import (
     INFER_BENCHMARK,
     INFER_BENCHMARK_WARMUP,
-    INFER_BENCHMARK_ITER,
 )
 from ....utils import logging
 from ...components.base import BaseComponent, ComponentsEngine
@@ -53,16 +52,15 @@ class BasicPredictor(
             self.benchmark = Benchmark(self.components)
 
     def __call__(self, input, **kwargs):
+        self.set_predictor(**kwargs)
         if self.benchmark:
-            for _ in range(INFER_BENCHMARK_WARMUP):
-                list(super().__call__(None))
+            if INFER_BENCHMARK_WARMUP > 0:
+                output = super().__call__(input)
+                for _ in range(INFER_BENCHMARK_WARMUP):
+                    next(output)
             self.benchmark.reset()
-            if input is None:
-                for _ in range(INFER_BENCHMARK_ITER):
-                    list(super().__call__(input))
-            else:
-                list(super().__call__(input))
-            self.benchmark.collect()
+            output = list(super().__call__(input))
+            self.benchmark.collect(len(output))
         else:
             yield from super().__call__(input)
 

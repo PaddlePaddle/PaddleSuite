@@ -234,43 +234,43 @@ PaddleX的各个产线均支持本地**快速推理**，部分模型支持在[AI
         <td>🚧</td>
     </tr>
     <tr>
-        <td>通用图像识别</td>
+        <td><a href="./docs/pipeline_usage/tutorials/cv_pipelines/general_image_recognition.md">通用图像识别</a></td>
         <td>🚧</td>
+        <td>✅</td>
         <td>🚧</td>
+        <td>✅</td>
         <td>🚧</td>
-        <td>🚧</td>
-        <td>🚧</td>
-        <td>🚧</td>
-        <td>🚧</td>
-    </tr>
-    <tr>
-        <td>行人属性识别</td>
-        <td>🚧</td>
-        <td>🚧</td>
-        <td>🚧</td>
-        <td>🚧</td>
-        <td>🚧</td>
-        <td>🚧</td>
+        <td>✅</td>
         <td>🚧</td>
     </tr>
     <tr>
-        <td>车辆属性识别</td>
+        <td><a href="./docs/pipeline_usage/tutorials/cv_pipelines/pedestrian_attribute.md">行人属性识别</a></td>
         <td>🚧</td>
+        <td>✅</td>
         <td>🚧</td>
+        <td>✅</td>
         <td>🚧</td>
-        <td>🚧</td>
-        <td>🚧</td>
-        <td>🚧</td>
+        <td>✅</td>
         <td>🚧</td>
     </tr>
     <tr>
-        <td>人脸识别</td>
+        <td><a href="./docs/pipeline_usage/tutorials/cv_pipelines/vehicle_attribute.md">车辆属性识别</a></td>
         <td>🚧</td>
+        <td>✅</td>
         <td>🚧</td>
+        <td>✅</td>
         <td>🚧</td>
+        <td>✅</td>
         <td>🚧</td>
+    </tr>
+    <tr>
+        <td><a href="./docs/pipeline_usage/tutorials/cv_pipelines/face_recognition.md">人脸识别</a></td>
         <td>🚧</td>
+        <td>✅</td>
         <td>🚧</td>
+        <td>✅</td>
+        <td>🚧</td>
+        <td>✅</td>
         <td>🚧</td>
     </tr>
 
@@ -363,13 +363,13 @@ PaddleX的各个产线均支持本地**快速推理**，部分模型支持在[AI
 * **安装 PaddlePaddle**
 ```bash
 # cpu
-python -m pip install paddlepaddle==3.0.0b1 -i https://www.paddlepaddle.org.cn/packages/stable/cpu/
+python -m pip install paddlepaddle==3.0.0b2 -i https://www.paddlepaddle.org.cn/packages/stable/cpu/
 
 # gpu，该命令仅适用于 CUDA 版本为 11.8 的机器环境
-python -m pip install paddlepaddle-gpu==3.0.0b1 -i https://www.paddlepaddle.org.cn/packages/stable/cu118/
+python -m pip install paddlepaddle-gpu==3.0.0b2 -i https://www.paddlepaddle.org.cn/packages/stable/cu118/
 
 # gpu，该命令仅适用于 CUDA 版本为 12.3 的机器环境
-python -m pip install paddlepaddle-gpu==3.0.0b1 -i https://www.paddlepaddle.org.cn/packages/stable/cu123/
+python -m pip install paddlepaddle-gpu==3.0.0b2 -i https://www.paddlepaddle.org.cn/packages/stable/cu123/
 ```
 > ❗ 更多飞桨 Wheel 版本请参考[飞桨官网](https://www.paddlepaddle.org.cn/install/quick?docurl=/documentation./docs/zh/install/pip/linux-pip.html)。
 
@@ -444,7 +444,9 @@ paddlex --pipeline OCR --input https://paddle-model-ecology.bj.bcebos.com/paddle
 | 通用语义分割       | `paddlex --pipeline semantic_segmentation --input https://paddle-model-ecology.bj.bcebos.com/paddlex/PaddleX3.0/application/semantic_segmentation/makassaridn-road_demo.png --device gpu:0` |
 | 图像多标签分类 | `paddlex --pipeline multi_label_image_classification --input https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/general_image_classification_001.jpg --device gpu:0`        |
 | 小目标检测         | `paddlex --pipeline small_object_detection --input https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/small_object_detection.jpg --device gpu:0`                            |
-| 图像异常检测       | `paddlex --pipeline anomaly_detection --input https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/uad_grid.png --device gpu:0 `                                              |
+| 图像异常检测       | `paddlex --pipeline anomaly_detection --input https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/uad_grid.png --device gpu:0`                                              |
+| 行人属性识别       | `paddlex --pipeline pedestrian_attribute --input https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/pedestrian_attribute_002.jpg --device gpu:0`                                              |
+| 车辆属性识别       | `paddlex --pipeline vehicle_attribute --input https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/vehicle_attribute_002.jpg --device gpu:0`                                              |
 | 通用OCR            | `paddlex --pipeline OCR --input https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/general_ocr_002.png --device gpu:0`                                                      |
 | 通用表格识别       | `paddlex --pipeline table_recognition --input https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/table_recognition.jpg --device gpu:0`                                      |
 | 通用版面解析       | `paddlex --pipeline layout_parsing --input https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/demo_paper.png --device gpu:0`                                      |
@@ -453,6 +455,7 @@ paddlex --pipeline OCR --input https://paddle-model-ecology.bj.bcebos.com/paddle
 | 时序预测       | `paddlex --pipeline ts_fc --input https://paddle-model-ecology.bj.bcebos.com/paddlex/ts/demo_ts/ts_fc.csv --device gpu:0`                                                                   |
 | 时序异常检测   | `paddlex --pipeline ts_ad --input https://paddle-model-ecology.bj.bcebos.com/paddlex/ts/demo_ts/ts_ad.csv --device gpu:0`                                                                    |
 | 时序分类       | `paddlex --pipeline ts_cls --input https://paddle-model-ecology.bj.bcebos.com/paddlex/ts/demo_ts/ts_cls.csv --device gpu:0`                                                                 |
+
 
 </details>
 
@@ -489,6 +492,11 @@ for res in output:
 | 图像多标签分类 | `multi_label_image_classification` | [图像多标签分类产线Python脚本使用说明](./docs/pipeline_usage/tutorials/cv_pipelines/image_multi_label_classification.md#22-python脚本方式集成)               |
 | 小目标检测         | `small_object_detection`           | [小目标检测产线Python脚本使用说明](./docs/pipeline_usage/tutorials/cv_pipelines/small_object_detection.md#22-python脚本方式集成)                                 |
 | 图像异常检测       | `anomaly_detection`                | [图像异常检测产线Python脚本使用说明](./docs/pipeline_usage/tutorials/cv_pipelines/image_anomaly_detection.md#22-python脚本方式集成)                              |
+| 通用图像识别       | `PP-ShiTuV2`                | [通用图像识别Python脚本使用说明](./docs/pipeline_usage/tutorials/cv_pipelines/general_image_recognition.md#22-python脚本方式集成)                              |
+| 人脸识别       | `face_recognition`                | [人脸识别Python脚本使用说明](./docs/pipeline_usage/tutorials/cv_pipelines/face_recognition.md#22-python脚本方式集成)                              |
+| 车辆属性识别       | `vehicle_attribute`                | [车辆属性识别产线Python脚本使用说明](./docs/pipeline_usage/tutorials/cv_pipelines/vehicle_attribute.md#22-python脚本方式集成)                              |
+| 行人属性识别       | `pedestrian_attribute`                | [行人属性识别产线Python脚本使用说明](./docs/pipeline_usage/tutorials/cv_pipelines/pedestrian_attribute.md#22-python脚本方式集成)                              |
+| 车辆属性识别       | `vehicle_attribute`                | [车辆属性识别产线Python脚本使用说明](./docs/pipeline_usage/tutorials/cv_pipelines/vehicle_attribute.md#22-python脚本方式集成)                              |
 | 通用OCR            | `OCR`                              | [通用OCR产线Python脚本使用说明](./docs/pipeline_usage/tutorials/ocr_pipelines/OCR.md#222-python脚本方式集成)                                                     |
 | 通用表格识别       | `table_recognition`                | [通用表格识别产线Python脚本使用说明](./docs/pipeline_usage/tutorials/ocr_pipelines/table_recognition.md#22-python脚本方式集成)                                   |
 | 通用版面解析       | `layout_parsing`                | [通用版面解析产线Python脚本使用说明](./docs/pipeline_usage/tutorials/ocr_pipelines/layout_parsing.md#22-python脚本方式集成)                                   |
@@ -542,6 +550,10 @@ for res in output:
    * [🏷️ 图像多标签分类产线使用教程](./docs/pipeline_usage/tutorials/cv_pipelines/image_multi_label_classification.md)
    * [🔍 小目标检测产线使用教程](./docs/pipeline_usage/tutorials/cv_pipelines/small_object_detection.md)
    * [🖼️ 图像异常检测产线使用教程](./docs/pipeline_usage/tutorials/cv_pipelines/image_anomaly_detection.md)
+   * [🖼️ 通用图像识别产线使用教程](./docs/pipeline_usage/tutorials/cv_pipelines/general_image_recognition.md)
+   * [🆔人脸识别产线使用教程](./docs/pipeline_usage/tutorials/cv_pipelines/face_recognition.md)
+   * [🚗 车辆属性识别产线使用教程](./docs/pipeline_usage/tutorials/cv_pipelines/vehicle_attribute.md)
+   * [🚶‍♀️ 行人属性识别产线使用教程](./docs/pipeline_usage/tutorials/cv_pipelines/pedestrian_attribute.md)
 
 
 * <details open>
@@ -594,6 +606,7 @@ for res in output:
   <summary> <b> 🏞️ 图像特征 </b></summary>
 
     * [🔗 图像特征模块使用教程](./docs/module_usage/tutorials/cv_modules/image_feature.md)
+    * [😁 人脸特征模块使用教程](./docs/module_usage/tutorials/cv_modules/face_feature.md)
   </details>
 
 * <details open>
