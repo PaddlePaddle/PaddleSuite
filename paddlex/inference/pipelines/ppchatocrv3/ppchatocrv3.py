@@ -133,7 +133,7 @@ class PPChatOCRPipeline(_TableRecPipeline):
         else:
             self.doc_image_unwarp_predictor = None
 
-        self.img_reader = ReadImage(format="RGB")
+        self.img_reader = ReadImage(format="BGR")
         self.llm_api = create_llm_api(
             llm_name,
             llm_params,
@@ -248,6 +248,7 @@ class PPChatOCRPipeline(_TableRecPipeline):
                 img_info_list, self.doc_image_unwarp_predictor
             )
         img_list = [img_info["img"] for img_info in img_info_list]
+
         for idx, (img_info, layout_pred) in enumerate(
             zip(img_info_list, self.layout_predictor(img_list))
         ):

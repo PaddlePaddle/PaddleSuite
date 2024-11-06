@@ -71,7 +71,6 @@ class FormulaRecResult(CVResult):
 
 
 class FormulaResult(CVResult):
-    _HARD_FLAG = False
 
     def _to_str(self, *args, **kwargs):
         return super()._to_str(*args, **kwargs).replace("\\\\", "\\")
@@ -84,9 +83,6 @@ class FormulaResult(CVResult):
         boxes = self["dt_polys"]
         formulas = self["rec_formula"]
         image = self._img_reader.read(self["input_path"])
-        if self._HARD_FLAG:
-            image_np = np.array(image)
-            image = Image.fromarray(image_np[:, :, ::-1])
         h, w = image.height, image.width
         img_left = image.copy()
         img_right = np.ones((h, w, 3), dtype=np.uint8) * 255

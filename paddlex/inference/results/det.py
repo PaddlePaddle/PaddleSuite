@@ -78,14 +78,9 @@ def draw_box(img, boxes):
 class DetResult(CVResult):
     """Save Result Transform"""
 
-    _HARD_FLAG = False
-
     def _to_img(self):
         """apply"""
         boxes = self["boxes"]
         image = self._img_reader.read(self["input_path"])
-        if self._HARD_FLAG:
-            image_np = np.array(image)
-            image = Image.fromarray(image_np[:, :, ::-1])
         image = draw_box(image, boxes)
         return image
