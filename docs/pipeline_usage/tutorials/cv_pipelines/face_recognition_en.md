@@ -9,7 +9,7 @@ The face recognition pipeline is an end-to-end system dedicated to solving face 
 
 ![](https://raw.githubusercontent.com/cuicheng01/PaddleX_doc_images/main/images/pipelines/face_recognition/01.png)
 
-**The face recognition pipeline includes a face detection module and a face recognition module**, with several models in each module. Which models to use can be selected based on the benchmark data below. **If you prioritize model accuracy, choose models with higher accuracy; if you prioritize inference speed, choose models with faster inference; if you prioritize model size, choose models with smaller storage requirements**.
+**The face recognition pipeline includes a face detection module and a face feature module**, with several models in each module. Which models to use can be selected based on the benchmark data below. **If you prioritize model accuracy, choose models with higher accuracy; if you prioritize inference speed, choose models with faster inference; if you prioritize model size, choose models with smaller storage requirements**.
 
 <details>
    <summary> 👉Model List Details</summary>
@@ -589,7 +589,7 @@ If the default model weights provided by the Face Recognition Pipeline do not me
 ### 4.1 Model Fine-tuning
 Since the Face Recognition Pipeline consists of two modules (face detection and face recognition), the suboptimal performance of the pipeline may stem from either module.
 
-You can analyze images with poor recognition results. If you find that many faces are not detected during the analysis, it may indicate deficiencies in the face detection model. In this case, you need to refer to the [Custom Development](../../../module_usage/tutorials/cv_modules/face_detection_en.md#IV.-Custom-Development) section in the [Face Detection Module Development Tutorial](../../../module_usage/tutorials/cv_modules/face_detection_en.md) and use your private dataset to fine-tune the face detection model. If matching errors occur in detected faces, it suggests that the face recognition model needs further improvement. You should refer to the [Custom Development](../../../module_usage/tutorials/cv_modules/face_recognition_en.md#IV.-Custom-Development) section in the [Face Recognition Module Development Tutorial](../../../module_usage/tutorials/cv_modules/face_recognition_en.md) to fine-tune the face recognition model.
+You can analyze images with poor recognition results. If you find that many faces are not detected during the analysis, it may indicate deficiencies in the face detection model. In this case, you need to refer to the [Custom Development](../../../module_usage/tutorials/cv_modules/face_detection_en.md#IV.-Custom-Development) section in the [Face Detection Module Development Tutorial](../../../module_usage/tutorials/cv_modules/face_detection_en.md) and use your private dataset to fine-tune the face detection model. If matching errors occur in detected faces, it suggests that the face feature model needs further improvement. You should refer to the [Custom Development](../../../module_usage/tutorials/cv_modules/face_feature_en.md#IV.-Custom-Development) section in the [Face Feature Module Development Tutorial](../../../module_usage/tutorials/cv_modules/face_feature_en.md) to fine-tune the face feature model.
 
 ### 4.2 Model Application
 After completing fine-tuning training with your private dataset, you will obtain local model weight files.

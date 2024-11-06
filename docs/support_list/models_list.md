@@ -132,7 +132,7 @@ PaddleX 内置了多条产线，每条产线都包含了若干模块，每个模
 
 **注：以上精度指标为 PaddleX 内部自建数据集 Top-1 Acc 。**
 
-## [人脸识别模块](../module_usage/tutorials/cv_modules/face_recognition.md)
+## [人脸特征模块](../module_usage/tutorials/cv_modules/face_feature.md)
 | 模型名称        | 输出特征维度 | Acc (%)<br>AgeDB-30/CFP-FP/LFW | GPU推理耗时 (ms) | CPU推理耗时 | 模型存储大小 (M) | yaml 文件            |
 |---------------|--------|-------------------------------|--------------|---------|------------|-------------------------------------|
 | MobileFaceNet | 128    | 96.28/96.71/99.58             |              |         | 4.1        | [MobileFaceNet.yaml](../../paddlex/configs/face_recognition/MobileFaceNet.yaml) |
@@ -216,12 +216,12 @@ PaddleX 内置了多条产线，每条产线都包含了若干模块，每个模
 **注：以上精度指标为 **[PPVehicle](https://github.com/PaddlePaddle/PaddleDetection/tree/develop/configs/ppvehicle)** 验证集 mAP(0.5:0.95)。**
 
 ## [人脸检测模块](../module_usage/tutorials/cv_modules/face_detection.md)
-|模型名称|AP（%<br>Easy/Medium/Hard|GPU推理耗时（ms）|CPU推理耗时（ms）|模型存储大小|yaml 文件|
+|模型名称|AP (%)<br>Easy/Medium/Hard|GPU推理耗时（ms）|CPU推理耗时（ms）|模型存储大小|yaml 文件|
 |-|:-:|-|-|-|-|
-| BlazeFace                | 77.7/73.4/49.5  |              |         | 0.447      | [BlazeFace.yaml](../../paddlex/configs/face_detection/BlazeFace.yaml)|
-| BlazeFace-FPN-SSH        | 83.2/80.5/60.5  |              |         | 0.606      | [BlazeFace-FPN-SSH.yaml](../../paddlex/configs/face_detection/BlazeFace-FPN-SSH.yaml) |
-| PicoDet_LCNet_x2_5_face	 | 93.7/90.7/68.1  |              |         | 28.9       | [PicoDet_LCNet_x2_5_face.yaml](../../paddlex/configs/face_detection/PicoDet_LCNet_x2_5_face.yaml) |
-| PP-YOLOE_plus-S_face     | 93.9/91.8/79.8  |              |         | 26.5       |[PP-YOLOE_plus-S_face](../../paddlex/configs/face_detection/PP-YOLOE_plus-S_face.yaml) |
+| BlazeFace                | 77.7/73.4/49.5  |              |         | 0.447 M     | [BlazeFace.yaml](../../paddlex/configs/face_detection/BlazeFace.yaml)|
+| BlazeFace-FPN-SSH        | 83.2/80.5/60.5  |              |         | 0.606 M     | [BlazeFace-FPN-SSH.yaml](../../paddlex/configs/face_detection/BlazeFace-FPN-SSH.yaml) |
+| PicoDet_LCNet_x2_5_face	 | 93.7/90.7/68.1  |              |         | 28.9 M      | [PicoDet_LCNet_x2_5_face.yaml](../../paddlex/configs/face_detection/PicoDet_LCNet_x2_5_face.yaml) |
+| PP-YOLOE_plus-S_face     | 93.9/91.8/79.8  |              |         | 26.5 M      |[PP-YOLOE_plus-S_face](../../paddlex/configs/face_detection/PP-YOLOE_plus-S_face.yaml) |
 
 **注：以上精度指标是在WIDER-FACE验证集上，以640
 \*640作为输入尺寸评估得到的。**

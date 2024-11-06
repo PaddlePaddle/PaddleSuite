@@ -21,8 +21,11 @@ Global:
   save_inference_dir: ./inference
 
 AMP:
-  scale_loss: 27648.0
+  use_amp: True
+  use_fp16_test: False
+  scale_loss: 27648
   use_dynamic_loss_scaling: True
+  use_promote: False
   # O1: mixed fp16
   level: O1
 

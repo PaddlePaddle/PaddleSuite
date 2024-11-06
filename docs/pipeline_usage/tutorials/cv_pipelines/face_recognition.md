@@ -9,7 +9,7 @@
 
 ![](https://raw.githubusercontent.com/cuicheng01/PaddleX_doc_images/refs/heads/main/images/pipelines/face_recognition/01.jpg)
 
-**人脸识别产线中包含了人脸检测模块和人脸识别模块**，每个模块中包含了若干模型，具体使用哪些模型，您可以根据下边的 benchmark 数据来选择。**如您更考虑模型精度，请选择精度较高的模型，如您更考虑模型推理速度，请选择推理速度较快的模型，如您更考虑模型存储大小，请选择存储大小较小的模型**。
+**人脸识别产线中包含了人脸检测模块和人脸特征模块**，每个模块中包含了若干模型，具体使用哪些模型，您可以根据下边的 benchmark 数据来选择。**如您更考虑模型精度，请选择精度较高的模型，如您更考虑模型推理速度，请选择推理速度较快的模型，如您更考虑模型存储大小，请选择存储大小较小的模型**。
 
 <details>
    <summary> 👉模型列表详情</summary>
@@ -26,12 +26,12 @@
 注：以上精度指标是在WIDER-FACE验证集上，以640
 *640作为输入尺寸评估得到的。所有模型 GPU 推理耗时基于 NVIDIA Tesla T4 机器，精度类型为 FP32， CPU 推理速度基于 Intel(R) Xeon(R) Gold 5117 CPU @ 2.00GHz，线程数为8，精度类型为 FP32。
 
-**人脸识别模块：**
+**人脸特征模块：**
 
 | 模型            | 输出特征维度 | Acc (%)<br>AgeDB-30/CFP-FP/LFW | GPU推理耗时 (ms) | CPU推理耗时 | 模型存储大小 (M) | 介绍                                  |
 |---------------|--------|-------------------------------|--------------|---------|------------|-------------------------------------|
-| MobileFaceNet | 128    | 96.28/96.71/99.58             |              |         | 4.1        | 基于MobileFaceNet在MS1Mv3数据集上训练的人脸识别模型 |
-| ResNet50_face  | 512    | 98.12/98.56/99.77             |              |         | 87.2       | 基于ResNet50在MS1Mv3数据集上训练的人脸识别模型      |
+| MobileFaceNet | 128    | 96.28/96.71/99.58             |              |         | 4.1        | 基于MobileFaceNet在MS1Mv3数据集上训练的人脸特征提取模型 |
+| ResNet50_face  | 512    | 98.12/98.56/99.77             |              |         | 87.2       | 基于ResNet50在MS1Mv3数据集上训练的人脸特征提取模型      |
 
 注：以上精度指标是分别在 AgeDB-30、CFP-FP 和 LFW 数据集上测得的 Accuracy。所有模型 GPU 推理耗时基于 NVIDIA Tesla T4 机器，精度类型为 FP32， CPU 推理速度基于 Intel(R) Xeon(R) Gold 5117 CPU @ 2.00GHz，线程数为8，精度类型为 FP32。
 
@@ -713,9 +713,9 @@ print_r($result["texts"]);
 如果 人脸识别 产线提供的默认模型权重在您的场景中，精度或速度不满意，您可以尝试利用**您自己拥有的特定领域或应用场景的数据**对现有模型进行进一步的**微调**，以提升通用该产线的在您的场景中的识别效果。
 
 ### 4.1 模型微调
-由于人脸识别产线包含两个模块（人脸检测和人脸识别），模型产线的效果不及预期可能来自于其中任何一个模块。
+由于人脸识别产线包含两个模块（人脸检测和人脸特征），模型产线的效果不及预期可能来自于其中任何一个模块。
 
-您可以对识别效果差的图片进行分析，如果在分析过程中发现有较多的人脸未被检测出来，那么可能是人脸检测模型存在不足，您需要参考[人脸检测模块开发教程](../../../module_usage/tutorials/cv_modules/face_detection.md)中的[二次开发](../../../module_usage/tutorials/cv_modules/face_detection.md#四二次开发)章节，使用您的私有数据集对人脸检测模型进行微调；如果在已检测到的人脸出现匹配错误，这表明人脸识别模型需要进一步改进，您需要参考[人脸识别模块开发教程](../../../module_usage/tutorials/cv_modules/face_recognition.md)中的[二次开发](../../../module_usage/tutorials/cv_modules/face_recognition.md#四二次开发)章节,对人脸识别模型进行微调。
+您可以对识别效果差的图片进行分析，如果在分析过程中发现有较多的人脸未被检测出来，那么可能是人脸检测模型存在不足，您需要参考[人脸检测模块开发教程](../../../module_usage/tutorials/cv_modules/face_detection.md)中的[二次开发](../../../module_usage/tutorials/cv_modules/face_detection.md#四二次开发)章节，使用您的私有数据集对人脸检测模型进行微调；如果在已检测到的人脸出现匹配错误，这表明人脸特征模块需要进一步改进，您需要参考[人脸特征模块开发教程](../../../module_usage/tutorials/cv_modules/face_feature.md)中的[二次开发](../../../module_usage/tutorials/cv_modules/face_feature.md#四二次开发)章节,对人脸特征模块进行微调。
 
 ### 4.2 模型应用
 当您使用私有数据集完成微调训练后，可获得本地模型权重文件。
@@ -728,22 +728,21 @@ print_r($result["texts"]);
 Pipeline:
   device: "gpu:0"
   det_model: "BlazeFace"        #可修改为微调后人脸检测模型的本地路径
-  rec_model: "MobileFaceNet"    #可修改为微调后人脸识别模型的本地路径
+  rec_model: "MobileFaceNet"    #可修改为微调后人脸特征模型的本地路径
   det_batch_size: 1
   rec_batch_size: 1
   device: gpu
 ......
 ```
 随后， 参考[2.2 本地体验](#22-本地体验)中的命令行方式或Python脚本方式，加载修改后的产线配置文件即可。
-注：目前暂不支持为人脸检测和人脸识别模型设置单独的batch_size。
+注：目前暂不支持为人脸检测和人脸特征模型设置单独的batch_size。
 
 ##  5. 多硬件支持
 PaddleX 支持英伟达 GPU、昆仑芯 XPU、昇腾 NPU和寒武纪 MLU 等多种主流硬件设备，**仅需修改 `--device`参数**即可完成不同硬件之间的无缝切换。
 
-例如，使用Python运行人脸识别线时，将运行设备从英伟达 GPU 更改为昇腾 NPU，仅需将脚本中的 `device` 修改为 npu 即可：
+例如，使用Python运行人脸识别产线时，将运行设备从英伟达 GPU 更改为昇腾 NPU，仅需将脚本中的 `device` 修改为 npu 即可：
 
 ```python
-from paddlex import create_pipeline
 from paddlex import create_pipeline
 
 pipeline = create_pipeline(
