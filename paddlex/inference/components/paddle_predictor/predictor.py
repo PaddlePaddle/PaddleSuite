@@ -41,8 +41,7 @@ class BasePaddlePredictor(BaseComponent):
             if self.option and option == self.option:
                 return
             self._option = option
-            self._option.attach(self)
-            self.reset()
+            self._reset()
 
     @property
     def option(self):
@@ -52,9 +51,10 @@ class BasePaddlePredictor(BaseComponent):
     def option(self, option):
         self._update_option(option)
 
-    def reset(self):
+    def _reset(self):
         if not self.option:
             self.option = PaddlePredictorOption()
+        logging.debug(f"Env: {self.option}")
         (
             self.predictor,
             self.inference_config,
@@ -62,7 +62,7 @@ class BasePaddlePredictor(BaseComponent):
             self.input_handlers,
             self.output_handlers,
         ) = self._create()
-        logging.debug(f"Env: {self.option}")
+        self.option.changed = False
 
     def _create(self):
         """_create"""
@@ -168,6 +168,8 @@ No need to generate again."
         return self.input_names
 
     def apply(self, **kwargs):
+        if self.option.changed:
+            self._reset()
         x = self.to_batch(**kwargs)
         for idx in range(len(x)):
             self.input_handlers[idx].reshape(x[idx].shape)

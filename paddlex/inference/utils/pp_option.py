@@ -34,8 +34,17 @@ class PaddlePredictorOption(object):
         super().__init__()
         self.model_name = model_name
         self._cfg = {}
-        self._observers = []
         self._init_option(**kwargs)
+        self._changed = False
+
+    @property
+    def changed(self):
+        return self._changed
+
+    @changed.setter
+    def changed(self, v):
+        assert isinstance(v, bool)
+        self._changed = v
 
     def _init_option(self, **kwargs):
         for k, v in kwargs.items():
@@ -67,7 +76,7 @@ class PaddlePredictorOption(object):
 
     def _update(self, k, v):
         self._cfg[k] = v
-        self.notify()
+        self.changed = True
 
     @property
     def run_mode(self):
@@ -219,17 +228,3 @@ class PaddlePredictorOption(object):
             for name, prop in vars(self.__class__).items()
             if isinstance(prop, property) and prop.fset is not None
         ]
-
-    def attach(self, observer):
-        if observer not in self._observers:
-            self._observers.append(observer)
-
-    def detach(self, observer):
-        try:
-            self._observers.remove(observer)
-        except ValueError:
-            pass
-
-    def notify(self):
-        for observer in self._observers:
-            observer.reset()
