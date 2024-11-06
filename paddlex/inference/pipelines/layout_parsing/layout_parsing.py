@@ -109,7 +109,7 @@ class LayoutParsingPipeline(_TableRecPipeline):
         else:
             self.uvdoc_predictor = None
 
-        self.img_reader = ReadImage(format="RGB")
+        self.img_reader = ReadImage(format="BGR")
         self.cropper = CropByBoxes()
 
     def set_predictor(

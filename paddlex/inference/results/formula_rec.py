@@ -21,7 +21,6 @@ from ...utils import logging
 
 
 class FormulaRecResult(CVResult):
-    _HARD_FLAG = False
 
     def _to_str(self, *args, **kwargs):
         return super()._to_str(*args, **kwargs).replace("\\\\", "\\")
