@@ -496,7 +496,6 @@ for res in output:
 | 人脸识别       | `face_recognition`                | [人脸识别Python脚本使用说明](./docs/pipeline_usage/tutorials/cv_pipelines/face_recognition.md#22-python脚本方式集成)                              |
 | 车辆属性识别       | `vehicle_attribute`                | [车辆属性识别产线Python脚本使用说明](./docs/pipeline_usage/tutorials/cv_pipelines/vehicle_attribute.md#22-python脚本方式集成)                              |
 | 行人属性识别       | `pedestrian_attribute`                | [行人属性识别产线Python脚本使用说明](./docs/pipeline_usage/tutorials/cv_pipelines/pedestrian_attribute.md#22-python脚本方式集成)                              |
-| 车辆属性识别       | `vehicle_attribute`                | [车辆属性识别产线Python脚本使用说明](./docs/pipeline_usage/tutorials/cv_pipelines/vehicle_attribute.md#22-python脚本方式集成)                              |
 | 通用OCR            | `OCR`                              | [通用OCR产线Python脚本使用说明](./docs/pipeline_usage/tutorials/ocr_pipelines/OCR.md#222-python脚本方式集成)                                                     |
 | 通用表格识别       | `table_recognition`                | [通用表格识别产线Python脚本使用说明](./docs/pipeline_usage/tutorials/ocr_pipelines/table_recognition.md#22-python脚本方式集成)                                   |
 | 通用版面解析       | `layout_parsing`                | [通用版面解析产线Python脚本使用说明](./docs/pipeline_usage/tutorials/ocr_pipelines/layout_parsing.md#22-python脚本方式集成)                                   |
