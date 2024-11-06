@@ -543,10 +543,10 @@ For other pipelines in Python scripts, just adjust the `pipeline` parameter of t
    * [🏷️ Multi-label Image Classification Pipeline Tutorial](./docs/pipeline_usage/tutorials/cv_pipelines/image_multi_label_classification_en.md)
    * [🔍 Small Object Detection Pipeline Tutorial](./docs/pipeline_usage/tutorials/cv_pipelines/small_object_detection_en.md)
    * [🖼️ Image Anomaly Detection Pipeline Tutorial](./docs/pipeline_usage/tutorials/cv_pipelines/image_anomaly_detection_en.md)
-   * [🖼️ Image Recognition](./docs/pipeline_usage/tutorials/cv_pipelines/general_image_recognition_en.md)
-   * [🆔 Face Recognition](./docs/pipeline_usage/tutorials/cv_pipelines/face_recognition_en.md)
-   * [🚗 Vehicle Attribute Recognition](./docs/pipeline_usage/tutorials/cv_pipelines/vehicle_attribute_en.md)
-   * [🚶‍♀️ Pedestrian Attribute Recognition](./docs/pipeline_usage/tutorials/cv_pipelines/pedestrian_attribute_en.md)
+   * [🖼️ Image Recognition Pipeline Tutorial](./docs/pipeline_usage/tutorials/cv_pipelines/general_image_recognition_en.md)
+   * [🆔 Face Recognition Pipeline Tutorial](./docs/pipeline_usage/tutorials/cv_pipelines/face_recognition_en.md)
+   * [🚗 Vehicle Attribute Recognition Pipeline Tutorial](./docs/pipeline_usage/tutorials/cv_pipelines/vehicle_attribute_en.md)
+   * [🚶‍♀️ Pedestrian Attribute Recognition Pipeline Tutorial](./docs/pipeline_usage/tutorials/cv_pipelines/pedestrian_attribute_en.md)
   </details>
 
 * <details open>
@@ -597,7 +597,7 @@ For other pipelines in Python scripts, just adjust the `pipeline` parameter of t
   <summary> <b> 🏞️ Image Features </b></summary>
 
     * [🔗 Image Feature Module Tutorial](./docs/module_usage/tutorials/cv_modules/image_feature_en.md)
-    * [😁 Face_Feature](./docs/module_usage/tutorials/cv_modules/face_feature_en.md)
+    * [😁 Face_Feature Module Tutorial](./docs/module_usage/tutorials/cv_modules/face_feature_en.md)
   </details>
 
 * <details open>
