@@ -1,5 +1,5 @@
 Global:
-  pipeline_name: pedestrian_attribute
+  pipeline_name: pedestrian_attribute_recognition
   input: https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/pedestrian_attribute_002.jpg
   
 Pipeline:

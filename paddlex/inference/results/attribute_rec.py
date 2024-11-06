@@ -31,9 +31,7 @@ def draw_attribute_result(img, boxes):
     Returns:
         img (PIL.Image.Image): visualized image
     """
-    font_size = int(0.024 * int(img.width)) + 2
-    if isinstance(boxes[0]["label"], list):
-        font_size = int(font_size * 0.7)
+    font_size = int((0.024 * int(img.width) + 2) * 0.7)
     font = ImageFont.truetype(PINGFANG_FONT_FILE_PATH, font_size, encoding="utf-8")
 
     draw_thickness = int(max(img.size) * 0.005)

@@ -1,5 +1,5 @@
 Global:
-  pipeline_name: vehicle_attribute
+  pipeline_name: vehicle_attribute_recognition
   input: https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/vehicle_attribute_002.jpg
   
 Pipeline:

@@ -244,7 +244,7 @@ PaddleX的各个产线均支持本地**快速推理**，部分模型支持在[AI
         <td>🚧</td>
     </tr>
     <tr>
-        <td><a href="./docs/pipeline_usage/tutorials/cv_pipelines/pedestrian_attribute.md">行人属性识别</a></td>
+        <td><a href="./docs/pipeline_usage/tutorials/cv_pipelines/pedestrian_attribute_recognition.md">行人属性识别</a></td>
         <td>🚧</td>
         <td>✅</td>
         <td>🚧</td>
@@ -254,7 +254,7 @@ PaddleX的各个产线均支持本地**快速推理**，部分模型支持在[AI
         <td>🚧</td>
     </tr>
     <tr>
-        <td><a href="./docs/pipeline_usage/tutorials/cv_pipelines/vehicle_attribute.md">车辆属性识别</a></td>
+        <td><a href="./docs/pipeline_usage/tutorials/cv_pipelines/vehicle_attribute_recognition.md">车辆属性识别</a></td>
         <td>🚧</td>
         <td>✅</td>
         <td>🚧</td>
@@ -445,8 +445,8 @@ paddlex --pipeline OCR --input https://paddle-model-ecology.bj.bcebos.com/paddle
 | 图像多标签分类 | `paddlex --pipeline multi_label_image_classification --input https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/general_image_classification_001.jpg --device gpu:0`        |
 | 小目标检测         | `paddlex --pipeline small_object_detection --input https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/small_object_detection.jpg --device gpu:0`                            |
 | 图像异常检测       | `paddlex --pipeline anomaly_detection --input https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/uad_grid.png --device gpu:0`                                              |
-| 行人属性识别       | `paddlex --pipeline pedestrian_attribute --input https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/pedestrian_attribute_002.jpg --device gpu:0`                                              |
-| 车辆属性识别       | `paddlex --pipeline vehicle_attribute --input https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/vehicle_attribute_002.jpg --device gpu:0`                                              |
+| 行人属性识别       | `paddlex --pipeline pedestrian_attribute_recognition --input https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/pedestrian_attribute_002.jpg --device gpu:0`                                              |
+| 车辆属性识别       | `paddlex --pipeline vehicle_attribute_recognition --input https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/vehicle_attribute_002.jpg --device gpu:0`                                              |
 | 通用OCR            | `paddlex --pipeline OCR --input https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/general_ocr_002.png --device gpu:0`                                                      |
 | 通用表格识别       | `paddlex --pipeline table_recognition --input https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/table_recognition.jpg --device gpu:0`                                      |
 | 通用版面解析       | `paddlex --pipeline layout_parsing --input https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/demo_paper.png --device gpu:0`                                      |
@@ -494,8 +494,8 @@ for res in output:
 | 图像异常检测       | `anomaly_detection`                | [图像异常检测产线Python脚本使用说明](./docs/pipeline_usage/tutorials/cv_pipelines/image_anomaly_detection.md#22-python脚本方式集成)                              |
 | 通用图像识别       | `PP-ShiTuV2`                | [通用图像识别Python脚本使用说明](./docs/pipeline_usage/tutorials/cv_pipelines/general_image_recognition.md#22-python脚本方式集成)                              |
 | 人脸识别       | `face_recognition`                | [人脸识别Python脚本使用说明](./docs/pipeline_usage/tutorials/cv_pipelines/face_recognition.md#22-python脚本方式集成)                              |
-| 车辆属性识别       | `vehicle_attribute`                | [车辆属性识别产线Python脚本使用说明](./docs/pipeline_usage/tutorials/cv_pipelines/vehicle_attribute.md#22-python脚本方式集成)                              |
-| 行人属性识别       | `pedestrian_attribute`                | [行人属性识别产线Python脚本使用说明](./docs/pipeline_usage/tutorials/cv_pipelines/pedestrian_attribute.md#22-python脚本方式集成)                              |
+| 车辆属性识别       | `vehicle_attribute_recognition`                | [车辆属性识别产线Python脚本使用说明](./docs/pipeline_usage/tutorials/cv_pipelines/vehicle_attribute_recognition.md#22-python脚本方式集成)                              |
+| 行人属性识别       | `pedestrian_attribute_recognition`                | [行人属性识别产线Python脚本使用说明](./docs/pipeline_usage/tutorials/cv_pipelines/pedestrian_attribute_recognition.md#22-python脚本方式集成)                              |
 | 通用OCR            | `OCR`                              | [通用OCR产线Python脚本使用说明](./docs/pipeline_usage/tutorials/ocr_pipelines/OCR.md#222-python脚本方式集成)                                                     |
 | 通用表格识别       | `table_recognition`                | [通用表格识别产线Python脚本使用说明](./docs/pipeline_usage/tutorials/ocr_pipelines/table_recognition.md#22-python脚本方式集成)                                   |
 | 通用版面解析       | `layout_parsing`                | [通用版面解析产线Python脚本使用说明](./docs/pipeline_usage/tutorials/ocr_pipelines/layout_parsing.md#22-python脚本方式集成)                                   |
@@ -551,8 +551,8 @@ for res in output:
    * [🖼️ 图像异常检测产线使用教程](./docs/pipeline_usage/tutorials/cv_pipelines/image_anomaly_detection.md)
    * [🖼️ 通用图像识别产线使用教程](./docs/pipeline_usage/tutorials/cv_pipelines/general_image_recognition.md)
    * [🆔人脸识别产线使用教程](./docs/pipeline_usage/tutorials/cv_pipelines/face_recognition.md)
-   * [🚗 车辆属性识别产线使用教程](./docs/pipeline_usage/tutorials/cv_pipelines/vehicle_attribute.md)
-   * [🚶‍♀️ 行人属性识别产线使用教程](./docs/pipeline_usage/tutorials/cv_pipelines/pedestrian_attribute.md)
+   * [🚗 车辆属性识别产线使用教程](./docs/pipeline_usage/tutorials/cv_pipelines/vehicle_attribute_recognition.md)
+   * [🚶‍♀️ 行人属性识别产线使用教程](./docs/pipeline_usage/tutorials/cv_pipelines/pedestrian_attribute_recognition.md)
 
 
 * <details open>
@@ -667,7 +667,7 @@ for res in output:
 
 <details>
   <summary> <b> 📝 产业实践教程&范例 </b></summary>
-  
+
 * [📑 文档场景信息抽取v3模型产线———论文文献信息抽取应用教程](./docs/practical_tutorials/document_scene_information_extraction(layout_detection)_tutorial.md)
 * [📑 文档场景信息抽取v3模型产线———印章信息抽取应用教程](./docs/practical_tutorials/document_scene_information_extraction(seal_recognition)_tutorial.md)
 * [🖼️ 通用图像分类模型产线———垃圾分类教程](./docs/practical_tutorials/image_classification_garbage_tutorial.md)

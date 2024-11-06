@@ -24,7 +24,7 @@ from .base import BasePipeline
 class AttributeRecPipeline(BasePipeline):
     """Attribute Rec Pipeline"""
 
-    entities = ["pedestrian_attribute", "vehicle_attribute"]
+    entities = ["pedestrian_attribute_recognition", "vehicle_attribute_recognition"]
 
     def __init__(
         self,
