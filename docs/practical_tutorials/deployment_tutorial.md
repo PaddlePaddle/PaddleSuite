@@ -120,7 +120,7 @@ output = pipeline.predict("https://paddle-model-ecology.bj.bcebos.com/paddlex/im
 
 ### 1.4 推理步骤
 
-本推理步骤基于 **PaddleX CLI、联网激活序列号、Python 3.10.0、设备类型为CPU** 的方式使用高性能推理插件，其他使用方式（如不同 Python 版本、设备类型或 PaddleX Python API）可参考 [PaddleX 高性能推理指南](../pipeline_deploy/high_performance_inference.md) 替换相应的指令。
+本推理步骤基于 **PaddleX CLI、联网激活序列号、Python 3.10.0、设备类型为CPU** 的方式使用高性能推理插件，其他使用方式（如不同 Python 版本、设备类型或 PaddleX  Python API）可参考 [PaddleX 高性能推理指南](../pipeline_deploy/high_performance_inference.md) 替换相应的指令。
 
 ```bash
 # 安装高性能推理插件

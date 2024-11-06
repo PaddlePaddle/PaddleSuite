@@ -5,7 +5,7 @@
 ## 1. Quick Installation
 Welcome to PaddleX, Baidu's low-code development tool for AI. Before we dive into the local installation process, please clarify your development needs and choose the appropriate installation mode.
 
-PaddleX offers two installation modes: **Wheel Package Installation** and **Plugin Installation**. Below, we introduce their respective application scenarios:
+PaddleX offers two installation  modes: **Wheel Package Installation** and **Plugin Installation**. Below, we introduce their respective application scenarios:
 
 ### 1.1 Wheel Package Installation Mode
 If your use case for PaddleX involves **model inference and integration**, we recommend the more **convenient** and **lightweight** Wheel package installation mode.
