@@ -108,6 +108,7 @@ def font_colormap(color_index):
     else:
         return dark.astype("int32")
 
+
 def draw_multi_label(image, label, label_map_dict):
     labels = label.split(",")
     label_names = [
@@ -124,7 +125,8 @@ def draw_multi_label(image, label, label_map_dict):
     row_text = "\t"
     for label_name in label_names:
         text = f"{label_name}\t"
-        text_width, row_height = font.getsize(text)
+        x1, y1, x2, y2 = font.getbbox(text)
+        text_width, row_height = x2 - x1, y2 - y1
         if row_width + text_width <= image_width:
             row_text += text
             row_width += text_width
@@ -135,7 +137,7 @@ def draw_multi_label(image, label, label_map_dict):
     text_lines.append(row_text)
     color_list = colormap(rgb=True)
     color = tuple(color_list[0])
-    new_image_height = image_height + len(text_lines) * int(row_height * 1.2)
+    new_image_height = image_height + len(text_lines) * int(row_height * 1.8)
     new_image = Image.new("RGB", (image_width, new_image_height), color)
     new_image.paste(image, (0, 0))
 
