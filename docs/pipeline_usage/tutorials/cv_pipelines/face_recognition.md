@@ -69,7 +69,7 @@ paddlex --get_pipeline_config face_recognition --save_path ./my_path
 </details>
 
 #### 2.2.2 Python脚本方式集成
-请下载[测试图像](https://paddle-model-ecology.bj.bcebos.com/paddlex/demo_data/friends1.jpg)进行测试。
+请下载[测试图像](https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/friends1.jpg)进行测试。
 在该产线的运行示例中需要预先构建人脸特征库，您可以参考如下指令下载官方提供的demo数据用来后续构建人脸特征库。
 您可以参考下面的命令将 Demo 数据集下载到指定文件夹：
 

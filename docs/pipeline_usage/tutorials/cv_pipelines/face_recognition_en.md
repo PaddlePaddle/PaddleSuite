@@ -51,7 +51,7 @@ Oneline Experience is not supported at the moment.
 Command line experience is not supported at the moment.
 #### 2.2.2 Integration via Python Script
 
-Please download the [test image](https://paddle-model-ecology.bj.bcebos.com/paddlex/demo_data/friends1.jpg) for testing. In the example of running this pipeline, you need to pre-build a facial feature library. You can refer to the following instructions to download the official demo data to be used for subsequent construction of the facial feature library. You can use the following command to download the demo dataset to a specified folder:
+Please download the [test image](https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/friends1.jpg) for testing. In the example of running this pipeline, you need to pre-build a facial feature library. You can refer to the following instructions to download the official demo data to be used for subsequent construction of the facial feature library. You can use the following command to download the demo dataset to a specified folder:
 
 ```bash
 cd /path/to/paddlex
