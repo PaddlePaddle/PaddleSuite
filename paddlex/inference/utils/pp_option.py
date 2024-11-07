@@ -20,6 +20,7 @@ from .new_ir_blacklist import NEWIR_BLOCKLIST
 class PaddlePredictorOption(object):
     """Paddle Inference Engine Option"""
 
+    # NOTE: TRT modes start with `trt_`
     SUPPORT_RUN_MODE = (
         "paddle",
         "trt_fp32",
@@ -67,7 +68,7 @@ class PaddlePredictorOption(object):
             "min_subgraph_size": 3,
             "shape_info_filename": None,
             "trt_calib_mode": False,
-            "cpu_threads": 1,
+            "cpu_threads": 8,
             "trt_use_static": False,
             "delete_pass": [],
             "enable_new_ir": True if self.model_name not in NEWIR_BLOCKLIST else False,
