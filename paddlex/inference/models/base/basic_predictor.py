@@ -54,11 +54,12 @@ class BasicPredictor(
     def __call__(self, input, **kwargs):
         self.set_predictor(**kwargs)
         if self.benchmark:
+            self.benchmark.start()
             if INFER_BENCHMARK_WARMUP > 0:
                 output = super().__call__(input)
                 for _ in range(INFER_BENCHMARK_WARMUP):
                     next(output)
-            self.benchmark.reset()
+                self.benchmark.warmup_stop(INFER_BENCHMARK_WARMUP)
             output = list(super().__call__(input))
             self.benchmark.collect(len(output))
         else:
