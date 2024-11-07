@@ -103,9 +103,8 @@ class Benchmark:
         self._e2e_elapse = time.time() - self._e2e_tic
         detail, summary = self.gather(e2e_num)
 
-        table = PrettyTable(
-            ["Component", "Total Time (ms)", "Call Counts", "Avg Time Per Call (ms)"]
-        )
+        table_head = ["Stage", "Total Time (ms)", "Nums", "Avg Time (ms)"]
+        table = PrettyTable(table_head)
         table.add_rows(
             [
                 (name, f"{total * 1000:.8f}", cnts, f"{avg * 1000:.8f}")
@@ -114,14 +113,7 @@ class Benchmark:
         )
         logging.info(table)
 
-        table = PrettyTable(
-            [
-                "Stage",
-                "Total Time (ms)",
-                "Num of Instances",
-                "Avg Time Per Instance (ms)",
-            ]
-        )
+        table = PrettyTable(table_head)
         table.add_rows(
             [
                 (name, f"{total * 1000:.8f}", cnts, f"{avg * 1000:.8f}")
@@ -131,7 +123,7 @@ class Benchmark:
         logging.info(table)
 
         if INFER_BENCHMARK_OUTPUT:
-            csv_data = [["Stage", "Total Time", "Num", "Avg Time"]]
+            csv_data = [table_head]
             csv_data.extend(detail)
             csv_data.extend(summary)
             with open("benchmark.csv", "w", newline="") as file:
