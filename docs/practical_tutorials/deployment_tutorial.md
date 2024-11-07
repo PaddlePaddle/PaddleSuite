@@ -221,7 +221,7 @@ INFO:     Uvicorn running on http://0.0.0.0:8080 (Press CTRL+C to quit)
 | `--host`           | 服务器绑定的主机名或 IP 地址。默认为0.0.0.0。                                                                                                               |
 | `--port`           | 服务器监听的端口号。默认为8080。                                                                                                                            |
 | `--use_hpip`       | 如果指定，则启用高性能推理插件。                                                                                                                            |
-| `--serial_number`  | 高性能推理插件使用的序列号。只在启用高性能推理插件时生效。 请注意，并非所有产线、模型都支持使用高性能推理插件，详细的支持情况请参考[PaddleX 高性能推理指南](./high_performance_inference.md)。 |
+| `--serial_number`  | 高性能推理插件使用的序列号。只在启用高性能推理插件时生效。 请注意，并非所有产线、模型都支持使用高性能推理插件，详细的支持情况请参考[PaddleX 高性能推理指南](../pipeline_deploy/high_performance_inference.md)。 |
 | `--update_license` | 如果指定，则进行联网激活。只在启用高性能推理插件时生效。                                                                                                    |
 
 ### 2.3 调用服务

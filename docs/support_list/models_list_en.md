@@ -146,7 +146,7 @@ PaddleX incorporates multiple pipelines, each containing several modules, and ea
 |-|-|-|-|-|-|
 |PP-ShiTuV2_det|41.5|33.7426|537.003|27.6 M|[PP-ShiTuV2_det.yaml](../../paddlex/configs/mainbody_detection/PP-ShiTuV2_det.yaml)|
 
-**Note: The above accuracy metrics are mAP(0.5:0.95) on the [PaddleClas main body detection dataset](https://github.com/PaddlePaddle/PaddleClas/blob/release/2.5/docs/en/training/PP-ShiTu/mainbody_detection.md).**
+**Note: The above accuracy metrics are mAP(0.5:0.95) on the [PaddleClas main body detection dataset](https://github.com/PaddlePaddle/PaddleClas/blob/release/2.5/docs/zh_CN/training/PP-ShiTu/mainbody_detection.md).**
 
 ## [Object Detection Module](../module_usage/tutorials/cv_modules/object_detection_en.md)
 | Model Name | mAP (%) | GPU Inference Time (ms) | CPU Inference Time (ms)  | Model Size |YAML File|
@@ -222,7 +222,7 @@ PaddleX incorporates multiple pipelines, each containing several modules, and ea
 |-|:-:|-|-|-|-|
 | BlazeFace                | 77.7/73.4/49.5  |              |         | 0.447      | [BlazeFace.yaml](../../paddlex/configs/face_detection/BlazeFace.yaml)|
 | BlazeFace-FPN-SSH        | 83.2/80.5/60.5  |              |         | 0.606      | [BlazeFace-FPN-SSH.yaml](../../paddlex/configs/face_detection/BlazeFace-FPN-SSH.yaml) |
-| PicoDet_LCNet_x2_5_face	 | 93.7/90.7/68.1  |              |         | 28.9       | [PicoDet_LCNet_x2_5_face.yaml](../../paddlex/configs/face_detection/PicoDet_LCNet_x2_5_face.yaml) |
+| PicoDet_LCNet_x2_5_face    | 93.7/90.7/68.1  |              |         | 28.9       | [PicoDet_LCNet_x2_5_face.yaml](../../paddlex/configs/face_detection/PicoDet_LCNet_x2_5_face.yaml) |
 | PP-YOLOE_plus-S_face     | 93.9/91.8/79.8  |              |         | 26.5       |[PP-YOLOE_plus-S_face](../../paddlex/configs/face_detection/PP-YOLOE_plus-S_face.yaml) |
 
 **Note: The above accuracy metrics are evaluated on the WIDER-FACE validation set with an input size of 640*640.**

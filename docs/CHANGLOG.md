@@ -53,7 +53,7 @@ PaddleX 3.0beta 集成了飞桨生态的优势能力，覆盖 7 大场景任务�
 
 ### PaddleX v2.0.0rc0(5.19/2021)
 * 全面支持飞桨2.0动态图，更易用的开发模式
-* 目标检测任务新增[PP-YOLOv2](https://github.com/PaddlePaddle/PaddleX/blob/release/2.0-rc/tutorials/train/object_detection/ppyolov2.py), COCO test数据集精度达到49.5%、V100预测速度达到68.9 FPS 
+* 目标检测任务新增[PP-YOLOv2](https://github.com/PaddlePaddle/PaddleX/blob/release/2.0-rc/tutorials/train/object_detection/ppyolov2.py), COCO test数据集精度达到49.5%、V100预测速度达到68.9 FPS
 * 目标检测任务新增4.2MB的超轻量级模型[PP-YOLO tiny](https://github.com/PaddlePaddle/PaddleX/blob/release/2.0-rc/tutorials/train/object_detection/ppyolotiny.py)
 * 语义分割任务新增实时分割模型[BiSeNetV2](https://github.com/PaddlePaddle/PaddleX/blob/release/2.0-rc/tutorials/train/semantic_segmentation/bisenetv2.py)
 * C++部署模块全面升级
@@ -66,7 +66,7 @@ PaddleX 3.0beta 集成了飞桨生态的优势能力，覆盖 7 大场景任务�
 ### PaddleX v1.3.0(12.19/2020)
 
 - 模型更新
-  > - 图像分类模型ResNet50_vd新增10万分类预训练模型 
+  > - 图像分类模型ResNet50_vd新增10万分类预训练模型
   > - 目标检测模型FasterRCNN新增模型裁剪支持
   > - 目标检测模型新增多通道图像训练支持
 
@@ -81,28 +81,26 @@ PaddleX 3.0beta 集成了飞桨生态的优势能力，覆盖 7 大场景任务�
 新增RestFUL API模块，开发者可通过此模块快速开发基于PaddleX的训练平台
  > - 增加基于RestFUL API的HTML Demo
  > - 增加基于RestFUL API的Remote版可视化客户端
-新增模型通过OpenVINO的部署方案[详情链接](https://paddlex.readthedocs.io/zh_CN/develop/deploy/openvino/index.html)
+新增模型通过OpenVINO的部署方案
 
 ### PaddleX v1.2.0(9.9/2020)
 - 模型更新
-  > - 新增目标检测模型PPYOLO[详情链接](https://paddlex.readthedocs.io/zh_CN/develop/apis/models/detection.html#paddlex-det-ppyolo)
+  > - 新增目标检测模型PPYOLO
   > - FasterRCNN、MaskRCNN、YOLOv3、DeepLabv3p等模型新增内置COCO数据集预训练模型
-  > - 目标检测模型FasterRCNN和MaskRCNN新增backbone HRNet_W18[详情链接](https://paddlex.readthedocs.io/zh_CN/develop/apis/models/detection.html#paddlex-det-fasterrcnn)
-  > - 语义分割模型DeepLabv3p新增backbone MobileNetV3_large_ssld[详情链接](https://paddlex.readthedocs.io/zh_CN/develop/apis/models/semantic_segmentation.html#paddlex-seg-deeplabv3p)
+  > - 目标检测模型FasterRCNN和MaskRCNN新增backbone HRNet_W18
+  > - 语义分割模型DeepLabv3p新增backbone MobileNetV3_large_ssld
 
 - 模型部署更新
-  > - 新增模型通过OpenVINO的部署方案[详情链接](https://paddlex.readthedocs.io/zh_CN/develop/deploy/openvino/index.html)
-  > - 新增模型在树莓派上的部署方案[详情链接](https://paddlex.readthedocs.io/zh_CN/develop/deploy/raspberry/index.html)
+  > - 新增模型通过OpenVINO的部署方案
+  > - 新增模型在树莓派上的部署方案
   > - 优化PaddleLite Android部署的数据预处理和后处理代码性能
   > - 优化Paddle服务端C++代码部署代码，增加use_mkl等参数，通过mkldnn显著提升模型在CPU上的预测性能
 
 - 产业案例更新
-  > - 新增RGB图像遥感分割案例[详情链接](https://paddlex.readthedocs.io/zh_CN/develop/examples/remote_sensing.html)
-  > - 新增多通道遥感分割案例[详情链接](https://paddlex.readthedocs.io/zh_CN/develop/examples/multi-channel_remote_sensing/README.html)
-
+  > - 新增RGB图像遥感分割案例
+  > - 新增多通道遥感分割案例
 - 其它
-  > - 新增数据集切分功能，支持通过命令行切分ImageNet、PascalVOC、MSCOCO和语义分割数据集[详情链接](https://paddlex.readthedocs.io/zh_CN/develop/data/format/classification.html#id2)
-
+  > - 新增数据集切分功能，支持通过命令行切分ImageNet、PascalVOC、MSCOCO和语义分割数据集
 ### PaddleX v1.1.0(7.13/2020)
 - 模型更新
 > - 新增语义分割模型HRNet、FastSCNN
@@ -134,4 +132,3 @@ PaddleX 3.0beta 集成了飞桨生态的优势能力，覆盖 7 大场景任务�
 - **易用易集成**
   - 统一易用的全流程API，5步完成模型训练，10行代码实现Python/C++高性能部署。
   - 提供以PaddleX为核心集成的跨平台可视化工具PaddleX-GUI，快速体验飞桨深度学习全流程。
-
