@@ -3,7 +3,7 @@
 # PaddleX Table Structure Recognition Task Data Annotation Tutorial
 
 ## 1. Data Annotation
-For annotating table data, use the [PPOCRLabelv2](https://github.com/PFCCLab/PPOCRLabel/blob/main/README_en.md) tool. Detailed steps can be found in: [【Video Demonstration】](https://www.bilibili.com/video/BV1wR4y1v7JE/?share_source=copy_web&vd_source=cf1f9d24648d49636e3d109c9f9a377d&t=1998)
+For annotating table data, use the [PPOCRLabelv2](https://github.com/PFCCLab/PPOCRLabel/blob/main/README.md) tool. Detailed steps can be found in: [【Video Demonstration】](https://www.bilibili.com/video/BV1wR4y1v7JE/?share_source=copy_web&vd_source=cf1f9d24648d49636e3d109c9f9a377d&t=1998)
 
 Table annotation focuses on structured extraction of table data, converting tables in images into Excel format. Therefore, annotation requires the use of an external software to open Excel simultaneously. In PPOCRLabel, complete the annotation of text information within the table (text and position), and in the Excel file, complete the annotation of table structure information. The recommended steps are:
 

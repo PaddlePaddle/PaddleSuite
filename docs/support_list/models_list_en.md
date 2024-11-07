@@ -138,7 +138,7 @@ PaddleX incorporates multiple pipelines, each containing several modules, and ea
 |-|-|-|-|-|-|
 |PP-ShiTuV2_det|41.5|33.7426|537.003|27.6 M|[PP-ShiTuV2_det.yaml](../../paddlex/configs/mainbody_detection/PP-ShiTuV2_det.yaml)|
 
-**Note: The above accuracy metrics are mAP(0.5:0.95) on the [PaddleClas main body detection dataset](https://github.com/PaddlePaddle/PaddleClas/blob/release/2.5/docs/en/training/PP-ShiTu/mainbody_detection.md).**
+**Note: The above accuracy metrics are mAP(0.5:0.95) on the [PaddleClas main body detection dataset](https://github.com/PaddlePaddle/PaddleClas/blob/release/2.5/docs/zh_CN/training/PP-ShiTu/mainbody_detection.md).**
 
 ## [Object Detection Module](../module_usage/tutorials/cv_modules/object_detection_en.md)
 | Model Name | mAP (%) | GPU Inference Time (ms) | CPU Inference Time (ms)  | Model Size |YAML File|
