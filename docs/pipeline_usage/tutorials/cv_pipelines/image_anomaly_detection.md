@@ -170,7 +170,7 @@ for res in output:
 
     对图像进行异常检测。
 
-    `POST /anomaly-detection`
+    `POST /image-anomaly-detection`
 
     - 请求体的属性如下：
 
@@ -216,7 +216,7 @@ for res in output:
 import base64
 import requests
 
-API_URL = "http://localhost:8080/anomaly-detection" # 服务URL
+API_URL = "http://localhost:8080/image-anomaly-detection" # 服务URL
 image_path = "./demo.jpg"
 output_image_path = "./out.jpg"
 
@@ -277,7 +277,7 @@ int main() {
     std::string body = jsonObj.dump();
 
     // 调用API
-    auto response = client.Post("/anomaly-detection", headers, body, "application/json");
+    auto response = client.Post("/image-anomaly-detection", headers, body, "application/json");
     // 处理接口返回数据
     if (response && response->status == 200) {
         nlohmann::json jsonResponse = nlohmann::json::parse(response->body);
@@ -322,7 +322,7 @@ import java.util.Base64;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-        String API_URL = "http://localhost:8080/anomaly-detection"; // 服务URL
+        String API_URL = "http://localhost:8080/image-anomaly-detection"; // 服务URL
         String imagePath = "./demo.jpg"; // 本地图像
         String outputImagePath = "./out.jpg"; // 输出图像
 
@@ -385,7 +385,7 @@ import (
 )
 
 func main() {
-    API_URL := "http://localhost:8080/anomaly-detection"
+    API_URL := "http://localhost:8080/image-anomaly-detection"
     imagePath := "./demo.jpg"
     outputImagePath := "./out.jpg"
 
@@ -469,7 +469,7 @@ using Newtonsoft.Json.Linq;
 
 class Program
 {
-    static readonly string API_URL = "http://localhost:8080/anomaly-detection";
+    static readonly string API_URL = "http://localhost:8080/image-anomaly-detection";
     static readonly string imagePath = "./demo.jpg";
     static readonly string outputImagePath = "./out.jpg";
 
@@ -511,7 +511,7 @@ class Program
 const axios = require('axios');
 const fs = require('fs');
 
-const API_URL = 'http://localhost:8080/anomaly-detection'
+const API_URL = 'http://localhost:8080/image-anomaly-detection'
 const imagePath = './demo.jpg'
 const outputImagePath = "./out.jpg";
 
@@ -555,7 +555,7 @@ axios.request(config)
 ```php
 <?php
 
-$API_URL = "http://localhost:8080/anomaly-detection"; // 服务URL
+$API_URL = "http://localhost:8080/image-anomaly-detection"; // 服务URL
 $image_path = "./demo.jpg";
 $output_image_path = "./out.jpg";
 

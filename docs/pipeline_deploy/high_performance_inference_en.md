@@ -52,8 +52,8 @@ Find the corresponding installation command based on your processor architecture
   </tr>
 </table>
 
-* When the device type is GPU, please use the installation instructions corresponding to the CUDA and cuDNN versions that match your environment. Otherwise, you will not be able to use the high-performance inference plugin properly.
 * For Linux systems, execute the installation instructions using Bash.
+* When using NVIDIA GPUs, please use the installation instructions corresponding to the CUDA and cuDNN versions that match your environment. Otherwise, you will not be able to use the high-performance inference plugin properly.
 * When the device type is CPU, the installed high-performance inference plugin only supports inference using the CPU; for other device types, the installed high-performance inference plugin supports inference using the CPU or other devices.
 
 ### 1.2 Obtaining Serial Numbers and Activation
@@ -115,35 +115,61 @@ The inference results obtained with the high-performance inference plugin enable
 
 ### 1.4 Modifying High-Performance Inference Configurations
 
-PaddleX provides default high-performance inference configurations for each model and stores them in the model's configuration file. Due to the diversity of actual deployment environments, using the default configurations may not achieve ideal performance in specific environments or may even result in inference failures. For situations where the default configurations cannot meet requirements, you can try changing the model's inference backend as follows:
+PaddleX combines model information and runtime environment information to provide default high-performance inference configurations for each model. These default configurations are carefully prepared to be applicable in several common scenarios and achieve relatively optimal performance. Therefore, users typically may not need to be concerned with the specific details of these configurations. However, due to the diversity of actual deployment environments and requirements, the default configuration may not yield ideal performance in certain scenarios and could even result in inference failures. In cases where the default configuration does not meet the requirements, users can manually adjust the configuration by modifying the Hpi field in the inference.yml file within the model directory (if this field does not exist, it needs to be added). The following are two common situations:
 
-1. Locate the `inference.yml` file in the model directory and find the `Hpi` field.
+- Switching inference backends:
 
-2. Modify the value of `selected_backends`. Specifically, `selected_backends` may be set as follows:
+    When the default inference backend is not available, the inference backend needs to be switched manually. Users should modify the `selected_backends` field (if it does not exist, it needs to be added).
 
     ```yaml
-    selected_backends:
+    Hpi:
+      ...
+      selected_backends:
         cpu: paddle_infer
         gpu: onnx_runtime
+      ...
     ```
 
-    Each entry is formatted as `{device_type}: {inference_backend_name}`. The default selects the backend with the shortest inference time in the official test environment. `supported_backends` lists the inference backends supported by the model in the official test environment for reference.
+    Each entry should follow the format `{device type}: {inference backend name}`.
 
     The currently available inference backends are:
 
-    * `paddle_infer`: The standard Paddle Inference engine. Supports CPU and GPU.
-    * `paddle_tensorrt`: [Paddle-TensorRT](https://www.paddlepaddle.org.cn/lite/v2.10/optimize/paddle_trt.html), a high-performance deep learning inference library produced by Paddle, which integrates TensorRT in the form of subgraphs for further optimization and acceleration. Supports GPU only.
-    * `openvino`: [OpenVINO](https://github.com/openvinotoolkit/openvino), a deep learning inference tool provided by Intel, optimized for model inference performance on various Intel hardware. Supports CPU only.
-    * `onnx_runtime`: [ONNX Runtime](https://onnxruntime.ai/), a cross-platform, high-performance inference engine. Supports CPU and GPU.
-    * `tensorrt`: [TensorRT](https://developer.nvidia.com/tensorrt), a high-performance deep learning inference library provided by NVIDIA, optimized for NVIDIA GPUs to improve speed. Supports GPU only.
+    * `paddle_infer`: The Paddle Inference engine. Supports CPU and GPU. Compared to the PaddleX basic inference, TensorRT subgraphs can be integrated to enhance inference performance on GPUs.
+    * `openvino`: [OpenVINO](https://github.com/openvinotoolkit/openvino), a deep learning inference tool provided by Intel, optimized for model inference performance on various Intel hardware. Supports CPU only. The high-performance inference plugin automatically converts the model to the ONNX format and uses this engine for inference.
+    * `onnx_runtime`: [ONNX Runtime](https://onnxruntime.ai/), a cross-platform, high-performance inference engine. Supports CPU and GPU. The high-performance inference plugin automatically converts the model to the ONNX format and uses this engine for inference.
+    * `tensorrt`: [TensorRT](https://developer.nvidia.com/tensorrt), a high-performance deep learning inference library provided by NVIDIA, optimized for NVIDIA GPUs to improve speed. Supports GPU only. The high-performance inference plugin automatically converts the model to the ONNX format and uses this engine for inference.
 
-    Here are some key details of the current official test environment:
+- Modifying dynamic shape configurations for Paddle Inference or TensorRT:
 
-    * CPU: Intel Xeon Gold 5117
-    * GPU: NVIDIA Tesla T4
-    * CUDA Version: 11.8
-    * cuDNN Version: 8.6
-    * Docker：registry.baidubce.com/paddlepaddle/paddle:latest-dev-cuda11.8-cudnn8.6-trt8.5-gcc82
+    Dynamic shape is the ability of TensorRT to defer specifying parts or all of a tensor’s dimensions until runtime. If the default dynamic shape configuration does not meet requirements (e.g., the model may require input shapes beyond the default range), users need to modify the `trt_dynamic_shapes` or `dynamic_shapes` field in the inference backend configuration:
+
+    ```yaml
+    Hpi:
+      ...
+      backend_configs:
+        # Configuration for the Paddle Inference backend
+        paddle_infer:
+          ...
+          trt_dynamic_shapes:
+            x:
+              - [1, 3, 300, 300]
+              - [4, 3, 300, 300]
+              - [32, 3, 1200, 1200]
+          ...
+        # Configuration for the TensorRT backend
+        tensorrt:
+          ...
+          dynamic_shapes:
+            x:
+              - [1, 3, 300, 300]
+              - [4, 3, 300, 300]
+              - [32, 3, 1200, 1200]
+          ...
+    ```
+
+    In `trt_dynamic_shapes` or `dynamic_shapes`, each input tensor requires a specified dynamic shape in the format: `{input tensor name}: [{minimum shape}, [{optimal shape}], [{maximum shape}]]`. For details on minimum, optimal, and maximum shapes and further information, please refer to the official TensorRT documentation.
+
+    After completing the modifications, please delete the cache files in the model directory (`shape_range_info.pbtxt` and files starting with `trt_serialized`).
 
 ## 2. Pipelines and Models Supporting High-Performance Inference Plugins
 

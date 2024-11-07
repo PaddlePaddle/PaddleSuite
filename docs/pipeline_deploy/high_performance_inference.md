@@ -52,8 +52,8 @@
   </tr>
 </table>
 
-* 当设备类型为 GPU 时，请使用与环境匹配的 CUDA 和 cuDNN 版本对应的安装指令，否则，将无法正常使用高性能推理插件。
 * 对于 Linux 系统，使用 Bash 执行安装指令。
+* 当使用 NVIDIA GPU 时，请使用与环境匹配的 CUDA 和 cuDNN 版本对应的安装指令，否则，将无法正常使用高性能推理插件。
 * 当设备类型为 CPU 时，安装的高性能推理插件仅支持使用 CPU 进行推理；对于其他设备类型，安装的高性能推理插件则支持使用 CPU 或其他设备进行推理。
 
 ### 1.2 获取序列号与激活
@@ -114,33 +114,61 @@ output = pipeline.predict("https://paddle-model-ecology.bj.bcebos.com/paddlex/im
 
 ### 1.4 修改高性能推理配置
 
-PaddleX 为每个模型提供默认的高性能推理配置，并将其存储在模型的配置文件中。由于实际部署环境的多样性，使用默认配置可能无法在特定环境中获取理想的性能，甚至可能出现推理失败的情况。对于默认配置无法满足要求的情形，可以通过如下方式，尝试更换模型的推理后端：
+PaddleX 结合模型信息与运行环境信息为每个模型提供默认的高性能推理配置。这些默认配置经过精心准备，以便在数个常见场景中可用，且能够取得较优的性能。因此，通常用户可能并不用关心如何这些配置的具体细节。然而，由于实际部署环境与需求的多样性，使用默认配置可能无法在特定场景获取理想的性能，甚至可能出现推理失败的情况。对于默认配置无法满足要求的情形，用户可以通过修改模型目录中 `inference.yml` 文件中 `Hpi` 字段（如果该字段不存在，需要新增）的方式，手动调整配置。以下列举两种常见的情形：
 
-1. 找到模型目录中的 `inference.yml` 文件，定位到其中的 `Hpi` 字段；
-2. 修改 `selected_backends` 的值。具体而言，`selected_backends` 可能被设置如下：
+- 更换推理后端：
+
+    当默认的推理后端不可用时，需要手动更换推理后端。用户需要修改 `selected_backends` 字段（如果不存在，需要新增）。
 
     ```yaml
-    selected_backends:
+    Hpi:
+      ...
+      selected_backends:
         cpu: paddle_infer
         gpu: onnx_runtime
+      ...
     ```
 
-    其中每一项均按照 `{设备类型}: {推理后端名称}` 的格式填写，默认选用在官方测试环境中推理耗时最短的后端。`supported_backends` 中记录了官方测试环境中模型支持的推理后端，可供参考。
+    其中每一项均按照 `{设备类型}: {推理后端名称}` 的格式填写。
+
     目前所有可选的推理后端如下：
 
-    * `paddle_infer`：标准的 Paddle Inference 推理引擎。支持 CPU 和 GPU。
-    * `paddle_tensorrt`：[Paddle-TensorRT](https://www.paddlepaddle.org.cn/lite/v2.10/optimize/paddle_trt.html)，Paddle 官方出品的高性能深度学习推理库，采用子图的形式对 TensorRT 进行了集成，以实现进一步优化加速。仅支持 GPU。
-    * `openvino`：[OpenVINO](https://github.com/openvinotoolkit/openvino)，Intel 提供的深度学习推理工具，优化了多种 Intel 硬件上的模型推理性能。仅支持 CPU。
-    * `onnx_runtime`：[ONNX Runtime](https://onnxruntime.ai/)，跨平台、高性能的推理引擎。支持 CPU 和 GPU。
-    * `tensorrt`：[TensorRT](https://developer.nvidia.com/tensorrt)，NVIDIA 提供的高性能深度学习推理库，针对 NVIDIA GPU 进行优化以提升速度。仅支持 GPU。
+    * `paddle_infer`：Paddle Inference 推理引擎。支持 CPU 和 GPU。相比 PaddleX 基本推理，高性能推理插件支持以集成 TensorRT 子图的方式提升模型的 GPU 推理性能。
+    * `openvino`：[OpenVINO](https://github.com/openvinotoolkit/openvino)，Intel 提供的深度学习推理工具，优化了多种 Intel 硬件上的模型推理性能。仅支持 CPU。高性能推理插件自动将模型转换为 ONNX 格式后用该引擎推理。
+    * `onnx_runtime`：[ONNX Runtime](https://onnxruntime.ai/)，跨平台、高性能的推理引擎。支持 CPU 和 GPU。高性能推理插件自动将模型转换为 ONNX 格式后用该引擎推理。
+    * `tensorrt`：[TensorRT](https://developer.nvidia.com/tensorrt)，NVIDIA 提供的高性能深度学习推理库，针对 NVIDIA GPU 进行优化以提升速度。仅支持 GPU。高性能推理插件自动将模型转换为 ONNX 格式后用该引擎推理。
 
-    以下是目前的官方测试环境的部分关键信息：
+- 修改 Paddle Inference 或 TensorRT 的动态形状配置：
 
-    * CPU：Intel Xeon Gold 5117
-    * GPU：NVIDIA Tesla T4
-    * CUDA版本：11.8
-    * cuDNN版本：8.6
-    * Docker 镜像：registry.baidubce.com/paddlepaddle/paddle:latest-dev-cuda11.8-cudnn8.6-trt8.5-gcc82
+    动态形状是 TensorRT 延迟指定部分或全部张量维度直到运行时的能力。当默认的动态形状配置无法满足需求（例如，模型可能需要范围外的输入形状），用户需要修改状推理后端配置中的 `trt_dynamic_shapes` 或 `dynamic_shapes` 字段：
+
+    ```yaml
+    Hpi:
+      ...
+      backend_configs:
+        # Paddle Inference 后端配置
+        paddle_infer:
+          ...
+          trt_dynamic_shapes:
+            x:
+              - [1, 3, 300, 300]
+              - [4, 3, 300, 300]
+              - [32, 3, 1200, 1200]
+          ...
+        # TensorRT 后端配置
+        tensorrt:
+          ...
+          dynamic_shapes:
+            x:
+              - [1, 3, 300, 300]
+              - [4, 3, 300, 300]
+              - [32, 3, 1200, 1200]
+          ...
+    ```
+
+    在 `trt_dynamic_shapes` 或 `dynamic_shapes` 中，需要为每一个输入张量指定动态形状，格式为：`{输入张量名称}: [{最小形状}, [{最优形状}], [{最大形状}]]`。有关最小形状、最优形状以及最大形状的相关介绍及更多细节，请参考 TensorRT 官方文档。
+
+    在完成修改后，请删除模型目录中的缓存文件（`shape_range_info.pbtxt` 与 `trt_serialized` 开头的文件）。
 
 ## 2、支持使用高性能推理插件的产线与模型
 

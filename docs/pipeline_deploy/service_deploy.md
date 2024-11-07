@@ -35,7 +35,7 @@ paddlex --serve --pipeline {产线名称或产线配置文件路径} [{其他命
 paddlex --serve --pipeline image_classifcation
 ```
 
-服务启动成功后，可以看到类似如下展示的信息：
+服务启动成功后，可以看到类似以下展示的信息：
 
 ```
 INFO:     Started server process [63108]
