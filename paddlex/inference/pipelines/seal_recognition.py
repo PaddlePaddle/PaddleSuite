@@ -127,11 +127,19 @@ class SealOCRPipeline(BasePipeline):
                     if sub["label"].lower() == "seal":
                         seal_subs.append(sub)
             all_seal_ocr_res = get_ocr_res(self.ocr_pipeline, seal_subs)
-            seal_res = {"dt_polys": [], "dt_scores": [], "rec_text": [], "rec_score": []}
+            seal_res = {
+                "dt_polys": [],
+                "dt_scores": [],
+                "rec_text": [],
+                "rec_score": [],
+            }
             for sub, seal_ocr_res in zip(seal_subs, all_seal_ocr_res):
                 if len(seal_ocr_res["dt_polys"]) > 0:
-                    box = sub["box"] 
-                    ori_bbox_list = [ dt + np.array(box[:2]).astype(np.int32) for dt in seal_ocr_res["dt_polys"]]
+                    box = sub["box"]
+                    ori_bbox_list = [
+                        dt + np.array(box[:2]).astype(np.int32)
+                        for dt in seal_ocr_res["dt_polys"]
+                    ]
                     seal_res["dt_polys"].extend(ori_bbox_list)
                     seal_res["dt_scores"].extend(seal_ocr_res["dt_scores"])
                     seal_res["rec_text"].extend(seal_ocr_res["rec_text"])
