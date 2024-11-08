@@ -8,7 +8,7 @@ In real-world production environments, many applications have stringent standard
 
 ## 1. Installation and Usage of High-Performance Inference Plugins
 
-Before using the high-performance inference plugins, ensure you have completed the installation of PaddleX according to the [PaddleX Local Installation Tutorial](../installation/installation.en.md), and have successfully run the basic inference of the pipeline using either the PaddleX pipeline command line instructions or the Python script instructions.
+Before using the high-performance inference plugins, ensure you have completed the installation of PaddleX according to the [PaddleX Local Installation Tutorial](../installation/installation.en.md), and have successfully run the quick inference of the pipeline using either the PaddleX pipeline command line instructions or the Python script instructions.
 
 ### 1.1 Installing High-Performance Inference Plugins
 
@@ -136,7 +136,7 @@ PaddleX combines model information and runtime environment information to provid
 
     The currently available inference backends are:
 
-    * `paddle_infer`: The Paddle Inference engine. Supports CPU and GPU. Compared to the PaddleX basic inference, TensorRT subgraphs can be integrated to enhance inference performance on GPUs.
+    * `paddle_infer`: The Paddle Inference engine. Supports CPU and GPU. Compared to the PaddleX quick inference, TensorRT subgraphs can be integrated to enhance inference performance on GPUs.
     * `openvino`: [OpenVINO](https://github.com/openvinotoolkit/openvino), a deep learning inference tool provided by Intel, optimized for model inference performance on various Intel hardware. Supports CPU only. The high-performance inference plugin automatically converts the model to the ONNX format and uses this engine for inference.
     * `onnx_runtime`: [ONNX Runtime](https://onnxruntime.ai/), a cross-platform, high-performance inference engine. Supports CPU and GPU. The high-performance inference plugin automatically converts the model to the ONNX format and uses this engine for inference.
     * `tensorrt`: [TensorRT](https://developer.nvidia.com/tensorrt), a high-performance deep learning inference library provided by NVIDIA, optimized for NVIDIA GPUs to improve speed. Supports GPU only. The high-performance inference plugin automatically converts the model to the ONNX format and uses this engine for inference.

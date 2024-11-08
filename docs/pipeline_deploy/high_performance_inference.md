@@ -8,7 +8,7 @@ comments: true
 
 ## 1.高性能推理插件的安装与使用
 
-使用高性能推理插件前，请确保您已经按照[PaddleX本地安装教程](../installation/installation.md) 完成了PaddleX的安装，且按照PaddleX产线命令行使用说明或PaddleX产线Python脚本使用说明跑通了产线的基本推理。
+使用高性能推理插件前，请确保您已经按照[PaddleX本地安装教程](../installation/installation.md) 完成了PaddleX的安装，且按照PaddleX产线命令行使用说明或PaddleX产线Python脚本使用说明跑通了产线的快速推理。
 
 ### 1.1 安装高性能推理插件
 
@@ -135,7 +135,7 @@ PaddleX 结合模型信息与运行环境信息为每个模型提供默认的高
 
     目前所有可选的推理后端如下：
 
-    * `paddle_infer`：Paddle Inference 推理引擎。支持 CPU 和 GPU。相比 PaddleX 基本推理，高性能推理插件支持以集成 TensorRT 子图的方式提升模型的 GPU 推理性能。
+    * `paddle_infer`：Paddle Inference 推理引擎。支持 CPU 和 GPU。相比 PaddleX 快速推理，高性能推理插件支持以集成 TensorRT 子图的方式提升模型的 GPU 推理性能。
     * `openvino`：[OpenVINO](https://github.com/openvinotoolkit/openvino)，Intel 提供的深度学习推理工具，优化了多种 Intel 硬件上的模型推理性能。仅支持 CPU。高性能推理插件自动将模型转换为 ONNX 格式后用该引擎推理。
     * `onnx_runtime`：[ONNX Runtime](https://onnxruntime.ai/)，跨平台、高性能的推理引擎。支持 CPU 和 GPU。高性能推理插件自动将模型转换为 ONNX 格式后用该引擎推理。
     * `tensorrt`：[TensorRT](https://developer.nvidia.com/tensorrt)，NVIDIA 提供的高性能深度学习推理库，针对 NVIDIA GPU 进行优化以提升速度。仅支持 GPU。高性能推理插件自动将模型转换为 ONNX 格式后用该引擎推理。
