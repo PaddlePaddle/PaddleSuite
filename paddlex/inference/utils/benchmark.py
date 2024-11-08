@@ -16,6 +16,7 @@ import csv
 import functools
 from types import GeneratorType
 import time
+from pathlib import Path
 import numpy as np
 from prettytable import PrettyTable
 
@@ -116,8 +117,13 @@ class Benchmark:
         self._e2e_elapse = time.time() - self._e2e_tic
         detail, summary = self.gather(e2e_num)
 
-        table_head = ["Stage", "Total Time (ms)", "Nums", "Avg Time (ms)"]
-        table = PrettyTable(table_head)
+        detail_head = [
+            "Component",
+            "Total Time (ms)",
+            "Number of Calls",
+            "Avg Time Per Call (ms)",
+        ]
+        table = PrettyTable(detail_head)
         table.add_rows(
             [
                 (name, f"{total * 1000:.8f}", cnts, f"{avg * 1000:.8f}")
@@ -126,7 +132,13 @@ class Benchmark:
         )
         logging.info(table)
 
-        table = PrettyTable(table_head)
+        summary_head = [
+            "Stage",
+            "Total Time (ms)",
+            "Number of Instances",
+            "Avg Time Per Instance (ms)",
+        ]
+        table = PrettyTable(summary_head)
         table.add_rows(
             [
                 (name, f"{total * 1000:.8f}", cnts, f"{avg * 1000:.8f}")
@@ -136,10 +148,17 @@ class Benchmark:
         logging.info(table)
 
         if INFER_BENCHMARK_OUTPUT:
-            csv_data = [table_head]
-            csv_data.extend(detail)
-            csv_data.extend(summary)
-            with open("benchmark.csv", "w", newline="") as file:
+            save_dir = Path(INFER_BENCHMARK_OUTPUT)
+            save_dir.mkdir(parents=True, exist_ok=True)
+            csv_data = [detail_head, *detail]
+            # csv_data.extend(detail)
+            with open(Path(save_dir) / "detail.csv", "w", newline="") as file:
+                writer = csv.writer(file)
+                writer.writerows(csv_data)
+
+            csv_data = [summary_head, *summary]
+            # csv_data.extend(summary)
+            with open(Path(save_dir) / "summary.csv", "w", newline="") as file:
                 writer = csv.writer(file)
                 writer.writerows(csv_data)
 
