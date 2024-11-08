@@ -40,10 +40,6 @@ class BaseComponent(ABC):
             self.apply = self.timer.watch_func(self.apply)
 
     def __call__(self, input_list):
-        # use list type for batched data
-        if not isinstance(input_list, list):
-            input_list = [input_list]
-
         output_list = []
         for args, input_ in self._check_input(input_list):
             output = self.apply(**args)
@@ -107,10 +103,15 @@ class BaseComponent(ABC):
                         f"The parameter ({param.name}) is needed by {self.__class__.__name__}, but {list(args.keys())} only found!"
                     )
 
+        # use list type for batched data
+        if not isinstance(input_list, list):
+            input_list = [input_list]
+
         if self.need_batch_input:
             args = {}
-            for input_ in input_list:
-                input_ = _check_type(input_)
+            for idx in range(len(input_list)):
+                input_ = _check_type(input_list[idx])
+                input_list[idx] = input_
                 for k, v in self.inputs.items():
                     if v not in input_:
                         raise Exception(
@@ -141,7 +142,9 @@ class BaseComponent(ABC):
         # when the output data is list type, reassemble each of that
         if isinstance(output, list):
             if self.need_batch_input:
-                assert isinstance(ori_data, list) and len(ori_data) == len(output)
+                assert isinstance(ori_data, list) and len(ori_data) == len(
+                    output
+                ), f"Error in {self.__class__.__name__}"
                 output_list = []
                 for ori_item, output_item in zip(ori_data, output):
                     data = ori_item.copy() if self.keep_input else {}
@@ -179,8 +182,12 @@ class BaseComponent(ABC):
                     output_list.append(data)
                 return output_list
         else:
-            assert isinstance(ori_data, dict) and isinstance(output, dict)
-            data = ori_data.copy() if self.keep_input else {}
+            assert isinstance(output, dict), f"Error in {self.__class__.__name__}"
+            if self.keep_input:
+                assert isinstance(ori_data, dict), f"Error in {self.__class__.__name__}"
+                data = ori_data.copy()
+            else:
+                data = {}
             if isinstance(self.outputs, type(None)):
                 logging.debug(
                     f"The `output_key` of {self.__class__.__name__} is None, so would not inspect!"
