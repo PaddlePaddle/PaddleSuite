@@ -9,10 +9,10 @@ assignees: ''
 
 ## Checklist:
 
-1. 查找[历史相关issue](https://github.com/PaddlePaddle/PaddleX/issues)寻求解答
-2. 翻阅[FAQ常见问题汇总和答疑](https://github.com/PaddlePaddle/PaddleX/blob/develop/docs/FAQ/FAQ.md)
-3. 确认bug是否在新版本里还未修复
-4. 翻阅[PaddleX数据准备文档](https://github.com/PaddlePaddle/PaddleX/tree/develop#2-%E6%95%B0%E6%8D%AE%E5%87%86%E5%A4%87)
+- [ ] 查找[历史相关issue](https://github.com/PaddlePaddle/PaddleX/issues)寻求解答
+- [ ] 翻阅[FAQ](https://paddlepaddle.github.io/PaddleX/main/FAQ.html)
+- [ ] 翻阅[PaddleX 文档](https://paddlepaddle.github.io/PaddleX/main/index.html)
+- [ ] 确认bug是否在新版本里还未修复
 
 ## 描述问题
 
