@@ -11,7 +11,7 @@ hide:
 </p>
 
 <p align="center">
-    <a href="./LICENSE"><img src="https://img.shields.io/badge/License-Apache%202-red.svg"></a>
+    <a href=""><img src="https://img.shields.io/badge/License-Apache%202-red.svg"></a>
     <a href=""><img src="https://img.shields.io/badge/Python-3.8%2C%203.9%2C%203.10-blue.svg"></a>
     <a href=""><img src="https://img.shields.io/badge/OS-Linux%2C%20Windows%2C%20Mac-orange.svg"></a>
     <a href=""><img src="https://img.shields.io/badge/Hardware-CPU%2C%20GPU%2C%20XPU%2C%20NPU%2C%20MLU%2C%20DCU-yellow.svg"></a>
@@ -60,10 +60,10 @@ PaddleX 3.0 is a low-code development tool for AI models built on the PaddlePadd
 
 <table class="img-table">
         <tr>
-            <th><a href="https://amberc0209.github.io/PaddleX/latest/en/pipeline_usage/tutorials/cv_pipelines/image_classification.html"><strong>Image Classification</strong></a></th>
-            <th><a href="https://amberc0209.github.io/PaddleX/latest/en/pipeline_usage/tutorials/cv_pipelines/image_multi_label_classification.html"><strong>Multi-label Image Classification</strong></a></th>
-            <th><a href="https://amberc0209.github.io/PaddleX/latest/en/pipeline_usage/tutorials/cv_pipelines/object_detection.html"><strong>Object Detection</strong></a></th>
-            <th><a href="https://amberc0209.github.io/PaddleX/latest/en/pipeline_usage/tutorials/cv_pipelines/instance_segmentation.html"><strong>Instance Segmentation</strong></a></th>
+            <th><a href="https://paddlepaddle.github.io/PaddleX/latest/en/pipeline_usage/tutorials/cv_pipelines/image_classification.html"><strong>Image Classification</strong></a></th>
+            <th><a href="https://paddlepaddle.github.io/PaddleX/latest/en/pipeline_usage/tutorials/cv_pipelines/image_multi_label_classification.html"><strong>Multi-label Image Classification</strong></a></th>
+            <th><a href="https://paddlepaddle.github.io/PaddleX/latest/en/pipeline_usage/tutorials/cv_pipelines/object_detection.html"><strong>Object Detection</strong></a></th>
+            <th><a href="https://paddlepaddle.github.io/PaddleX/latest/en/pipeline_usage/tutorials/cv_pipelines/instance_segmentation.html"><strong>Instance Segmentation</strong></a></th>
         </tr>
         <tr>
             <td><img src="https://github.com/PaddlePaddle/PaddleX/assets/142379845/b302cd7e-e027-4ea6-86d0-8a4dd6d61f39"></td>
@@ -72,10 +72,10 @@ PaddleX 3.0 is a low-code development tool for AI models built on the PaddlePadd
             <td><img src="https://github.com/PaddlePaddle/PaddleX/assets/142379845/09f683b4-27df-4c24-b8a7-84da20fdd182"></td>
         </tr>
         <tr>
-            <th><a href="https://amberc0209.github.io/PaddleX/latest/en/pipeline_usage/tutorials/cv_pipelines/semantic_segmentation.html"><strong>Semantic Segmentation</strong></a></th>
-            <th><a href="https://amberc0209.github.io/PaddleX/latest/en/pipeline_usage/tutorials/cv_pipelines/image_anomaly_detection.html"><strong>Image Anomaly Detection</strong></a></th>
-            <th><a href="https://amberc0209.github.io/PaddleX/latest/en/pipeline_usage/tutorials/ocr_pipelines/OCR.html"><strong>OCR</strong></a></th>
-            <th><a href="https://amberc0209.github.io/PaddleX/latest/en/pipeline_usage/tutorials/ocr_pipelines/table_recognition.html"><strong>Table Recognition</strong></a></th>
+            <th><a href="https://paddlepaddle.github.io/PaddleX/latest/en/pipeline_usage/tutorials/cv_pipelines/semantic_segmentation.html"><strong>Semantic Segmentation</strong></a></th>
+            <th><a href="https://paddlepaddle.github.io/PaddleX/latest/en/pipeline_usage/tutorials/cv_pipelines/image_anomaly_detection.html"><strong>Image Anomaly Detection</strong></a></th>
+            <th><a href="https://paddlepaddle.github.io/PaddleX/latest/en/pipeline_usage/tutorials/ocr_pipelines/OCR.html"><strong>OCR</strong></a></th>
+            <th><a href="https://paddlepaddle.github.io/PaddleX/latest/en/pipeline_usage/tutorials/ocr_pipelines/table_recognition.html"><strong>Table Recognition</strong></a></th>
         </tr>
         <tr>
             <td><img src="https://github.com/PaddlePaddle/PaddleX/assets/142379845/02637f8c-f248-415b-89ab-1276505f198c"></td>
@@ -84,10 +84,10 @@ PaddleX 3.0 is a low-code development tool for AI models built on the PaddlePadd
             <td><img src="https://github.com/PaddlePaddle/PaddleX/assets/142379845/1e798e05-dee7-4b41-9cc4-6708b6014efa"></td>
         </tr>
         <tr>
-            <th><a href="https://amberc0209.github.io/PaddleX/latest/en/pipeline_usage/tutorials/information_extraction_pipelines/document_scene_information_extraction.html"><strong>PP-ChatOCRv3-doc</strong></a></th>
-            <th><a href="https://amberc0209.github.io/PaddleX/latest/en/pipeline_usage/tutorials/time_series_pipelines/time_series_forecasting.html"><strong>Time Series Forecasting</strong></a></th>
-            <th><a href="https://amberc0209.github.io/PaddleX/latest/en/pipeline_usage/tutorials/time_series_pipelines/time_series_anomaly_detection.html"><strong>Time Series Anomaly Detection</strong></a></th>
-            <th><a href="https://amberc0209.github.io/PaddleX/latest/en/pipeline_usage/tutorials/time_series_pipelines/time_series_classification.html"><strong>Time Series Classification</strong></a></th>
+            <th><a href="https://paddlepaddle.github.io/PaddleX/latest/en/pipeline_usage/tutorials/information_extraction_pipelines/document_scene_information_extraction.html"><strong>PP-ChatOCRv3-doc</strong></a></th>
+            <th><a href="https://paddlepaddle.github.io/PaddleX/latest/en/pipeline_usage/tutorials/time_series_pipelines/time_series_forecasting.html"><strong>Time Series Forecasting</strong></a></th>
+            <th><a href="https://paddlepaddle.github.io/PaddleX/latest/en/pipeline_usage/tutorials/time_series_pipelines/time_series_anomaly_detection.html"><strong>Time Series Anomaly Detection</strong></a></th>
+            <th><a href="https://paddlepaddle.github.io/PaddleX/latest/en/pipeline_usage/tutorials/time_series_pipelines/time_series_classification.html"><strong>Time Series Classification</strong></a></th>
         </tr>
         <tr>
             <td><img src="https://github.com/PaddlePaddle/PaddleX/assets/142379845/e3d97f4e-ab46-411c-8155-494c61492b0a"></td>
@@ -124,7 +124,7 @@ PaddleX is dedicated to achieving pipeline-level model training, inference, and 
 ## 📊 What can PaddleX do？
 
 
-All pipelines of PaddleX support <b>online experience</b> on [AI Studio]((https://aistudio.baidu.com/overview)) and local <b>fast inference</b>. You can quickly experience the effects of each pre-trained pipeline. If you are satisfied with the effects of the pre-trained pipeline, you can directly perform [high-performance inference](./docs/pipeline_deploy/high_performance_inference_en.html) / [serving deployment](./docs/pipeline_deploy/service_deploy_en.html) / [edge deployment](./docs/pipeline_deploy/edge_deploy_en.html) on the pipeline. If not satisfied, you can also <b>Custom Development</b> to improve the pipeline effect. For the complete pipeline development process, please refer to the [PaddleX pipeline Development Tool Local Use Tutorial](./docs/pipeline_usage/pipeline_develop_guide_en.html).
+All pipelines of PaddleX support <b>online experience</b> on [AI Studio](https://aistudio.baidu.com/overview) and local <b>fast inference</b>. You can quickly experience the effects of each pre-trained pipeline. If you are satisfied with the effects of the pre-trained pipeline, you can directly perform [high-performance inference](https://paddlepaddle.github.io/PaddleX/latest/en/pipeline_deploy/high_performance_inference.html) / [serving deployment](https://paddlepaddle.github.io/PaddleX/latest/en/pipeline_deploy/service_deploy.html) / [edge deployment](https://paddlepaddle.github.io/PaddleX/latest/en/pipeline_deploy/edge_deploy.html) on the pipeline. If not satisfied, you can also <b>Custom Development</b> to improve the pipeline effect. For the complete pipeline development process, please refer to the [PaddleX pipeline Development Tool Local Use Tutorial](https://paddlepaddle.github.io/PaddleX/latest/en/pipeline_usage/pipeline_develop_guide.html).
 
 In addition, PaddleX provides developers with a full-process efficient model training and deployment tool based on a [cloud-based GUI](https://aistudio.baidu.com/pipeline/mine). Developers <b>do not need code development</b>, just need to prepare a dataset that meets the pipeline requirements to <b>quickly start model training</b>. For details, please refer to the tutorial ["Developing Industrial-level AI Models with Zero Barrier"](https://aistudio.baidu.com/practical/introduce/546656605663301).
 
@@ -140,7 +140,7 @@ In addition, PaddleX provides developers with a full-process efficient model tra
         <th><a href="https://aistudio.baidu.com/pipeline/mine">Zero-Code Development On AI Studio</a></td>
     </tr>
     <tr>
-        <td><a href="./docs/pipeline_usage/tutorials/ocr_pipelines/OCR_en.html">OCR</a></td>
+        <td><a href="https://paddlepaddle.github.io/PaddleX/latest/en/pipeline_usage/tutorials/ocr_pipelines/OCR.html">OCR</a></td>
         <td><a href="https://aistudio.baidu.com/community/app/91660/webUI?source=appMineRecent">Link</a></td>
         <td>✅</td>
         <td>✅</td>
@@ -150,7 +150,7 @@ In addition, PaddleX provides developers with a full-process efficient model tra
         <td>✅</td>
     </tr>
     <tr>
-        <td><a href="./docs/pipeline_usage/tutorials/information_extraction_pipelines/document_scene_information_extraction_en.html">PP-ChatOCRv3</a></td>
+        <td><a href="https://paddlepaddle.github.io/PaddleX/latest/en/pipeline_usage/tutorials/information_extraction_pipelines/document_scene_information_extraction.html">PP-ChatOCRv3</a></td>
         <td><a href="https://aistudio.baidu.com/community/app/182491/webUI?source=appCenter">Link</a></td>
         <td>✅</td>
         <td>✅</td>
@@ -160,7 +160,7 @@ In addition, PaddleX provides developers with a full-process efficient model tra
         <td>✅</td>
     </tr>
     <tr>
-        <td><a href="./docs/pipeline_usage/tutorials/ocr_pipelines/table_recognition_en.html">Table Recognition</a></td>
+        <td><a href="https://paddlepaddle.github.io/PaddleX/latest/en/pipeline_usage/tutorials/ocr_pipelines/table_recognition.html">Table Recognition</a></td>
         <td><a href="https://aistudio.baidu.com/community/app/91661?source=appMineRecent">Link</a></td>
         <td>✅</td>
         <td>✅</td>
@@ -170,7 +170,7 @@ In addition, PaddleX provides developers with a full-process efficient model tra
         <td>✅</td>
     </tr>
     <tr>
-        <td><a href="./docs/pipeline_usage/tutorials/cv_pipelines/object_detection_en.html">Object Detection</a></td>
+        <td><a href="https://paddlepaddle.github.io/PaddleX/latest/en/pipeline_usage/tutorials/cv_pipelines/object_detection.html">Object Detection</a></td>
         <td><a href="https://aistudio.baidu.com/community/app/70230/webUI?source=appMineRecent">Link</a></td>
         <td>✅</td>
         <td>✅</td>
@@ -180,7 +180,7 @@ In addition, PaddleX provides developers with a full-process efficient model tra
         <td>✅</td>
     </tr>
     <tr>
-        <td><a href="./docs/pipeline_usage/tutorials/cv_pipelines/instance_segmentation_en.html">Instance Segmentation</a></td>
+        <td><a href="https://paddlepaddle.github.io/PaddleX/latest/en/pipeline_usage/tutorials/cv_pipelines/instance_segmentation.html">Instance Segmentation</a></td>
         <td><a href="https://aistudio.baidu.com/community/app/100063/webUI?source=appMineRecent">Link</a></td>
         <td>✅</td>
         <td>✅</td>
@@ -190,7 +190,7 @@ In addition, PaddleX provides developers with a full-process efficient model tra
         <td>✅</td>
     </tr>
     <tr>
-        <td><a href="./docs/pipeline_usage/tutorials/cv_pipelines/image_classification_en.html">Image Classification</a></td>
+        <td><a href="https://paddlepaddle.github.io/PaddleX/latest/en/pipeline_usage/tutorials/cv_pipelines/image_classification.html">Image Classification</a></td>
         <td><a href="https://aistudio.baidu.com/community/app/100061/webUI?source=appMineRecent">Link</a></td>
         <td>✅</td>
         <td>✅</td>
@@ -200,7 +200,7 @@ In addition, PaddleX provides developers with a full-process efficient model tra
         <td>✅</td>
     </tr>
     <tr>
-        <td><a href="./docs/pipeline_usage/tutorials/cv_pipelines/semantic_segmentation_en.html">Semantic Segmentation</a></td>
+        <td><a href="https://paddlepaddle.github.io/PaddleX/latest/en/pipeline_usage/tutorials/cv_pipelines/semantic_segmentation.html">Semantic Segmentation</a></td>
         <td><a href="https://aistudio.baidu.com/community/app/100062/webUI?source=appMineRecent">Link</a></td>
         <td>✅</td>
         <td>✅</td>
@@ -210,7 +210,7 @@ In addition, PaddleX provides developers with a full-process efficient model tra
         <td>✅</td>
     </tr>
     <tr>
-        <td><a href="./docs/pipeline_usage/tutorials/time_series_pipelines/time_series_forecasting_en.html">Time Series Forecasting</a></td>
+        <td><a href="https://paddlepaddle.github.io/PaddleX/latest/en/pipeline_usage/tutorials/time_series_pipelines/time_series_forecasting.html">Time Series Forecasting</a></td>
         <td><a href="https://aistudio.baidu.com/community/app/105706/webUI?source=appMineRecent">Link</a></td>
         <td>✅</td>
         <td>🚧</td>
@@ -220,7 +220,7 @@ In addition, PaddleX provides developers with a full-process efficient model tra
         <td>✅</td>
     </tr>
     <tr>
-        <td><a href="./docs/pipeline_usage/tutorials/time_series_pipelines/time_series_anomaly_detection_en.html">Time Series Anomaly Detection</a></td>
+        <td><a href="https://paddlepaddle.github.io/PaddleX/latest/en/pipeline_usage/tutorials/time_series_pipelines/time_series_anomaly_detection.html">Time Series Anomaly Detection</a></td>
         <td><a href="https://aistudio.baidu.com/community/app/105708/webUI?source=appMineRecent">Link</a></td>
         <td>✅</td>
         <td>🚧</td>
@@ -230,7 +230,7 @@ In addition, PaddleX provides developers with a full-process efficient model tra
         <td>✅</td>
     </tr>
     <tr>
-        <td><a href="./docs/pipeline_usage/tutorials/time_series_pipelines/time_series_classification_en.html">Time Series Classification</a></td>
+        <td><a href="https://paddlepaddle.github.io/PaddleX/latest/en/pipeline_usage/tutorials/time_series_pipelines/time_series_classification.html">Time Series Classification</a></td>
         <td><a href="https://aistudio.baidu.com/community/app/105707/webUI?source=appMineRecent">Link</a></td>
         <td>✅</td>
         <td>🚧</td>
@@ -240,7 +240,7 @@ In addition, PaddleX provides developers with a full-process efficient model tra
         <td>✅</td>
     </tr>
         <tr>
-        <td><a href="./docs/pipeline_usage/tutorials/cv_pipelines/small_object_detection_en.html">Small Object Detection</a></td>
+        <td><a href="https://paddlepaddle.github.io/PaddleX/latest/en/pipeline_usage/tutorials/cv_pipelines/small_object_detection.html">Small Object Detection</a></td>
         <td>🚧</td>
         <td>✅</td>
         <td>✅</td>
@@ -250,7 +250,7 @@ In addition, PaddleX provides developers with a full-process efficient model tra
         <td>🚧</td>
     </tr>
         <tr>
-        <td><a href="./docs/pipeline_usage/tutorials/cv_pipelines/image_multi_label_classification_en.html">Multi-label Image Classification</a></td>
+        <td><a href="https://paddlepaddle.github.io/PaddleX/latest/en/pipeline_usage/tutorials/cv_pipelines/image_multi_label_classification.html">Multi-label Image Classification</a></td>
         <td>🚧</td>
         <td>✅</td>
         <td>✅</td>
@@ -260,7 +260,7 @@ In addition, PaddleX provides developers with a full-process efficient model tra
         <td>🚧</td>
     </tr>
     <tr>
-        <td><a href="./docs/pipeline_usage/tutorials/cv_pipelines/image_anomaly_detection_en.html">Image Anomaly Detection</a></td>
+        <td><a href="https://paddlepaddle.github.io/PaddleX/latest/en/pipeline_usage/tutorials/cv_pipelines/image_anomaly_detection.html">Image Anomaly Detection</a></td>
         <td>🚧</td>
         <td>✅</td>
         <td>✅</td>
@@ -270,7 +270,7 @@ In addition, PaddleX provides developers with a full-process efficient model tra
         <td>🚧</td>
     </tr>
     <tr>
-        <td><a href="./docs/pipeline_usage/tutorials/ocr_pipelines/layout_parsing_en.html">Layout Parsing</a></td>
+        <td><a href="https://paddlepaddle.github.io/PaddleX/latest/en/pipeline_usage/tutorials/ocr_pipelines/layout_parsing.html">Layout Parsing</a></td>
         <td>🚧</td>
         <td>✅</td>
         <td>🚧</td>
@@ -280,7 +280,7 @@ In addition, PaddleX provides developers with a full-process efficient model tra
         <td>🚧</td>
     </tr>
     <tr>
-        <td><a href="./docs/pipeline_usage/tutorials/ocr_pipelines/formula_recognition_en.html">Formula Recognition</a></td>
+        <td><a href="https://paddlepaddle.github.io/PaddleX/latest/en/pipeline_usage/tutorials/ocr_pipelines/formula_recognition.html">Formula Recognition</a></td>
         <td>🚧</td>
         <td>✅</td>
         <td>🚧</td>
@@ -290,7 +290,7 @@ In addition, PaddleX provides developers with a full-process efficient model tra
         <td>🚧</td>
     </tr>
     <tr>
-        <td><a href="./docs/pipeline_usage/tutorials/ocr_pipelines/seal_recognition_en.html">Seal Recognition</a></td>
+        <td><a href="https://paddlepaddle.github.io/PaddleX/latest/en/pipeline_usage/tutorials/ocr_pipelines/seal_recognition.html">Seal Recognition</a></td>
         <td>🚧</td>
         <td>✅</td>
         <td>✅</td>
@@ -299,8 +299,8 @@ In addition, PaddleX provides developers with a full-process efficient model tra
         <td>✅</td>
         <td>🚧</td>
     </tr>
-<tr>
-        <td><a href="https://amberc0209.github.io/PaddleX/latest/en/pipeline_usage/tutorials/cv_pipelines/general_image_recognition.html>Image Recognition</a></td>
+    <tr>
+        <td><a href="https://paddlepaddle.github.io/PaddleX/latest/en/pipeline_usage/tutorials/cv_pipelines/general_image_recognition.html>Image Recognition</a></td>
         <td>🚧</td>
         <td>✅</td>
         <td>🚧</td>
@@ -310,7 +310,7 @@ In addition, PaddleX provides developers with a full-process efficient model tra
         <td>🚧</td>
     </tr>
     <tr>
-        <td><a href="https://amberc0209.github.io/PaddleX/latest/en/pipeline_usage/tutorials/cv_pipelines/pedestrian_attribute.html">Pedestrian Attribute Recognition</a></td>
+        <td><a href="https://paddlepaddle.github.io/PaddleX/latest/en/pipeline_usage/tutorials/cv_pipelines/pedestrian_attribute.html">Pedestrian Attribute Recognition</a></td>
         <td>🚧</td>
         <td>✅</td>
         <td>🚧</td>
@@ -320,7 +320,7 @@ In addition, PaddleX provides developers with a full-process efficient model tra
         <td>🚧</td>
     </tr>
     <tr>
-        <td><a href="https://amberc0209.github.io/PaddleX/latest/en/pipeline_usage/tutorials/cv_pipelines/vehicle_attribute.html">Vehicle Attribute Recognition</a></td>
+        <td><a href="https://paddlepaddle.github.io/PaddleX/latest/en/pipeline_usage/tutorials/cv_pipelines/vehicle_attribute.html">Vehicle Attribute Recognition</a></td>
         <td>🚧</td>
         <td>✅</td>
         <td>🚧</td>
@@ -330,7 +330,7 @@ In addition, PaddleX provides developers with a full-process efficient model tra
         <td>🚧</td>
     </tr>
     <tr>
-        <td><a href="https://amberc0209.github.io/PaddleX/latest/en/pipeline_usage/tutorials/cv_pipelines/face_recognition.html">Face Recognition</a></td>
+        <td><a href="https://paddlepaddle.github.io/PaddleX/latest/en/pipeline_usage/tutorials/cv_pipelines/face_recognition.html">Face Recognition</a></td>
         <td>🚧</td>
         <td>✅</td>
         <td>🚧</td>
@@ -342,7 +342,7 @@ In addition, PaddleX provides developers with a full-process efficient model tra
 </table>
 
 
-> ❗Note: The above capabilities are implemented based on GPU/CPU. PaddleX can also perform local inference and custom development on mainstream hardware such as Kunlunxin, Ascend, Cambricon, and Haiguang. The table below details the support status of the pipelines. For specific supported model lists, please refer to the [Model List (Kunlunxin XPU)](./docs/support_list/model_list_xpu_en.html)/[Model List (Ascend NPU)](./docs/support_list/model_list_npu_en.html)/[Model List (Cambricon MLU)](./docs/support_list/model_list_mlu_en.html)/[Model List (Haiguang DCU)](./docs/support_list/model_list_dcu_en.html). We are continuously adapting more models and promoting the implementation of high-performance and service-oriented deployment on mainstream hardware.
+> ❗Note: The above capabilities are implemented based on GPU/CPU. PaddleX can also perform local inference and custom development on mainstream hardware such as Kunlunxin, Ascend, Cambricon, and Haiguang. The table below details the support status of the pipelines. For specific supported model lists, please refer to the [Model List (Kunlunxin XPU)](https://paddlepaddle.github.io/PaddleX/latest/en/support_list/model_list_xpu.html)/[Model List (Ascend NPU)](https://paddlepaddle.github.io/PaddleX/latest/en/support_list/model_list_npu.html)/[Model List (Cambricon MLU)](https://paddlepaddle.github.io/PaddleX/latest/en/support_list/model_list_mlu.html)/[Model List (Haiguang DCU)](https://paddlepaddle.github.io/PaddleX/latest/en/support_list/model_list_dcu.html). We are continuously adapting more models and promoting the implementation of high-performance and service-oriented deployment on mainstream hardware.
 
 🔥🔥 <b>Support for Domestic Hardware Capabilities</b>
 

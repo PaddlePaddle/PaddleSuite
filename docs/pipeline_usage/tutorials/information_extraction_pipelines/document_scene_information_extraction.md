@@ -639,7 +639,7 @@ chat_result.print()
 </table>
 <p>服务提供的操作如下：</p>
 <ul>
-<li><b><code>analyzeImage</code></b></li>
+<li><b><code>analyzeImages</code></b></li>
 </ul>
 <p>使用计算机视觉模型对图像进行分析，获得OCR、表格识别结果等，并提取图像中的关键信息。</p>
 <p><code>POST /chatocr-vision</code></p>
@@ -844,7 +844,7 @@ chat_result.print()
 <tr>
 <td><code>visionInfo</code></td>
 <td><code>object</code></td>
-<td>图像中的关键信息。由<code>analyzeImage</code>操作提供。</td>
+<td>图像中的关键信息。由<code>analyzeImages</code>操作提供。</td>
 <td>是</td>
 </tr>
 <tr>
@@ -873,11 +873,16 @@ chat_result.print()
 </tr>
 </tbody>
 </table>
-<p>当前，<code>llmParams</code> 可以采用如下形式：</p>
+<p>当前，<code>llmParams</code> 可以采用如下形式之一：</p>
 <pre><code class="language-json">{
 &quot;apiType&quot;: &quot;qianfan&quot;,
 &quot;apiKey&quot;: &quot;{千帆平台API key}&quot;,
 &quot;secretKey&quot;: &quot;{千帆平台secret key}&quot;
+}
+</code></pre>
+<pre><code class="language-json">{
+&quot;apiType&quot;: &quot;aistudio&quot;,
+&quot;accessToken&quot;: &quot;{星河社区access token}&quot;
 }
 </code></pre>
 <ul>
@@ -943,11 +948,16 @@ chat_result.print()
 </tr>
 </tbody>
 </table>
-<p>当前，<code>llmParams</code> 可以采用如下形式：</p>
+<p>当前，<code>llmParams</code> 可以采用如下形式之一：</p>
 <pre><code class="language-json">{
 &quot;apiType&quot;: &quot;qianfan&quot;,
 &quot;apiKey&quot;: &quot;{千帆平台API key}&quot;,
 &quot;secretKey&quot;: &quot;{千帆平台secret key}&quot;
+}
+</code></pre>
+<pre><code class="language-json">{
+&quot;apiType&quot;: &quot;aistudio&quot;,
+&quot;accessToken&quot;: &quot;{星河社区access token}&quot;
 }
 </code></pre>
 <ul>
@@ -996,8 +1006,20 @@ chat_result.print()
 <tr>
 <td><code>visionInfo</code></td>
 <td><code>object</code></td>
-<td>图像中的关键信息。由<code>analyzeImage</code>操作提供。</td>
+<td>图像中的关键信息。由<code>analyzeImages</code>操作提供。</td>
 <td>是</td>
+</tr>
+<tr>
+<td><code>vectorStore</code></td>
+<td><code>string</code></td>
+<td>向量数据库序列化结果。由<code>buildVectorStore</code>操作提供。</td>
+<td>否</td>
+</tr>
+<tr>
+<td><code>retrievalResult</code></td>
+<td><code>string</code></td>
+<td>知识检索结果。由<code>retrieveKnowledge</code>操作提供。</td>
+<td>否</td>
 </tr>
 <tr>
 <td><code>taskDescription</code></td>
@@ -1018,24 +1040,6 @@ chat_result.print()
 <td>否</td>
 </tr>
 <tr>
-<td><code>vectorStore</code></td>
-<td><code>string</code></td>
-<td>向量数据库序列化结果。由<code>buildVectorStore</code>操作提供。</td>
-<td>否</td>
-</tr>
-<tr>
-<td><code>retrievalResult</code></td>
-<td><code>string</code></td>
-<td>知识检索结果。由<code>retrieveKnowledge</code>操作提供。</td>
-<td>否</td>
-</tr>
-<tr>
-<td><code>returnPrompts</code></td>
-<td><code>boolean</code></td>
-<td>是否返回使用的提示词。默认启用。</td>
-<td>否</td>
-</tr>
-<tr>
 <td><code>llmName</code></td>
 <td><code>string</code></td>
 <td>大语言模型名称。</td>
@@ -1047,13 +1051,24 @@ chat_result.print()
 <td>大语言模型API参数。</td>
 <td>否</td>
 </tr>
+<tr>
+<td><code>returnPrompts</code></td>
+<td><code>boolean</code></td>
+<td>是否返回使用的提示词。默认禁用。</td>
+<td>否</td>
+</tr>
 </tbody>
 </table>
-<p>当前，<code>llmParams</code> 可以采用如下形式：</p>
+<p>当前，<code>llmParams</code> 可以采用如下形式之一：</p>
 <pre><code class="language-json">{
 &quot;apiType&quot;: &quot;qianfan&quot;,
 &quot;apiKey&quot;: &quot;{千帆平台API key}&quot;,
 &quot;secretKey&quot;: &quot;{千帆平台secret key}&quot;
+}
+</code></pre>
+<pre><code class="language-json">{
+&quot;apiType&quot;: &quot;aistudio&quot;,
+&quot;accessToken&quot;: &quot;{星河社区access token}&quot;
 }
 </code></pre>
 <ul>
@@ -1201,14 +1216,14 @@ result_retrieval = resp_retrieval.json()[&quot;result&quot;]
 payload = {
     &quot;keys&quot;: keys,
     &quot;visionInfo&quot;: result_vision[&quot;visionInfo&quot;],
+    &quot;vectorStore&quot;: result_vector[&quot;vectorStore&quot;],
+    &quot;retrievalResult&quot;: result_retrieval[&quot;retrievalResult&quot;],
     &quot;taskDescription&quot;: &quot;&quot;,
     &quot;rules&quot;: &quot;&quot;,
     &quot;fewShot&quot;: &quot;&quot;,
-    &quot;vectorStore&quot;: result_vector[&quot;vectorStore&quot;],
-    &quot;retrievalResult&quot;: result_retrieval[&quot;retrievalResult&quot;],
-    &quot;returnPrompts&quot;: True,
     &quot;llmName&quot;: LLM_NAME,
     &quot;llmParams&quot;: LLM_PARAMS,
+    &quot;returnPrompts&quot;: True,
 }
 resp_chat = requests.post(url=f&quot;{API_BASE_URL}/chatocr-chat&quot;, json=payload)
 if resp_chat.status_code != 200:

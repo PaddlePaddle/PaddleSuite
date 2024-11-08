@@ -586,7 +586,7 @@ For other pipelines in Python scripts, just adjust the `pipeline` parameter of t
   <summary> <b> 🖼️ Image Classification </b></summary>
 
   * [📂 Image Classification Module Tutorial](https://paddlepaddle.github.io/PaddleX/latest/en/module_usage/tutorials/cv_modules/image_classification.html)
-  * [🏷️ Multi-label Image Classification Module Tutorial](https://paddlepaddle.github.io/PaddleX/latest/en/module_usage/tutorials/cv_modules/ml_classification.html)
+  * [🏷️ Multi-label Image Classification Module Tutorial](https://paddlepaddle.github.io/PaddleX/latest/en/module_usage/tutorials/cv_modules/image_multilabel_classification.html)
 
   * [👤 Pedestrian Attribute Recognition Module Tutorial](https://paddlepaddle.github.io/PaddleX/latest/en/module_usage/tutorials/cv_modules/pedestrian_attribute_recognition.html)
   * [🚗 Vehicle Attribute Recognition Module Tutorial](https://paddlepaddle.github.io/PaddleX/latest/en/module_usage/tutorials/cv_modules/vehicle_attribute_recognition.html)

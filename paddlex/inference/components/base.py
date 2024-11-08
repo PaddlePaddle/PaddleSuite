@@ -107,6 +107,9 @@ class BaseComponent(ABC):
                         f"The parameter ({param.name}) is needed by {self.__class__.__name__}, but {list(args.keys())} only found!"
                     )
 
+        if self.inputs is None:
+            return [({}, None)]
+
         if self.need_batch_input:
             args = {}
             for input_ in input_list:
@@ -265,6 +268,10 @@ class BaseComponent(ABC):
     @property
     def name(self):
         return getattr(self, "NAME", self.__class__.__name__)
+
+    @property
+    def sub_cmps(self):
+        return None
 
     @abstractmethod
     def apply(self, input):

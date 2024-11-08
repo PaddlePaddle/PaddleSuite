@@ -16,6 +16,7 @@ import csv
 import functools
 from types import GeneratorType
 import time
+from pathlib import Path
 import numpy as np
 from prettytable import PrettyTable
 
@@ -42,10 +43,17 @@ class Benchmark:
         self._reset()
 
     def _reset(self):
-        for name in self._components:
-            cmp = self._components[name]
+        for name, cmp in self.iterate_cmp(self._components):
             cmp.timer.reset()
         self._e2e_tic = time.time()
+
+    def iterate_cmp(self, cmps):
+        if cmps is None:
+            return
+        for name, cmp in cmps.items():
+            if cmp.sub_cmps is not None:
+                yield from self.iterate_cmp(cmp.sub_cmps)
+            yield name, cmp
 
     def gather(self, e2e_num):
         # lazy import for avoiding circular import
@@ -54,17 +62,23 @@ class Benchmark:
         detail = []
         summary = {"preprocess": 0, "inference": 0, "postprocess": 0}
         op_tag = "preprocess"
-        for name in self._components:
-            cmp = self._components[name]
-            times = cmp.timer.logs
-            counts = len(times)
-            avg = np.mean(times)
-            total = np.sum(times)
-            detail.append((name, total, counts, avg))
+        for name, cmp in self._components.items():
             if isinstance(cmp, BasePaddlePredictor):
-                summary["inference"] += total
+                # TODO(gaotingquan): show by hierarchy. Now dont show xxxPredictor benchmark info to ensure mutual exclusivity between components.
+                for name, sub_cmp in cmp.sub_cmps.items():
+                    times = sub_cmp.timer.logs
+                    counts = len(times)
+                    avg = np.mean(times)
+                    total = np.sum(times)
+                    detail.append((name, total, counts, avg))
+                    summary["inference"] += total
                 op_tag = "postprocess"
             else:
+                times = cmp.timer.logs
+                counts = len(times)
+                avg = np.mean(times)
+                total = np.sum(times)
+                detail.append((name, total, counts, avg))
                 summary[op_tag] += total
 
         summary = [
@@ -103,8 +117,13 @@ class Benchmark:
         self._e2e_elapse = time.time() - self._e2e_tic
         detail, summary = self.gather(e2e_num)
 
-        table_head = ["Stage", "Total Time (ms)", "Nums", "Avg Time (ms)"]
-        table = PrettyTable(table_head)
+        detail_head = [
+            "Component",
+            "Total Time (ms)",
+            "Number of Calls",
+            "Avg Time Per Call (ms)",
+        ]
+        table = PrettyTable(detail_head)
         table.add_rows(
             [
                 (name, f"{total * 1000:.8f}", cnts, f"{avg * 1000:.8f}")
@@ -113,7 +132,13 @@ class Benchmark:
         )
         logging.info(table)
 
-        table = PrettyTable(table_head)
+        summary_head = [
+            "Stage",
+            "Total Time (ms)",
+            "Number of Instances",
+            "Avg Time Per Instance (ms)",
+        ]
+        table = PrettyTable(summary_head)
         table.add_rows(
             [
                 (name, f"{total * 1000:.8f}", cnts, f"{avg * 1000:.8f}")
@@ -123,10 +148,17 @@ class Benchmark:
         logging.info(table)
 
         if INFER_BENCHMARK_OUTPUT:
-            csv_data = [table_head]
-            csv_data.extend(detail)
-            csv_data.extend(summary)
-            with open("benchmark.csv", "w", newline="") as file:
+            save_dir = Path(INFER_BENCHMARK_OUTPUT)
+            save_dir.mkdir(parents=True, exist_ok=True)
+            csv_data = [detail_head, *detail]
+            # csv_data.extend(detail)
+            with open(Path(save_dir) / "detail.csv", "w", newline="") as file:
+                writer = csv.writer(file)
+                writer.writerows(csv_data)
+
+            csv_data = [summary_head, *summary]
+            # csv_data.extend(summary)
+            with open(Path(save_dir) / "summary.csv", "w", newline="") as file:
                 writer = csv.writer(file)
                 writer.writerows(csv_data)
 

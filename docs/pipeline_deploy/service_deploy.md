@@ -37,7 +37,7 @@ paddlex --serve --pipeline {产线名称或产线配置文件路径} [{其他命
 paddlex --serve --pipeline image_classifcation
 ```
 
-服务启动成功后，可以看到类似如下展示的信息：
+服务启动成功后，可以看到类似以下展示的信息：
 
 ```
 INFO:     Started server process [63108]
@@ -46,7 +46,8 @@ INFO:     Application startup complete.
 INFO:     Uvicorn running on http://0.0.0.0:8080 (Press CTRL+C to quit)
 ```
 
---pipeline可指定为官方产线名称或本地产线配置文件路径。PaddleX 以此构建产线并部署为服务。如需调整配置（如模型路径、batch_size、部署设备等），请参考[通用图像分类产线使用教程](../pipeline_usage/tutorials/cv_pipelines/image_classification.md)中的 <b>“模型应用”</b> 部分（对于其他产线，可参考 <b>“1.3 调用服务”</b> 表格中的对应教程）。
+--pipeline可指定为官方产线名称或本地产线配置文件路径。PaddleX 以此构建产线并部署为服务。如需调整配置（如模型路径、batch_size、部署设备等），请参考[通用图像分类产线使用教程](../pipeline_usage/tutorials/cv_pipelines/image_classification.md)中的 <b>“模型应用</b> 部分。
+
 与服务化部署相关的命令行选项如下：
 
 <table>
@@ -91,82 +92,8 @@ INFO:     Uvicorn running on http://0.0.0.0:8080 (Press CTRL+C to quit)
 
 ### 1.3 调用服务
 
-请参考各产线使用教程中的 <b>“开发集成/部署”</b> 部分。
+请参考各产线使用教程中的 <b>“开发集成/部署”</b> 部分。在[此处](../pipeline_usage/pipeline_develop_guide.md)可以找到各产线的使用教程。
 
-<table>
-<thead>
-<tr>
-<th>模型产线</th>
-<th>使用教程</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>通用图像分类产线</td>
-<td><a href="../pipeline_usage/tutorials/cv_pipelines/image_classification.md">通用图像分类产线使用教程</a></td>
-</tr>
-<tr>
-<td>通用目标检测产线</td>
-<td><a href="../pipeline_usage/tutorials/cv_pipelines/object_detection.md">通用目标检测产线使用教程</a></td>
-</tr>
-<tr>
-<td>通用语义分割产线</td>
-<td><a href="../pipeline_usage/tutorials/cv_pipelines/semantic_segmentation.md">通用语义分割产线使用教程</a></td>
-</tr>
-<tr>
-<td>通用实例分割产线</td>
-<td><a href="../pipeline_usage/tutorials/cv_pipelines/instance_segmentation.md">通用实例分割产线使用教程</a></td>
-</tr>
-<tr>
-<td>通用图像多标签分类产线</td>
-<td><a href="../pipeline_usage/tutorials/cv_pipelines/image_multi_label_classification.md">通用图像多标签分类产线使用教程</a></td>
-</tr>
-<tr>
-<td>小目标检测产线</td>
-<td><a href="../pipeline_usage/tutorials/cv_pipelines/small_object_detection.md">小目标检测产线使用教程</a></td>
-</tr>
-<tr>
-<td>图像异常检测产线</td>
-<td><a href="../pipeline_usage/tutorials/cv_pipelines/image_anomaly_detection.md">图像异常检测产线使用教程</a></td>
-</tr>
-<tr>
-<td>通用OCR产线</td>
-<td><a href="../pipeline_usage/tutorials/ocr_pipelines/OCR.md">通用OCR产线使用教程</a></td>
-</tr>
-<tr>
-<td>通用表格识别产线</td>
-<td><a href="../pipeline_usage/tutorials/ocr_pipelines/table_recognition.md">通用表格识别产线使用教程</a></td>
-</tr>
-<tr>
-<td>通用版面解析产线</td>
-<td><a href="../pipeline_usage/tutorials/ocr_pipelines/layout_parsing.md">通用版面解析产线使用教程</a></td>
-</tr>
-<tr>
-<td>公式识别产线</td>
-<td><a href="../pipeline_usage/tutorials/ocr_pipelines/formula_recognition.md">公式识别产线使用教程</a></td>
-</tr>
-<tr>
-<td>印章文本识别产线</td>
-<td><a href="../pipeline_usage/tutorials/ocr_pipelines/seal_recognition.md">印章文本识别产线使用教程</a></td>
-</tr>
-<tr>
-<td>时序预测产线</td>
-<td><a href="../pipeline_usage/tutorials/time_series_pipelines/time_series_forecasting.md">时序预测产线使用教程</a></td>
-</tr>
-<tr>
-<td>时序异常检测产线</td>
-<td><a href="../pipeline_usage/tutorials/time_series_pipelines/time_series_anomaly_detection.md">时序异常检测产线使用教程</a></td>
-</tr>
-<tr>
-<td>时序分类产线</td>
-<td><a href="../pipeline_usage/tutorials/time_series_pipelines/time_series_classification.md">时序分类产线使用教程</a></td>
-</tr>
-<tr>
-<td>文档场景信息抽取v3产线</td>
-<td><a href="../pipeline_usage/tutorials/information_extraction_pipelines/document_scene_information_extraction.md">文档场景信息抽取v3产线使用教程</a></td>
-</tr>
-</tbody>
-</table>
 ## 2、将服务用于生产
 
 将服务应用于生产环境中时，服务的稳定性、高效性与安全性尤为重要。以下是一些针对将服务用于生产的建议。

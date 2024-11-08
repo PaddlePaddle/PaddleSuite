@@ -8,11 +8,11 @@ comments: true
 
 ## 1.高性能推理插件的安装与使用
 
-使用高性能推理插件前，请确保您已经按照[PaddleX本地安装教程](../installation/installation.md) 完成了PaddleX的安装，且按照PaddleX产线命令行使用说明或PaddleX产线Python脚本使用说明跑通了产线的基本推理。
+使用高性能推理插件前，请确保您已经按照[PaddleX本地安装教程](../installation/installation.md) 完成了PaddleX的安装，且按照PaddleX产线命令行使用说明或PaddleX产线Python脚本使用说明跑通了产线的快速推理。
 
 ### 1.1 安装高性能推理插件
 
-在下表中根据处理器架构、操作系统、设备类型、Python 版本等信息，找到对应的安装指令并在部署环境中执行：
+在下表中根据处理器架构、操作系统、设备类型、Python 版本等信息，找到对应的安装指令并在部署环境中执行。请将 `{paddlex 版本号}` 替换为实际的 paddlex 的版本号，例如当前最新的稳定版本 `3.0.0b2`。如果需要使用开发分支对应的版本，请将 `{paddlex 版本号}` 替换为 `0.0.0.dev0`。
 
 <table>
   <tr>
@@ -29,33 +29,33 @@ comments: true
   </tr>
   <tr>
     <td>3.8</td>
-    <td>curl -s https://paddle-model-ecology.bj.bcebos.com/paddlex/PaddleX3.0/deploy/paddlex_hpi/install_script/latest/install_paddlex_hpi.py | python3.8 - --arch x86_64 --os linux --device cpu --py 38</td>
+    <td>curl -s https://paddle-model-ecology.bj.bcebos.com/paddlex/PaddleX3.0/deploy/paddlex_hpi/install_script/{paddlex 版本号}/install_paddlex_hpi.py | python3.8 - --arch x86_64 --os linux --device cpu --py 38</td>
   </tr>
   <tr>
     <td>3.9</td>
-    <td>curl -s https://paddle-model-ecology.bj.bcebos.com/paddlex/PaddleX3.0/deploy/paddlex_hpi/install_script/latest/install_paddlex_hpi.py | python3.9 - --arch x86_64 --os linux --device cpu --py 39</td>
+    <td>curl -s https://paddle-model-ecology.bj.bcebos.com/paddlex/PaddleX3.0/deploy/paddlex_hpi/install_script/{paddlex 版本号}/install_paddlex_hpi.py | python3.9 - --arch x86_64 --os linux --device cpu --py 39</td>
   </tr>
   <tr>
     <td>3.10</td>
-    <td>curl -s https://paddle-model-ecology.bj.bcebos.com/paddlex/PaddleX3.0/deploy/paddlex_hpi/install_script/latest/install_paddlex_hpi.py | python3.10 - --arch x86_64 --os linux --device cpu --py 310</td>
+    <td>curl -s https://paddle-model-ecology.bj.bcebos.com/paddlex/PaddleX3.0/deploy/paddlex_hpi/install_script/{paddlex 版本号}/install_paddlex_hpi.py | python3.10 - --arch x86_64 --os linux --device cpu --py 310</td>
   </tr>
   <tr>
     <td rowspan="3">GPU&nbsp;（CUDA&nbsp;11.8&nbsp;+&nbsp;cuDNN&nbsp;8.6）</td>
     <td>3.8</td>
-    <td>curl -s https://paddle-model-ecology.bj.bcebos.com/paddlex/PaddleX3.0/deploy/paddlex_hpi/install_script/latest/install_paddlex_hpi.py | python3.8 - --arch x86_64 --os linux --device gpu_cuda118_cudnn86 --py 38</td>
+    <td>curl -s https://paddle-model-ecology.bj.bcebos.com/paddlex/PaddleX3.0/deploy/paddlex_hpi/install_script/{paddlex 版本号}/install_paddlex_hpi.py | python3.8 - --arch x86_64 --os linux --device gpu_cuda118_cudnn86 --py 38</td>
   </tr>
   <tr>
     <td>3.9</td>
-    <td>curl -s https://paddle-model-ecology.bj.bcebos.com/paddlex/PaddleX3.0/deploy/paddlex_hpi/install_script/latest/install_paddlex_hpi.py | python3.9 - --arch x86_64 --os linux --device gpu_cuda118_cudnn86 --py 39</td>
+    <td>curl -s https://paddle-model-ecology.bj.bcebos.com/paddlex/PaddleX3.0/deploy/paddlex_hpi/install_script/{paddlex 版本号}/install_paddlex_hpi.py | python3.9 - --arch x86_64 --os linux --device gpu_cuda118_cudnn86 --py 39</td>
   </tr>
   <tr>
     <td>3.10</td>
-    <td>curl -s https://paddle-model-ecology.bj.bcebos.com/paddlex/PaddleX3.0/deploy/paddlex_hpi/install_script/latest/install_paddlex_hpi.py | python3.10 - --arch x86_64 --os linux --device gpu_cuda118_cudnn86 --py 310</td>
+    <td>curl -s https://paddle-model-ecology.bj.bcebos.com/paddlex/PaddleX3.0/deploy/paddlex_hpi/install_script/{paddlex 版本号}/install_paddlex_hpi.py | python3.10 - --arch x86_64 --os linux --device gpu_cuda118_cudnn86 --py 310</td>
   </tr>
 </table>
 
-* 当设备类型为 GPU 时，请使用与环境匹配的 CUDA 和 cuDNN 版本对应的安装指令，否则，将无法正常使用高性能推理插件。
 * 对于 Linux 系统，使用 Bash 执行安装指令。
+* 当使用 NVIDIA GPU 时，请使用与环境匹配的 CUDA 和 cuDNN 版本对应的安装指令，否则，将无法正常使用高性能推理插件。
 * 当设备类型为 CPU 时，安装的高性能推理插件仅支持使用 CPU 进行推理；对于其他设备类型，安装的高性能推理插件则支持使用 CPU 或其他设备进行推理。
 
 ### 1.2 获取序列号与激活
@@ -76,37 +76,37 @@ comments: true
 
 ### 1.3 启用高性能推理插件
 
-在启用高性能插件前，请确保当前环境的 `LD_LIBRARY_PATH` 没有指定 TensorRT 的共享库目录，因为插件中已经集成了 TensorRT，避免 TensorRT 版本冲突导致插件无法正常使用。
+对于 Linux 系统，如果在 Docker 容器中使用高性能推理插件，请为容器挂载宿主机的 `/dev/disk/by-uuid` 与 `${HOME}/.baidu/paddlex/licenses` 目录。
 
 对于 PaddleX CLI，指定 `--use_hpip`，并设置序列号，即可启用高性能推理插件。如果希望进行联网激活，在第一次使用序列号时，需指定 `--update_license`，以通用图像分类产线为例：
 
-```diff
+```bash
 paddlex \
     --pipeline image_classification \
     --input https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/general_image_classification_001.jpg \
     --device gpu:0 \
-+   --use_hpip \
-+   --serial_number {序列号}
+    --use_hpip \
+    --serial_number {序列号}
 
 # 如果希望进行联网激活
 paddlex \
     --pipeline image_classification \
     --input https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/general_image_classification_001.jpg \
     --device gpu:0 \
-+   --use_hpip \
-+   --serial_number {序列号}
-+   --update_license
+    --use_hpip \
+    --serial_number {序列号}
+    --update_license
 ```
 
 对于 PaddleX Python API，启用高性能推理插件的方法类似。仍以通用图像分类产线为例：
 
-```diff
+```python
 from paddlex import create_pipeline
 
 pipeline = create_pipeline(
     pipeline="image_classification",
-+   use_hpip=True,
-+   serial_number="{序列号}",
+    use_hpip=True,
+    hpi_params={"serial_number": "{序列号}"},
 )
 
 output = pipeline.predict("https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/general_image_classification_001.jpg")
@@ -116,33 +116,61 @@ output = pipeline.predict("https://paddle-model-ecology.bj.bcebos.com/paddlex/im
 
 ### 1.4 修改高性能推理配置
 
-PaddleX 为每个模型提供默认的高性能推理配置，并将其存储在模型的配置文件中。由于实际部署环境的多样性，使用默认配置可能无法在特定环境中获取理想的性能，甚至可能出现推理失败的情况。对于默认配置无法满足要求的情形，可以通过如下方式，尝试更换模型的推理后端：
+PaddleX 结合模型信息与运行环境信息为每个模型提供默认的高性能推理配置。这些默认配置经过精心准备，以便在数个常见场景中可用，且能够取得较优的性能。因此，通常用户可能并不用关心如何这些配置的具体细节。然而，由于实际部署环境与需求的多样性，使用默认配置可能无法在特定场景获取理想的性能，甚至可能出现推理失败的情况。对于默认配置无法满足要求的情形，用户可以通过修改模型目录中 `inference.yml` 文件中 `Hpi` 字段（如果该字段不存在，需要新增）的方式，手动调整配置。以下列举两种常见的情形：
 
-1. 找到模型目录中的 `inference.yml` 文件，定位到其中的 `Hpi` 字段；
-2. 修改 `selected_backends` 的值。具体而言，`selected_backends` 可能被设置如下：
+- 更换推理后端：
 
-    ```
-    selected_backends:
+    当默认的推理后端不可用时，需要手动更换推理后端。用户需要修改 `selected_backends` 字段（如果不存在，需要新增）。
+
+    ```yaml
+    Hpi:
+      ...
+      selected_backends:
         cpu: paddle_infer
         gpu: onnx_runtime
+      ...
     ```
 
-    其中每一项均按照 `{设备类型}: {推理后端名称}` 的格式填写，默认选用在官方测试环境中推理耗时最短的后端。`supported_backends` 中记录了官方测试环境中模型支持的推理后端，可供参考。
+    其中每一项均按照 `{设备类型}: {推理后端名称}` 的格式填写。
+
     目前所有可选的推理后端如下：
 
-    * `paddle_infer`：标准的 Paddle Inference 推理引擎。支持 CPU 和 GPU。
-    * `paddle_tensorrt`：[Paddle-TensorRT](https://www.paddlepaddle.org.cn/lite/v2.10/optimize/paddle_trt.html)，Paddle 官方出品的高性能深度学习推理库，采用子图的形式对 TensorRT 进行了集成，以实现进一步优化加速。仅支持 GPU。
-    * `openvino`：[OpenVINO](https://github.com/openvinotoolkit/openvino)，Intel 提供的深度学习推理工具，优化了多种 Intel 硬件上的模型推理性能。仅支持 CPU。
-    * `onnx_runtime`：[ONNX Runtime](https://onnxruntime.ai/)，跨平台、高性能的推理引擎。支持 CPU 和 GPU。
-    * `tensorrt`：[TensorRT](https://developer.nvidia.com/tensorrt)，NVIDIA 提供的高性能深度学习推理库，针对 NVIDIA GPU 进行优化以提升速度。仅支持 GPU。
+    * `paddle_infer`：Paddle Inference 推理引擎。支持 CPU 和 GPU。相比 PaddleX 快速推理，高性能推理插件支持以集成 TensorRT 子图的方式提升模型的 GPU 推理性能。
+    * `openvino`：[OpenVINO](https://github.com/openvinotoolkit/openvino)，Intel 提供的深度学习推理工具，优化了多种 Intel 硬件上的模型推理性能。仅支持 CPU。高性能推理插件自动将模型转换为 ONNX 格式后用该引擎推理。
+    * `onnx_runtime`：[ONNX Runtime](https://onnxruntime.ai/)，跨平台、高性能的推理引擎。支持 CPU 和 GPU。高性能推理插件自动将模型转换为 ONNX 格式后用该引擎推理。
+    * `tensorrt`：[TensorRT](https://developer.nvidia.com/tensorrt)，NVIDIA 提供的高性能深度学习推理库，针对 NVIDIA GPU 进行优化以提升速度。仅支持 GPU。高性能推理插件自动将模型转换为 ONNX 格式后用该引擎推理。
 
-    以下是目前的官方测试环境的部分关键信息：
+- 修改 Paddle Inference 或 TensorRT 的动态形状配置：
 
-    * CPU：Intel Xeon Gold 5117
-    * GPU：NVIDIA Tesla T4
-    * CUDA版本：11.8
-    * cuDNN版本：8.6
-    * Docker 镜像：registry.baidubce.com/paddlepaddle/paddle:latest-dev-cuda11.8-cudnn8.6-trt8.5-gcc82
+    动态形状是 TensorRT 延迟指定部分或全部张量维度直到运行时的能力。当默认的动态形状配置无法满足需求（例如，模型可能需要范围外的输入形状），用户需要修改状推理后端配置中的 `trt_dynamic_shapes` 或 `dynamic_shapes` 字段：
+
+    ```yaml
+    Hpi:
+      ...
+      backend_configs:
+        # Paddle Inference 后端配置
+        paddle_infer:
+          ...
+          trt_dynamic_shapes:
+            x:
+              - [1, 3, 300, 300]
+              - [4, 3, 300, 300]
+              - [32, 3, 1200, 1200]
+          ...
+        # TensorRT 后端配置
+        tensorrt:
+          ...
+          dynamic_shapes:
+            x:
+              - [1, 3, 300, 300]
+              - [4, 3, 300, 300]
+              - [32, 3, 1200, 1200]
+          ...
+    ```
+
+    在 `trt_dynamic_shapes` 或 `dynamic_shapes` 中，需要为每一个输入张量指定动态形状，格式为：`{输入张量名称}: [{最小形状}, [{最优形状}], [{最大形状}]]`。有关最小形状、最优形状以及最大形状的相关介绍及更多细节，请参考 TensorRT 官方文档。
+
+    在完成修改后，请删除模型目录中的缓存文件（`shape_range_info.pbtxt` 与 `trt_serialized` 开头的文件）。
 
 ## 2、支持使用高性能推理插件的产线与模型
 
@@ -155,26 +183,23 @@ PaddleX 为每个模型提供默认的高性能推理配置，并将其存储在
   <tr>
     <td>通用图像分类</td>
     <td>图像分类</td>
-    <td>ResNet18<br/>ResNet34<details><summary><b>more</b></summary>
-<p>ResNet50ResNet101ResNet152ResNet18_vdResNet34_vdResNet50_vdResNet101_vdResNet152_vdResNet200_vdPP-LCNet_x0_25PP-LCNet_x0_35PP-LCNet_x0_5PP-LCNet_x0_75PP-LCNet_x1_0PP-LCNet_x1_5PP-LCNet_x2_0PP-LCNet_x2_5PP-LCNetV2_smallPP-LCNetV2_basePP-LCNetV2_largeMobileNetV3_large_x0_35MobileNetV3_large_x0_5MobileNetV3_large_x0_75MobileNetV3_large_x1_0MobileNetV3_large_x1_25MobileNetV3_small_x0_35MobileNetV3_small_x0_5MobileNetV3_small_x0_75MobileNetV3_small_x1_0MobileNetV3_small_x1_25ConvNeXt_tinyConvNeXt_smallConvNeXt_base_224ConvNeXt_base_384ConvNeXt_large_224ConvNeXt_large_384MobileNetV1_x0_25MobileNetV1_x0_5MobileNetV1_x0_75MobileNetV1_x1_0MobileNetV2_x0_25MobileNetV2_x0_5MobileNetV2_x1_0MobileNetV2_x1_5MobileNetV2_x2_0SwinTransformer_tiny_patch4_window7_224SwinTransformer_small_patch4_window7_224SwinTransformer_base_patch4_window7_224SwinTransformer_base_patch4_window12_384SwinTransformer_large_patch4_window7_224SwinTransformer_large_patch4_window12_384PP-HGNet_smallPP-HGNet_tinyPP-HGNet_basePP-HGNetV2-B0PP-HGNetV2-B1PP-HGNetV2-B2PP-HGNetV2-B3PP-HGNetV2-B4PP-HGNetV2-B5PP-HGNetV2-B6CLIP_vit_base_patch16_224CLIP_vit_large_patch14_224</p>
-<p><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/></p></details></td>
+    <td>ResNet18<br/>ResNet34<details>
+    <summary><b>more</b></summary>ResNet50<br/>ResNet101<br/>ResNet152<br/>ResNet18_vd<br/>ResNet34_vd<br/>ResNet50_vd<br/>ResNet101_vd<br/>ResNet152_vd<br/>ResNet200_vd<br/>PP-LCNet_x0_25<br/>PP-LCNet_x0_35<br/>PP-LCNet_x0_5<br/>PP-LCNet_x0_75<br/>PP-LCNet_x1_0<br/>PP-LCNet_x1_5<br/>PP-LCNet_x2_0<br/>PP-LCNet_x2_5<br/>PP-LCNetV2_small<br/>PP-LCNetV2_base<br/>PP-LCNetV2_large<br/>MobileNetV3_large_x0_35<br/>MobileNetV3_large_x0_5<br/>MobileNetV3_large_x0_75<br/>MobileNetV3_large_x1_0<br/>MobileNetV3_large_x1_25<br/>MobileNetV3_small_x0_35<br/>MobileNetV3_small_x0_5<br/>MobileNetV3_small_x0_75<br/>MobileNetV3_small_x1_0<br/>MobileNetV3_small_x1_25<br/>ConvNeXt_tiny<br/>ConvNeXt_small<br/>ConvNeXt_base_224<br/>ConvNeXt_base_384<br/>ConvNeXt_large_224<br/>ConvNeXt_large_384<br/>MobileNetV1_x0_25<br/>MobileNetV1_x0_5<br/>MobileNetV1_x0_75<br/>MobileNetV1_x1_0<br/>MobileNetV2_x0_25<br/>MobileNetV2_x0_5<br/>MobileNetV2_x1_0<br/>MobileNetV2_x1_5<br/>MobileNetV2_x2_0<br/>SwinTransformer_tiny_patch4_window7_224<br/>SwinTransformer_small_patch4_window7_224<br/>SwinTransformer_base_patch4_window7_224<br/>SwinTransformer_base_patch4_window12_384<br/>SwinTransformer_large_patch4_window7_224<br/>SwinTransformer_large_patch4_window12_384<br/>PP-HGNet_small<br/>PP-HGNet_tiny<br/>PP-HGNet_base<br/>PP-HGNetV2-B0<br/>PP-HGNetV2-B1<br/>PP-HGNetV2-B2<br/>PP-HGNetV2-B3<br/>PP-HGNetV2-B4<br/>PP-HGNetV2-B5<br/>PP-HGNetV2-B6<br/>CLIP_vit_base_patch16_224<br/>CLIP_vit_large_patch14_224</details></td>
   </tr>
 
 
   <tr>
     <td>通用目标检测</td>
     <td>目标检测</td>
-    <td>PP-YOLOE_plus-S<br/>PP-YOLOE_plus-M<details><summary><b>more</b></summary>
-<p>PP-YOLOE_plus-LPP-YOLOE_plus-XYOLOX-NYOLOX-TYOLOX-SYOLOX-MYOLOX-LYOLOX-XYOLOv3-DarkNet53YOLOv3-ResNet50_vd_DCNYOLOv3-MobileNetV3RT-DETR-R18RT-DETR-R50RT-DETR-LRT-DETR-HRT-DETR-XPicoDet-SPicoDet-L</p>
-<p><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/></p></details></td>
+    <td>PP-YOLOE_plus-S<br/>PP-YOLOE_plus-M<details>
+        <summary><b>more</b></summary>PP-YOLOE_plus-L<br/>PP-YOLOE_plus-X<br/>YOLOX-N<br/>YOLOX-T<br/>YOLOX-S<br/>YOLOX-M<br/>YOLOX-L<br/>YOLOX-X<br/>YOLOv3-DarkNet53<br/>YOLOv3-ResNet50_vd_DCN<br/>YOLOv3-MobileNetV3<br/>RT-DETR-R18<br/>RT-DETR-R50<br/>RT-DETR-L<br/>RT-DETR-H<br/>RT-DETR-X<br/>PicoDet-S<br/>PicoDet-L</details></td>
   </tr>
 
   <tr>
     <td>通用语义分割</td>
     <td>语义分割</td>
-    <td>Deeplabv3-R50<br/>Deeplabv3-R101<details><summary><b>more</b></summary>
-<p>Deeplabv3_Plus-R50Deeplabv3_Plus-R101PP-LiteSeg-TOCRNet_HRNet-W48OCRNet_HRNet-W18SeaFormer_tinySeaFormer_smallSeaFormer_baseSeaFormer_largeSegFormer-B0SegFormer-B1SegFormer-B2SegFormer-B3SegFormer-B4SegFormer-B5</p>
-<p><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/></p></details></td>
+    <td>Deeplabv3-R50<br/>Deeplabv3-R101<details>
+    <summary><b>more</b></summary>Deeplabv3_Plus-R50<br/>Deeplabv3_Plus-R101<br/>PP-LiteSeg-T<br/>OCRNet_HRNet-W48<br/>OCRNet_HRNet-W18<br/>SeaFormer_tiny<br/>SeaFormer_small<br/>SeaFormer_base<br/>SeaFormer_large<br/>SegFormer-B0<br/>SegFormer-B1<br/>SegFormer-B2<br/>SegFormer-B3<br/>SegFormer-B4<br/>SegFormer-B5</details></td>
   </tr>
 
   <tr>
@@ -197,9 +222,8 @@ PaddleX 为每个模型提供默认的高性能推理配置，并将其存储在
   <tr>
     <td rowspan="3">印章文本识别</td>
     <td>版面区域分析</td>
-    <td>PicoDet-S_layout_3cls<br/>PicoDet-S_layout_17cls<details><summary><b>more</b></summary>
-<p>PicoDet-L_layout_3clsPicoDet-L_layout_17clsRT-DETR-H_layout_3clsRT-DETR-H_layout_17cls</p>
-<p><br/><br/><br/></p></details></td>
+    <td>PicoDet-S_layout_3cls<br/>PicoDet-S_layout_17cls<details>
+    <summary><b>more</b></summary>PicoDet-L_layout_3cls<br/>PicoDet-L_layout_17cls<br/>RT-DETR-H_layout_3cls<br/>RT-DETR-H_layout_17cls</details></td>
   </tr>
 
   <tr>

@@ -46,7 +46,7 @@ INFO:     Application startup complete.
 INFO:     Uvicorn running on http://0.0.0.0:8080 (Press CTRL+C to quit)
 ```
 
-`--pipeline` can be specified as an official pipeline name or the path to a local pipeline configuration file. PaddleX uses this to build the pipeline and deploy it as a service. To adjust configurations (such as model path, batch_size, deployment device), please refer to the <b>"Model Application"</b> section in the [General Image Classification Pipeline Tutorial](../pipeline_usage/tutorials/cv_pipelines/image_classification.en.md) (for other pipelines, refer to the corresponding tutorials in the <b>"1.3 Calling the Service"</b> table).
+`--pipeline` can be specified as an official pipeline name or the path to a local pipeline configuration file. PaddleX uses this to build the pipeline and deploy it as a service. To adjust configurations (such as model path, batch_size, deployment device), please refer to the <b>"Model Application"</b> section in the [General Image Classification Pipeline Tutorial](../pipeline_usage/tutorials/cv_pipelines/image_classification.en.md).
 
 Command-line options related to serving deployment are as follows:
 
@@ -92,82 +92,8 @@ Command-line options related to serving deployment are as follows:
 
 ### 1.3 Call the Service
 
-Please refer to the <b>"Development Integration/Deployment"</b> section in the usage tutorials for each pipeline.
+Please refer to the <b>"Development Integration/Deployment"</b> section in the usage tutorials for each pipeline. You can find the pipeline tutorials [here](../pipeline_usage/pipeline_develop_guide.en.md).
 
-<table>
-<thead>
-<tr>
-<th>Model Pipelines</th>
-<th>Usage Tutorials</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>General Image Classification Pipeline</td>
-<td><a href="../pipeline_usage/tutorials/cv_pipelines/image_classification.en.md">Tutorial for Using the General Image Classification Pipeline</a></td>
-</tr>
-<tr>
-<td>General Object Detection Pipeline</td>
-<td><a href="../pipeline_usage/tutorials/cv_pipelines/object_detection.en.md">Tutorial for Using the General Object Detection Pipeline</a></td>
-</tr>
-<tr>
-<td>General Semantic Segmentation Pipeline</td>
-<td><a href="../pipeline_usage/tutorials/cv_pipelines/semantic_segmentation.en.md">Tutorial for Using the General Semantic Segmentation Pipeline</a></td>
-</tr>
-<tr>
-<td>General Instance Segmentation Pipeline</td>
-<td><a href="../pipeline_usage/tutorials/cv_pipelines/instance_segmentation.en.md">Tutorial for Using the General Instance Segmentation Pipeline</a></td>
-</tr>
-<tr>
-<td>General Image Multi-Label Classification Pipeline</td>
-<td><a href="../pipeline_usage/tutorials/cv_pipelines/image_multi_label_classification.en.md">Tutorial for Using the General Image Multi-Label Classification Pipeline</a></td>
-</tr>
-<tr>
-<td>Small Object Detection Pipeline</td>
-<td><a href="../pipeline_usage/tutorials/cv_pipelines/small_object_detection.en.md">Tutorial for Using the Small Object Detection Pipeline</a></td>
-</tr>
-<tr>
-<td>Image Anomaly Detection Pipeline</td>
-<td><a href="../pipeline_usage/tutorials/cv_pipelines/image_anomaly_detection.en.md">Tutorial for Using the Image Anomaly Detection Pipeline</a></td>
-</tr>
-<tr>
-<td>General OCR Pipeline</td>
-<td><a href="../pipeline_usage/tutorials/ocr_pipelines/OCR.en.md">Tutorial for Using the General OCR Pipeline</a></td>
-</tr>
-<tr>
-<td>General Table Recognition Pipeline</td>
-<td><a href="../pipeline_usage/tutorials/ocr_pipelines/table_recognition.en.md">Tutorial for Using the General Table Recognition Pipeline</a></td>
-</tr>
-<tr>
-<td>General Layout Parsing Pipeline</td>
-<td><a href="../pipeline_usage/tutorials/ocr_pipelines/layout_parsing.en.md">Tutorial for Using the Layout Parsing Recognition Pipeline</a></td>
-</tr>
-<tr>
-<td>Formula Recognition Pipeline</td>
-<td><a href="../pipeline_usage/tutorials/ocr_pipelines/formula_recognition.en.md">Tutorial for Using the Formula Recognition Pipeline</a></td>
-</tr>
-<tr>
-<td>Seal Text Recognition Pipeline</td>
-<td><a href="../pipeline_usage/tutorials/ocr_pipelines/seal_recognition.en.md">Tutorial for Using the Seal Text Recognition Pipeline</a></td>
-</tr>
-<tr>
-<td>Time Series Forecasting Pipeline</td>
-<td><a href="../pipeline_usage/tutorials/time_series_pipelines/time_series_forecasting.en.md">Tutorial for Using the Time Series Forecasting Pipeline</a></td>
-</tr>
-<tr>
-<td>Time Series Anomaly Detection Pipeline</td>
-<td><a href="../pipeline_usage/tutorials/time_series_pipelines/time_series_anomaly_detection.en.md">Tutorial for Using the Time Series Anomaly Detection Pipeline</a></td>
-</tr>
-<tr>
-<td>Time Series Classification Pipeline</td>
-<td><a href="../pipeline_usage/tutorials/time_series_pipelines/time_series_classification.en.md">Tutorial for Using the Time Series Classification Pipeline</a></td>
-</tr>
-<tr>
-<td>Document Scene Information Extraction v3 Pipeline</td>
-<td><a href="../pipeline_usage/tutorials/information_extraction_pipelines/document_scene_information_extraction.en.md">Tutorial for Using the Document Scene Information Extraction v3 Pipeline</a></td>
-</tr>
-</tbody>
-</table>
 ## 2. Deploy Services for Production
 
 When deploying services into production environments, the stability, efficiency, and security of the services are of paramount importance. Below are some recommendations for deploying services into production.

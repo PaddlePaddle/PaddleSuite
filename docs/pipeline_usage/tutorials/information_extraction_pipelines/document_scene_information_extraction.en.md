@@ -670,7 +670,7 @@ Below are the API references and multi-language service invocation examples:
 </table>
 <p>Operations provided by the service are as follows:</p>
 <ul>
-<li><b><code>analyzeImage</code></b></li>
+<li><b><code>analyzeImages</code></b></li>
 </ul>
 <p>Analyze images using computer vision models to obtain OCR, table recognition results, and extract key information from the images.</p>
 <p><code>POST /chatocr-vision</code></p>
@@ -875,7 +875,7 @@ Below are the API references and multi-language service invocation examples:
 <tr>
 <td><code>visionInfo</code></td>
 <td><code>object</code></td>
-<td>Key information from the image. Provided by the <code>analyzeImage</code> operation.</td>
+<td>Key information from the image. Provided by the <code>analyzeImages</code> operation.</td>
 <td>Yes</td>
 </tr>
 <tr>
@@ -904,11 +904,16 @@ Below are the API references and multi-language service invocation examples:
 </tr>
 </tbody>
 </table>
-<p>Currently, <code>llmParams</code> can take the following form:</p>
+<p>Currently, <code>llmParams</code> can take one of the following forms:</p>
 <pre><code class="language-json">{
 &quot;apiType&quot;: &quot;qianfan&quot;,
-&quot;apiKey&quot;: &quot;{qianfan API key}&quot;,
-&quot;secretKey&quot;: &quot;{qianfan secret key}&quot;
+&quot;apiKey&quot;: &quot;{Qianfan Platform API key}&quot;,
+&quot;secretKey&quot;: &quot;{Qianfan Platform secret key}&quot;
+}
+</code></pre>
+<pre><code class="language-json">{
+&quot;apiType&quot;: &quot;aistudio&quot;,
+&quot;accessToken&quot;: &quot;{AI Studio access token}&quot;
 }
 </code></pre>
 <ul>
@@ -974,11 +979,16 @@ Below are the API references and multi-language service invocation examples:
 </tr>
 </tbody>
 </table>
-<p>Currently, <code>llmParams</code> can take the following form:</p>
+<p>Currently, <code>llmParams</code> can take one of the following forms:</p>
 <pre><code class="language-json">{
 &quot;apiType&quot;: &quot;qianfan&quot;,
 &quot;apiKey&quot;: &quot;{Qianfan Platform API key}&quot;,
 &quot;secretKey&quot;: &quot;{Qianfan Platform secret key}&quot;
+}
+</code></pre>
+<pre><code class="language-json">{
+&quot;apiType&quot;: &quot;aistudio&quot;,
+&quot;accessToken&quot;: &quot;{AI Studio access token}&quot;
 }
 </code></pre>
 <ul>
@@ -1027,8 +1037,20 @@ Below are the API references and multi-language service invocation examples:
 <tr>
 <td><code>visionInfo</code></td>
 <td><code>object</code></td>
-<td>Key information from images. Provided by the <code>analyzeImage</code> operation.</td>
+<td>Key information from images. Provided by the <code>analyzeImages</code> operation.</td>
 <td>Yes</td>
+</tr>
+<tr>
+<td><code>vectorStore</code></td>
+<td><code>string</code></td>
+<td>Serialized result of the vector database. Provided by the <code>buildVectorStore</code> operation.</td>
+<td>No</td>
+</tr>
+<tr>
+<td><code>retrievalResult</code></td>
+<td><code>string</code></td>
+<td>Results of knowledge retrieval. Provided by the <code>retrieveKnowledge</code> operation.</td>
+<td>No</td>
 </tr>
 <tr>
 <td><code>taskDescription</code></td>
@@ -1049,24 +1071,6 @@ Below are the API references and multi-language service invocation examples:
 <td>No</td>
 </tr>
 <tr>
-<td><code>vectorStore</code></td>
-<td><code>string</code></td>
-<td>Serialized result of the vector database. Provided by the <code>buildVectorStore</code> operation.</td>
-<td>No</td>
-</tr>
-<tr>
-<td><code>retrievalResult</code></td>
-<td><code>string</code></td>
-<td>Results of knowledge retrieval. Provided by the <code>retrieveKnowledge</code> operation.</td>
-<td>No</td>
-</tr>
-<tr>
-<td><code>returnPrompts</code></td>
-<td><code>boolean</code></td>
-<td>Whether to return the prompts used. Enabled by default.</td>
-<td>No</td>
-</tr>
-<tr>
 <td><code>llmName</code></td>
 <td><code>string</code></td>
 <td>Name of the large language model.</td>
@@ -1078,13 +1082,24 @@ Below are the API references and multi-language service invocation examples:
 <td>API parameters for the large language model.</td>
 <td>No</td>
 </tr>
+<tr>
+<td><code>returnPrompts</code></td>
+<td><code>boolean</code></td>
+<td>Whether to return the prompts used. Enabled by default.</td>
+<td>No</td>
+</tr>
 </tbody>
 </table>
-<p>Currently, <code>llmParams</code> can take the following form:</p>
+<p>Currently, <code>llmParams</code> can take one of the following forms:</p>
 <pre><code class="language-json">{
 &quot;apiType&quot;: &quot;qianfan&quot;,
 &quot;apiKey&quot;: &quot;{Qianfan Platform API key}&quot;,
 &quot;secretKey&quot;: &quot;{Qianfan Platform secret key}&quot;
+}
+</code></pre>
+<pre><code class="language-json">{
+&quot;apiType&quot;: &quot;aistudio&quot;,
+&quot;accessToken&quot;: &quot;{AI Studio access token}&quot;
 }
 </code></pre>
 <ul>
@@ -1231,14 +1246,14 @@ result_retrieval = resp_retrieval.json()[&quot;result&quot;]
 payload = {
     &quot;keys&quot;: keys,
     &quot;visionInfo&quot;: result_vision[&quot;visionInfo&quot;],
+    &quot;vectorStore&quot;: result_vector[&quot;vectorStore&quot;],
+    &quot;retrievalResult&quot;: result_retrieval[&quot;retrievalResult&quot;],
     &quot;taskDescription&quot;: &quot;&quot;,
     &quot;rules&quot;: &quot;&quot;,
     &quot;fewShot&quot;: &quot;&quot;,
-    &quot;vectorStore&quot;: result_vector[&quot;vectorStore&quot;],
-    &quot;retrievalResult&quot;: result_retrieval[&quot;retrievalResult&quot;],
-    &quot;returnPrompts&quot;: True,
     &quot;llmName&quot;: LLM_NAME,
     &quot;llmParams&quot;: LLM_PARAMS,
+    &quot;returnPrompts&quot;: True,
 }
 resp_chat = requests.post(url=f&quot;{API_BASE_URL}/chatocr-chat&quot;, json=payload)
 if resp_chat.status_code != 200:

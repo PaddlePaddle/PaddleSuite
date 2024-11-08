@@ -663,7 +663,7 @@ PaddleX 内置了多条产线，每条产线都包含了若干模块，每个模
 </table>
 <b>注：以上精度指标为 </b>[ImageNet-1k](https://www.image-net.org/index.php)<b> 验证集 Top1 Acc。</b>
 
-## [图像多标签分类模块](../module_usage/tutorials/cv_modules/ml_classification.md)
+## [图像多标签分类模块](../module_usage/tutorials/cv_modules/image_multilabel_classification.md)
 <table>
 <thead>
 <tr>
