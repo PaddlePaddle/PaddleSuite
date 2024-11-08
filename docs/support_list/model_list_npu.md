@@ -264,7 +264,6 @@ PaddleX 内置了多条产线，每条产线都包含了若干模块，每个模
 <td>23.7 M</td>
 </tr>
 <tr>
-<tr>
 <td>PP-LCNetV2_large</td>
 <td>78.51</td>
 <td>37.3 M</td>
@@ -274,6 +273,7 @@ PaddleX 内置了多条产线，每条产线都包含了若干模块，每个模
 <td>73.97</td>
 <td>14.6 M</td>
 </tr>
+<tr>
 <td>ResNet18_vd</td>
 <td>72.3</td>
 <td>41.5 M</td>
@@ -458,10 +458,7 @@ PaddleX 内置了多条产线，每条产线都包含了若干模块，每个模
 <tr>
 <td>FasterRCNN-ResNet101</td>
 <td>39.0</td>
-<td>-</td>
-<td>-</td>
 <td>188.1 M</td>
-<td><a href="../../paddlex/configs/object_detection/FasterRCNN-ResNet101.yaml">FasterRCNN-ResNet101.yaml</a></td>
 </tr>
 <tr>
 <td>FasterRCNN-ResNet101-FPN</td>
@@ -471,18 +468,12 @@ PaddleX 内置了多条产线，每条产线都包含了若干模块，每个模
 <tr>
 <td>FasterRCNN-ResNeXt101-vd-FPN</td>
 <td>43.4</td>
-<td>-</td>
-<td>-</td>
 <td>360.6 M</td>
-<td><a href="../../paddlex/configs/object_detection/FasterRCNN-ResNeXt101-vd-FPN.yaml">FasterRCNN-ResNeXt101-vd-FPN.yaml</a></td>
 </tr>
 <tr>
 <td>FasterRCNN-Swin-Tiny-FPN</td>
 <td>42.6</td>
-<td>-</td>
-<td>-</td>
 <td>159.8 M</td>
-<td><a href="../../paddlex/configs/object_detection/FasterRCNN-Swin-Tiny-FPN.yaml">FasterRCNN-Swin-Tiny-FPN.yaml</a></td>
 </tr>
 <tr>
 <td>FCOS-ResNet50</td>
