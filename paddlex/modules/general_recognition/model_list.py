@@ -13,8 +13,7 @@
 # limitations under the License.
 
 MODELS = [
-"PP-ShiTuV2_rec",
-"PP-ShiTuV2_rec_CLIP_vit_base",
-"PP-ShiTuV2_rec_CLIP_vit_large"
+    "PP-ShiTuV2_rec",
+    "PP-ShiTuV2_rec_CLIP_vit_base",
+    "PP-ShiTuV2_rec_CLIP_vit_large",
 ]
-

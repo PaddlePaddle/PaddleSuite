@@ -331,8 +331,13 @@ class PPChatOCRPipeline(_TableRecPipeline):
             if isinstance(all_curve_res, dict):
                 all_curve_res = [all_curve_res]
             for sub, curve_res in zip(curve_subs, all_curve_res):
-                dt_polys_list = [list(map(list, sublist)) for sublist in curve_res["dt_polys"]]
-                sorted_items = sorted(zip(dt_polys_list, curve_res["rec_text"]), key=lambda x: (x[0][0][1], x[0][0][0]))
+                dt_polys_list = [
+                    list(map(list, sublist)) for sublist in curve_res["dt_polys"]
+                ]
+                sorted_items = sorted(
+                    zip(dt_polys_list, curve_res["rec_text"]),
+                    key=lambda x: (x[0][0][1], x[0][0][0]),
+                )
                 _, sorted_text = zip(*sorted_items)
                 structure_res.append(
                     {

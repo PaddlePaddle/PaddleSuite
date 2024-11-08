@@ -99,6 +99,7 @@ def check_train(dataset_dir, output, sample_num=10):
     attrs["train_sample_paths"] = sample_paths
     return attrs
 
+
 def check_val(dataset_dir, output, sample_num=10):
     """check dataset"""
     dataset_dir = osp.abspath(dataset_dir)

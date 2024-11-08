@@ -46,4 +46,3 @@ lr_scheduler:
   learning_rate: 0.4
   end_lr: 0.4
   power: 0.9
-
