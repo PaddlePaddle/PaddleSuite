@@ -19,7 +19,7 @@ Train:
   epochs_iters: 20
   batch_size: 64
   learning_rate: 0.1
-  pretrain_weight_path: null
+  pretrain_weight_path: https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/ResNet50_ML_pretrained.pdparams
   warmup_steps: 5
   resume_path: null
   log_interval: 20
@@ -31,7 +31,7 @@ Evaluate:
   log_interval: 1
 
 Export:
-  weight_path:  https://paddleclas.bj.bcebos.com/models/multi_label/ResNet50_ml_decoder_448_pretrained.pdparams
+  weight_path: https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/ResNet50_ML_pretrained.pdparams
 
 Predict:
   batch_size: 1

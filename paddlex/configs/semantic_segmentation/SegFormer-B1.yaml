@@ -19,7 +19,7 @@ Train:
   num_classes: 2
   batch_size: 2
   learning_rate: 0.01
-  pretrain_weight_path: null
+  pretrain_weight_path: https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/SegFormer-B1_pretrained.pdparams
   warmup_steps: 0
   resume_path: null
   log_interval: 10
@@ -30,7 +30,7 @@ Evaluate:
   log_interval: 10
 
 Export:
-  weight_path: https://bj.bcebos.com/paddleseg/dygraph/cityscapes/segformer_b1_cityscapes_1024x1024_160k/model.pdparams
+  weight_path: https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/SegFormer-B1_pretrained.pdparams
 
 Predict:
   batch_size: 1

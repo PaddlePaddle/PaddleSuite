@@ -19,7 +19,7 @@ Train:
   epochs_iters: 50
   batch_size: 16
   learning_rate: 0.08
-  pretrain_weight_path: null
+  pretrain_weight_path: https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-LCNet_x1_0_doc_ori_pretrained.pdparams
   warmup_steps: 100
   resume_path: null
   log_interval: 10
@@ -31,7 +31,7 @@ Evaluate:
   log_interval: 10
 
 Export:
-  weight_path: https://paddle-imagenet-models-name.bj.bcebos.com/dygraph/legendary_models/PPLCNet_x1_0_docori_pretrained.pdparams
+  weight_path: https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-LCNet_x1_0_doc_ori_pretrained.pdparams
 
 Predict:
   batch_size: 1

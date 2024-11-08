@@ -18,7 +18,7 @@ Train:
   epochs_iters: 10
   batch_size: 48
   learning_rate: 0.001
-  pretrain_weight_path: null
+  pretrain_weight_path: https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/SLANet_plus_pretrained.pdparams
   resume_path: null
   log_interval: 20
   eval_interval: 1
@@ -29,7 +29,7 @@ Evaluate:
   log_interval: 1
 
 Export:
-  weight_path: https://paddleocr.bj.bcebos.com/pretrained/ch_PP-StructrureV2_SLANet_plus_trained.pdparams
+  weight_path: https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/SLANet_plus_pretrained.pdparams
 
 Predict:
   batch_size: 1

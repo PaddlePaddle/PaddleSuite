@@ -19,7 +19,7 @@ Train:
   epochs_iters: 20
   batch_size: 256
   learning_rate: 0.13
-  pretrain_weight_path: null
+  pretrain_weight_path: https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/MobileNetV2_x1_0_pretrained.pdparams
   warmup_steps: 5
   resume_path: null
   log_interval: 1
@@ -31,7 +31,7 @@ Evaluate:
   log_interval: 1
 
 Export:
-  weight_path: https://paddle-imagenet-models-name.bj.bcebos.com/dygraph/MobileNetV2_pretrained.pdparams
+  weight_path: https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/MobileNetV2_x1_0_pretrained.pdparams
 
 Predict:
   batch_size: 1

@@ -19,7 +19,7 @@ Train:
   epochs_iters: 50
   batch_size: 2
   learning_rate: 0.06
-  pretrain_weight_path: null
+  pretrain_weight_path: https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PicoDet-L_layout_17cls_pretrained.pdparams
   warmup_steps: 100
   resume_path: null
   log_interval: 10
@@ -30,7 +30,7 @@ Evaluate:
   log_interval: 10
 
 Export:
-  weight_path: https://paddle-model-ecology.bj.bcebos.com/paddlex/pretrained/PicoDet-L_layout_pretrained_17cls.pdparams
+  weight_path: https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PicoDet-L_layout_17cls_pretrained.pdparams
 
 Predict:
   batch_size: 1

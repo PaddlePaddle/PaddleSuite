@@ -20,7 +20,7 @@ Train:
   epochs_iters: 20
   batch_size: 32
   learning_rate: 0.001
-  pretrain_weight_path: https://paddleclas.bj.bcebos.com/models/PP-ShiTu/PP-ShiTuV2_rec_CLIP_vit_large_pretrained.pdparams
+  pretrain_weight_path: https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-ShiTuV2_rec_CLIP_vit_large_pretrained.pdparams
   warmup_steps: 5
   resume_path: null
   log_interval: 1
@@ -32,7 +32,7 @@ Evaluate:
   log_interval: 1
 
 Export:
-  weight_path: https://paddleclas.bj.bcebos.com/models/PP-ShiTu/PP-ShiTuV2_rec_CLIP_vit_large_pretrained.pdparams 
+  weight_path: https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-ShiTuV2_rec_CLIP_vit_large_pretrained.pdparams
 Predict:
   batch_size: 1
   model_dir: "output/best_model/inference"

@@ -19,7 +19,7 @@ Train:
   epochs_iters: 20
   batch_size: 64
   learning_rate: 0.003
-  pretrain_weight_path: null
+  pretrain_weight_path: https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/SwinTransformer_small_patch4_window7_224_pretrained.pdparams
   warmup_steps: 5
   resume_path: null
   log_interval: 1
@@ -31,7 +31,7 @@ Evaluate:
   log_interval: 1
 
 Export:
-  weight_path: https://paddle-imagenet-models-name.bj.bcebos.com/dygraph/legendary_models/SwinTransformer_small_patch4_window7_224_pretrained.pdparams
+  weight_path: https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/SwinTransformer_small_patch4_window7_224_pretrained.pdparams
 
 Predict:
   batch_size: 1

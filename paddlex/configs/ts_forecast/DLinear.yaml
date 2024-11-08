@@ -30,7 +30,7 @@ Evaluate:
   weight_path: "output/best_model/model.pdparams"
 
 Export:
-  weight_path: https://paddlets.bj.bcebos.com/dygraph/DLinear.pdparams.tar
+  weight_path: https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/DLinear.pdparams.tar
 
 Predict:
   batch_size: 1

@@ -19,7 +19,7 @@ Train:
   epochs_iters: 50
   batch_size: 2
   learning_rate: 0.4
-  pretrain_weight_path: null
+  pretrain_weight_path: https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-ShiTuV2_det_pretrained.pdparams
   warmup_steps: 100
   resume_path: null
   log_interval: 10
@@ -38,4 +38,4 @@ Predict:
 
 
 Export:
-  weight_path: https://paddledet.bj.bcebos.com/models/picodet_lcnet_x2_5_640_mainbody.pdparams
+  weight_path: https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-ShiTuV2_det_pretrained.pdparams
