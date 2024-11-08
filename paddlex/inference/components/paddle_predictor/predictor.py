@@ -23,6 +23,42 @@ from ...utils.pp_option import PaddlePredictorOption
 from ..base import BaseComponent
 
 
+class Copy2GPU(BaseComponent):
+
+    def __init__(self, input_handlers):
+        super().__init__()
+        self.input_handlers = input_handlers
+
+    def apply(self, x):
+        for idx in range(len(x)):
+            self.input_handlers[idx].reshape(x[idx].shape)
+            self.input_handlers[idx].copy_from_cpu(x[idx])
+
+
+class Copy2CPU(BaseComponent):
+
+    def __init__(self, output_handlers):
+        super().__init__()
+        self.output_handlers = output_handlers
+
+    def apply(self):
+        output = []
+        for out_tensor in self.output_handlers:
+            batch = out_tensor.copy_to_cpu()
+            output.append(batch)
+        return output
+
+
+class Infer(BaseComponent):
+
+    def __init__(self, predictor):
+        super().__init__()
+        self.predictor = predictor
+
+    def apply(self):
+        self.predictor.run()
+
+
 class BasePaddlePredictor(BaseComponent):
     """Predictor based on Paddle Inference"""
 
@@ -56,12 +92,13 @@ class BasePaddlePredictor(BaseComponent):
             self.option = PaddlePredictorOption()
         logging.debug(f"Env: {self.option}")
         (
-            self.predictor,
-            self.inference_config,
-            self.input_names,
-            self.input_handlers,
-            self.output_handlers,
+            predictor,
+            input_handlers,
+            output_handlers,
         ) = self._create()
+        self.copy2gpu = Copy2GPU(input_handlers)
+        self.copy2cpu = Copy2CPU(output_handlers)
+        self.infer = Infer(predictor)
         self.option.changed = False
 
     def _create(self):
@@ -161,42 +198,45 @@ No need to generate again."
         for output_name in output_names:
             output_handler = predictor.get_output_handle(output_name)
             output_handlers.append(output_handler)
-        return predictor, config, input_names, input_handlers, output_handlers
-
-    def get_input_names(self):
-        """get input names"""
-        return self.input_names
+        return predictor, input_handlers, output_handlers
 
     def apply(self, **kwargs):
         if self.option.changed:
             self._reset()
-        x = self.to_batch(**kwargs)
-        for idx in range(len(x)):
-            self.input_handlers[idx].reshape(x[idx].shape)
-            self.input_handlers[idx].copy_from_cpu(x[idx])
+        batches = self.to_batch(**kwargs)
+        self.copy2gpu.apply(batches)
+        self.infer.apply()
+        pred = self.copy2cpu.apply()
+        return self.format_output(pred)
 
-        self.predictor.run()
-        output = []
-        for out_tensor in self.output_handlers:
-            batch = out_tensor.copy_to_cpu()
-            output.append(batch)
-        return self.format_output(output)
-
-    def format_output(self, pred):
-        return [{"pred": res} for res in zip(*pred)]
+    @property
+    def sub_cmps(self):
+        return {
+            "Copy2GPU": self.copy2gpu,
+            "Infer": self.infer,
+            "Copy2CPU": self.copy2cpu,
+        }
 
     @abstractmethod
     def to_batch(self):
         raise NotImplementedError
 
+    @abstractmethod
+    def format_output(self, pred):
+        return [{"pred": res} for res in zip(*pred)]
+
 
 class ImagePredictor(BasePaddlePredictor):
-
     INPUT_KEYS = "img"
+    OUTPUT_KEYS = "pred"
     DEAULT_INPUTS = {"img": "img"}
+    DEAULT_OUTPUTS = {"pred": "pred"}
 
     def to_batch(self, img):
         return [np.stack(img, axis=0).astype(dtype=np.float32, copy=False)]
+
+    def format_output(self, pred):
+        return [{"pred": res} for res in zip(*pred)]
 
 
 class ImageDetPredictor(BasePaddlePredictor):
@@ -268,9 +308,14 @@ class ImageDetPredictor(BasePaddlePredictor):
 class TSPPPredictor(BasePaddlePredictor):
 
     INPUT_KEYS = "ts"
+    OUTPUT_KEYS = "pred"
     DEAULT_INPUTS = {"ts": "ts"}
+    DEAULT_OUTPUTS = {"pred": "pred"}
 
     def to_batch(self, ts):
         n = len(ts[0])
         x = [np.stack([lst[i] for lst in ts], axis=0) for i in range(n)]
         return x
+
+    def format_output(self, pred):
+        return [{"pred": res} for res in zip(*pred)]
