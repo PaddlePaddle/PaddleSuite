@@ -1,8 +1,10 @@
-简体中文 | [English](paddlepaddle_install_MLU_en.md)
+---
+comments: true
+---
 
 # 寒武纪 MLU 飞桨安装教程
 
-当前 PaddleX 支持寒武纪 MLU370X8 芯片。考虑到环境差异性，我们推荐使用**飞桨官方提供的寒武纪 MLU 开发镜像**完成环境准备。
+当前 PaddleX 支持寒武纪 MLU370X8 芯片。考虑到环境差异性，我们推荐使用<b>飞桨官方提供的寒武纪 MLU 开发镜像</b>完成环境准备。
 
 
 ## 1、docker环境准备

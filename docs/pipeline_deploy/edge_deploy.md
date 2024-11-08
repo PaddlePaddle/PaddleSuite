@@ -1,4 +1,6 @@
-简体中文 | [English](edge_deploy_en.md)
+---
+comments: true
+---
 
 # PaddleX 端侧部署 demo 使用指南
 
@@ -68,7 +70,7 @@
   </tr>
 </table>
 
-**备注**
+<b>备注</b>
 - `GPU` 指的是 [使用 OpenCL 将计算映射到 GPU 上执行](https://www.paddlepaddle.org.cn/lite/develop/demo_guides/opencl.html) ，以充分利用 GPU 硬件算力，提高推理性能。
 
 ## 安装流程与使用方式
@@ -77,11 +79,11 @@
 
 1. 在本地环境安装好 CMake 编译工具，并在 [Android NDK 官网](https://developer.android.google.cn/ndk/downloads)下载当前系统符合要求的版本的 NDK 软件包。例如，在 Mac 上开发，需要在 Android NDK 官网下载 Mac 平台的 NDK 软件包。
 
-    **环境要求**
+    <b>环境要求</b>
     -  `CMake >= 3.10`（最低版本未经验证，推荐 3.20 及以上）
     -  `Android NDK >= r17c`（最低版本未经验证，推荐 r20b 及以上）
 
-    **本指南所使用的测试环境：**
+    <b>本指南所使用的测试环境：</b>
     -  `cmake == 3.20.0`
     -  `android-ndk == r20b`
 
@@ -131,7 +133,7 @@
     git clone -b feature/paddle-x https://github.com/PaddlePaddle/Paddle-Lite-Demo.git PaddleX-Lite-Deploy
     ```
 
-2. 填写 **问卷** 下载压缩包，将压缩包放到指定解压目录，切换到指定解压目录后执行解压命令。
+2. 填写 <b>问卷</b> 下载压缩包，将压缩包放到指定解压目录，切换到指定解压目录后执行解压命令。
     - [object_detection（目标检测）问卷](https://paddle.wjx.cn/vm/OjV8gAb.aspx#)
     - [semantic_segmentation（语义分割）问卷](https://paddle.wjx.cn/vm/Q2F1L37.aspx#)
     - [image_classification（图像分类）问卷](https://paddle.wjx.cn/vm/rWPncBm.aspx#)
@@ -185,7 +187,7 @@
 
 4. 将工作目录切换到 `PaddleX-Lite-Deploy/{Task_Name}/android/shell/cxx/{Demo_Name}`，运行 `run.sh` 脚本，完成在端侧的预测。
 
-    **注意：**
+    <b>注意：</b>
     - `Pipeline_Name` 和 `Demo_Name` 为占位符，具体值可参考本节最后的表格。
     - `download.sh` 和 `run.sh` 支持传入模型名来指定模型，若不指定则使用默认模型。目前适配的模型可参考本节最后表格的 `Model_Name` 列。
     - 若想使用自己训练的模型，参考 [模型转换方法](https://paddlepaddle.github.io/Paddle-Lite/develop/model_optimize_tool/) 得到 `.nb` 模型，放到`PaddleX_Lite_Deploy/{Pipeline_Name}/assets/{Model_Name}`目录下，  `Model_Name`为模型名，例如 `PaddleX_Lite_Deploy/object_detection/assets/PicoDet-L`。
@@ -228,7 +230,7 @@ warmup:1
 repeats:10
 power_mode:1
 thread_num:0
-*** time info(ms) ***
+<b>* time info(ms) </b>*
 1st_duration:320.086
 max_duration:277.331
 min_duration:272.67
@@ -240,7 +242,7 @@ detection, image size: 768, 576, detect object: truck, score: 0.653789, location
 detection, image size: 768, 576, detect object: dog, score: 0.731584, location: x=128, y=222, width=182, height=319
 ```
 
-![预测结果](https://github.com/PaddlePaddle/Paddle-Lite-Demo/blob/feature/paddle-x/docs_img/object_detection/PicoDet-S.jpg?raw=true)
+<img src="https://github.com/PaddlePaddle/Paddle-Lite-Demo/blob/feature/paddle-x/docs_img/object_detection/PicoDet-S.jpg?raw=true">
 
 本节描述的部署步骤适用于下表中列举的 demo：
 
@@ -304,7 +306,7 @@ detection, image size: 768, 576, detect object: dog, score: 0.731584, location: 
   </tr>
 </table>
 
-**备注**
+<b>备注</b>
 - 目前没有版面区域检测模块的端侧部署 demo，因此复用 `picodet_detection`demo 来部署`PicoDet_layout_1x`模型。
 
 ## 参考资料

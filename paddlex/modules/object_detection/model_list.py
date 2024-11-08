@@ -69,5 +69,5 @@ MODELS = [
     "PicoDet_LCNet_x2_5_face",
     "BlazeFace",
     "BlazeFace-FPN-SSH",
-    "PP-YOLOE_plus-S_face"
+    "PP-YOLOE_plus-S_face",
 ]

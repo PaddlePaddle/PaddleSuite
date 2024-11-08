@@ -1,4 +1,6 @@
-简体中文 | [English](ts_classification_en.md)
+---
+comments: true
+---
 
 # PaddleX 3.0 时序分类模型产线———心跳监测时序数据分类应用教程
 
@@ -8,7 +10,7 @@ PaddleX 提供了丰富的模型产线，模型产线由一个或多个模型组
 首先，需要根据您的任务场景，选择对应的 PaddleX 产线，本任务目标就是基于心跳监测数据对时序分类模型进行训练，实现对心跳时间序列状况的分类。了解到这个任务属于时序分类任务，对应 PaddleX 的时序分类产线。如果无法确定任务和产线的对应关系，您可以在 PaddleX 支持的 [PaddleX产线列表(CPU/GPU)](../support_list/pipelines_list.md) 中了解相关产线的能力介绍。
 
 ## 2. 快速体验
-PaddleX 提供了两种体验的方式，一种是可以直接通过 PaddleX 在本地体验，另外一种是可以在 **AI Studio 星河社区**上体验。
+PaddleX 提供了两种体验的方式，一种是可以直接通过 PaddleX 在本地体验，另外一种是可以在 <b>AI Studio 星河社区</b>上体验。
 
 * 本地体验方式：
 ```
@@ -25,11 +27,25 @@ for res in output:
 ## 3. 选择模型
 PaddleX 提供了1个端到端的时序分类模型，具体可参考 [模型列表](../support_list/models_list.md)，其中模型的benchmark如下：
 
-|模型名称|acc(%)|模型存储大小（M)|介绍|
-|-|-|-|-|
-|TimesNet_cls|87.5|792K|通过多周期分析，TimesNet是适应性强的高精度时序分类模型|
-
-**注：以上精度指标的评估集是 **UWaveGestureLibrary**。**
+<table>
+<thead>
+<tr>
+<th>模型名称</th>
+<th>acc(%)</th>
+<th>模型存储大小（M)</th>
+<th>介绍</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TimesNet_cls</td>
+<td>87.5</td>
+<td>792K</td>
+<td>通过多周期分析，TimesNet是适应性强的高精度时序分类模型</td>
+</tr>
+</tbody>
+</table>
+<b>注：以上精度指标的评估集是 </b>UWaveGestureLibrary<b>。</b>
 
 ## 4. 数据准备和校验
 ### 4.1 数据准备
@@ -44,7 +60,7 @@ cd /path/to/paddlex
 wget https://paddle-model-ecology.bj.bcebos.com/paddlex/data/ts_classify_examples.tar -P ./dataset
 tar -xf ./dataset/ts_classify_examples.tar -C ./dataset/
 ```
-* **数据注意事项**
+* <b>数据注意事项</b>
   * 基于收集的真实数据，明确时序数据的分类目标，并定义相应的分类标签。例如，在股票价格分类中，标签可能是“上涨”或“下跌”。对于在一段时间是“上涨”的时间序列，可以作为一个样本（group），即这段时间序列每个时间点都具有共同的 group_id, 标签列我们都定义为“上涨”标签；对于在一段时间是“下跌”的时间序列，可以作为一个样本（group），即这段时间序列每个时间点都具有共同的 group_id, 标签列我们都定义为“下跌”标签。每一个 group，就是一个分类样本。
   * 时间频率一致：确保所有数据序列的时间频率一致，如每小时、每日或每周，对于不一致的时间序列，可以通过重采样方法调整到统一的时间频率。
   * 时间序列长度一致：确保每一个group的时间序列的长度一致。
@@ -90,7 +106,7 @@ python main.py -c paddlex/configs/ts_classification/TimesNet_cls.yaml \
 * attributes.val_samples：该数据集验证集样本数量为 83025
 * attributes.train_table：该数据集训练集样本示例数据行；
 * attributes.val_table：该数据集验证集样本示例数据行；
-**注**：只有通过数据校验的数据才可以训练和评估。
+<b>注</b>：只有通过数据校验的数据才可以训练和评估。
 
 ### 4.3 数据集格式转换/数据集划分（非必选）
 如需对数据集格式进行转换或是重新划分数据集，可参考 [时序分类模块开发教程](../module_usage/tutorials/time_series_modules/time_series_classification.md)中的4.1.3。
@@ -110,7 +126,7 @@ python main.py -c paddlex/configs/ts_classification/TimesNet_cls.yaml \
     -o Train.target_cols=dim_0,dim_1,dim_2 \
     -o Train.freq=1 \
     -o Train.group_id=group_id \
-    -o Train.static_cov_cols=label 
+    -o Train.static_cov_cols=label
 ```
 在 PaddleX 中模型训练支持：修改训练超参数、单机单卡训练(时序模型仅支持单卡训练)等功能，只需修改配置文件或追加命令行参数。
 
@@ -130,30 +146,27 @@ PaddleX 中每个模型都提供了模型开发的配置文件，用于设置相
   * `static_cov_cols`：代表时序的类别编号列，同一个样本的标签相同。结合自己的数据设置类别的列名称，如：label。
 更多超参数介绍，请参考 [PaddleX时序任务模型配置文件参数说明](../module_usage/instructions/config_parameters_time_series.md)。
 
-**注：**
+<b>注：</b>
 
 * 以上参数可以通过追加令行参数的形式进行设置，如指定模式为模型训练：`-o Global.mode=train`；指定前 1 卡 gpu 训练：`-o Global.device=gpu:0`；设置训练轮次数为 10：`-o Train.epochs_iters=10`；
 * 模型训练过程中，PaddleX 会自动保存模型权重文件，默认为`output`，如需指定保存路径，可通过配置文件中 `-o Global.output` 字段。
 
-<details>
-   <summary> 更多说明（点击展开） </summary>
+<details><summary> 更多说明（点击展开） </summary>
 
-* 模型训练过程中，PaddleX 会自动保存模型权重文件，默认为`output`，如需指定保存路径，可通过配置文件中 `-o Global.output` 字段进行设置。
-* PaddleX 对您屏蔽了动态图权重和静态图权重的概念。在模型训练的过程中，会同时产出动态图和静态图的权重，在模型推理时，默认选择静态图权重推理。
-* 训练其他模型时，需要的指定相应的配置文件，模型和配置的文件的对应关系，可以查阅[PaddleX模型列表（CPU/GPU）](../support_list/models_list.md)。
-在完成模型训练后，所有产出保存在指定的输出目录（默认为`./output/`）下，通常有以下产出：
-
-
-**训练产出解释:**
-
-在完成模型训练后，所有产出保存在指定的输出目录（默认为`./output/`）下，通常有以下产出：
-
-* `train_result.json`：训练结果记录文件，记录了训练任务是否正常完成，以及产出的权重指标、相关文件路径等；
-* `train.log`：训练日志文件，记录了训练过程中的模型指标变化、loss 变化等；
-* `config.yaml`：训练配置文件，记录了本次训练的超参数的配置；
-* `best_accuracy.pdparams.tar`、`scaler.pkl`、`.checkpoints` 、`.inference*`：模型权重相关文件，包括网络参数、优化器、静态图权重等；
-
-</details>
+<ul>
+<li>模型训练过程中，PaddleX 会自动保存模型权重文件，默认为<code>output</code>，如需指定保存路径，可通过配置文件中 <code>-o Global.output</code> 字段进行设置。</li>
+<li>PaddleX 对您屏蔽了动态图权重和静态图权重的概念。在模型训练的过程中，会同时产出动态图和静态图的权重，在模型推理时，默认选择静态图权重推理。</li>
+<li>训练其他模型时，需要的指定相应的配置文件，模型和配置的文件的对应关系，可以查阅<a href="../support_list/models_list.md">PaddleX模型列表（CPU/GPU）</a>。
+在完成模型训练后，所有产出保存在指定的输出目录（默认为<code>./output/</code>）下，通常有以下产出：</li>
+</ul>
+<p><b>训练产出解释:</b></p>
+<p>在完成模型训练后，所有产出保存在指定的输出目录（默认为<code>./output/</code>）下，通常有以下产出：</p>
+<ul>
+<li><code>train_result.json</code>：训练结果记录文件，记录了训练任务是否正常完成，以及产出的权重指标、相关文件路径等；</li>
+<li><code>train.log</code>：训练日志文件，记录了训练过程中的模型指标变化、loss 变化等；</li>
+<li><code>config.yaml</code>：训练配置文件，记录了本次训练的超参数的配置；</li>
+<li><code>best_accuracy.pdparams.tar</code>、<code>scaler.pkl</code>、<code>.checkpoints</code> 、<code>.inference*</code>：模型权重相关文件，包括网络参数、优化器、静态图权重等；</li>
+</ul></details>
 
 ### 5.2 模型评估
 在完成模型训练后，可以对指定的模型权重文件在验证集上进行评估，验证模型精度。使用 PaddleX 进行模型评估，只需一行命令：
@@ -171,7 +184,7 @@ PaddleX 中每个模型都提供了模型开发的配置文件，用于设置相
 * 指定验证数据集路径：`-o Global.dataset_dir`
 其他相关参数均可通过修改`.yaml`配置文件中的`Global`和`Evaluate`下的字段来进行设置，详细请参考[PaddleX时序任务模型配置文件参数说明](../module_usage/instructions/config_parameters_time_series.md)。
 
-**注：** 在模型评估时，需要指定模型权重文件路径，每个配置文件中都内置了默认的权重保存路径，如需要改变，只需要通过追加命令行参数的形式进行设置即可，如`-o Evaluate.weight_path=./output/best_model/model.pdparams`。
+<b>注：</b> 在模型评估时，需要指定模型权重文件路径，每个配置文件中都内置了默认的权重保存路径，如需要改变，只需要通过追加命令行参数的形式进行设置即可，如`-o Evaluate.weight_path=./output/best_model/model.pdparams`。
 
 
 
@@ -188,18 +201,76 @@ PaddleX 中每个模型都提供了模型开发的配置文件，用于设置相
 
 
 
-|实验|轮次|学习率|batch_size|训练环境|验证集准确率|
-|-|-|-|-|-|-|
-|实验一|5|0.00001|16|1卡|72.20%|
-|实验二|5|0.0001|16|1卡|72.20%|
-|实验三|5|0.001|16|1卡|73.20%|
-
+<table>
+<thead>
+<tr>
+<th>实验</th>
+<th>轮次</th>
+<th>学习率</th>
+<th>batch_size</th>
+<th>训练环境</th>
+<th>验证集准确率</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>实验一</td>
+<td>5</td>
+<td>0.00001</td>
+<td>16</td>
+<td>1卡</td>
+<td>72.20%</td>
+</tr>
+<tr>
+<td>实验二</td>
+<td>5</td>
+<td>0.0001</td>
+<td>16</td>
+<td>1卡</td>
+<td>72.20%</td>
+</tr>
+<tr>
+<td>实验三</td>
+<td>5</td>
+<td>0.001</td>
+<td>16</td>
+<td>1卡</td>
+<td>73.20%</td>
+</tr>
+</tbody>
+</table>
 增大训练轮次实验结果：
 
-|实验|轮次|学习率|batch_size|训练环境|验证集准确率|
-|-|-|-|-|-|-|
-|实验三|5|0.001|16|1卡|73.20%|
-|实验四|30|0.001|16|1卡|75.10%|
+<table>
+<thead>
+<tr>
+<th>实验</th>
+<th>轮次</th>
+<th>学习率</th>
+<th>batch_size</th>
+<th>训练环境</th>
+<th>验证集准确率</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>实验三</td>
+<td>5</td>
+<td>0.001</td>
+<td>16</td>
+<td>1卡</td>
+<td>73.20%</td>
+</tr>
+<tr>
+<td>实验四</td>
+<td>30</td>
+<td>0.001</td>
+<td>16</td>
+<td>1卡</td>
+<td>75.10%</td>
+</tr>
+</tbody>
+</table>
 ## 6. 产线测试
 将模型目录设置为训练完成的模型进行测试，使用[测试文件](https://paddle-model-ecology.bj.bcebos.com/paddlex/PaddleX3.0/doc_images/practical_tutorial/timeseries_classification/test.csv)，进行预测：
 

@@ -15,15 +15,17 @@
 from ..image_classification import ClsEvaluator
 from .model_list import MODELS
 
+
 class ShiTuRecEvaluator(ClsEvaluator):
     """ShiTu Recognition Model Evaluator"""
 
     entities = MODELS
-    
+
     def update_config(self):
         """update evalution config"""
         if self.eval_config.log_interval:
             self.pdx_config.update_log_interval(self.eval_config.log_interval)
-        self.pdx_config.update_dataset(self.global_config.dataset_dir, "ShiTuRecDataset")
+        self.pdx_config.update_dataset(
+            self.global_config.dataset_dir, "ShiTuRecDataset"
+        )
         self.pdx_config.update_pretrained_weights(self.eval_config.weight_path)
-

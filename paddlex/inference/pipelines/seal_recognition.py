@@ -15,8 +15,8 @@
 import numpy as np
 from .base import BasePipeline
 from .ocr import OCRPipeline
-from ..components import CropByBoxes
-from ..results import SealOCRResult
+from ..components import CropByBoxes, ReadImage
+from ..results import SealOCRResult, OCRResult
 from ...utils import logging
 
 
@@ -64,6 +64,7 @@ class SealOCRPipeline(BasePipeline):
             text_det_batch_size=text_det_batch_size,
             text_rec_batch_size=text_rec_batch_size,
         )
+        self.img_reader = ReadImage(format="BGR")
 
     def _build_predictor(
         self,
@@ -103,9 +104,11 @@ class SealOCRPipeline(BasePipeline):
             self.layout_predictor.set_predictor(device=device)
             self.ocr_pipeline.set_predictor(device=device)
 
-    def predict(self, x, **kwargs):
+    def predict(self, inputs, **kwargs):
         self.set_predictor(**kwargs)
-        for layout_pred in self.layout_predictor(x):
+        img_info_list = list(self.img_reader(inputs))[0]
+        img_list = [img_info["img"] for img_info in img_info_list]
+        for page_id, layout_pred in enumerate(self.layout_predictor(img_list)):
             single_img_res = {
                 "input_path": "",
                 "layout_result": {},
@@ -124,5 +127,26 @@ class SealOCRPipeline(BasePipeline):
                     if sub["label"].lower() == "seal":
                         seal_subs.append(sub)
             all_seal_ocr_res = get_ocr_res(self.ocr_pipeline, seal_subs)
-            single_img_res["ocr_result"] = all_seal_ocr_res
+            seal_res = {
+                "dt_polys": [],
+                "dt_scores": [],
+                "rec_text": [],
+                "rec_score": [],
+            }
+            for sub, seal_ocr_res in zip(seal_subs, all_seal_ocr_res):
+                if len(seal_ocr_res["dt_polys"]) > 0:
+                    box = sub["box"]
+                    ori_bbox_list = [
+                        dt + np.array(box[:2]).astype(np.int32)
+                        for dt in seal_ocr_res["dt_polys"]
+                    ]
+                    seal_res["dt_polys"].extend(ori_bbox_list)
+                    seal_res["dt_scores"].extend(seal_ocr_res["dt_scores"])
+                    seal_res["rec_text"].extend(seal_ocr_res["rec_text"])
+                    seal_res["rec_score"].extend(seal_ocr_res["rec_score"])
+            seal_res["input_path"] = single_img_res["input_path"]
+            single_img_res["src_file_name"] = inputs
+            single_img_res["ocr_result"] = OCRResult(seal_res)
+            single_img_res["page_id"] = page_id
+
             yield SealOCRResult(single_img_res)

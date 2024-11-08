@@ -1,4 +1,6 @@
-简体中文 | [English](multi_devices_use_guide_en.md)
+---
+comments: true
+---
 
 # PaddleX多硬件使用指南
 
@@ -22,7 +24,7 @@
 PaddleX为您提供了两种安装模式：Wheel包安装和插件安装，下面详细介绍这两种安装模式的应用场景和安装方法。
 
 #### 1.2.1 Wheel包安装模式
-若您使用PaddleX的应用场景为**模型推理与集成** ，那么推荐您使用**更便捷**、**更轻量**的Wheel包安装模式。
+若您使用PaddleX的应用场景为<b>模型推理与集成</b> ，那么推荐您使用<b>更便捷</b>、<b>更轻量</b>的Wheel包安装模式。
 
 快速安装轻量级的Wheel包之后，您即可基于PaddleX支持的所有模型进行推理，并能直接集成进您的项目中。
 
@@ -32,33 +34,91 @@ PaddleX为您提供了两种安装模式：Wheel包安装和插件安装，下�
 pip install https://paddle-model-ecology.bj.bcebos.com/paddlex/whl/paddlex-3.0.0b1-py3-none-any.whl
 ```
 #### 1.2.2 插件安装模式
-若您使用PaddleX的应用场景为**二次开发** ，那么推荐您使用**功能更加强大**的插件安装模式。
+若您使用PaddleX的应用场景为<b>二次开发</b> ，那么推荐您使用<b>功能更加强大</b>的插件安装模式。
 
 安装您需要的PaddleX插件之后，您不仅同样能够对插件支持的模型进行推理与集成，还可以对其进行模型训练等二次开发更高级的操作。
 
 PaddleX支持的插件如下，请您根据开发需求，确定所需的一个或多个插件名称：
 
 
-<details>
-  <summary>👉 <b>插件和产线对应关系（点击展开）</b></summary>
+<details><summary>👉 <b>插件和产线对应关系（点击展开）</b></summary>
 
-|模型产线|模块|对应插件|
-|-|-|-|
-|通用图像分类|图像分类|PaddleClas|
-|通用目标检测|目标检测|PaddleDetection|
-|通用语义分割|语义分割|PaddleSeg|
-|通用实例分割|实例分割|PaddleDetection|
-|通用OCR|文本检测<br>文本识别|PaddleOCR|
-|通用表格识别|版面区域检测<br>表格结构识别<br>文本检测<br>文本识别|PaddleOCR<br>PaddleDetection|
-|文档场景信息抽取v3|表格结构识别<br>版面区域检测<br>文本检测<br>文本识别<br>印章文本检测<br>文本图像矫正<br>文档图像方向分类|PaddleOCR<br>PaddleDetection<br>PaddleClas |
-|时序预测|时序预测模块|PaddleTS|
-|时序异常检测|时序异常检测模块|PaddleTS|
-|时序分类|时序分类模块|PaddleTS|
-|通用多标签分类|图像多标签分类|PaddleClas|
-|小目标检测|小目标检测|PaddleDetection|
-|图像异常检测|无监督异常检测|PaddleSeg|
-
-</details>
+<table>
+<thead>
+<tr>
+<th>模型产线</th>
+<th>模块</th>
+<th>对应插件</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>通用图像分类</td>
+<td>图像分类</td>
+<td>PaddleClas</td>
+</tr>
+<tr>
+<td>通用目标检测</td>
+<td>目标检测</td>
+<td>PaddleDetection</td>
+</tr>
+<tr>
+<td>通用语义分割</td>
+<td>语义分割</td>
+<td>PaddleSeg</td>
+</tr>
+<tr>
+<td>通用实例分割</td>
+<td>实例分割</td>
+<td>PaddleDetection</td>
+</tr>
+<tr>
+<td>通用OCR</td>
+<td>文本检测<br>文本识别</td>
+<td>PaddleOCR</td>
+</tr>
+<tr>
+<td>通用表格识别</td>
+<td>版面区域检测<br>表格结构识别<br>文本检测<br>文本识别</td>
+<td>PaddleOCR<br>PaddleDetection</td>
+</tr>
+<tr>
+<td>文档场景信息抽取v3</td>
+<td>表格结构识别<br>版面区域检测<br>文本检测<br>文本识别<br>印章文本检测<br>文本图像矫正<br>文档图像方向分类</td>
+<td>PaddleOCR<br>PaddleDetection<br>PaddleClas</td>
+</tr>
+<tr>
+<td>时序预测</td>
+<td>时序预测模块</td>
+<td>PaddleTS</td>
+</tr>
+<tr>
+<td>时序异常检测</td>
+<td>时序异常检测模块</td>
+<td>PaddleTS</td>
+</tr>
+<tr>
+<td>时序分类</td>
+<td>时序分类模块</td>
+<td>PaddleTS</td>
+</tr>
+<tr>
+<td>通用多标签分类</td>
+<td>图像多标签分类</td>
+<td>PaddleClas</td>
+</tr>
+<tr>
+<td>小目标检测</td>
+<td>小目标检测</td>
+<td>PaddleDetection</td>
+</tr>
+<tr>
+<td>图像异常检测</td>
+<td>无监督异常检测</td>
+<td>PaddleSeg</td>
+</tr>
+</tbody>
+</table></details>
 
 
 若您需要安装的插件为PaddleXXX（可以有多个），在安装飞桨后，您可以直接执行如下指令快速安装PaddleX的对应插件：

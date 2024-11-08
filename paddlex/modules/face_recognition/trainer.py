@@ -55,9 +55,11 @@ class FaceRecTrainer(ClsTrainer):
             self.pdx_config.update_warmup_epochs(self.train_config.warmup_steps)
         if self.global_config.output is not None:
             self.pdx_config._update_output_dir(self.global_config.output)
-    
+
     def update_dataset_cfg(self):
-        train_dataset_dir = abspath(os.path.join(self.global_config.dataset_dir, "train"))
+        train_dataset_dir = abspath(
+            os.path.join(self.global_config.dataset_dir, "train")
+        )
         val_dataset_dir = abspath(os.path.join(self.global_config.dataset_dir, "val"))
         train_list_path = abspath(os.path.join(train_dataset_dir, "label.txt"))
         val_list_path = abspath(os.path.join(val_dataset_dir, "pair_label.txt"))

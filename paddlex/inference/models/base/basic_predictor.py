@@ -54,11 +54,20 @@ class BasicPredictor(
     def __call__(self, input, **kwargs):
         self.set_predictor(**kwargs)
         if self.benchmark:
+            self.benchmark.start()
             if INFER_BENCHMARK_WARMUP > 0:
                 output = super().__call__(input)
+                warmup_num = 0
                 for _ in range(INFER_BENCHMARK_WARMUP):
-                    next(output)
-            self.benchmark.reset()
+                    try:
+                        next(output)
+                        warmup_num += 1
+                    except StopIteration:
+                        logging.warning(
+                            f"There are only {warmup_num} batches in input data, but `INFER_BENCHMARK_WARMUP` has been set to {INFER_BENCHMARK_WARMUP}."
+                        )
+                        break
+                self.benchmark.warmup_stop(warmup_num)
             output = list(super().__call__(input))
             self.benchmark.collect(len(output))
         else:

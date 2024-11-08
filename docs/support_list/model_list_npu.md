@@ -1,197 +1,787 @@
-简体中文 | [English](model_list_npu_en.md)
+---
+comments: true
+---
 
 # PaddleX模型列表（昇腾 NPU）
 
 PaddleX 内置了多条产线，每条产线都包含了若干模块，每个模块包含若干模型，具体使用哪些模型，您可以根据下边的 benchmark 数据来选择。如您更考虑模型精度，请选择精度较高的模型，如您更考虑模型存储大小，请选择存储大小较小的模型。
 
 ## 图像分类模块
-|模型名称|Top1 Acc（%）|模型存储大小（M)|
-|-|-|-|
-|CLIP_vit_base_patch16_224|85.36|306.5 M|
-|CLIP_vit_large_patch14_224|88.1|1.04 G|
-|ConvNeXt_base_224|83.84|313.9 M|
-|ConvNeXt_base_384|84.90|313.9 M|
-|ConvNeXt_large_224|84.26|700.7 M|
-|ConvNeXt_large_384|85.27|700.7 M|
-|ConvNeXt_small|83.13|178.0 M|
-|ConvNeXt_tiny|82.03|101.4 M|
-|MobileNetV1_x0_75|68.8|9.3 M|
-|MobileNetV1_x1_0|71.0|15.2 M|
-|MobileNetV2_x0_5|65.0|7.1 M|
-|MobileNetV2_x0_25|53.2|5.5 M|
-|MobileNetV2_x1_0|72.2|12.6 M|
-|MobileNetV2_x1_5|74.1|25.0 M|
-|MobileNetV2_x2_0|75.2|41.2 M|
-|MobileNetV3_large_x0_5|69.2|9.6 M|
-|MobileNetV3_large_x0_35|64.3|7.5 M|
-|MobileNetV3_large_x0_75|73.1|14.0 M|
-|MobileNetV3_large_x1_0|75.3|19.5 M|
-|MobileNetV3_large_x1_25|76.4|26.5 M|
-|MobileNetV3_small_x0_5|59.2|6.8 M|
-|MobileNetV3_small_x0_35|53.0|6.0 M|
-|MobileNetV3_small_x0_75|66.0|8.5 M|
-|MobileNetV3_small_x1_0|68.2|10.5 M|
-|MobileNetV3_small_x1_25|70.7|13.0 M|
-|PP-HGNet_base|85.0|249.4 M|
-|PP-HGNet_small|81.51|86.5 M|
-|PP-HGNet_tiny|79.83|52.4 M|
-|PP-HGNetV2-B0|77.77|21.4 M|
-|PP-HGNetV2-B1|79.18|22.6 M|
-|PP-HGNetV2-B2|81.74|39.9 M|
-|PP-HGNetV2-B3|82.98|57.9 M|
-|PP-HGNetV2-B4|83.57|70.4 M|
-|PP-HGNetV2-B5|84.75|140.8 M|
-|PP-HGNetV2-B6|86.30|268.4 M|
-|PP-LCNet_x0_5|63.14|6.7 M|
-|PP-LCNet_x0_25|51.86|5.5 M|
-|PP-LCNet_x0_35|58.09|5.9 M|
-|PP-LCNet_x0_75|68.18|8.4 M|
-|PP-LCNet_x1_0|71.32|10.5 M|
-|PP-LCNet_x1_5|73.71|16.0 M|
-|PP-LCNet_x2_0|75.18|23.2 M|
-|PP-LCNet_x2_5|76.60|32.1 M|
-|PP-LCNetV2_base|77.05|23.7 M|
-|ResNet18_vd|72.3|41.5 M|
-|ResNet18|71.0|41.5 M|
-|ResNet34_vd|76.0|77.3 M|
-|ResNet34|74.6|77.3 M|
-|ResNet50_vd|79.1|90.8 M|
-|ResNet50|76.5|90.8 M|
-|ResNet101_vd|80.2|158.4 M|
-|ResNet101|77.6|158.7 M|
-|ResNet152_vd|80.6|214.3 M|
-|ResNet152|78.3|214.2 M|
-|ResNet200_vd|80.9|266.0 M|
-|SwinTransformer_base_patch4_window7_224|83.37|310.5 M|
-|SwinTransformer_small_patch4_window7_224|83.21|175.6 M|
-|SwinTransformer_tiny_patch4_window7_224|81.10|100.1 M|
-
-**注：以上精度指标为**[ImageNet-1k](https://www.image-net.org/index.php)**验证集 Top1 Acc。**
+<table>
+<thead>
+<tr>
+<th>模型名称</th>
+<th>Top1 Acc（%）</th>
+<th>模型存储大小（M)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CLIP_vit_base_patch16_224</td>
+<td>85.36</td>
+<td>306.5 M</td>
+</tr>
+<tr>
+<td>CLIP_vit_large_patch14_224</td>
+<td>88.1</td>
+<td>1.04 G</td>
+</tr>
+<tr>
+<td>ConvNeXt_base_224</td>
+<td>83.84</td>
+<td>313.9 M</td>
+</tr>
+<tr>
+<td>ConvNeXt_base_384</td>
+<td>84.90</td>
+<td>313.9 M</td>
+</tr>
+<tr>
+<td>ConvNeXt_large_224</td>
+<td>84.26</td>
+<td>700.7 M</td>
+</tr>
+<tr>
+<td>ConvNeXt_large_384</td>
+<td>85.27</td>
+<td>700.7 M</td>
+</tr>
+<tr>
+<td>ConvNeXt_small</td>
+<td>83.13</td>
+<td>178.0 M</td>
+</tr>
+<tr>
+<td>ConvNeXt_tiny</td>
+<td>82.03</td>
+<td>101.4 M</td>
+</tr>
+<tr>
+<td>MobileNetV1_x0_75</td>
+<td>68.8</td>
+<td>9.3 M</td>
+</tr>
+<tr>
+<td>MobileNetV1_x1_0</td>
+<td>71.0</td>
+<td>15.2 M</td>
+</tr>
+<tr>
+<td>MobileNetV2_x0_5</td>
+<td>65.0</td>
+<td>7.1 M</td>
+</tr>
+<tr>
+<td>MobileNetV2_x0_25</td>
+<td>53.2</td>
+<td>5.5 M</td>
+</tr>
+<tr>
+<td>MobileNetV2_x1_0</td>
+<td>72.2</td>
+<td>12.6 M</td>
+</tr>
+<tr>
+<td>MobileNetV2_x1_5</td>
+<td>74.1</td>
+<td>25.0 M</td>
+</tr>
+<tr>
+<td>MobileNetV2_x2_0</td>
+<td>75.2</td>
+<td>41.2 M</td>
+</tr>
+<tr>
+<td>MobileNetV3_large_x0_5</td>
+<td>69.2</td>
+<td>9.6 M</td>
+</tr>
+<tr>
+<td>MobileNetV3_large_x0_35</td>
+<td>64.3</td>
+<td>7.5 M</td>
+</tr>
+<tr>
+<td>MobileNetV3_large_x0_75</td>
+<td>73.1</td>
+<td>14.0 M</td>
+</tr>
+<tr>
+<td>MobileNetV3_large_x1_0</td>
+<td>75.3</td>
+<td>19.5 M</td>
+</tr>
+<tr>
+<td>MobileNetV3_large_x1_25</td>
+<td>76.4</td>
+<td>26.5 M</td>
+</tr>
+<tr>
+<td>MobileNetV3_small_x0_5</td>
+<td>59.2</td>
+<td>6.8 M</td>
+</tr>
+<tr>
+<td>MobileNetV3_small_x0_35</td>
+<td>53.0</td>
+<td>6.0 M</td>
+</tr>
+<tr>
+<td>MobileNetV3_small_x0_75</td>
+<td>66.0</td>
+<td>8.5 M</td>
+</tr>
+<tr>
+<td>MobileNetV3_small_x1_0</td>
+<td>68.2</td>
+<td>10.5 M</td>
+</tr>
+<tr>
+<td>MobileNetV3_small_x1_25</td>
+<td>70.7</td>
+<td>13.0 M</td>
+</tr>
+<tr>
+<td>PP-HGNet_base</td>
+<td>85.0</td>
+<td>249.4 M</td>
+</tr>
+<tr>
+<td>PP-HGNet_small</td>
+<td>81.51</td>
+<td>86.5 M</td>
+</tr>
+<tr>
+<td>PP-HGNet_tiny</td>
+<td>79.83</td>
+<td>52.4 M</td>
+</tr>
+<tr>
+<td>PP-HGNetV2-B0</td>
+<td>77.77</td>
+<td>21.4 M</td>
+</tr>
+<tr>
+<td>PP-HGNetV2-B1</td>
+<td>79.18</td>
+<td>22.6 M</td>
+</tr>
+<tr>
+<td>PP-HGNetV2-B2</td>
+<td>81.74</td>
+<td>39.9 M</td>
+</tr>
+<tr>
+<td>PP-HGNetV2-B3</td>
+<td>82.98</td>
+<td>57.9 M</td>
+</tr>
+<tr>
+<td>PP-HGNetV2-B4</td>
+<td>83.57</td>
+<td>70.4 M</td>
+</tr>
+<tr>
+<td>PP-HGNetV2-B5</td>
+<td>84.75</td>
+<td>140.8 M</td>
+</tr>
+<tr>
+<td>PP-HGNetV2-B6</td>
+<td>86.30</td>
+<td>268.4 M</td>
+</tr>
+<tr>
+<td>PP-LCNet_x0_5</td>
+<td>63.14</td>
+<td>6.7 M</td>
+</tr>
+<tr>
+<td>PP-LCNet_x0_25</td>
+<td>51.86</td>
+<td>5.5 M</td>
+</tr>
+<tr>
+<td>PP-LCNet_x0_35</td>
+<td>58.09</td>
+<td>5.9 M</td>
+</tr>
+<tr>
+<td>PP-LCNet_x0_75</td>
+<td>68.18</td>
+<td>8.4 M</td>
+</tr>
+<tr>
+<td>PP-LCNet_x1_0</td>
+<td>71.32</td>
+<td>10.5 M</td>
+</tr>
+<tr>
+<td>PP-LCNet_x1_5</td>
+<td>73.71</td>
+<td>16.0 M</td>
+</tr>
+<tr>
+<td>PP-LCNet_x2_0</td>
+<td>75.18</td>
+<td>23.2 M</td>
+</tr>
+<tr>
+<td>PP-LCNet_x2_5</td>
+<td>76.60</td>
+<td>32.1 M</td>
+</tr>
+<tr>
+<td>PP-LCNetV2_base</td>
+<td>77.05</td>
+<td>23.7 M</td>
+</tr>
+<tr>
+<td>ResNet18_vd</td>
+<td>72.3</td>
+<td>41.5 M</td>
+</tr>
+<tr>
+<td>ResNet18</td>
+<td>71.0</td>
+<td>41.5 M</td>
+</tr>
+<tr>
+<td>ResNet34_vd</td>
+<td>76.0</td>
+<td>77.3 M</td>
+</tr>
+<tr>
+<td>ResNet34</td>
+<td>74.6</td>
+<td>77.3 M</td>
+</tr>
+<tr>
+<td>ResNet50_vd</td>
+<td>79.1</td>
+<td>90.8 M</td>
+</tr>
+<tr>
+<td>ResNet50</td>
+<td>76.5</td>
+<td>90.8 M</td>
+</tr>
+<tr>
+<td>ResNet101_vd</td>
+<td>80.2</td>
+<td>158.4 M</td>
+</tr>
+<tr>
+<td>ResNet101</td>
+<td>77.6</td>
+<td>158.7 M</td>
+</tr>
+<tr>
+<td>ResNet152_vd</td>
+<td>80.6</td>
+<td>214.3 M</td>
+</tr>
+<tr>
+<td>ResNet152</td>
+<td>78.3</td>
+<td>214.2 M</td>
+</tr>
+<tr>
+<td>ResNet200_vd</td>
+<td>80.9</td>
+<td>266.0 M</td>
+</tr>
+<tr>
+<td>SwinTransformer_base_patch4_window7_224</td>
+<td>83.37</td>
+<td>310.5 M</td>
+</tr>
+<tr>
+<td>SwinTransformer_small_patch4_window7_224</td>
+<td>83.21</td>
+<td>175.6 M</td>
+</tr>
+<tr>
+<td>SwinTransformer_tiny_patch4_window7_224</td>
+<td>81.10</td>
+<td>100.1 M</td>
+</tr>
+</tbody>
+</table>
+<b>注：以上精度指标为</b>[ImageNet-1k](https://www.image-net.org/index.php)<b>验证集 Top1 Acc。</b>
 
 ## 目标检测模块
-|模型名称|mAP（%）|模型存储大小（M)|
-|-|-|-|
-|CenterNet-DLA-34|37.6|75.4 M|
-|CenterNet-ResNet50|38.9|319.7 M|
-|DETR-R50|42.3|159.3 M|
-|FasterRCNN-ResNet34-FPN|37.8|137.5 M|
-|FasterRCNN-ResNet50-FPN|38.4|148.1 M|
-|FasterRCNN-ResNet50-vd-FPN|39.5|148.1 M|
-|FasterRCNN-ResNet50-vd-SSLDv2-FPN|41.4|148.1 M|
-|FasterRCNN-ResNet101-FPN|41.4|216.3 M|
-|FCOS-ResNet50|39.6|124.2 M|
-|PicoDet-L|42.6|20.9 M|
-|PicoDet-M|37.5|16.8 M|
-|PicoDet-S|29.1|4.4 M |
-|PicoDet-XS|26.2|5.7M |
-|PP-YOLOE_plus-L|52.9|185.3 M|
-|PP-YOLOE_plus-M|49.8|83.2 M|
-|PP-YOLOE_plus-S|43.7|28.3 M|
-|PP-YOLOE_plus-X|54.7|349.4 M|
-|RT-DETR-H|56.3|435.8 M|
-|RT-DETR-L|53.0|113.7 M|
-|RT-DETR-R18|46.5|70.7 M|
-|RT-DETR-R50|53.1|149.1 M|
-|RT-DETR-X|54.8|232.9 M|
-|YOLOv3-DarkNet53|39.1|219.7 M|
-|YOLOv3-MobileNetV3|31.4|83.8 M|
-|YOLOv3-ResNet50_vd_DCN|40.6|163.0 M|
-
-**注：以上精度指标为**[COCO2017](https://cocodataset.org/#home)**验证集 mAP(0.5:0.95)。**
+<table>
+<thead>
+<tr>
+<th>模型名称</th>
+<th>mAP（%）</th>
+<th>模型存储大小（M)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CenterNet-DLA-34</td>
+<td>37.6</td>
+<td>75.4 M</td>
+</tr>
+<tr>
+<td>CenterNet-ResNet50</td>
+<td>38.9</td>
+<td>319.7 M</td>
+</tr>
+<tr>
+<td>DETR-R50</td>
+<td>42.3</td>
+<td>159.3 M</td>
+</tr>
+<tr>
+<td>FasterRCNN-ResNet34-FPN</td>
+<td>37.8</td>
+<td>137.5 M</td>
+</tr>
+<tr>
+<td>FasterRCNN-ResNet50-FPN</td>
+<td>38.4</td>
+<td>148.1 M</td>
+</tr>
+<tr>
+<td>FasterRCNN-ResNet50-vd-FPN</td>
+<td>39.5</td>
+<td>148.1 M</td>
+</tr>
+<tr>
+<td>FasterRCNN-ResNet50-vd-SSLDv2-FPN</td>
+<td>41.4</td>
+<td>148.1 M</td>
+</tr>
+<tr>
+<td>FasterRCNN-ResNet101-FPN</td>
+<td>41.4</td>
+<td>216.3 M</td>
+</tr>
+<tr>
+<td>FCOS-ResNet50</td>
+<td>39.6</td>
+<td>124.2 M</td>
+</tr>
+<tr>
+<td>PicoDet-L</td>
+<td>42.6</td>
+<td>20.9 M</td>
+</tr>
+<tr>
+<td>PicoDet-M</td>
+<td>37.5</td>
+<td>16.8 M</td>
+</tr>
+<tr>
+<td>PicoDet-S</td>
+<td>29.1</td>
+<td>4.4 M</td>
+</tr>
+<tr>
+<td>PicoDet-XS</td>
+<td>26.2</td>
+<td>5.7M</td>
+</tr>
+<tr>
+<td>PP-YOLOE_plus-L</td>
+<td>52.9</td>
+<td>185.3 M</td>
+</tr>
+<tr>
+<td>PP-YOLOE_plus-M</td>
+<td>49.8</td>
+<td>83.2 M</td>
+</tr>
+<tr>
+<td>PP-YOLOE_plus-S</td>
+<td>43.7</td>
+<td>28.3 M</td>
+</tr>
+<tr>
+<td>PP-YOLOE_plus-X</td>
+<td>54.7</td>
+<td>349.4 M</td>
+</tr>
+<tr>
+<td>RT-DETR-H</td>
+<td>56.3</td>
+<td>435.8 M</td>
+</tr>
+<tr>
+<td>RT-DETR-L</td>
+<td>53.0</td>
+<td>113.7 M</td>
+</tr>
+<tr>
+<td>RT-DETR-R18</td>
+<td>46.5</td>
+<td>70.7 M</td>
+</tr>
+<tr>
+<td>RT-DETR-R50</td>
+<td>53.1</td>
+<td>149.1 M</td>
+</tr>
+<tr>
+<td>RT-DETR-X</td>
+<td>54.8</td>
+<td>232.9 M</td>
+</tr>
+<tr>
+<td>YOLOv3-DarkNet53</td>
+<td>39.1</td>
+<td>219.7 M</td>
+</tr>
+<tr>
+<td>YOLOv3-MobileNetV3</td>
+<td>31.4</td>
+<td>83.8 M</td>
+</tr>
+<tr>
+<td>YOLOv3-ResNet50_vd_DCN</td>
+<td>40.6</td>
+<td>163.0 M</td>
+</tr>
+</tbody>
+</table>
+<b>注：以上精度指标为</b>[COCO2017](https://cocodataset.org/#home)<b>验证集 mAP(0.5:0.95)。</b>
 
 ## 语义分割模块
-|模型名称|mloU（%）|模型存储大小（M)|
-|-|-|-|
-|Deeplabv3_Plus-R50 |80.36|94.9 M|
-|Deeplabv3_Plus-R101|81.10|162.5 M|
-|Deeplabv3-R50|79.90|138.3 M|
-|Deeplabv3-R101|80.85|205.9 M|
-|OCRNet_HRNet-W48|82.15|249.8 M|
-|PP-LiteSeg-T|73.10|28.5 M|
-
-**注：以上精度指标为**[Cityscapes](https://www.cityscapes-dataset.com/)**数据集 mloU。**
+<table>
+<thead>
+<tr>
+<th>模型名称</th>
+<th>mloU（%）</th>
+<th>模型存储大小（M)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Deeplabv3_Plus-R50</td>
+<td>80.36</td>
+<td>94.9 M</td>
+</tr>
+<tr>
+<td>Deeplabv3_Plus-R101</td>
+<td>81.10</td>
+<td>162.5 M</td>
+</tr>
+<tr>
+<td>Deeplabv3-R50</td>
+<td>79.90</td>
+<td>138.3 M</td>
+</tr>
+<tr>
+<td>Deeplabv3-R101</td>
+<td>80.85</td>
+<td>205.9 M</td>
+</tr>
+<tr>
+<td>OCRNet_HRNet-W48</td>
+<td>82.15</td>
+<td>249.8 M</td>
+</tr>
+<tr>
+<td>PP-LiteSeg-T</td>
+<td>73.10</td>
+<td>28.5 M</td>
+</tr>
+</tbody>
+</table>
+<b>注：以上精度指标为</b>[Cityscapes](https://www.cityscapes-dataset.com/)<b>数据集 mloU。</b>
 
 ## 实例分割模块
-|模型名称|Mask AP|模型存储大小（M)|
-|-|-|-|
-|Mask-RT-DETR-H|50.6|449.9|
-|Mask-RT-DETR-L|45.7|113.6|
-|Mask-RT-DETR-M|42.7|66.6 M|
-|Cascade-MaskRCNN-ResNet50-FPN|36.3|254.8|
-|Cascade-MaskRCNN-ResNet50-vd-SSLDv2-FPN|39.1|254.7|
-|PP-YOLOE_seg-S|32.5|31.5 M|
-
-**注：以上精度指标为**[COCO2017](https://cocodataset.org/#home)**验证集 Mask AP(0.5:0.95)。**
+<table>
+<thead>
+<tr>
+<th>模型名称</th>
+<th>Mask AP</th>
+<th>模型存储大小（M)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Mask-RT-DETR-H</td>
+<td>50.6</td>
+<td>449.9</td>
+</tr>
+<tr>
+<td>Mask-RT-DETR-L</td>
+<td>45.7</td>
+<td>113.6</td>
+</tr>
+<tr>
+<td>Mask-RT-DETR-M</td>
+<td>42.7</td>
+<td>66.6 M</td>
+</tr>
+<tr>
+<td>Cascade-MaskRCNN-ResNet50-FPN</td>
+<td>36.3</td>
+<td>254.8</td>
+</tr>
+<tr>
+<td>Cascade-MaskRCNN-ResNet50-vd-SSLDv2-FPN</td>
+<td>39.1</td>
+<td>254.7</td>
+</tr>
+<tr>
+<td>PP-YOLOE_seg-S</td>
+<td>32.5</td>
+<td>31.5 M</td>
+</tr>
+</tbody>
+</table>
+<b>注：以上精度指标为</b>[COCO2017](https://cocodataset.org/#home)<b>验证集 Mask AP(0.5:0.95)。</b>
 
 ## 文本检测模块
-|模型名称|检测Hmean（%）|模型存储大小（M)|
-|-|-|-|
-|PP-OCRv4_mobile_det |77.79|4.2 M|
-|PP-OCRv4_server_det |82.69|100.1M|
-
-**注：以上精度指标的评估集是 PaddleOCR 自建的中文数据集，覆盖街景、网图、文档、手写多个场景，其中检测包含 500 张图片。**
+<table>
+<thead>
+<tr>
+<th>模型名称</th>
+<th>检测Hmean（%）</th>
+<th>模型存储大小（M)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PP-OCRv4_mobile_det</td>
+<td>77.79</td>
+<td>4.2 M</td>
+</tr>
+<tr>
+<td>PP-OCRv4_server_det</td>
+<td>82.69</td>
+<td>100.1M</td>
+</tr>
+</tbody>
+</table>
+<b>注：以上精度指标的评估集是 PaddleOCR 自建的中文数据集，覆盖街景、网图、文档、手写多个场景，其中检测包含 500 张图片。</b>
 
 ## 文本识别模块
-|模型名称|识别Avg Accuracy(%)|模型存储大小（M)|
-|-|-|-|
-|PP-OCRv4_mobile_rec |78.20|10.6 M|
-|PP-OCRv4_server_rec |79.20|71.2 M|
+<table>
+<thead>
+<tr>
+<th>模型名称</th>
+<th>识别Avg Accuracy(%)</th>
+<th>模型存储大小（M)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PP-OCRv4_mobile_rec</td>
+<td>78.20</td>
+<td>10.6 M</td>
+</tr>
+<tr>
+<td>PP-OCRv4_server_rec</td>
+<td>79.20</td>
+<td>71.2 M</td>
+</tr>
+</tbody>
+</table>
+<b>注：以上精度指标的评估集是 PaddleOCR 自建的中文数据集，覆盖街景、网图、文档、手写多个场景，其中文本识别包含 1.1w 张图片。</b>
 
-**注：以上精度指标的评估集是 PaddleOCR 自建的中文数据集，覆盖街景、网图、文档、手写多个场景，其中文本识别包含 1.1w 张图片。**
+<table>
+<thead>
+<tr>
+<th>模型名称</th>
+<th>识别Avg Accuracy(%)</th>
+<th>模型存储大小（M)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ch_SVTRv2_rec</td>
+<td>68.81</td>
+<td>73.9 M</td>
+</tr>
+</tbody>
+</table>
+<b>注：以上精度指标的评估集是 [PaddleOCR算法模型挑战赛 - 赛题一：OCR端到端识别任务](https://aistudio.baidu.com/competition/detail/1131/0/introduction)A榜。</b>
 
-|模型名称|识别Avg Accuracy(%)|模型存储大小（M)|
-|-|-|-|
-|ch_SVTRv2_rec|68.81|73.9 M|
-
-**注：以上精度指标的评估集是 [PaddleOCR算法模型挑战赛 - 赛题一：OCR端到端识别任务](https://aistudio.baidu.com/competition/detail/1131/0/introduction)A榜。**
-
-|模型名称|识别Avg Accuracy(%)|模型存储大小（M)|
-|-|-|-|
-|ch_RepSVTR_rec|65.07|22.1 M|
-
-**注：以上精度指标的评估集是 [PaddleOCR算法模型挑战赛 - 赛题一：OCR端到端识别任务](https://aistudio.baidu.com/competition/detail/1131/0/introduction)B榜。**
+<table>
+<thead>
+<tr>
+<th>模型名称</th>
+<th>识别Avg Accuracy(%)</th>
+<th>模型存储大小（M)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ch_RepSVTR_rec</td>
+<td>65.07</td>
+<td>22.1 M</td>
+</tr>
+</tbody>
+</table>
+<b>注：以上精度指标的评估集是 [PaddleOCR算法模型挑战赛 - 赛题一：OCR端到端识别任务](https://aistudio.baidu.com/competition/detail/1131/0/introduction)B榜。</b>
 
 ## 表格结构识别模块
-|模型名称|精度（%）|模型存储大小（M)|
-|-|-|-|
-|SLANet|76.31|6.9 M |
-
-**注：以上精度指标测量自PubtabNet英文表格识别数据集。**
+<table>
+<thead>
+<tr>
+<th>模型名称</th>
+<th>精度（%）</th>
+<th>模型存储大小（M)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SLANet</td>
+<td>76.31</td>
+<td>6.9 M</td>
+</tr>
+</tbody>
+</table>
+<b>注：以上精度指标测量自PubtabNet英文表格识别数据集。</b>
 
 ## 版面区域分析模块
-|模型名称|mAP（%）|模型存储大小（M)|
-|-|-|-|
-|PicoDet_layout_1x|86.8|7.4M |
-
-**注：以上精度指标的评估集是 PaddleOCR 自建的版面区域分析数据集，包含 1w 张图片。**
+<table>
+<thead>
+<tr>
+<th>模型名称</th>
+<th>mAP（%）</th>
+<th>模型存储大小（M)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PicoDet_layout_1x</td>
+<td>86.8</td>
+<td>7.4M</td>
+</tr>
+</tbody>
+</table>
+<b>注：以上精度指标的评估集是 PaddleOCR 自建的版面区域分析数据集，包含 1w 张图片。</b>
 
 ## 时序预测模块
-|模型名称|mse|mae|模型存储大小（M)|
-|-|-|-|-|
-|DLinear|0.382|0.394|72K|
-|NLinear|0.386|0.392|40K |
-|Nonstationary|0.600|0.515|55.5 M|
-|PatchTST|0.385|0.397|2.0M |
-|RLinear|0.384|0.392|40K|
-|TiDE|0.405|0.412|31.7M|
-|TimesNet|0.417|0.431|4.9M|
-
-**注：以上精度指标测量自**[ETTH1](https://paddle-model-ecology.bj.bcebos.com/paddlex/data/Etth1.tar)**数据集 ****（在测试集test.csv上的评测结果）****。**
+<table>
+<thead>
+<tr>
+<th>模型名称</th>
+<th>mse</th>
+<th>mae</th>
+<th>模型存储大小（M)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DLinear</td>
+<td>0.382</td>
+<td>0.394</td>
+<td>72K</td>
+</tr>
+<tr>
+<td>NLinear</td>
+<td>0.386</td>
+<td>0.392</td>
+<td>40K</td>
+</tr>
+<tr>
+<td>Nonstationary</td>
+<td>0.600</td>
+<td>0.515</td>
+<td>55.5 M</td>
+</tr>
+<tr>
+<td>PatchTST</td>
+<td>0.385</td>
+<td>0.397</td>
+<td>2.0M</td>
+</tr>
+<tr>
+<td>RLinear</td>
+<td>0.384</td>
+<td>0.392</td>
+<td>40K</td>
+</tr>
+<tr>
+<td>TiDE</td>
+<td>0.405</td>
+<td>0.412</td>
+<td>31.7M</td>
+</tr>
+<tr>
+<td>TimesNet</td>
+<td>0.417</td>
+<td>0.431</td>
+<td>4.9M</td>
+</tr>
+</tbody>
+</table>
+<b>注：以上精度指标测量自</b>[ETTH1](https://paddle-model-ecology.bj.bcebos.com/paddlex/data/Etth1.tar)<b>数据集 </b><b>（在测试集test.csv上的评测结果）</b><b>。</b>
 
 ## 时序异常检测模块
-|模型名称|precison|recall|f1_score|模型存储大小（M)|
-|-|-|-|-|-|
-|AutoEncoder_ad|99.36|84.36|91.25|52K |
-|DLinear_ad|98.98|93.96|96.41|112K|
-|Nonstationary_ad|98.55|88.95|93.51|1.8M |
-|PatchTST_ad|98.78|90.70|94.57|320K |
-|TimesNet_ad|98.37|94.80|96.56|1.3M |
-
-**注：以上精度指标测量自**[PSM](https://paddle-model-ecology.bj.bcebos.com/paddlex/data/ts_anomaly_examples.tar)**数据集。**
+<table>
+<thead>
+<tr>
+<th>模型名称</th>
+<th>precison</th>
+<th>recall</th>
+<th>f1_score</th>
+<th>模型存储大小（M)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>AutoEncoder_ad</td>
+<td>99.36</td>
+<td>84.36</td>
+<td>91.25</td>
+<td>52K</td>
+</tr>
+<tr>
+<td>DLinear_ad</td>
+<td>98.98</td>
+<td>93.96</td>
+<td>96.41</td>
+<td>112K</td>
+</tr>
+<tr>
+<td>Nonstationary_ad</td>
+<td>98.55</td>
+<td>88.95</td>
+<td>93.51</td>
+<td>1.8M</td>
+</tr>
+<tr>
+<td>PatchTST_ad</td>
+<td>98.78</td>
+<td>90.70</td>
+<td>94.57</td>
+<td>320K</td>
+</tr>
+<tr>
+<td>TimesNet_ad</td>
+<td>98.37</td>
+<td>94.80</td>
+<td>96.56</td>
+<td>1.3M</td>
+</tr>
+</tbody>
+</table>
+<b>注：以上精度指标测量自</b>[PSM](https://paddle-model-ecology.bj.bcebos.com/paddlex/data/ts_anomaly_examples.tar)<b>数据集。</b>
 
 ## 时序分类模块
-|模型名称|acc(%)|模型存储大小（M)|
-|-|-|-|
-|TimesNet_cls|87.5|792K|
-
-**注：以上精度指标测量自UWaveGestureLibrary：[训练](https://paddlets.bj.bcebos.com/classification/UWaveGestureLibrary_TRAIN.csv)、[评测](https://paddlets.bj.bcebos.com/classification/UWaveGestureLibrary_TEST.csv)数据集。**
+<table>
+<thead>
+<tr>
+<th>模型名称</th>
+<th>acc(%)</th>
+<th>模型存储大小（M)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TimesNet_cls</td>
+<td>87.5</td>
+<td>792K</td>
+</tr>
+</tbody>
+</table>
+<b>注：以上精度指标测量自UWaveGestureLibrary：[训练](https://paddlets.bj.bcebos.com/classification/UWaveGestureLibrary_TRAIN.csv)、[评测](https://paddlets.bj.bcebos.com/classification/UWaveGestureLibrary_TEST.csv)数据集。</b>

@@ -39,8 +39,8 @@ class Attribute(BaseModel):
 
 class Pedestrian(BaseModel):
     bbox: BoundingBox
-    score: float
     attributes: List[Attribute]
+    score: float
 
 
 class InferResult(BaseModel):
@@ -77,11 +77,11 @@ def create_pipeline_app(
                 pedestrians.append(
                     Pedestrian(
                         bbox=obj["coordinate"],
-                        score=obj["det_score"],
                         attributes=[
                             Attribute(label=l, score=s)
                             for l, s in zip(obj["labels"], obj["cls_scores"])
                         ],
+                        score=obj["det_score"],
                     )
                 )
             output_image_base64 = serving_utils.image_to_base64(result.img)

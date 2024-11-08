@@ -1,59 +1,73 @@
-简体中文 | [English](pedestrian_attribute_recognition_en.md)
+---
+comments: true
+---
 
 # 行人属性识别产线使用教程
 
 ## 1. 行人属性识别产线介绍
 行人属性识别是计算机视觉系统中的关键功能，用于在图像或视频中定位并标记行人的特定特征，如性别、年龄、衣物颜色和款式等。该任务不仅要求准确检测出行人，还需识别每个行人的详细属性信息。行人属性识别产线是定位并识别行人属性的端到端串联系统，广泛应用于智慧城市和安防监控等领域，可显著提升系统的智能化水平和管理效率。
 
-![](https://raw.githubusercontent.com/cuicheng01/PaddleX_doc_images/refs/heads/main/images/pipelines/pedestrian_attribute_recognition/01.jpg)
+<img src="https://raw.githubusercontent.com/cuicheng01/PaddleX_doc_images/refs/heads/main/images/pipelines/pedestrian_attribute_recognition/01.jpg">
 
-**行人属性识别产线中包含了行人检测模块和行人属性识别模块**，每个模块中包含了若干模型，具体使用哪些模型，您可以根据下边的 benchmark 数据来选择。**如您更考虑模型精度，请选择精度较高的模型，如您更考虑模型推理速度，请选择推理速度较快的模型，如您更考虑模型存储大小，请选择存储大小较小的模型**。
+<b>行人属性识别产线中包含了行人检测模块和行人属性识别模块</b>，每个模块中包含了若干模型，具体使用哪些模型，您可以根据下边的 benchmark 数据来选择。<b>如您更考虑模型精度，请选择精度较高的模型，如您更考虑模型推理速度，请选择推理速度较快的模型，如您更考虑模型存储大小，请选择存储大小较小的模型</b>。
 
-<details>
-   <summary> 👉模型列表详情</summary>
+<details><summary> 👉模型列表详情</summary>
 
-**行人检测模块：**
-
+<p><b>行人检测模块：</b></p>
 <table>
-  <tr>
-    <th >模型</th>
-    <th >mAP(0.5:0.95)</th>
-    <th >mAP(0.5)</th>
-    <th >GPU推理耗时（ms）</th>
-    <th >CPU推理耗时 (ms)</th>
-    <th >模型存储大小（M）</th>
-    <th >介绍</th>
-  </tr>
-  <tr>
-    <td>PP-YOLOE-L_human</td>
-    <td>48.0</td>
-    <td>81.9</td>
-    <td>32.8</td>
-    <td>777.7</td>
-    <td>196.02</td>
-    <td rowspan="2">基于PP-YOLOE的行人检测模型</td>
-  </tr>
-  <tr>
-    <td>PP-YOLOE-S_human</td>
-    <td>42.5</td>
-    <td>77.9</td>
-    <td>15.0</td>
-    <td>179.3</td>
-    <td>28.79</td>
-  </tr>
+<tr>
+<th >模型</th>
+<th >mAP(0.5:0.95)</th>
+<th >mAP(0.5)</th>
+<th >GPU推理耗时（ms）</th>
+<th >CPU推理耗时 (ms)</th>
+<th >模型存储大小（M）</th>
+<th >介绍</th>
+</tr>
+<tr>
+<td>PP-YOLOE-L_human</td>
+<td>48.0</td>
+<td>81.9</td>
+<td>32.8</td>
+<td>777.7</td>
+<td>196.02</td>
+<td rowspan="2">基于PP-YOLOE的行人检测模型</td>
+</tr>
+<tr>
+<td>PP-YOLOE-S_human</td>
+<td>42.5</td>
+<td>77.9</td>
+<td>15.0</td>
+<td>179.3</td>
+<td>28.79</td>
+</tr>
 </table>
 
-**注：以上精度指标为CrowdHuman数据集 mAP(0.5:0.95)。所有模型 GPU 推理耗时基于 NVIDIA Tesla T4 机器，精度类型为 FP32， CPU 推理速度基于 Intel(R) Xeon(R) Gold 5117 CPU @ 2.00GHz，线程数为8，精度类型为 FP32。**
-
-**行人属性识别模块：**
-
-|模型|mA（%）|GPU推理耗时（ms）|CPU推理耗时 (ms)|模型存储大小（M)|介绍|
-|-|-|-|-|-|-|
-|PP-LCNet_x1_0_pedestrian_attribute|92.2|3.84845|9.23735|6.7 M  |PP-LCNet_x1_0_pedestrian_attribute 是一种基于PP-LCNet的轻量级行人属性识别模型，包含26个类别|
-
-**注：以上精度指标为 PaddleX 内部自建数据集 mA。GPU 推理耗时基于 NVIDIA Tesla T4 机器，精度类型为 FP32， CPU 推理速度基于 Intel(R) Xeon(R) Gold 5117 CPU @ 2.00GHz，线程数为 8，精度类型为 FP32。**
-
-</details>
+<p><b>注：以上精度指标为CrowdHuman数据集 mAP(0.5:0.95)。所有模型 GPU 推理耗时基于 NVIDIA Tesla T4 机器，精度类型为 FP32， CPU 推理速度基于 Intel(R) Xeon(R) Gold 5117 CPU @ 2.00GHz，线程数为8，精度类型为 FP32。</b></p>
+<p><b>行人属性识别模块：</b></p>
+<table>
+<thead>
+<tr>
+<th>模型</th>
+<th>mA（%）</th>
+<th>GPU推理耗时（ms）</th>
+<th>CPU推理耗时 (ms)</th>
+<th>模型存储大小（M)</th>
+<th>介绍</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PP-LCNet_x1_0_pedestrian_attribute</td>
+<td>92.2</td>
+<td>3.84845</td>
+<td>9.23735</td>
+<td>6.7 M</td>
+<td>PP-LCNet_x1_0_pedestrian_attribute 是一种基于PP-LCNet的轻量级行人属性识别模型，包含26个类别</td>
+</tr>
+</tbody>
+</table>
+<p><b>注：以上精度指标为 PaddleX 内部自建数据集 mA。GPU 推理耗时基于 NVIDIA Tesla T4 机器，精度类型为 FP32， CPU 推理速度基于 Intel(R) Xeon(R) Gold 5117 CPU @ 2.00GHz，线程数为 8，精度类型为 FP32。</b></p></details>
 
 ## 2. 快速开始
 PaddleX 所提供的预训练的模型产线均可以快速体验效果，你可以在线体验行人属性识别产线的效果，也可以在本地使用命令行或 Python 体验行人属性识别产线的效果。
@@ -80,26 +94,17 @@ paddlex --pipeline pedestrian_attribute_recognition --input pedestrian_attribute
 
 在执行上述 Python 脚本时，加载的是默认的行人属性识别产线配置文件，若您需要自定义配置文件，可执行如下命令获取：
 
-<details>
-   <summary> 👉点击展开</summary>
+<details><summary> 👉点击展开</summary>
 
-```
-paddlex --get_pipeline_config pedestrian_attribute_recognition
-```
-执行后，行人属性识别产线配置文件将被保存在当前路径。若您希望自定义保存位置，可执行如下命令（假设自定义保存位置为 `./my_path` ）：
-
-```
-paddlex --get_pipeline_config pedestrian_attribute_recognition --save_path ./my_path
-```
-
-获取产线配置文件后，可将 `--pipeline` 替换为配置文件保存路径，即可使配置文件生效。例如，若配置文件保存路径为 `./pedestrian_attribute_recognition.yaml`，只需执行：
-
-```bash
-paddlex --pipeline ./pedestrian_attribute_recognition.yaml --input pedestrian_attribute_002.jpg --device gpu:0
-```
-其中，`--model`、`--device` 等参数无需指定，将使用配置文件中的参数。若依然指定了参数，将以指定的参数为准。
-
-</details>
+<pre><code>paddlex --get_pipeline_config pedestrian_attribute_recognition
+</code></pre>
+<p>执行后，行人属性识别产线配置文件将被保存在当前路径。若您希望自定义保存位置，可执行如下命令（假设自定义保存位置为 <code>./my_path</code> ）：</p>
+<pre><code>paddlex --get_pipeline_config pedestrian_attribute_recognition --save_path ./my_path
+</code></pre>
+<p>获取产线配置文件后，可将 <code>--pipeline</code> 替换为配置文件保存路径，即可使配置文件生效。例如，若配置文件保存路径为 <code>./pedestrian_attribute_recognition.yaml</code>，只需执行：</p>
+<pre><code class="language-bash">paddlex --pipeline ./pedestrian_attribute_recognition.yaml --input pedestrian_attribute_002.jpg --device gpu:0
+</code></pre>
+<p>其中，<code>--model</code>、<code>--device</code> 等参数无需指定，将使用配置文件中的参数。若依然指定了参数，将以指定的参数为准。</p></details>
 
 #### 2.2.2 Python脚本方式集成
 几行代码即可完成产线的快速推理，以行人属性识别产线为例：
@@ -121,33 +126,102 @@ for res in output:
 
 （1）实例化 `create_pipeline` 实例化产线对象：具体参数说明如下：
 
-|参数|参数说明|参数类型|默认值|
-|-|-|-|-|
-|`pipeline`|产线名称或是产线配置文件路径。如为产线名称，则必须为 PaddleX 所支持的产线。|`str`|无|
-|`device`|产线模型推理设备。支持：“gpu”，“cpu”。|`str`|`gpu`|
-|`use_hpip`|是否启用高性能推理，仅当该产线支持高性能推理时可用。|`bool`|`False`|
-
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>参数说明</th>
+<th>参数类型</th>
+<th>默认值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>pipeline</code></td>
+<td>产线名称或是产线配置文件路径。如为产线名称，则必须为 PaddleX 所支持的产线。</td>
+<td><code>str</code></td>
+<td>无</td>
+</tr>
+<tr>
+<td><code>device</code></td>
+<td>产线模型推理设备。支持：“gpu”，“cpu”。</td>
+<td><code>str</code></td>
+<td><code>gpu</code></td>
+</tr>
+<tr>
+<td><code>use_hpip</code></td>
+<td>是否启用高性能推理，仅当该产线支持高性能推理时可用。</td>
+<td><code>bool</code></td>
+<td><code>False</code></td>
+</tr>
+</tbody>
+</table>
 （2）调用行人属性识别产线对象的 `predict` 方法进行推理预测：`predict` 方法参数为`x`，用于输入待预测数据，支持多种输入方式，具体示例如下：
 
-| 参数类型      | 参数说明                                                                                                  |
-|---------------|-----------------------------------------------------------------------------------------------------------|
-| Python Var    | 支持直接传入Python变量，如numpy.ndarray表示的图像数据。                                               |
-| str         | 支持传入待预测数据文件路径，如图像文件的本地路径：`/root/data/img.jpg`。                                   |
-| str           | 支持传入待预测数据文件URL，如图像文件的网络URL：[示例](https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/pedestrian_attribute_002.jpg)。|
-| str           | 支持传入本地目录，该目录下需包含待预测数据文件，如本地路径：`/root/data/`。                               |
-| dict          | 支持传入字典类型，字典的key需与具体任务对应，如行人属性识别任务对应\"img\"，字典的val支持上述类型数据，例如：`{\"img\": \"/root/data1\"}`。|
-| list          | 支持传入列表，列表元素需为上述类型数据，如`[numpy.ndarray, numpy.ndarray]，[\"/root/data/img1.jpg\", \"/root/data/img2.jpg\"]`，`[\"/root/data1\", \"/root/data2\"]`，`[{\"img\": \"/root/data1\"}, {\"img\": \"/root/data2/img.jpg\"}]`。|
-
+<table>
+<thead>
+<tr>
+<th>参数类型</th>
+<th>参数说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Python Var</td>
+<td>支持直接传入Python变量，如numpy.ndarray表示的图像数据。</td>
+</tr>
+<tr>
+<td>str</td>
+<td>支持传入待预测数据文件路径，如图像文件的本地路径：<code>/root/data/img.jpg</code>。</td>
+</tr>
+<tr>
+<td>str</td>
+<td>支持传入待预测数据文件URL，如图像文件的网络URL：<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/pedestrian_attribute_002.jpg">示例</a>。</td>
+</tr>
+<tr>
+<td>str</td>
+<td>支持传入本地目录，该目录下需包含待预测数据文件，如本地路径：<code>/root/data/</code>。</td>
+</tr>
+<tr>
+<td>dict</td>
+<td>支持传入字典类型，字典的key需与具体任务对应，如行人属性识别任务对应\"img\"，字典的val支持上述类型数据，例如：<code>{\"img\": \"/root/data1\"}</code>。</td>
+</tr>
+<tr>
+<td>list</td>
+<td>支持传入列表，列表元素需为上述类型数据，如<code>[numpy.ndarray, numpy.ndarray]，[\"/root/data/img1.jpg\", \"/root/data/img2.jpg\"]</code>，<code>[\"/root/data1\", \"/root/data2\"]</code>，<code>[{\"img\": \"/root/data1\"}, {\"img\": \"/root/data2/img.jpg\"}]</code>。</td>
+</tr>
+</tbody>
+</table>
 （3）调用`predict`方法获取预测结果：`predict` 方法为`generator`，因此需要通过调用获得预测结果，`predict`方法以batch为单位对数据进行预测，因此预测结果为list形式表示的一组预测结果。
 
 （4）对预测结果进行处理：每个样本的预测结果均为`dict`类型，且支持打印，或保存为文件，支持保存的类型与具体产线相关，如：
 
-| 方法         | 说明                        | 方法参数                                                                                               |
-|--------------|-----------------------------|--------------------------------------------------------------------------------------------------------|
-| print        | 打印结果到终端              | `- format_json`：bool类型，是否对输出内容进行使用json缩进格式化，默认为True；<br>`- indent`：int类型，json格式化设置，仅当format_json为True时有效，默认为4；<br>`- ensure_ascii`：bool类型，json格式化设置，仅当format_json为True时有效，默认为False； |
-| save_to_json | 将结果保存为json格式的文件   | `- save_path`：str类型，保存的文件路径，当为目录时，保存文件命名与输入文件类型命名一致；<br>`- indent`：int类型，json格式化设置，默认为4；<br>`- ensure_ascii`：bool类型，json格式化设置，默认为False； |
-| save_to_img  | 将结果保存为图像格式的文件  | `- save_path`：str类型，保存的文件路径，当为目录时，保存文件命名与输入文件类型命名一致； |
-
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>说明</th>
+<th>方法参数</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>print</td>
+<td>打印结果到终端</td>
+<td><code>- format_json</code>：bool类型，是否对输出内容进行使用json缩进格式化，默认为True；<br><code>- indent</code>：int类型，json格式化设置，仅当format_json为True时有效，默认为4；<br><code>- ensure_ascii</code>：bool类型，json格式化设置，仅当format_json为True时有效，默认为False；</td>
+</tr>
+<tr>
+<td>save_to_json</td>
+<td>将结果保存为json格式的文件</td>
+<td><code>- save_path</code>：str类型，保存的文件路径，当为目录时，保存文件命名与输入文件类型命名一致；<br><code>- indent</code>：int类型，json格式化设置，默认为4；<br><code>- ensure_ascii</code>：bool类型，json格式化设置，默认为False；</td>
+</tr>
+<tr>
+<td>save_to_img</td>
+<td>将结果保存为图像格式的文件</td>
+<td><code>- save_path</code>：str类型，保存的文件路径，当为目录时，保存文件命名与输入文件类型命名一致；</td>
+</tr>
+</tbody>
+</table>
 若您获取了配置文件，即可对行人属性识别产线各项配置进行自定义，只需要修改 `create_pipeline` 方法中的 `pipeline` 参数值为产线配置文件路径即可。
 
 例如，若您的配置文件保存在 `./my_path/pedestrian_attribute_recognition*.yaml` ，则只需执行：
@@ -168,115 +242,207 @@ for res in output:
 
 此外，PaddleX 也提供了其他三种部署方式，详细说明如下：
 
-🚀 **高性能推理**：在实际生产环境中，许多应用对部署策略的性能指标（尤其是响应速度）有着较严苛的标准，以确保系统的高效运行与用户体验的流畅性。为此，PaddleX 提供高性能推理插件，旨在对模型推理及前后处理进行深度性能优化，实现端到端流程的显著提速，详细的高性能推理流程请参考[PaddleX高性能推理指南](../../../pipeline_deploy/high_performance_inference.md)。
+🚀 <b>高性能推理</b>：在实际生产环境中，许多应用对部署策略的性能指标（尤其是响应速度）有着较严苛的标准，以确保系统的高效运行与用户体验的流畅性。为此，PaddleX 提供高性能推理插件，旨在对模型推理及前后处理进行深度性能优化，实现端到端流程的显著提速，详细的高性能推理流程请参考[PaddleX高性能推理指南](../../../pipeline_deploy/high_performance_inference.md)。
 
-☁️ **服务化部署**：服务化部署是实际生产环境中常见的一种部署形式。通过将推理功能封装为服务，客户端可以通过网络请求来访问这些服务，以获取推理结果。PaddleX 支持用户以低成本实现产线的服务化部署，详细的服务化部署流程请参考[PaddleX服务化部署指南](../../../pipeline_deploy/service_deploy.md)。
+☁️ <b>服务化部署</b>：服务化部署是实际生产环境中常见的一种部署形式。通过将推理功能封装为服务，客户端可以通过网络请求来访问这些服务，以获取推理结果。PaddleX 支持用户以低成本实现产线的服务化部署，详细的服务化部署流程请参考[PaddleX服务化部署指南](../../../pipeline_deploy/service_deploy.md)。
 
 下面是API参考和多语言服务调用示例：
 
-<details>
-<summary>API参考</summary>
+<details><summary>API参考</summary>
 
-对于服务提供的所有操作：
-
-- 响应体以及POST请求的请求体均为JSON数据（JSON对象）。
-- 当请求处理成功时，响应状态码为`200`，响应体的属性如下：
-
-    |名称|类型|含义|
-    |-|-|-|
-    |`errorCode`|`integer`|错误码。固定为`0`。|
-    |`errorMsg`|`string`|错误说明。固定为`"Success"`。|
-
-    响应体还可能有`result`属性，类型为`object`，其中存储操作结果信息。
-
-- 当请求处理未成功时，响应体的属性如下：
-
-    |名称|类型|含义|
-    |-|-|-|
-    |`errorCode`|`integer`|错误码。与响应状态码相同。|
-    |`errorMsg`|`string`|错误说明。|
-
-服务提供的操作如下：
-
-- **`infer`**
-
-    获取行人属性识别结果。
-
-    `POST /pedestrian-attribute-recognition`
-
-    - 请求体的属性如下：
-
-        |名称|类型|含义|是否必填|
-        |-|-|-|-|
-        |`image`|`string`|服务可访问的图像文件的URL或图像文件内容的Base64编码结果。|是|
-
-    - 请求处理成功时，响应体的`result`具有如下属性：
-
-        |名称|类型|含义|
-        |-|-|-|
-        |`pedestrians`|`array`|行人的位置及属性等信息。|
-        |`image`|`string`|行人属性识别结果图。图像为JPEG格式，使用Base64编码。|
-
-        `pedestrians`中的每个元素为一个`object`，具有如下属性：
-
-        |名称|类型|含义|
-        |-|-|-|
-        |`bbox`|`array`|行人位置。数组中元素依次为边界框左上角x坐标、左上角y坐标、右下角x坐标以及右下角y坐标。|
-        |`score`|`number`|检测得分。|
-        |`attributes`|`array`|行人属性。|
-
-        `attributes`中的每个元素为一个`object`，具有如下属性：
-
-        |名称|类型|含义|
-        |-|-|-|
-        |`label`|`string`|属性标签。|
-        |`score`|`number`|分类得分。|
-
+<p>对于服务提供的所有操作：</p>
+<ul>
+<li>响应体以及POST请求的请求体均为JSON数据（JSON对象）。</li>
+<li>当请求处理成功时，响应状态码为<code>200</code>，响应体的属性如下：</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>类型</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>errorCode</code></td>
+<td><code>integer</code></td>
+<td>错误码。固定为<code>0</code>。</td>
+</tr>
+<tr>
+<td><code>errorMsg</code></td>
+<td><code>string</code></td>
+<td>错误说明。固定为<code>"Success"</code>。</td>
+</tr>
+</tbody>
+</table>
+<p>响应体还可能有<code>result</code>属性，类型为<code>object</code>，其中存储操作结果信息。</p>
+<ul>
+<li>当请求处理未成功时，响应体的属性如下：</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>类型</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>errorCode</code></td>
+<td><code>integer</code></td>
+<td>错误码。与响应状态码相同。</td>
+</tr>
+<tr>
+<td><code>errorMsg</code></td>
+<td><code>string</code></td>
+<td>错误说明。</td>
+</tr>
+</tbody>
+</table>
+<p>服务提供的操作如下：</p>
+<ul>
+<li><b><code>infer</code></b></li>
+</ul>
+<p>获取行人属性识别结果。</p>
+<p><code>POST /pedestrian-attribute-recognition</code></p>
+<ul>
+<li>请求体的属性如下：</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>类型</th>
+<th>含义</th>
+<th>是否必填</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>image</code></td>
+<td><code>string</code></td>
+<td>服务可访问的图像文件的URL或图像文件内容的Base64编码结果。</td>
+<td>是</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>请求处理成功时，响应体的<code>result</code>具有如下属性：</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>类型</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>pedestrians</code></td>
+<td><code>array</code></td>
+<td>行人的位置及属性等信息。</td>
+</tr>
+<tr>
+<td><code>image</code></td>
+<td><code>string</code></td>
+<td>行人属性识别结果图。图像为JPEG格式，使用Base64编码。</td>
+</tr>
+</tbody>
+</table>
+<p><code>pedestrians</code>中的每个元素为一个<code>object</code>，具有如下属性：</p>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>类型</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>bbox</code></td>
+<td><code>array</code></td>
+<td>行人位置。数组中元素依次为边界框左上角x坐标、左上角y坐标、右下角x坐标以及右下角y坐标。</td>
+</tr>
+<tr>
+<td><code>attributes</code></td>
+<td><code>array</code></td>
+<td>行人属性。</td>
+</tr>
+<tr>
+<td><code>score</code></td>
+<td><code>number</code></td>
+<td>检测得分。</td>
+</tr>
+</tbody>
+</table>
+<p><code>attributes</code>中的每个元素为一个<code>object</code>，具有如下属性：</p>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>类型</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>label</code></td>
+<td><code>string</code></td>
+<td>属性标签。</td>
+</tr>
+<tr>
+<td><code>score</code></td>
+<td><code>number</code></td>
+<td>分类得分。</td>
+</tr>
+</tbody>
+</table>
 </details>
 
-<details>
-<summary>多语言调用服务示例</summary>
+<details><summary>多语言调用服务示例</summary>
 
 <details>
 <summary>Python</summary>
 
-```python
-import base64
+
+<pre><code class="language-python">import base64
 import requests
 
-API_URL = "http://localhost:8080/pedestrian-attribute-recognition" # 服务URL
-image_path = "./demo.jpg"
-output_image_path = "./out.jpg"
+API_URL = &quot;http://localhost:8080/pedestrian-attribute-recognition&quot; # 服务URL
+image_path = &quot;./demo.jpg&quot;
+output_image_path = &quot;./out.jpg&quot;
 
 # 对本地图像进行Base64编码
-with open(image_path, "rb") as file:
+with open(image_path, &quot;rb&quot;) as file:
     image_bytes = file.read()
-    image_data = base64.b64encode(image_bytes).decode("ascii")
+    image_data = base64.b64encode(image_bytes).decode(&quot;ascii&quot;)
 
-payload = {"image": image_data}  # Base64编码的文件内容或者图像URL
+payload = {&quot;image&quot;: image_data}  # Base64编码的文件内容或者图像URL
 
 # 调用API
 response = requests.post(API_URL, json=payload)
 
 # 处理接口返回数据
 assert response.status_code == 200
-result = response.json()["result"]
-with open(output_image_path, "wb") as file:
-    file.write(base64.b64decode(result["image"]))
-print(f"Output image saved at {output_image_path}")
-print("\nDetected pedestrians:")
-print(result["pedestrians"])
-```
-
-</details>
+result = response.json()[&quot;result&quot;]
+with open(output_image_path, &quot;wb&quot;) as file:
+    file.write(base64.b64decode(result[&quot;image&quot;]))
+print(f&quot;Output image saved at {output_image_path}&quot;)
+print(&quot;\nDetected pedestrians:&quot;)
+print(result[&quot;pedestrians&quot;])
+</code></pre></details>
 </details>
 <br/>
 
-📱 **端侧部署**：端侧部署是一种将计算和数据处理功能放在用户设备本身上的方式，设备可以直接处理数据，而不需要依赖远程的服务器。PaddleX 支持将模型部署在 Android 等端侧设备上，详细的端侧部署流程请参考[PaddleX端侧部署指南](../../../pipeline_deploy/edge_deploy.md)。
+📱 <b>端侧部署</b>：端侧部署是一种将计算和数据处理功能放在用户设备本身上的方式，设备可以直接处理数据，而不需要依赖远程的服务器。PaddleX 支持将模型部署在 Android 等端侧设备上，详细的端侧部署流程请参考[PaddleX端侧部署指南](../../../pipeline_deploy/edge_deploy.md)。
 您可以根据需要选择合适的方式部署模型产线，进而进行后续的 AI 应用集成。
 
 ## 4. 二次开发
-如果行人属性识别产线提供的默认模型权重在您的场景中，精度或速度不满意，您可以尝试利用**您自己拥有的特定领域或应用场景的数据**对现有模型进行进一步的**微调**，以提升行人属性识别产线的在您的场景中的识别效果。
+如果行人属性识别产线提供的默认模型权重在您的场景中，精度或速度不满意，您可以尝试利用<b>您自己拥有的特定领域或应用场景的数据</b>对现有模型进行进一步的<b>微调</b>，以提升行人属性识别产线的在您的场景中的识别效果。
 
 ### 4.1 模型微调
 由于行人属性识别产线包含行人属性识别模块和行人检测模块，如果模型产线的效果不及预期可能来自于其中任何一个模块。
@@ -298,7 +464,7 @@ Pipeline:
 随后， 参考本地体验中的命令行方式或 Python 脚本方式，加载修改后的产线配置文件即可。
 
 ##  5. 多硬件支持
-PaddleX 支持英伟达 GPU、昆仑芯 XPU、昇腾 NPU和寒武纪 MLU 等多种主流硬件设备，**仅需修改 `--device` 参数**即可完成不同硬件之间的无缝切换。
+PaddleX 支持英伟达 GPU、昆仑芯 XPU、昇腾 NPU和寒武纪 MLU 等多种主流硬件设备，<b>仅需修改 `--device` 参数</b>即可完成不同硬件之间的无缝切换。
 
 例如，您使用英伟达 GPU 进行行人属性识别产线的推理，使用的命令为：
 

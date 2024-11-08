@@ -30,7 +30,9 @@ class ShiTuRecTrainer(ClsTrainer):
         if self.train_config.save_interval:
             self.pdx_config.update_save_interval(self.train_config.save_interval)
 
-        self.pdx_config.update_dataset(self.global_config.dataset_dir, "ShiTuRecDataset")
+        self.pdx_config.update_dataset(
+            self.global_config.dataset_dir, "ShiTuRecDataset"
+        )
         if self.train_config.num_classes is not None:
             self.pdx_config.update_num_classes(self.train_config.num_classes)
         if self.train_config.pretrain_weight_path != "":

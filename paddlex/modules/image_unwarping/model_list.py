@@ -15,4 +15,3 @@
 MODELS = [
     "UVDoc",
 ]
-

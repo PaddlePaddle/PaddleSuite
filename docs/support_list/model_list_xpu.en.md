@@ -1,0 +1,304 @@
+---
+comments: true
+---
+
+# PaddleX Model List (Kunlun XPU)
+
+PaddleX incorporates multiple pipelines, each containing several modules, and each module encompasses various models. You can select the appropriate models based on the benchmark data below. If you prioritize model accuracy, choose models with higher accuracy. If you prioritize model size, select models with smaller storage requirements.
+
+## Image Classification Module
+<table>
+<thead>
+<tr>
+<th>Model Name</th>
+<th>Top-1 Accuracy (%)</th>
+<th>Model Size (M)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>MobileNetV3_large_x0_5</td>
+<td>69.2</td>
+<td>9.6 M</td>
+</tr>
+<tr>
+<td>MobileNetV3_large_x0_35</td>
+<td>64.3</td>
+<td>7.5 M</td>
+</tr>
+<tr>
+<td>MobileNetV3_large_x0_75</td>
+<td>73.1</td>
+<td>14.0 M</td>
+</tr>
+<tr>
+<td>MobileNetV3_large_x1_0</td>
+<td>75.3</td>
+<td>19.5 M</td>
+</tr>
+<tr>
+<td>MobileNetV3_large_x1_25</td>
+<td>76.4</td>
+<td>26.5 M</td>
+</tr>
+<tr>
+<td>MobileNetV3_small_x0_5</td>
+<td>59.2</td>
+<td>6.8 M</td>
+</tr>
+<tr>
+<td>MobileNetV3_small_x0_35</td>
+<td>53.0</td>
+<td>6.0 M</td>
+</tr>
+<tr>
+<td>MobileNetV3_small_x0_75</td>
+<td>66.0</td>
+<td>8.5 M</td>
+</tr>
+<tr>
+<td>MobileNetV3_small_x1_0</td>
+<td>68.2</td>
+<td>10.5 M</td>
+</tr>
+<tr>
+<td>MobileNetV3_small_x1_25</td>
+<td>70.7</td>
+<td>13.0 M</td>
+</tr>
+<tr>
+<td>PP-HGNet_small</td>
+<td>81.51</td>
+<td>86.5 M</td>
+</tr>
+<tr>
+<td>PP-LCNet_x0_5</td>
+<td>63.14</td>
+<td>6.7 M</td>
+</tr>
+<tr>
+<td>PP-LCNet_x0_25</td>
+<td>51.86</td>
+<td>5.5 M</td>
+</tr>
+<tr>
+<td>PP-LCNet_x0_35</td>
+<td>58.09</td>
+<td>5.9 M</td>
+</tr>
+<tr>
+<td>PP-LCNet_x0_75</td>
+<td>68.18</td>
+<td>8.4 M</td>
+</tr>
+<tr>
+<td>PP-LCNet_x1_0</td>
+<td>71.32</td>
+<td>10.5 M</td>
+</tr>
+<tr>
+<td>PP-LCNet_x1_5</td>
+<td>73.71</td>
+<td>16.0 M</td>
+</tr>
+<tr>
+<td>PP-LCNet_x2_0</td>
+<td>75.18</td>
+<td>23.2 M</td>
+</tr>
+<tr>
+<td>PP-LCNet_x2_5</td>
+<td>76.60</td>
+<td>32.1 M</td>
+</tr>
+<tr>
+<td>ResNet18</td>
+<td>71.0</td>
+<td>41.5 M</td>
+</tr>
+<tr>
+<td>ResNet34</td>
+<td>74.6</td>
+<td>77.3 M</td>
+</tr>
+<tr>
+<td>ResNet50</td>
+<td>76.5</td>
+<td>90.8 M</td>
+</tr>
+<tr>
+<td>ResNet101</td>
+<td>77.6</td>
+<td>158.7 M</td>
+</tr>
+<tr>
+<td>ResNet152</td>
+<td>78.3</td>
+<td>214.2 M</td>
+</tr>
+</tbody>
+</table>
+<b>Note: The above accuracy metrics are Top-1 Accuracy on the [ImageNet-1k](https://www.image-net.org/index.php) validation set.</b>
+
+## Object Detection Module
+<table>
+<thead>
+<tr>
+<th>Model Name</th>
+<th>mAP (%)</th>
+<th>Model Size (M)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PicoDet-L</td>
+<td>42.6</td>
+<td>20.9 M</td>
+</tr>
+<tr>
+<td>PicoDet-S</td>
+<td>29.1</td>
+<td>4.4 M</td>
+</tr>
+<tr>
+<td>PP-YOLOE_plus-L</td>
+<td>52.9</td>
+<td>185.3 M</td>
+</tr>
+<tr>
+<td>PP-YOLOE_plus-M</td>
+<td>49.8</td>
+<td>83.2 M</td>
+</tr>
+<tr>
+<td>PP-YOLOE_plus-S</td>
+<td>43.7</td>
+<td>28.3 M</td>
+</tr>
+<tr>
+<td>PP-YOLOE_plus-X</td>
+<td>54.7</td>
+<td>349.4 M</td>
+</tr>
+</tbody>
+</table>
+<b>Note: The above accuracy metrics are mAP(0.5:0.95) on the [COCO2017](https://cocodataset.org/#home) validation set.</b>
+
+## Semantic Segmentation Module
+<table>
+<thead>
+<tr>
+<th>Model Name</th>
+<th>mIoU (%)</th>
+<th>Model Size (M)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PP-LiteSeg-T</td>
+<td>73.10</td>
+<td>28.5 M</td>
+</tr>
+</tbody>
+</table>
+<b>Note: The above accuracy metrics are based on the mIoU of the [Cityscapes](https://www.cityscapes-dataset.com/) dataset.</b>
+
+## Text Detection Module
+<table>
+<thead>
+<tr>
+<th>Model Name</th>
+<th>Detection Hmean (%)</th>
+<th>Model Size (M)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PP-OCRv4_mobile_det</td>
+<td>77.79</td>
+<td>4.2 M</td>
+</tr>
+<tr>
+<td>PP-OCRv4_server_det</td>
+<td>82.69</td>
+<td>100.1M</td>
+</tr>
+</tbody>
+</table>
+<b>Note: The evaluation set for the above accuracy metrics is PaddleOCR's self-built Chinese dataset, covering street scenes, web images, documents, handwriting, and more scenarios, with 500 images for detection.</b>
+
+## Text Recognition Module
+<table>
+<thead>
+<tr>
+<th>Model Name</th>
+<th>Recognition Avg Accuracy (%)</th>
+<th>Model Size (M)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PP-OCRv4_mobile_rec</td>
+<td>78.20</td>
+<td>10.6 M</td>
+</tr>
+<tr>
+<td>PP-OCRv4_server_rec</td>
+<td>79.20</td>
+<td>71.2 M</td>
+</tr>
+</tbody>
+</table>
+<b>Note: The evaluation set for the above accuracy metrics is PaddleOCR's self-built Chinese dataset, covering street scenes, web images, documents, handwriting, and more scenarios, with 11,000 images for text recognition.</b>
+
+## Layout Analysis Module
+<table>
+<thead>
+<tr>
+<th>Model Name</th>
+<th>mAP (%)</th>
+<th>Model Size (M)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PicoDet_layout_1x</td>
+<td>86.8</td>
+<td>7.4M</td>
+</tr>
+</tbody>
+</table>
+<b>Note: The evaluation set for the above accuracy metrics is PaddleOCR's self-built layout analysis dataset, containing 10,000 images.</b>
+
+## Time Series Forecasting Module
+<table>
+<thead>
+<tr>
+<th>Model Name</th>
+<th>mse</th>
+<th>mae</th>
+<th>Model Size (M)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DLinear</td>
+<td>0.382</td>
+<td>0.394</td>
+<td>72K</td>
+</tr>
+<tr>
+<td>NLinear</td>
+<td>0.386</td>
+<td>0.392</td>
+<td>40K</td>
+</tr>
+<tr>
+<td>RLinear</td>
+<td>0.384</td>
+<td>0.392</td>
+<td>40K</td>
+</tr>
+</tbody>
+</table>
+<b>Note: The above accuracy metrics are measured on the [ETTH1](https://paddle-model-ecology.bj.bcebos.com/paddlex/data/Etth1.tar) dataset (evaluation results on the test set test.csv).</b>
