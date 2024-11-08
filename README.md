@@ -358,7 +358,7 @@ PaddleX的各个产线均支持本地**快速推理**，部分模型支持在[AI
 
 ### 🛠️ 安装
 
-> ❗安装 PaddleX 前请先确保您有基础的 **Python 运行环境**（注：当前支持Python 3.8 ～ Python 3.10下运行，更多Python版本适配中）。
+> ❗安装 PaddleX 前请先确保您有基础的 **Python 运行环境**（注：当前支持Python 3.8 ～ Python 3.10下运行，更多Python版本适配中）。PaddleX 3.0-beta1 版本依赖的 PaddlePaddle 版本为 3.0.0b1。
 
 * **安装 PaddlePaddle**
 ```bash
