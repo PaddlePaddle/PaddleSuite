@@ -30,7 +30,7 @@ python -m pip install paddlepaddle-gpu==3.0.0b1 -i https://www.paddlepaddle.org.
 pip install https://paddle-model-ecology.bj.bcebos.com/paddlex/whl/paddlex-3.0.0b1-py3-none-any.whl
 ```
 
-> ❗For more installation methods, refer to the [PaddleX Installation Guide](./docs/installation/installation_en.html).
+> ❗For more installation methods, refer to the [PaddleX Installation Guide](https://paddlepaddle.github.io/PaddleX/latest/en/installation/installation.html).
 
 
 ### 💻 CLI Usage
@@ -50,7 +50,6 @@ For example, using the  OCR pipeline:
 ```bash
 paddlex --pipeline OCR --input https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/general_ocr_002.png  --device gpu:0
 ```
-<details><summary><b>👉 Click to view the running result</b></summary>
 
 <pre><code class="language-bash">{
 'input_path': '/root/.paddlex/predict_input/general_ocr_002.png',
@@ -73,11 +72,10 @@ paddlex --pipeline OCR --input https://paddle-model-ecology.bj.bcebos.com/paddle
 'rec_score': [0.9985831379890442, 0.999696917533874512, 0.9985735416412354, 0.9842517971992493, 0.9383274912834167, 0.9943678975105286, 0.9419361352920532, 0.9221674799919128, 0.9555020928382874, 0.9870321154594421, 0.9664073586463928, 0.9988052248954773, 0.9979352355003357, 0.9985110759735107, 0.9943482875823975, 0.9991195797920227, 0.9936401844024658, 0.9974591135978699, 0.9743705987930298, 0.9980487823486328, 0.9874696135520935, 0.9900962710380554, 0.9952947497367859, 0.9950481653213501, 0.989926815032959, 0.9915552139282227, 0.9938777685165405, 0.997239887714386, 0.9963340759277344, 0.9936134815216064, 0.97223961353302]}
 </code></pre>
 <p>The visualization result is as follows:</p>
-<p><img src="https://raw.githubusercontent.com/cuicheng01/PaddleX_doc_images/main/images/boardingpass.png"></p></details>
+<p><img src="https://raw.githubusercontent.com/cuicheng01/PaddleX_doc_images/main/images/boardingpass.png"></p>
 
 To use the command line for other pipelines, simply adjust the `pipeline` parameter to the name of the corresponding pipeline. Below are the commands for each pipeline:
 
-<details><summary><b>👉 More CLI usage for pipelines</b></summary>
 
 <table>
 <thead>
@@ -148,7 +146,7 @@ To use the command line for other pipelines, simply adjust the `pipeline` parame
 <td><code>paddlex --pipeline ts_cls --input https://paddle-model-ecology.bj.bcebos.com/paddlex/ts/demo_ts/ts_cls.csv --device gpu:0</code></td>
 </tr>
 </tbody>
-</table></details>
+</table>
 
 ### 📝 Python Script Usage
 
@@ -170,7 +168,6 @@ The following steps are executed:
 * The prediction results are processed.
 
 For other production lines using the Python script, you only need to adjust the `pipeline` parameter of the `create_pipeline()` method to the corresponding production line name. Below is a list of each production line's corresponding parameter name and detailed usage explanation:
-<details><summary><b>👉 More Python Script Usage for Production Lines</b></summary>
 
 <table>
 <thead>
@@ -184,82 +181,82 @@ For other production lines using the Python script, you only need to adjust the 
 <tr>
 <td>Document Scene Information Extraction v3</td>
 <td><code>PP-ChatOCRv3-doc</code></td>
-<td><a href="https://amberc0209.github.io/PaddleX/latest/en/pipeline_deploy/tutorials/information_extraction_pipelines/document_scene_information_extraction.html#22-本地体验">Document Scene Information Extraction v3 Python Script Instructions</a></td>
+<td><a href="https://paddlepaddle.github.io/PaddleX/latest/en/pipeline_deploy/tutorials/information_extraction_pipelines/document_scene_information_extraction.html">Document Scene Information Extraction v3 Python Script Instructions</a></td>
 </tr>
 <tr>
 <td>General Image Classification</td>
 <td><code>image_classification</code></td>
-<td><a href="https://amberc0209.github.io/PaddleX/latest/en/pipeline_deploy/tutorials/cv_pipelines/image_classification.html">General Image Classification Python Script Instructions</a></td>
+<td><a href="https://paddlepaddle.github.io/PaddleX/latest/en/pipeline_deploy/tutorials/cv_pipelines/image_classification.html">General Image Classification Python Script Instructions</a></td>
 </tr>
 <tr>
 <td>General Object Detection</td>
 <td><code>object_detection</code></td>
-<td><a href="https://amberc0209.github.io/PaddleX/latest/en/pipeline_deploy/tutorials/cv_pipelines/object_detection.html">General Object Detection Python Script Instructions</a></td>
+<td><a href="https://paddlepaddle.github.io/PaddleX/latest/en/pipeline_deploy/tutorials/cv_pipelines/object_detection.html">General Object Detection Python Script Instructions</a></td>
 </tr>
 <tr>
 <td>General Instance Segmentation</td>
 <td><code>instance_segmentation</code></td>
-<td><a href="https://amberc0209.github.io/PaddleX/latest/en/pipeline_deploy/tutorials/cv_pipelines/instance_segmentation.html">General Instance Segmentation Python Script Instructions</a></td>
+<td><a href="https://paddlepaddle.github.io/PaddleX/latest/en/pipeline_deploy/tutorials/cv_pipelines/instance_segmentation.html">General Instance Segmentation Python Script Instructions</a></td>
 </tr>
 <tr>
 <td>General Semantic Segmentation</td>
 <td><code>semantic_segmentation</code></td>
-<td><a href="https://amberc0209.github.io/PaddleX/latest/en/pipeline_deploy/tutorials/cv_pipelines/semantic_segmentation.html">General Semantic Segmentation Python Script Instructions</a></td>
+<td><a href="https://paddlepaddle.github.io/PaddleX/latest/en/pipeline_deploy/tutorials/cv_pipelines/semantic_segmentation.html">General Semantic Segmentation Python Script Instructions</a></td>
 </tr>
 <tr>
 <td>Image Multi-label Classification</td>
 <td><code>multi_label_image_classification</code></td>
-<td><a href="https://amberc0209.github.io/PaddleX/latest/en/pipeline_deploy/tutorials/cv_pipelines/image_multi_label_classification.html#22-python脚本方式集成">Image Multi-label Classification Python Script Instructions</a></td>
+<td><a href="https://paddlepaddle.github.io/PaddleX/latest/en/pipeline_deploy/tutorials/cv_pipelines/image_multi_label_classification.html">Image Multi-label Classification Python Script Instructions</a></td>
 </tr>
 <tr>
 <td>Small Object Detection</td>
 <td><code>small_object_detection</code></td>
-<td><a href="https://amberc0209.github.io/PaddleX/latest/en/pipeline_deploy/tutorials/cv_pipelines/small_object_detection.html#22-python脚本方式集成">Small Object Detection Python Script Instructions</a></td>
+<td><a href="https://paddlepaddle.github.io/PaddleX/latest/en/pipeline_deploy/tutorials/cv_pipelines/small_object_detection.html">Small Object Detection Python Script Instructions</a></td>
 </tr>
 <tr>
 <td>Image Anomaly Detection</td>
 <td><code>anomaly_detection</code></td>
-<td><a href="https://amberc0209.github.io/PaddleX/latest/en/pipeline_deploy/tutorials/cv_pipelines/image_anomaly_detection.html#22-python脚本方式集成">Image Anomaly Detection Python Script Instructions</a></td>
+<td><a href="https://paddlepaddle.github.io/PaddleX/latest/en/pipeline_deploy/tutorials/cv_pipelines/image_anomaly_detection.html">Image Anomaly Detection Python Script Instructions</a></td>
 </tr>
 <tr>
 <td>General OCR</td>
 <td><code>OCR</code></td>
-<td><a href="https://amberc0209.github.io/PaddleX/latest/en/pipeline_deploy/tutorials/ocr_pipelines/OCR.html">General OCR Python Script Instructions</a></td>
+<td><a href="https://paddlepaddle.github.io/PaddleX/latest/en/pipeline_deploy/tutorials/ocr_pipelines/OCR.html">General OCR Python Script Instructions</a></td>
 </tr>
 <tr>
 <td>General Table Recognition</td>
 <td><code>table_recognition</code></td>
-<td><a href="https://amberc0209.github.io/PaddleX/latest/en/pipeline_deploy/tutorials/ocr_pipelines/table_recognition.html#22-python脚本方式集成">General Table Recognition Python Script Instructions</a></td>
+<td><a href="https://paddlepaddle.github.io/PaddleX/latest/en/pipeline_deploy/tutorials/ocr_pipelines/table_recognition.html">General Table Recognition Python Script Instructions</a></td>
 </tr>
 <tr>
 <td>General Layout Parsing</td>
 <td><code>layout_parsing</code></td>
-<td><a href="https://amberc0209.github.io/PaddleX/latest/en/pipeline_deploy/tutorials/ocr_pipelines/layout_parsing.html#22-python脚本方式集成">General Layout Parsing Python Script Instructions</a></td>
+<td><a href="https://paddlepaddle.github.io/PaddleX/latest/en/pipeline_deploy/tutorials/ocr_pipelines/layout_parsing.html">General Layout Parsing Python Script Instructions</a></td>
 </tr>
 <tr>
 <td>Formula Recognition</td>
 <td><code>formula_recognition</code></td>
-<td><a href="https://amberc0209.github.io/PaddleX/latest/en/pipeline_deploy/tutorials/ocr_pipelines/formula_recognition.html#22-python脚本方式集成">Formula Recognition Python Script Instructions</a></td>
+<td><a href="https://paddlepaddle.github.io/PaddleX/latest/en/pipeline_deploy/tutorials/ocr_pipelines/formula_recognition.html">Formula Recognition Python Script Instructions</a></td>
 </tr>
 <tr>
 <td>Seal Text Recognition</td>
 <td><code>seal_recognition</code></td>
-<td><a href="https://amberc0209.github.io/PaddleX/latest/en/pipeline_deploy/tutorials/ocr_pipelines/seal_recognition.html#22-python脚本方式集成">Seal Text Recognition Python Script Instructions</a></td>
+<td><a href="https://paddlepaddle.github.io/PaddleX/latest/en/pipeline_deploy/tutorials/ocr_pipelines/seal_recognition.html">Seal Text Recognition Python Script Instructions</a></td>
 </tr>
 <tr>
 <td>Time Series Forecasting</td>
 <td><code>ts_fc</code></td>
-<td><a href="https://amberc0209.github.io/PaddleX/latest/en/pipeline_deploy/tutorials/time_series_pipelines/time_series_forecasting.html">Time Series Forecasting Python Script Instructions</a></td>
+<td><a href="https://paddlepaddle.github.io/PaddleX/latest/en/pipeline_deploy/tutorials/time_series_pipelines/time_series_forecasting.html">Time Series Forecasting Python Script Instructions</a></td>
 </tr>
 <tr>
 <td>Time Series Anomaly Detection</td>
 <td><code>ts_ad</code></td>
-<td><a href="https://amberc0209.github.io/PaddleX/latest/en/pipeline_deploy/tutorials/time_series_pipelines/time_series_anomaly_detection.html">Time Series Anomaly Detection Python Script Instructions</a></td>
+<td><a href="https://paddlepaddle.github.io/PaddleX/latest/en/pipeline_deploy/tutorials/time_series_pipelines/time_series_anomaly_detection.html">Time Series Anomaly Detection Python Script Instructions</a></td>
 </tr>
 <tr>
 <td>Time Series Classification</td>
 <td><code>ts_cls</code></td>
-<td><a href="https://amberc0209.github.io/PaddleX/latest/en/pipeline_deploy/tutorials/time_series_pipelines/time_series_classification.html">Time Series Classification Python Script Instructions</a></td>
+<td><a href="https://paddlepaddle.github.io/PaddleX/latest/en/pipeline_deploy/tutorials/time_series_pipelines/time_series_classification.html">Time Series Classification Python Script Instructions</a></td>
 </tr>
 </tbody>
-</table></details>
+</table>

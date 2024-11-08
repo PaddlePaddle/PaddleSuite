@@ -757,7 +757,7 @@ You can choose the appropriate deployment method for your model pipeline based o
 If the default model weights provided by the general image multi-label classification pipeline do not meet your requirements in terms of accuracy or speed in your specific scenario, you can try to further fine-tune the existing model using <b>your own domain-specific or application-specific data</b> to improve the recognition performance of the general image multi-label classification pipeline in your scenario.
 
 ### 4.1 Model Fine-tuning
-Since the general image multi-label classification pipeline includes an image multi-label classification module, if the performance of the pipeline does not meet expectations, you need to refer to the [Customization](../../../module_usage/tutorials/cv_modules/ml_classification.en.md#Customization) section in the [Image Multi-Label Classification Module Development Tutorial](../../../module_usage/tutorials/cv_modules/ml_classification.en.md) to fine-tune the image multi-label classification model using your private dataset.
+Since the general image multi-label classification pipeline includes an image multi-label classification module, if the performance of the pipeline does not meet expectations, you need to refer to the [Customization](../../../module_usage/tutorials/cv_modules/image_multilabel_classification.en.md#Customization) section in the [Image Multi-Label Classification Module Development Tutorial](../../../module_usage/tutorials/cv_modules/image_multilabel_classification.en.md) to fine-tune the image multi-label classification model using your private dataset.
 
 ### 4.2 Model Application
 After you have completed fine-tuning training using your private dataset, you will obtain local model weights files.
