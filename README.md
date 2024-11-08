@@ -10,7 +10,7 @@
 </p>
 
 <h4 align="center">
-  <a href=#-特性>🌟 特性</a> | <a href=https://aistudio.baidu.com/pipeline/mine>🌐 在线体验</a>｜<a href=#️-快速开始>🚀 快速开始</a> | <a href=#-文档> 📖 文档</a> | <a href=#-能力支持> 🔥能力支持</a> | <a href=https://paddlepaddle.github.io/PaddleX/latest/support_list/models_list.html> 📋 模型列表</a>
+  <a href=#-特性>🌟 特性</a> | <a href=https://aistudio.baidu.com/pipeline/mine>🌐 在线体验</a>｜<a href=#️-快速开始>🚀 快速开始</a> | <a href=https://paddlepaddle.github.io/PaddleX/latest/index.html> 📖 文档</a> | <a href=#-能力支持> 🔥能力支持</a> | <a href=https://paddlepaddle.github.io/PaddleX/latest/support_list/models_list.html> 📋 模型列表</a>
 
 </h4>
 
