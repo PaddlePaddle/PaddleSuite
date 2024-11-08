@@ -24,8 +24,6 @@ from .base import BasePipeline
 class AttributeRecPipeline(BasePipeline):
     """Attribute Rec Pipeline"""
 
-    entities = ["pedestrian_attribute_recognition", "vehicle_attribute_recognition"]
-
     def __init__(
         self,
         det_model,
@@ -84,3 +82,11 @@ class AttributeRecPipeline(BasePipeline):
                 }
             )
         return AttributeRecResult(single_img_res)
+
+
+class PedestrianAttributeRecPipeline(AttributeRecPipeline):
+    entities = "pedestrian_attribute_recognition"
+
+
+class VehicleAttributeRecPipeline(AttributeRecPipeline):
+    entities = "vehicle_attribute_recognition"
