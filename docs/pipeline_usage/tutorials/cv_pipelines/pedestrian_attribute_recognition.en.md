@@ -76,7 +76,7 @@ The pre-trained model pipelines provided by PaddleX can quickly demonstrate thei
 Not supported yet.
 
 ### 2.2 Local Experience
-Before using the pedestrian attribute recognition pipeline locally, ensure you have completed the installation of the PaddleX wheel package following the [PaddleX Local Installation Tutorial](../../../installation/installation.md).
+Before using the pedestrian attribute recognition pipeline locally, ensure you have completed the installation of the PaddleX wheel package following the [PaddleX Local Installation Tutorial](../../../installation/installation.en.md).
 
 #### 2.2.1 Command Line Experience
 You can quickly experience the pedestrian attribute recognition pipeline with a single command. Use the [test file](https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/pedestrian_attribute_002.jpg) and replace `--input` with the local path for prediction.
@@ -236,9 +236,9 @@ for res in output:
     res.save_to_json("./output/")  # Save the structured output of the prediction
 ```
 ## 3. Development Integration/Deployment
-If the face recognition pipeline meets your requirements for inference speed and accuracy, you can proceed directly with development integration/deployment.
+If the pedestrian attribute recognition pipeline meets your requirements for inference speed and accuracy, you can proceed directly with development integration/deployment.
 
-If you need to directly apply the face recognition pipeline in your Python project, you can refer to the example code in [2.2.2 Python Script Integration](#222-python-script-integration).
+If you need to directly apply the pedestrian attribute recognition pipeline in your Python project, you can refer to the example code in [2.2.2 Python Script Integration](#222-python-script-integration).
 
 Additionally, PaddleX provides three other deployment methods, detailed as follows:
 
@@ -439,45 +439,37 @@ print(result[&quot;pedestrians&quot;])
 You can choose an appropriate method to deploy your model pipeline based on your needs, and proceed with subsequent AI application integration.
 
 
-## 4. Custom Development
-If the default model weights provided by the Face Recognition Pipeline do not meet your expectations in terms of accuracy or speed for your specific scenario, you can try to further <b>fine-tune</b> the existing models using <b>your own domain-specific or application-specific data</b> to enhance the recognition performance of the pipeline in your scenario.
-
 ### 4.1 Model Fine-tuning
-Since the Face Recognition Pipeline consists of two modules (face detection and face recognition), the suboptimal performance of the pipeline may stem from either module.
-
-You can analyze images with poor recognition results. If you find that many faces are not detected during the analysis, it may indicate deficiencies in the face detection model. In this case, you need to refer to the [Custom Development](../../../module_usage/tutorials/cv_modules/face_detection.en.md#IV.-Custom-Development) section in the [Face Detection Module Development Tutorial](../../../module_usage/tutorials/cv_modules/face_detection.en.md) and use your private dataset to fine-tune the face detection model. If matching errors occur in detected faces, it suggests that the face feature model needs further improvement. You should refer to the [Custom Development](../../../module_usage/tutorials/cv_modules/face_feature.en.md#IV.-Custom-Development) section in the [Face Feature Module Development Tutorial](../../../module_usage/tutorials/cv_modules/face_feature.en.md) to fine-tune the face feature model.
+Since the pedestrian attribute recognition pipeline includes both a pedestrian attribute recognition module and a pedestrian detection module, the unexpected performance of the pipeline may stem from either module.
+You can analyze images with poor recognition results. If during the analysis, you find that many main targets are not detected, it may indicate deficiencies in the pedestrian detection model. In this case, you need to refer to the [Secondary Development](../../../module_usage/tutorials/cv_modules/human_detection.en.md#secondary-development) section in the [Human Detection Module Development Tutorial](../../../module_usage/tutorials/cv_modules/human_detection.en.md) and use your private dataset to fine-tune the pedestrian detection model. If the detected main attributes are incorrectly recognized, you need to refer to the [Secondary Development](../../../module_usage/tutorials/cv_modules/pedestrian_attribute_recognition.en.md#secondary-development) section in the [Pedestrian Attribute Recognition Module Development Tutorial](../../../module_usage/tutorials/cv_modules/pedestrian_attribute_recognition.en.md) and use your private dataset to fine-tune the pedestrian attribute recognition model.
 
 ### 4.2 Model Application
-After completing fine-tuning training with your private dataset, you will obtain local model weight files.
+After fine-tuning training with your private dataset, you will obtain local model weight files.
 
-To use the fine-tuned model weights, you only need to modify the pipeline configuration file by replacing the local paths of the fine-tuned model weights with the corresponding paths in the pipeline configuration file:
+If you need to use the fine-tuned model weights, you only need to modify the pipeline configuration file by replacing the local path of the fine-tuned model weights to the corresponding location in the pipeline configuration file:
 
-```bash
-
+```
 ......
 Pipeline:
-  device: "gpu:0"
-  det_model: "BlazeFace"        # Can be modified to the local path of the fine-tuned face detection model
-  rec_model: "MobileFaceNet"    # Can be modified to the local path of the fine-tuned face recognition model
-  det_batch_size: 1
-  rec_batch_size: 1
-  device: gpu
+  det_model: PP-YOLOE-L_human
+  cls_model: PP-LCNet_x1_0_pedestrian_attribute  # Can be modified to the local path of the fine-tuned model
+  device: "gpu"
+  batch_size: 1
 ......
 ```
-Subsequently, refer to the command-line method or Python script method in [2.2 Local Experience](#22-Local-Experience) to load the modified pipeline configuration file.
-Note: Currently, setting separate `batch_size` for face detection and face recognition models is not supported.
+Subsequently, refer to the command-line method or Python script method in the local experience, and load the modified pipeline configuration file.
 
 ## 5. Multi-hardware Support
-PaddleX supports various mainstream hardware devices such as NVIDIA GPUs, Kunlun XPU, Ascend NPU, and Cambricon MLU. <b>Simply modifying the `--device` parameter</b> allows seamless switching between different hardware.
+PaddleX supports multiple mainstream hardware devices such as NVIDIA GPUs, Kunlun XPU, Ascend NPU, and Cambricon MLU. <b>Simply modifying the `--device` parameter</b>  allows seamless switching between different hardware.
 
-For example, when running the face recognition pipeline using Python and changing the running device from an NVIDIA GPU to an Ascend NPU, you only need to modify the `device` in the script to `npu`:
+For example, if you use an NVIDIA GPU for inference in the pedestrian attribute recognition pipeline, the command used is:
 
-```python
-from paddlex import create_pipeline
-
-pipeline = create_pipeline(
-    pipeline="face_recognition",
-    device="npu:0" # gpu:0 --> npu:0
-)
+```bash
+paddlex --pipeline pedestrian_attribute_recognition --input pedestrian_attribute_002.jpg --device gpu:0
 ```
-If you want to use the face recognition pipeline on more types of hardware, please refer to the [PaddleX Multi-device Usage Guide](../../../other_devices_support/multi_devices_use_guide.en.md).
+At this point, if you want to switch the hardware to Ascend NPU, you only need to change `--device` to npu:0:
+
+```bash
+paddlex --pipeline pedestrian_attribute_recognition --input pedestrian_attribute_002.jpg --device npu:0
+```
+If you want to use the pedestrian attribute recognition pipeline on more types of hardware, please refer to the [PaddleX Multi-device Usage Guide](../../../other_devices_support/multi_devices_use_guide.en.md).

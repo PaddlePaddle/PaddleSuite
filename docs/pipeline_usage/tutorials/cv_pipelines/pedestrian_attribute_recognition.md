@@ -456,7 +456,8 @@ print(result[&quot;pedestrians&quot;])
 ```
 ......
 Pipeline:
-  model: PP-LCNet_x1_0  #可修改为微调后模型的本地路径
+  det_model: PP-YOLOE-L_human
+  cls_model: PP-LCNet_x1_0_pedestrian_attribute  #可修改为微调后模型的本地路径
   device: "gpu"
   batch_size: 1
 ......
