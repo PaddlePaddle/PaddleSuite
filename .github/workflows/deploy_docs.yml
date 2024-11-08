@@ -2,7 +2,6 @@ name: Develop Docs
 on:
   push:
     branches: #设置更新哪个分支会更新站点
-      - create_site
       - develop
 permissions:
   contents: write
