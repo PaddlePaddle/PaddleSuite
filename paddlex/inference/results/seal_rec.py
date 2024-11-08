@@ -19,15 +19,32 @@ from .base import BaseResult, CVResult
 class SealOCRResult(CVResult):
     """SealOCRResult"""
 
+    def get_target_name(self, save_path):
+        input_path = self["src_file_name"]
+        if input_path.endswith(".pdf"):
+            save_path = (
+                Path(save_path)
+                / f"{Path(input_path).stem}_pdf"
+                / Path("page_{:04d}".format(self["page_id"] + 1))
+            )
+        else:
+            save_path = Path(save_path) / f"{Path(input_path).stem}"
+        return save_path
+
     def save_to_img(self, save_path):
         if not save_path.lower().endswith((".jpg", ".png")):
-            input_path = self["input_path"]
-            save_path = Path(save_path) / f"{Path(input_path).stem}"
+            save_path = self.get_target_name(save_path)
         else:
             save_path = Path(save_path).stem
         layout_save_path = f"{save_path}_layout.jpg"
         layout_result = self["layout_result"]
         layout_result.save_to_img(layout_save_path)
-        for idx, seal_result in enumerate(self["ocr_result"]):
-            ocr_save_path = f"{save_path}_{idx}_seal_ocr.jpg"
-            seal_result.save_to_img(ocr_save_path)
+        seal_result = self["ocr_result"]
+        seal_result.save_to_img(f"{save_path}_seal_ocr.jpg")
+
+    def save_to_json(self, save_path):
+        if not save_path.lower().endswith((".json")):
+            save_path = self.get_target_name(save_path)
+        else:
+            save_path = Path(save_path).stem
+        super().save_to_json(f"{save_path}_res.json")
