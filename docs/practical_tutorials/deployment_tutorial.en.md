@@ -122,7 +122,7 @@ The inference results obtained with the high-performance inference plugin are co
 
 ### 1.4 Inference Steps
 
-This inference process is based on **PaddleX CLI, online activation of serial numbers, Python 3.10.0, and using a CPU device** with the high-performance inference plugin. For other usage methods (such as different Python versions, device types, or PaddleX Python API), refer to the [PaddleX High-Performance Inference Guide](../pipeline_deploy/high_performance_inference.md) to replace the corresponding commands.
+This inference process is based on **PaddleX CLI, online activation of serial numbers, Python 3.10.0, and using a CPU device** with the high-performance inference plugin. For other usage methods (such as different Python versions, device types, or PaddleX Python API), refer to the [PaddleX High-Performance Inference Guide](../pipeline_deploy/high_performance_inference.en.md) to replace the corresponding commands.
 
 ```shell
 # Install the high-performance inference plugin
@@ -223,7 +223,7 @@ The command-line options related to service deployment are as follows:
 | `--host`           | Hostname or IP address bound to the server. Default is 0.0.0.0.                                                                                             |
 | `--port`           | Port number listened to by the server. Default is 8080.                                                                                                     |
 | `--use_hpip`       | Enables the high-performance inference plugin if specified.                                                                                                |
-| `--serial_number`  | Serial number used by the high-performance inference plugin. Only valid when the high-performance inference plugin is enabled. Please note that not all pipelines and models support the use of the high-performance inference plugin. For detailed support, please refer to the [PaddleX High-Performance Inference Guide](./high_performance_inference.md). |
+| `--serial_number`  | Serial number used by the high-performance inference plugin. Only valid when the high-performance inference plugin is enabled. Please note that not all pipelines and models support the use of the high-performance inference plugin. For detailed support, please refer to the [PaddleX High-Performance Inference Guide](../pipeline_deploy/high_performance_inference.en.md). |
 | `--update_license` | Performs online activation if specified. Only valid when the high-performance inference plugin is enabled.                                                  |
 
 ### 2.3 Calling the Service
