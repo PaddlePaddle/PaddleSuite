@@ -336,7 +336,7 @@ nav:
          - 公式识别模块: module_usage/tutorials/ocr_modules/formula_recognition.md
        - 图像分类:
          - 图像分类模块: module_usage/tutorials/cv_modules/image_classification.md
-         - 图像多标签分类模块: module_usage/tutorials/cv_modules/ml_classification.md
+         - 图像多标签分类模块: module_usage/tutorials/cv_modules/image_multilabel_classification.md
          - 行人属性识别模块: module_usage/tutorials/cv_modules/pedestrian_attribute_recognition.md
          - 车辆属性识别模块: module_usage/tutorials/cv_modules/vehicle_attribute_recognition.md
        - 图像特征:

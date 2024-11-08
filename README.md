@@ -595,7 +595,7 @@ for res in output:
   <summary> <b> 🖼️ 图像分类 </b></summary>
 
   * [📂 图像分类模块使用教程](https://paddlepaddle.github.io/PaddleX/latest/module_usage/tutorials/cv_modules/image_classification.html)
-  * [🏷️ 图像多标签分类模块使用教程](https://paddlepaddle.github.io/PaddleX/latest/module_usage/tutorials/cv_modules/ml_classification.html)
+  * [🏷️ 图像多标签分类模块使用教程](https://paddlepaddle.github.io/PaddleX/latest/module_usage/tutorials/cv_modules/image_multilabel_classification.html)
   * [👤 行人属性识别模块使用教程](https://paddlepaddle.github.io/PaddleX/latest/module_usage/tutorials/cv_modules/pedestrian_attribute_recognition.html)
   * [🚗 车辆属性识别模块使用教程](https://paddlepaddle.github.io/PaddleX/latest/module_usage/tutorials/cv_modules/vehicle_attribute_recognition.html)
 

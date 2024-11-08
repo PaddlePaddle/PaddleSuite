@@ -158,25 +158,22 @@ PaddleX provides default high-performance inference configurations for each mode
   <tr>
     <td>General Image Classification</td>
     <td>Image Classification</td>
-    <td>ResNet18<br/>ResNet34<details><summary><b>more</b></summary>
-<p>ResNet50ResNet101ResNet152ResNet18_vdResNet34_vdResNet50_vdResNet101_vdResNet152_vdResNet200_vdPP-LCNet_x0_25PP-LCNet_x0_35PP-LCNet_x0_5PP-LCNet_x0_75PP-LCNet_x1_0PP-LCNet_x1_5PP-LCNet_x2_0PP-LCNet_x2_5PP-LCNetV2_smallPP-LCNetV2_basePP-LCNetV2_largeMobileNetV3_large_x0_35MobileNetV3_large_x0_5MobileNetV3_large_x0_75MobileNetV3_large_x1_0MobileNetV3_large_x1_25MobileNetV3_small_x0_35MobileNetV3_small_x0_5MobileNetV3_small_x0_75MobileNetV3_small_x1_0MobileNetV3_small_x1_25ConvNeXt_tinyConvNeXt_smallConvNeXt_base_224ConvNeXt_base_384ConvNeXt_large_224ConvNeXt_large_384MobileNetV1_x0_25MobileNetV1_x0_5MobileNetV1_x0_75MobileNetV1_x1_0MobileNetV2_x0_25MobileNetV2_x0_5MobileNetV2_x1_0MobileNetV2_x1_5MobileNetV2_x2_0SwinTransformer_tiny_patch4_window7_224SwinTransformer_small_patch4_window7_224SwinTransformer_base_patch4_window7_224SwinTransformer_base_patch4_window12_384SwinTransformer_large_patch4_window7_224SwinTransformer_large_patch4_window12_384PP-HGNet_smallPP-HGNet_tinyPP-HGNet_basePP-HGNetV2-B0PP-HGNetV2-B1PP-HGNetV2-B2PP-HGNetV2-B3PP-HGNetV2-B4PP-HGNetV2-B5PP-HGNetV2-B6CLIP_vit_base_patch16_224CLIP_vit_large_patch14_224</p>
-<p><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/></p></details></td>
+    <td>ResNet18<br/>ResNet34<details>
+    <summary><b>more</b></summary>ResNet50<br/>ResNet101<br/>ResNet152<br/>ResNet18_vd<br/>ResNet34_vd<br/>ResNet50_vd<br/>ResNet101_vd<br/>ResNet152_vd<br/>ResNet200_vd<br/>PP-LCNet_x0_25<br/>PP-LCNet_x0_35<br/>PP-LCNet_x0_5<br/>PP-LCNet_x0_75<br/>PP-LCNet_x1_0<br/>PP-LCNet_x1_5<br/>PP-LCNet_x2_0<br/>PP-LCNet_x2_5<br/>PP-LCNetV2_small<br/>PP-LCNetV2_base<br/>PP-LCNetV2_large<br/>MobileNetV3_large_x0_35<br/>MobileNetV3_large_x0_5<br/>MobileNetV3_large_x0_75<br/>MobileNetV3_large_x1_0<br/>MobileNetV3_large_x1_25<br/>MobileNetV3_small_x0_35<br/>MobileNetV3_small_x0_5<br/>MobileNetV3_small_x0_75<br/>MobileNetV3_small_x1_0<br/>MobileNetV3_small_x1_25<br/>ConvNeXt_tiny<br/>ConvNeXt_small<br/>ConvNeXt_base_224<br/>ConvNeXt_base_384<br/>ConvNeXt_large_224<br/>ConvNeXt_large_384<br/>MobileNetV1_x0_25<br/>MobileNetV1_x0_5<br/>MobileNetV1_x0_75<br/>MobileNetV1_x1_0<br/>MobileNetV2_x0_25<br/>MobileNetV2_x0_5<br/>MobileNetV2_x1_0<br/>MobileNetV2_x1_5<br/>MobileNetV2_x2_0<br/>SwinTransformer_tiny_patch4_window7_224<br/>SwinTransformer_small_patch4_window7_224<br/>SwinTransformer_base_patch4_window7_224<br/>SwinTransformer_base_patch4_window12_384<br/>SwinTransformer_large_patch4_window7_224<br/>SwinTransformer_large_patch4_window12_384<br/>PP-HGNet_small<br/>PP-HGNet_tiny<br/>PP-HGNet_base<br/>PP-HGNetV2-B0<br/>PP-HGNetV2-B1<br/>PP-HGNetV2-B2<br/>PP-HGNetV2-B3<br/>PP-HGNetV2-B4<br/>PP-HGNetV2-B5<br/>PP-HGNetV2-B6<br/>CLIP_vit_base_patch16_224<br/>CLIP_vit_large_patch14_224</details></td>
   </tr>
 
   <tr>
     <td>General Object Detection</td>
     <td>Object Detection</td>
-    <td>PP-YOLOE_plus-S<br/>PP-YOLOE_plus-M<details><summary><b>more</b></summary>
-<p>PP-YOLOE_plus-LPP-YOLOE_plus-XYOLOX-NYOLOX-TYOLOX-SYOLOX-MYOLOX-LYOLOX-XYOLOv3-DarkNet53YOLOv3-ResNet50_vd_DCNYOLOv3-MobileNetV3RT-DETR-R18RT-DETR-R50RT-DETR-LRT-DETR-HRT-DETR-XPicoDet-SPicoDet-L</p>
-<p><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/></p></details></td>
+    <td>PP-YOLOE_plus-S<br/>PP-YOLOE_plus-M<details>
+        <summary><b>more</b></summary>PP-YOLOE_plus-L<br/>PP-YOLOE_plus-X<br/>YOLOX-N<br/>YOLOX-T<br/>YOLOX-S<br/>YOLOX-M<br/>YOLOX-L<br/>YOLOX-X<br/>YOLOv3-DarkNet53<br/>YOLOv3-ResNet50_vd_DCN<br/>YOLOv3-MobileNetV3<br/>RT-DETR-R18<br/>RT-DETR-R50<br/>RT-DETR-L<br/>RT-DETR-H<br/>RT-DETR-X<br/>PicoDet-S<br/>PicoDet-L</details></td>
   </tr>
 
   <tr>
     <td>General Semantic Segmentation</td>
     <td>Semantic Segmentation</td>
-    <td>Deeplabv3-R50<br/>Deeplabv3-R101<details><summary><b>more</b></summary>
-<p>Deeplabv3_Plus-R50Deeplabv3_Plus-R101PP-LiteSeg-TOCRNet_HRNet-W48OCRNet_HRNet-W18SeaFormer_tinySeaFormer_smallSeaFormer_baseSeaFormer_largeSegFormer-B0SegFormer-B1SegFormer-B2SegFormer-B3SegFormer-B4SegFormer-B5</p>
-<p><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/></p></details></td>
+    <td>Deeplabv3-R50<br/>Deeplabv3-R101<details>
+    <summary><b>more</b></summary>Deeplabv3_Plus-R50<br/>Deeplabv3_Plus-R101<br/>PP-LiteSeg-T<br/>OCRNet_HRNet-W48<br/>OCRNet_HRNet-W18<br/>SeaFormer_tiny<br/>SeaFormer_small<br/>SeaFormer_base<br/>SeaFormer_large<br/>SegFormer-B0<br/>SegFormer-B1<br/>SegFormer-B2<br/>SegFormer-B3<br/>SegFormer-B4<br/>SegFormer-B5</details></td>
   </tr>
 
   <tr>
@@ -188,9 +185,8 @@ PaddleX provides default high-performance inference configurations for each mode
   <tr>
     <td rowspan="3">Seal Text Recognition</td>
     <td>Layout Analysis</td>
-    <td>PicoDet-S_layout_3cls<br/>PicoDet-S_layout_17cls<details><summary><b>more</b></summary>
-<p>PicoDet-L_layout_3clsPicoDet-L_layout_17clsRT-DETR-H_layout_3clsRT-DETR-H_layout_17cls</p>
-<p><br/><br/><br/></p></details></td>
+    <td>PicoDet-S_layout_3cls<br/>PicoDet-S_layout_17cls<details>
+    <summary><b>more</b></summary>PicoDet-L_layout_3cls<br/>PicoDet-L_layout_17cls<br/>RT-DETR-H_layout_3cls<br/>RT-DETR-H_layout_17cls</details></td>
   </tr>
 
   <tr>
