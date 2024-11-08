@@ -360,7 +360,7 @@ PaddleX incorporates multiple pipelines, each containing several modules, and ea
 </table>
 <b>Note: The above accuracy metrics refer to Top-1 Accuracy on the [ImageNet-1k](https://www.image-net.org/index.php) validation set.</b>
 
-## [图像多标签分类模块](../module_usage/tutorials/cv_modules/ml_classification.md)
+## [图像多标签分类模块](../module_usage/tutorials/cv_modules/image_multilabel_classification.md)
 <table>
 <thead>
 <tr>
