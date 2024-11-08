@@ -164,8 +164,6 @@ PaddleX 内置了多条产线，每条产线都包含了若干模块，每个模
 <tr>
 <td>MobileNetV4_conv_small</td>
 <td>74.6</td>
-<td>5.24172</td>
-<td>11.0893</td>
 <td>14.7 M</td>
 </tr>
 <tr>
