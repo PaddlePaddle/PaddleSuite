@@ -60,7 +60,7 @@ class DetPredictor(BasicPredictor):
                     "img_size": "img_size",
                 }
             )
-        
+
         self._add_component(
             [
                 predictor,

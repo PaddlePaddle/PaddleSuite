@@ -46,8 +46,8 @@ def deep_analyse(dataset_path, output, dataset_type="ShiTuRec"):
         }
 
     categories = list(tags_info.keys())
-    num_images = [tags_info[category]['num_images'] for category in categories]
-    num_labels = [tags_info[category]['num_labels'] for category in categories]
+    num_images = [tags_info[category]["num_images"] for category in categories]
+    num_labels = [tags_info[category]["num_labels"] for category in categories]
 
     # bar
     os_system = platform.system().lower()
@@ -60,13 +60,16 @@ def deep_analyse(dataset_path, output, dataset_type="ShiTuRec"):
     width = 0.35  # 每个条形的宽度
 
     fig, ax = plt.subplots()
-    rects1 = ax.bar(x - width/2, num_images, width, label="Num Images")
-    rects2 = ax.bar(x + width/2, num_labels, width, label="Num Classes")
+    rects1 = ax.bar(x - width / 2, num_images, width, label="Num Images")
+    rects2 = ax.bar(x + width / 2, num_labels, width, label="Num Classes")
 
     # 添加一些文本标签
     ax.set_xlabel("集合", fontproperties=None if os_system == "windows" else font)
     ax.set_ylabel("数量", fontproperties=None if os_system == "windows" else font)
-    ax.set_title("不同集合的图片和类别数量", fontproperties=None if os_system == "windows" else font)
+    ax.set_title(
+        "不同集合的图片和类别数量",
+        fontproperties=None if os_system == "windows" else font,
+    )
     ax.set_xticks(x, fontproperties=None if os_system == "windows" else font)
     ax.set_xticklabels(categories)
     ax.legend()
@@ -76,11 +79,14 @@ def deep_analyse(dataset_path, output, dataset_type="ShiTuRec"):
         """Attach a text label above each bar in *rects*, displaying its height."""
         for rect in rects:
             height = rect.get_height()
-            ax.annotate('{}'.format(height),
-                        xy=(rect.get_x() + rect.get_width() / 2, height),
-                        xytext=(0, 3),  # 3 points vertical offset
-                        textcoords="offset points",
-                        ha="center", va="bottom")
+            ax.annotate(
+                "{}".format(height),
+                xy=(rect.get_x() + rect.get_width() / 2, height),
+                xytext=(0, 3),  # 3 points vertical offset
+                textcoords="offset points",
+                ha="center",
+                va="bottom",
+            )
 
     autolabel(rects1)
     autolabel(rects2)

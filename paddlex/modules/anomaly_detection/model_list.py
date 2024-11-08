@@ -13,6 +13,4 @@
 # limitations under the License.
 
 
-MODELS = [
-    "STFPM"
-]
+MODELS = ["STFPM"]

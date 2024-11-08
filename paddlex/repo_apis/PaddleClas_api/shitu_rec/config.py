@@ -11,7 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
- 
+
 from ..cls import ClsConfig
 from ....utils.misc import abspath
 
@@ -43,7 +43,6 @@ class ShiTuRecConfig(ClsConfig):
             train_list_path = f"{train_list_path}"
         else:
             train_list_path = f"{dataset_path}/train.txt"
-
 
         ds_cfg = [
             f"DataLoader.Train.dataset.name={dataset_type}",
@@ -83,7 +82,6 @@ class ShiTuRecConfig(ClsConfig):
             raise ValueError("The input `mode` should be train or eval")
         self.update(_cfg)
 
-
     def update_num_classes(self, num_classes: int):
         """update classes number
 
@@ -92,7 +90,6 @@ class ShiTuRecConfig(ClsConfig):
         """
         update_str_list = [f"Arch.Head.class_num={num_classes}"]
         self.update(update_str_list)
-
 
     def update_num_workers(self, num_workers: int):
         """update workers number of train and eval dataloader
@@ -134,7 +131,6 @@ class ShiTuRecConfig(ClsConfig):
             f"DataLoader.Eval.Gallery.loader.shuffle={shuffle}",
         ]
         self.update(_cfg)
-
 
     def _get_backbone_name(self) -> str:
         """get backbone name of rec model

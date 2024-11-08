@@ -20,6 +20,7 @@ from ...base.utils.subprocess import CompletedProcess
 
 class ShiTuRecRunner(ClsRunner):
     """ShiTuRec Runner"""
+
     pass
 
 

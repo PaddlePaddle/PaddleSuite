@@ -27,6 +27,7 @@ from .....utils.file_interface import custom_open
 from .....utils import logging
 from .....utils.logging import info
 
+
 def convert_dataset(dataset_type, input_dir):
     """convert to paddlex official format"""
     if dataset_type == "LabelMe":
@@ -166,7 +167,7 @@ def polygon2mask(img_size, points):
 
 def save_item_to_txt(items, file_path):
     try:
-        with open(file_path, 'a') as file:
+        with open(file_path, "a") as file:
             file.write(items)
         file.close()
     except Exception as e:
@@ -177,30 +178,49 @@ def save_training_txt(cls_root, mode, cat):
     imgs = os.listdir(os.path.join(cls_root, mode, cat))
     imgs.sort()
     for img in imgs:
-        if mode == 'train':
+        if mode == "train":
             item = os.path.join(cls_root, mode, cat, img)
-            items = item + ' ' + item + '\n'
-            save_item_to_txt(items, os.path.join(cls_root, 'train.txt'))
-        elif mode == 'test' and cat != 'good':
+            items = item + " " + item + "\n"
+            save_item_to_txt(items, os.path.join(cls_root, "train.txt"))
+        elif mode == "test" and cat != "good":
             item1 = os.path.join(cls_root, mode, cat, img)
-            item2 = os.path.join(cls_root, 'ground_truth', cat, img.split('.')[0]+'_mask.png')
-            items = item1 + ' ' + item2 + '\n'
-            save_item_to_txt(items, os.path.join(cls_root, 'val.txt'))
+            item2 = os.path.join(
+                cls_root, "ground_truth", cat, img.split(".")[0] + "_mask.png"
+            )
+            items = item1 + " " + item2 + "\n"
+            save_item_to_txt(items, os.path.join(cls_root, "val.txt"))
 
 
 def check_old_txt(cls_pth, mode):
-    set_name = 'train.txt' if mode == 'train' else 'val.txt'
+    set_name = "train.txt" if mode == "train" else "val.txt"
     pth = os.path.join(cls_pth, set_name)
     if os.path.exists(pth):
         os.remove(pth)
 
 
 def convert_mvtec_dataset(input_dir):
-    classes =  ['bottle', 'cable', 'capsule', 'hazelnut', 'metal_nut', 'pill', 'screw',
-    'toothbrush', 'transistor', 'zipper', 'carpet', 'grid', 'leather', 'tile', 'wood']
+    classes = [
+        "bottle",
+        "cable",
+        "capsule",
+        "hazelnut",
+        "metal_nut",
+        "pill",
+        "screw",
+        "toothbrush",
+        "transistor",
+        "zipper",
+        "carpet",
+        "grid",
+        "leather",
+        "tile",
+        "wood",
+    ]
     clas = os.path.split(input_dir)[-1]
-    assert clas in classes, info(f"Make sure your class: '{clas}' in your dataset root in\n {classes}")
-    modes = ['train', 'test']
+    assert clas in classes, info(
+        f"Make sure your class: '{clas}' in your dataset root in\n {classes}"
+    )
+    modes = ["train", "test"]
     cls_root = input_dir
     for mode in modes:
         check_old_txt(cls_root, mode)
