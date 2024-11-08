@@ -57,6 +57,16 @@ PaddleX incorporates multiple pipelines, each containing several modules, and ea
 <td>101.4 M</td>
 </tr>
 <tr>
+<td>MobileNetV1_x0_5</td>
+<td>63.5</td>
+<td>4.8 M</td>
+</tr>
+<tr>
+<td>MobileNetV1_x0_25</td>
+<td>51.4</td>
+<td>1.8 M</td>
+</tr>
+<tr>
 <td>MobileNetV1_x0_75</td>
 <td>68.8</td>
 <td>9.3 M</td>
@@ -140,6 +150,21 @@ PaddleX incorporates multiple pipelines, each containing several modules, and ea
 <td>MobileNetV3_small_x1_25</td>
 <td>70.7</td>
 <td>13.0 M</td>
+</tr>
+<tr>
+<td>MobileNetV4_conv_large</td>
+<td>83.4</td>
+<td>125.2 M</td>
+</tr>
+<tr>
+<td>MobileNetV4_conv_medium</td>
+<td>79.9</td>
+<td>37.6 M</td>
+</tr>
+<tr>
+<td>MobileNetV4_conv_small</td>
+<td>74.6</td>
+<td>14.7 M</td>
 </tr>
 <tr>
 <td>PP-HGNet_base</td>
@@ -237,6 +262,16 @@ PaddleX incorporates multiple pipelines, each containing several modules, and ea
 <td>23.7 M</td>
 </tr>
 <tr>
+<td>PP-LCNetV2_large</td>
+<td>78.51</td>
+<td>37.3 M</td>
+</tr>
+<tr>
+<td>PP-LCNetV2_small</td>
+<td>73.97</td>
+<td>14.6 M</td>
+</tr>
+<tr>
 <td>ResNet18_vd</td>
 <td>72.3</td>
 <td>41.5 M</td>
@@ -297,6 +332,21 @@ PaddleX incorporates multiple pipelines, each containing several modules, and ea
 <td>310.5 M</td>
 </tr>
 <tr>
+<td>SwinTransformer_base_patch4_window12_384</td>
+<td>84.17</td>
+<td>311.4 M</td>
+</tr>
+<tr>
+<td>SwinTransformer_large_patch4_window7_224</td>
+<td>86.19</td>
+<td>694.8 M</td>
+</tr>
+<tr>
+<td>SwinTransformer_large_patch4_window12_384</td>
+<td>87.06</td>
+<td>696.1 M</td>
+</tr>
+<tr>
 <td>SwinTransformer_small_patch4_window7_224</td>
 <td>83.21</td>
 <td>175.6 M</td>
@@ -310,6 +360,39 @@ PaddleX incorporates multiple pipelines, each containing several modules, and ea
 </table>
 <b>Note: The above accuracy metrics refer to Top-1 Accuracy on the [ImageNet-1k](https://www.image-net.org/index.php) validation set.</b>
 
+## [图像多标签分类模块](../module_usage/tutorials/cv_modules/ml_classification.md)
+<table>
+<thead>
+<tr>
+<th>模型名称</th>
+<th>mAP（%）</th>
+<th>模型存储大小</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CLIP_vit_base_patch16_448_ML</td>
+<td>89.15</td>
+<td>325.6 M</td>
+</tr>
+<tr>
+<td>PP-HGNetV2-B0_ML</td>
+<td>80.98</td>
+<td>39.6 M</td>
+<tr>
+<td>PP-HGNetV2-B4_ML</td>
+<td>87.96</td>
+<td>88.5 M</td>
+</tr>
+<tr>
+<td>PP-HGNetV2-B6_ML</td>
+<td>91.25</td>
+<td>286.5 M</td>
+</tr>
+</tbody>
+</table>
+<b>注：以上精度指标为 [COCO2017](https://cocodataset.org/#home) 的多标签分类任务mAP。</b>
+
 ## Object Detection Module
 <table>
 <thead>
@@ -320,6 +403,16 @@ PaddleX incorporates multiple pipelines, each containing several modules, and ea
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>Cascade-FasterRCNN-ResNet50-FPN</td>
+<td>41.1</td>
+<td>245.4 M</td>
+</tr>
+<tr>
+<td>Cascade-FasterRCNN-ResNet50-vd-SSLDv2-FPN</td>
+<td>45.0</td>
+<td>246.2 M</td>
+</tr>
 <tr>
 <td>CenterNet-DLA-34</td>
 <td>37.6</td>
@@ -341,6 +434,11 @@ PaddleX incorporates multiple pipelines, each containing several modules, and ea
 <td>137.5 M</td>
 </tr>
 <tr>
+<td>FasterRCNN-ResNet50</td>
+<td>36.7</td>
+<td>120.2 M</td>
+</tr>
+<tr>
 <td>FasterRCNN-ResNet50-FPN</td>
 <td>38.4</td>
 <td>148.1 M</td>
@@ -356,9 +454,24 @@ PaddleX incorporates multiple pipelines, each containing several modules, and ea
 <td>148.1 M</td>
 </tr>
 <tr>
+<td>FasterRCNN-ResNet101</td>
+<td>39.0</td>
+<td>188.1 M</td>
+</tr>
+<tr>
 <td>FasterRCNN-ResNet101-FPN</td>
 <td>41.4</td>
 <td>216.3 M</td>
+</tr>
+<tr>
+<td>FasterRCNN-ResNeXt101-vd-FPN</td>
+<td>43.4</td>
+<td>360.6 M</td>
+</tr>
+<tr>
+<td>FasterRCNN-Swin-Tiny-FPN</td>
+<td>42.6</td>
+<td>159.8 M</td>
 </tr>
 <tr>
 <td>FCOS-ResNet50</td>
@@ -449,6 +562,59 @@ PaddleX incorporates multiple pipelines, each containing several modules, and ea
 </table>
 <b>Note: The above accuracy metrics are for</b> [COCO2017](https://cocodataset.org/#home) <b>validation set mAP(0.5:0.95).</b>
 
+## [小目标检测模块](../module_usage/tutorials/cv_modules/small_object_detection.md)
+<table>
+<thead>
+<tr>
+<th>模型名称</th>
+<th>mAP（%）</th>
+<th>模型存储大小</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PP-YOLOE_plus_SOD-S</td>
+<td>25.1</td>
+<td>77.3 M</td>
+</tr>
+<tr>
+<td>PP-YOLOE_plus_SOD-L</td>
+<td>31.9</td>
+<td>325.0 M</td>
+</tr>
+<tr>
+<td>PP-YOLOE_plus_SOD-largesize-L</td>
+<td>42.7</td>
+<td>340.5 M</td>
+</tr>
+</tbody>
+</table>
+<b>注：以上精度指标为 </b>[VisDrone-DET](https://github.com/VisDrone/VisDrone-Dataset)<b> 验证集 mAP(0.5:0.95)。</b>
+
+## [行人检测模块](../module_usage/tutorials/cv_modules/human_detection.md)
+<table>
+<thead>
+<tr>
+<th>模型名称</th>
+<th>mAP（%）</th>
+<th>模型存储大小</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PP-YOLOE-L_human</td>
+<td>48.0</td>
+<td>196.1 M</td>
+</tr>
+<tr>
+<td>PP-YOLOE-S_human</td>
+<td>42.5</td>
+<td>28.8 M</td>
+</tr>
+</tbody>
+</table>
+<b>注：以上精度指标为 </b>[CrowdHuman](https://bj.bcebos.com/v1/paddledet/data/crowdhuman.zip)<b> 验证集 mAP(0.5:0.95)。</b>
+
 ## Semantic Segmentation Module
 <table>
 <thead>
@@ -519,6 +685,16 @@ PaddleX incorporates multiple pipelines, each containing several modules, and ea
 <td>66.6 M</td>
 </tr>
 <tr>
+<td>Mask-RT-DETR-S</td>
+<td>41.0</td>
+<td>51.8 M</td>
+</tr>
+<tr>
+<td>Mask-RT-DETR-X</td>
+<td>47.5</td>
+<td>237.5 M</td>
+</tr>
+<tr>
 <td>Cascade-MaskRCNN-ResNet50-FPN</td>
 <td>36.3</td>
 <td>254.8 M</td>
@@ -529,6 +705,36 @@ PaddleX incorporates multiple pipelines, each containing several modules, and ea
 <td>254.7 M</td>
 </tr>
 <tr>
+<td>MaskRCNN-ResNet50-FPN</td>
+<td>35.6</td>
+<td>157.5 M</td>
+</tr>
+<tr>
+<td>MaskRCNN-ResNet50-vd-FPN</td>
+<td>36.4</td>
+<td>157.5 M</td>
+</tr>
+<tr>
+<td>MaskRCNN-ResNet50</td>
+<td>32.8</td>
+<td>127.8 M</td>
+</tr>
+<tr>
+<td>MaskRCNN-ResNet101-FPN</td>
+<td>36.6</td>
+<td>225.4 M</td>
+</tr>
+<tr>
+<td>MaskRCNN-ResNet101-vd-FPN</td>
+<td>38.1</td>
+<td>225.1 M</td>
+</tr>
+<tr>
+<td>MaskRCNN-ResNeXt101-vd-FPN</td>
+<td>39.5</td>
+<td>370.0 M</td>
+</tr>
+<tr>
 <td>PP-YOLOE_seg-S</td>
 <td>32.5</td>
 <td>31.5 M</td>
@@ -536,6 +742,92 @@ PaddleX incorporates multiple pipelines, each containing several modules, and ea
 </tbody>
 </table>
 <b>Note: The above accuracy metrics are for</b> [COCO2017](https://cocodataset.org/#home) <b>validation set Mask AP(0.5:0.95).</b>
+
+## [图像特征模块](../module_usage/tutorials/cv_modules/image_feature.md)
+<table>
+<thead>
+<tr>
+<th>模型名称</th>
+<th>recall@1（%）</th>
+<th>模型存储大小</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PP-ShiTuV2_rec_CLIP_vit_base</td>
+<td>88.69</td>
+<td>306.6 M</td>
+</tr>
+<tr>
+<td>PP-ShiTuV2_rec_CLIP_vit_large</td>
+<td>91.03</td>
+<td>1.05 G</td>
+</tr>
+</tbody>
+</table>
+<b>注：以上精度指标为 AliProducts recall@1。</b>
+
+## [主体检测模块](../module_usage/tutorials/cv_modules/mainbody_detection.md)
+<table>
+<thead>
+<tr>
+<th>模型名称</th>
+<th>mAP（%）</th>
+<th>模型存储大小</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PP-ShiTuV2_det</td>
+<td>41.5</td>
+<td>27.6 M</td>
+</tr>
+</tbody>
+</table>
+<b>注：以上精度指标为 [PaddleClas主体检测数据集](https://github.com/PaddlePaddle/PaddleClas/blob/release/2.5/docs/zh_CN/training/PP-ShiTu/mainbody_detection.md) mAP(0.5:0.95)。</b>
+
+## [车辆检测模块](../module_usage/tutorials/cv_modules/vehicle_detection.md)
+<table>
+<thead>
+<tr>
+<th>模型名称</th>
+<th>mAP（%）</th>
+<th>模型存储大小</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PP-YOLOE-L_vehicle</td>
+<td>63.9</td>
+<td>196.1 M</td>
+</tr>
+<tr>
+<td>PP-YOLOE-S_vehicle</td>
+<td>61.3</td>
+<td>28.8 M</td>
+</tr>
+</tbody>
+</table>
+<b>注：以上精度指标为 </b>[PPVehicle](https://github.com/PaddlePaddle/PaddleDetection/tree/develop/configs/ppvehicle)<b> 验证集 mAP(0.5:0.95)。</b>
+
+## [异常检测模块](../module_usage/tutorials/cv_modules/anomaly_detection.md)
+<table>
+<thead>
+<tr>
+<th>模型名称</th>
+<th>Avg（%）</th>
+<th>模型存储大小</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>STFPM</td>
+<td>96.2</td>
+<td>21.5 M</td>
+</tr>
+</tbody>
+</table>
+<b>注：以上精度指标为 </b>[MVTec AD](https://www.mvtec.com/company/research/datasets/mvtec-ad)<b> 验证集 平均异常分数。</b>
 
 ## Text Detection Module
 <table>
@@ -654,6 +946,21 @@ PaddleX incorporates multiple pipelines, each containing several modules, and ea
 <td>PicoDet_layout_1x</td>
 <td>86.8</td>
 <td>7.4M</td>
+</tr>
+<tr>
+<td>PicoDet-L_layout_3cls</td>
+<td>89.3</td>
+<td>22.6 M</td>
+</tr>
+<tr>
+<td>RT-DETR-H_layout_3cls</td>
+<td>95.9</td>
+<td>470.1 M</td>
+</tr>
+<tr>
+<td>RT-DETR-H_layout_17cls</td>
+<td>92.6</td>
+<td>470.2 M</td>
 </tr>
 </tbody>
 </table>
