@@ -1,4 +1,6 @@
-简体中文 | [English](ts_anomaly_detection_en.md)
+---
+comments: true
+---
 
 # PaddleX 3.0 时序异常检测模型产线———设备异常检测应用教程
 
@@ -8,7 +10,7 @@ PaddleX 提供了丰富的模型产线，模型产线由一个或多个模型组
 首先，需要根据您的任务场景，选择对应的 PaddleX 产线，本任务旨在识别和标记出设备节点中的异常行为或异常状态，帮助企业和组织及时发现和解决应用服务器节点中的问题，提高系统的可靠性和可用性。了解到这个任务属于时序异常检测任务，对应 PaddleX 的时序异常检测产线。如果无法确定任务和产线的对应关系，您可以在 PaddleX 支持的[PaddleX产线列表(CPU/GPU)](../support_list/pipelines_list.md)中了解相关产线的能力介绍。
 
 ## 2. 快速体验
-PaddleX 提供了两种体验的方式，一种是可以直接通过 PaddleX 在本地体验，另外一种是可以在 **AI Studio 星河社区**上体验。
+PaddleX 提供了两种体验的方式，一种是可以直接通过 PaddleX 在本地体验，另外一种是可以在 <b>AI Studio 星河社区</b>上体验。
 
 * 本地体验方式：
 ```
@@ -25,14 +27,61 @@ for res in output:
 ## 3. 选择模型
 PaddleX 提供了5个端到端的时序异常检测模型，具体可参考 [模型列表](../support_list/models_list.md)，其中模型的benchmark如下：
 
-|模型名称|precison|recall|f1_score|模型存储大小（M)|介绍|
-|-|-|-|-|-|-|
-|DLinear_ad|0.9898|0.9396|0.9641|72.8K|DLinear_ad结构简单，效率高且易用的时序异常检测模型|
-|Nonstationary_ad|0.9855|0.8895|0.9351|1.5MB|基于transformer结构，针对性优化非平稳时间序列的异常检测模型|
-|AutoEncoder_ad|0.9936|0.8436|0.9125|32K|AutoEncoder_ad是经典的自编码结构的效率高且易用的时序异常检测模型|
-|PatchTST_ad|0.9878|0.9070|0.9457|164K|PatchTST是兼顾局部模式和全局依赖关系的高精度时序异常检测模型|
-|TimesNet_ad|0.9837|0.9480|0.9656|732K|通过多周期分析，TimesNet是适应性强的高精度时序异常检测模型|
-> **注：以上精度指标测量自**[PSM](https://paddle-model-ecology.bj.bcebos.com/paddlex/data/ts_anomaly_examples.tar)**数据集，时序长度为100。**
+<table>
+<thead>
+<tr>
+<th>模型名称</th>
+<th>precison</th>
+<th>recall</th>
+<th>f1_score</th>
+<th>模型存储大小（M)</th>
+<th>介绍</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DLinear_ad</td>
+<td>0.9898</td>
+<td>0.9396</td>
+<td>0.9641</td>
+<td>72.8K</td>
+<td>DLinear_ad结构简单，效率高且易用的时序异常检测模型</td>
+</tr>
+<tr>
+<td>Nonstationary_ad</td>
+<td>0.9855</td>
+<td>0.8895</td>
+<td>0.9351</td>
+<td>1.5MB</td>
+<td>基于transformer结构，针对性优化非平稳时间序列的异常检测模型</td>
+</tr>
+<tr>
+<td>AutoEncoder_ad</td>
+<td>0.9936</td>
+<td>0.8436</td>
+<td>0.9125</td>
+<td>32K</td>
+<td>AutoEncoder_ad是经典的自编码结构的效率高且易用的时序异常检测模型</td>
+</tr>
+<tr>
+<td>PatchTST_ad</td>
+<td>0.9878</td>
+<td>0.9070</td>
+<td>0.9457</td>
+<td>164K</td>
+<td>PatchTST是兼顾局部模式和全局依赖关系的高精度时序异常检测模型</td>
+</tr>
+<tr>
+<td>TimesNet_ad</td>
+<td>0.9837</td>
+<td>0.9480</td>
+<td>0.9656</td>
+<td>732K</td>
+<td>通过多周期分析，TimesNet是适应性强的高精度时序异常检测模型</td>
+</tr>
+</tbody>
+</table>
+> <b>注：以上精度指标测量自</b>[PSM](https://paddle-model-ecology.bj.bcebos.com/paddlex/data/ts_anomaly_examples.tar)<b>数据集，时序长度为100。</b>
 ## 4. 数据准备和校验
 ### 4.1 数据准备
 为了演示时序异常检测任务整个流程，我们将使用公开的 MSL 数据集进行模型训练及验证。PSM（火星科学实验室）数据集由来自美国国家航空航天局，具有 55 个维度，其中包含来自航天器监测系统的意外事件异常（ISA）报告的遥测异常数据。具有实际应用背景，能够更好地反映真实场景中的异常情况，通常用于测试和验证时间序列异常检测模型的性能。本教程中基于该数据集进行异常检测。
@@ -46,7 +95,7 @@ cd /path/to/paddlex
 wget https://paddle-model-ecology.bj.bcebos.com/paddlex/PaddleX3.0/doc_images/practical_tutorial/timeseries_anomaly_detection/msl.tar -P ./dataset
 tar -xf ./dataset/msl.tar -C ./dataset/
 ```
-* **数据注意事项**
+* <b>数据注意事项</b>
   * 时序异常检测是一个无监督学习任务，因此不需要标注训练数据。收集的训练样本尽可能保证都是正常数据，即没有异常，训练集的标签列均设置为 0，或者不设置标签列也是可以的。验证集为了验证精度，需要进行标注，对于在某个时间点是异常的点，该时间点的标签设置为 1，正常的时间点的标签为 0。
   * 缺失值处理：为了保证数据的质量和完整性，可以基于专家经验或统计方法进行缺失值填充。
   * 非重复性：保证数据是按照时间顺序按行收集的，同一个时间点不能重复出现。
@@ -94,7 +143,7 @@ python main.py -c paddlex/configs/ts_anomaly_detection/PatchTST_ad.yaml \
 * attributes.val_samples：该数据集验证集样本数量为 73729
 * attributes.train_table：该数据集训练集样本示例数据行；
 * attributes.val_table：该数据集验证集样本示例数据行；
-**注**：只有通过数据校验的数据才可以训练和评估。
+<b>注</b>：只有通过数据校验的数据才可以训练和评估。
 
 ### 4.3 数据集格式转换/数据集划分（非必选）
 如需对数据集格式进行转换或是重新划分数据集，可参考[时序异常检测模块开发教程](../module_usage/tutorials/time_series_modules/time_series_anomaly_detection.md)中的4.1.3。
@@ -136,25 +185,22 @@ PaddleX 中每个模型都提供了模型开发的配置文件，用于设置相
 
 
 
-<details>
-   <summary> 更多说明（点击展开） </summary>
+<details><summary> 更多说明（点击展开） </summary>
 
-* 模型训练过程中，PaddleX 会自动保存模型权重文件，默认为`output`，如需指定保存路径，可通过配置文件中 `-o Global.output` 字段进行设置。
-* PaddleX 对您屏蔽了动态图权重和静态图权重的概念。在模型训练的过程中，会同时产出动态图和静态图的权重，在模型推理时，默认选择静态图权重推理。
-* 训练其他模型时，需要的指定相应的配置文件，模型和配置的文件的对应关系，可以查阅[PaddleX模型列表（CPU/GPU）](../support_list/models_list.md)。
-在完成模型训练后，所有产出保存在指定的输出目录（默认为`./output/`）下，通常有以下产出：
-
-
-**训练产出解释:**
-
-在完成模型训练后，所有产出保存在指定的输出目录（默认为`./output/`）下，通常有以下产出：
-
-* `train_result.json`：训练结果记录文件，记录了训练任务是否正常完成，以及产出的权重指标、相关文件路径等；
-* `train.log`：训练日志文件，记录了训练过程中的模型指标变化、loss 变化等；
-* `config.yaml`：训练配置文件，记录了本次训练的超参数的配置；
-* `best_accuracy.pdparams.tar`、`scaler.pkl`、`.checkpoints` 、`.inference*`：模型权重相关文件，包括网络参数、优化器、静态图权重等；
-
-</details>
+<ul>
+<li>模型训练过程中，PaddleX 会自动保存模型权重文件，默认为<code>output</code>，如需指定保存路径，可通过配置文件中 <code>-o Global.output</code> 字段进行设置。</li>
+<li>PaddleX 对您屏蔽了动态图权重和静态图权重的概念。在模型训练的过程中，会同时产出动态图和静态图的权重，在模型推理时，默认选择静态图权重推理。</li>
+<li>训练其他模型时，需要的指定相应的配置文件，模型和配置的文件的对应关系，可以查阅<a href="../support_list/models_list.md">PaddleX模型列表（CPU/GPU）</a>。
+在完成模型训练后，所有产出保存在指定的输出目录（默认为<code>./output/</code>）下，通常有以下产出：</li>
+</ul>
+<p><b>训练产出解释:</b></p>
+<p>在完成模型训练后，所有产出保存在指定的输出目录（默认为<code>./output/</code>）下，通常有以下产出：</p>
+<ul>
+<li><code>train_result.json</code>：训练结果记录文件，记录了训练任务是否正常完成，以及产出的权重指标、相关文件路径等；</li>
+<li><code>train.log</code>：训练日志文件，记录了训练过程中的模型指标变化、loss 变化等；</li>
+<li><code>config.yaml</code>：训练配置文件，记录了本次训练的超参数的配置；</li>
+<li><code>best_accuracy.pdparams.tar</code>、<code>scaler.pkl</code>、<code>.checkpoints</code> 、<code>.inference*</code>：模型权重相关文件，包括网络参数、优化器、静态图权重等；</li>
+</ul></details>
 
 ### 5.2 模型评估
 在完成模型训练后，可以对指定的模型权重文件在验证集上进行评估，验证模型精度。使用 PaddleX 进行模型评估，只需一行命令：
@@ -166,7 +212,7 @@ PaddleX 中每个模型都提供了模型开发的配置文件，用于设置相
 ```
 与模型训练类似，模型评估支持修改配置文件或追加命令行参数的方式设置。
 
-**注：** 在模型评估时，需要指定模型权重文件路径，每个配置文件中都内置了默认的权重保存路径，如需要改变，只需要通过追加命令行参数的形式进行设置即可，如`-o Evaluate.weight_path=./output/best_model/model.pdparams`。
+<b>注：</b> 在模型评估时，需要指定模型权重文件路径，每个配置文件中都内置了默认的权重保存路径，如需要改变，只需要通过追加命令行参数的形式进行设置即可，如`-o Evaluate.weight_path=./output/best_model/model.pdparams`。
 
 在完成模型评估后，通常有以下产出：
 
@@ -185,18 +231,83 @@ PaddleX 中每个模型都提供了模型开发的配置文件，用于设置相
 4. 可以发现实验四与实验三的精度一致，说明无需再增大训练轮次数。
 学习率探寻实验结果：
 
-|实验|轮次|学习率|batch_size|输入长度|训练环境|验证集F1 score (%)|
-|-|-|-|-|-|-|-|
-|实验一|5|0.0001|16|96|1卡|79.5|
-|实验二|5|0.0005|16|96|1卡|80.1|
-|实验三|5|0.001|16|96|1卡|80.9|
-
+<table>
+<thead>
+<tr>
+<th>实验</th>
+<th>轮次</th>
+<th>学习率</th>
+<th>batch_size</th>
+<th>输入长度</th>
+<th>训练环境</th>
+<th>验证集F1 score (%)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>实验一</td>
+<td>5</td>
+<td>0.0001</td>
+<td>16</td>
+<td>96</td>
+<td>1卡</td>
+<td>79.5</td>
+</tr>
+<tr>
+<td>实验二</td>
+<td>5</td>
+<td>0.0005</td>
+<td>16</td>
+<td>96</td>
+<td>1卡</td>
+<td>80.1</td>
+</tr>
+<tr>
+<td>实验三</td>
+<td>5</td>
+<td>0.001</td>
+<td>16</td>
+<td>96</td>
+<td>1卡</td>
+<td>80.9</td>
+</tr>
+</tbody>
+</table>
 增大训练轮次实验结果：
 
-|实验|轮次|学习率|batch_size|输入长度|训练环境|验证集F1 score (%)|
-|-|-|-|-|-|-|-|
-|实验三|5|0.0005|16|96|1卡|80.9|
-|实验四|20|0.0005|16|96|1卡|80.9|
+<table>
+<thead>
+<tr>
+<th>实验</th>
+<th>轮次</th>
+<th>学习率</th>
+<th>batch_size</th>
+<th>输入长度</th>
+<th>训练环境</th>
+<th>验证集F1 score (%)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>实验三</td>
+<td>5</td>
+<td>0.0005</td>
+<td>16</td>
+<td>96</td>
+<td>1卡</td>
+<td>80.9</td>
+</tr>
+<tr>
+<td>实验四</td>
+<td>20</td>
+<td>0.0005</td>
+<td>16</td>
+<td>96</td>
+<td>1卡</td>
+<td>80.9</td>
+</tr>
+</tbody>
+</table>
 ## 6. 产线测试
 将产线中的模型替换为微调后的模型进行测试，使用[测试文件](https://paddle-model-ecology.bj.bcebos.com/paddlex/PaddleX3.0/doc_images/practical_tutorial/timeseries_anomaly_detection/test.csv)进行预测：
 

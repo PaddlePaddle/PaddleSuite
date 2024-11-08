@@ -1,4 +1,6 @@
-简体中文 | [English](instance_segmentation_remote_sensing_tutorial_en.md)
+---
+comments: true
+---
 
 # PaddleX 3.0 通用实例分割模型产线———遥感图像实例分割教程
 
@@ -11,7 +13,7 @@ PaddleX 提供了丰富的模型产线，模型产线由一个或多个模型组
 
 ## 2. 快速体验
 
-PaddleX 提供了两种体验的方式，一种是可以直接通过 PaddleX wheel 包在本地体验，另外一种是可以在 **AI Studio 星河社区**上体验。
+PaddleX 提供了两种体验的方式，一种是可以直接通过 PaddleX wheel 包在本地体验，另外一种是可以在 <b>AI Studio 星河社区</b>上体验。
 
   - 本地体验方式：
     ```bash
@@ -19,7 +21,7 @@ PaddleX 提供了两种体验的方式，一种是可以直接通过 PaddleX whe
         --input https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/remotesensing_demo.png
     ```
 
-  - 星河社区体验方式：前往[AI Studio 星河社区](https://aistudio.baidu.com/pipeline/mine)，点击【创建产线】，创建【**通用实例分割**】产线进行快速体验；
+  - 星河社区体验方式：前往[AI Studio 星河社区](https://aistudio.baidu.com/pipeline/mine)，点击【创建产线】，创建【<b>通用实例分割</b>】产线进行快速体验；
 
   快速体验产出推理结果示例：
   <center>
@@ -34,14 +36,43 @@ PaddleX 提供了两种体验的方式，一种是可以直接通过 PaddleX whe
 
 PaddleX 提供了 15 个端到端的实例分割模型，具体可参考 [模型列表](../support_list/models_list.md)，其中部分模型的 benchmark 如下：
 
-| 模型列表        | mAP(%) | GPU 推理耗时(ms) |  模型存储大小(M) |
-| --------------- | ------ | ---------------- | --------------- |
-| Mask-RT-DETR-H       | 48.8   | 61.40           |486             |
-| Mask-RT-DETR-X       | 47.5   | 45.70             |257             |
-| Mask-RT-DETR-L       | 45.7   | 37.40             |123             |
-| Mask-RT-DETR-S       | 40.9   | 32.40             |57             |
-
-> **注：以上精度指标为 [COCO2017](https://cocodataset.org/#home) 验证集 mAP(0.5:0.95)，GPU 推理耗时基于 NVIDIA  V100 机器，精度类型为 FP32。**
+<table>
+<thead>
+<tr>
+<th>模型列表</th>
+<th>mAP(%)</th>
+<th>GPU 推理耗时(ms)</th>
+<th>模型存储大小(M)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Mask-RT-DETR-H</td>
+<td>48.8</td>
+<td>61.40</td>
+<td>486</td>
+</tr>
+<tr>
+<td>Mask-RT-DETR-X</td>
+<td>47.5</td>
+<td>45.70</td>
+<td>257</td>
+</tr>
+<tr>
+<td>Mask-RT-DETR-L</td>
+<td>45.7</td>
+<td>37.40</td>
+<td>123</td>
+</tr>
+<tr>
+<td>Mask-RT-DETR-S</td>
+<td>40.9</td>
+<td>32.40</td>
+<td>57</td>
+</tr>
+</tbody>
+</table>
+> <b>注：以上精度指标为 [COCO2017](https://cocodataset.org/#home) 验证集 mAP(0.5:0.95)，GPU 推理耗时基于 NVIDIA  V100 机器，精度类型为 FP32。</b>
 
 简单来说，表格从上到下，模型推理速度更快，从下到上，模型精度更高。本教程以 `Mask-RT-DETR-H` 模型为例，完成一次模型全流程开发。你可以依据自己的实际使用场景，判断并选择一个合适的模型做训练，训练完成后可在产线内评估合适的模型权重，并最终用于实际使用场景中。
 
@@ -108,7 +139,7 @@ python main.py -c paddlex/configs/instance_segmentation/Mask-RT-DETR-H.yaml \
 
 </center>
 
-**注**：只有通过数据校验的数据才可以训练和评估。
+<b>注</b>：只有通过数据校验的数据才可以训练和评估。
 
 
 ### 4.3 数据集格式转换/数据集划分（非必选）
@@ -153,12 +184,12 @@ PaddleX 中每个模型都提供了模型开发的配置文件，用于设置相
 
 更多超参数介绍，请参考 [PaddleX 通用模型配置文件参数说明](../module_usage/instructions/config_parameters_common.md)。
 
-**注：**
+<b>注：</b>
 - 以上参数可以通过追加令行参数的形式进行设置，如指定模式为模型训练：`-o Global.mode=train`；指定前 2 卡 gpu 训练：`-o Global.device=gpu:0,1`；设置训练轮次数为 10：`-o Train.epochs_iters=10`。
 - 模型训练过程中，PaddleX 会自动保存模型权重文件，默认为`output`，如需指定保存路径，可通过配置文件中 `-o Global.output` 字段
 - PaddleX 对您屏蔽了动态图权重和静态图权重的概念。在模型训练的过程中，会同时产出动态图和静态图的权重，在模型推理时，默认选择静态图权重推理。
 
-**训练产出解释:**
+<b>训练产出解释:</b>
 
 在完成模型训练后，所有产出保存在指定的输出目录（默认为`./output/`）下，通常有以下产出：
 
@@ -179,7 +210,7 @@ python main.py -c paddlex/configs/instance_segmentation/Mask-RT-DETR-H.yaml \
 
 与模型训练类似，模型评估支持修改配置文件或追加命令行参数的方式设置。
 
-**注：** 在模型评估时，需要指定模型权重文件路径，每个配置文件中都内置了默认的权重保存路径，如需要改变，只需要通过追加命令行参数的形式进行设置即可，如`-o Evaluate.weight_path=./output/best_model/best_model.pdparams`。
+<b>注：</b> 在模型评估时，需要指定模型权重文件路径，每个配置文件中都内置了默认的权重保存路径，如需要改变，只需要通过追加命令行参数的形式进行设置即可，如`-o Evaluate.weight_path=./output/best_model/best_model.pdparams`。
 
 ### 5.3 模型调优
 
@@ -194,26 +225,98 @@ python main.py -c paddlex/configs/instance_segmentation/Mask-RT-DETR-H.yaml \
 学习率探寻实验结果：
 <center>
 
-| 实验  | 轮次 | 学习率   | batch\_size | 训练环境 | mAP@0\.5 |
-|-----|----|-------|-------------|------|----------|
-| 实验一 | 80 | 0\.0005 | 2          | 4卡   | 0\.695   |
-| 实验二 | 80 | 0\.0001 | 2          | 4卡   | **0\.825**  |
-| 实验三 | 80 | 0\.00005  | 2          | 4卡   | 0\.706   |
-
+<table>
+<thead>
+<tr>
+<th>实验</th>
+<th>轮次</th>
+<th>学习率</th>
+<th>batch_size</th>
+<th>训练环境</th>
+<th>mAP@0.5</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>实验一</td>
+<td>80</td>
+<td>0.0005</td>
+<td>2</td>
+<td>4卡</td>
+<td>0.695</td>
+</tr>
+<tr>
+<td>实验二</td>
+<td>80</td>
+<td>0.0001</td>
+<td>2</td>
+<td>4卡</td>
+<td><strong>0.825</strong></td>
+</tr>
+<tr>
+<td>实验三</td>
+<td>80</td>
+<td>0.00005</td>
+<td>2</td>
+<td>4卡</td>
+<td>0.706</td>
+</tr>
+</tbody>
+</table>
 </center>
 
 改变 epoch 实验结果：
 <center>
 
-| 实验        | 轮次  | 学习率   | batch\_size | 训练环境 | mAP@0\.5 |
-|-----------|-----|-------|-------------|------|----------|
-| 实验二       | 80  | 0\.0001 | 2          | 4卡   | 0\.825   |
-| 实验二减少训练轮次 | 30  | 0\.0001 | 2          | 4卡   | 0\.287   |
-| 实验二减少训练轮次 | 50  | 0\.0001 | 2          | 4卡   | 0\.545   |
-| 实验二增大训练轮次 | 100 | 0\.0001 | 2          | 4卡   | 0\.813  |
+<table>
+<thead>
+<tr>
+<th>实验</th>
+<th>轮次</th>
+<th>学习率</th>
+<th>batch_size</th>
+<th>训练环境</th>
+<th>mAP@0.5</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>实验二</td>
+<td>80</td>
+<td>0.0001</td>
+<td>2</td>
+<td>4卡</td>
+<td>0.825</td>
+</tr>
+<tr>
+<td>实验二减少训练轮次</td>
+<td>30</td>
+<td>0.0001</td>
+<td>2</td>
+<td>4卡</td>
+<td>0.287</td>
+</tr>
+<tr>
+<td>实验二减少训练轮次</td>
+<td>50</td>
+<td>0.0001</td>
+<td>2</td>
+<td>4卡</td>
+<td>0.545</td>
+</tr>
+<tr>
+<td>实验二增大训练轮次</td>
+<td>100</td>
+<td>0.0001</td>
+<td>2</td>
+<td>4卡</td>
+<td>0.813</td>
+</tr>
+</tbody>
+</table>
 </center>
 
-** 注：本教程为 4 卡教程，如果您只有 1 张GPU，可通过调整训练卡数完成本次实验，但最终指标未必和上述指标对齐，属正常情况。**
+<b> 注：本教程为 4 卡教程，如果您只有 1 张GPU，可通过调整训练卡数完成本次实验，但最终指标未必和上述指标对齐，属正常情况。</b>
 
 ## 6. 产线测试
 

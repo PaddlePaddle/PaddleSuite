@@ -1,4 +1,6 @@
-简体中文 | [English](image_classification_garbage_tutorial_en.md)
+---
+comments: true
+---
 
 # PaddleX 3.0 通用图像分类模型产线———垃圾分类教程
 
@@ -11,7 +13,7 @@ PaddleX 提供了丰富的模型产线，模型产线由一个或多个模型组
 
 ## 2. 快速体验
 
-PaddleX 提供了两种体验的方式，一种是可以直接通过 PaddleX wheel 包在本地体验，另外一种是可以在 **AI Studio 星河社区**上体验。
+PaddleX 提供了两种体验的方式，一种是可以直接通过 PaddleX wheel 包在本地体验，另外一种是可以在 <b>AI Studio 星河社区</b>上体验。
 
   - 本地体验方式：
     ```bash
@@ -19,7 +21,7 @@ PaddleX 提供了两种体验的方式，一种是可以直接通过 PaddleX whe
         --input https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/garbage_demo.png
     ```
 
-  - 星河社区体验方式：前往[AI Studio 星河社区](https://aistudio.baidu.com/pipeline/mine)，点击【创建产线】，创建【**通用图像分类**】产线进行快速体验；
+  - 星河社区体验方式：前往[AI Studio 星河社区](https://aistudio.baidu.com/pipeline/mine)，点击【创建产线】，创建【<b>通用图像分类</b>】产线进行快速体验；
 
   快速体验产出推理结果示例：
   <center>
@@ -34,19 +36,83 @@ PaddleX 提供了两种体验的方式，一种是可以直接通过 PaddleX whe
 
 PaddleX 提供了 80 个端到端的图像分类模型，具体可参考 [模型列表](../support_list/models_list.md)，其中部分模型的 benchmark 如下：
 
-| 模型列表        | Top1 Acc(%) | GPU 推理耗时(ms) | CPU 推理耗时(ms) | 模型存储大小(M) |
-| --------------- | ------ | ---------------- | ---------------- | --------------- |
-| PP-HGNetV2_B6   | 86.30  | 10.46            | 240.18           | 288             |
-| CLIP_vit_base_patch16_224 | 85.39 | 12.03   | 234.85           | 331             |
-| PP-HGNetV2_B4   | 83.57  | 2.45             | 38.10            | 76              |
-| SwinTransformer_base_patch4_window7_224  | 83.37 | 12.35 | -   | 342             |
-| PP-HGNet_small  | 81.51  | 4.24             | 108.21           | 94              |
-| PP-HGNetV2_B0   | 77.77  | 0.68             | 6.41             | 23              |
-| ResNet50        | 76.50  | 3.12             | 50.90            | 98              |
-| PP-LCNet_x1_0   | 71.32  | 1.01             | 3.39             | 7               |
-| MobileNetV3_small_x1_0 | 68.24  | 1.09      | 3.65             | 12              |
-
-> **注：以上精度指标为 <a href="https://www.image-net.org/index.php" target="_blank">ImageNet-1k</a> 验证集 Top1 Acc，GPU 推理耗时基于 NVIDIA Tesla T4 机器，精度类型为 FP32， CPU 推理速度基于 Intel(R) Xeon(R) Gold 5117 CPU @ 2.00GHz，线程数为 8，精度类型为 FP32。**
+<table>
+<thead>
+<tr>
+<th>模型列表</th>
+<th>Top1 Acc(%)</th>
+<th>GPU 推理耗时(ms)</th>
+<th>CPU 推理耗时(ms)</th>
+<th>模型存储大小(M)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PP-HGNetV2_B6</td>
+<td>86.30</td>
+<td>10.46</td>
+<td>240.18</td>
+<td>288</td>
+</tr>
+<tr>
+<td>CLIP_vit_base_patch16_224</td>
+<td>85.39</td>
+<td>12.03</td>
+<td>234.85</td>
+<td>331</td>
+</tr>
+<tr>
+<td>PP-HGNetV2_B4</td>
+<td>83.57</td>
+<td>2.45</td>
+<td>38.10</td>
+<td>76</td>
+</tr>
+<tr>
+<td>SwinTransformer_base_patch4_window7_224</td>
+<td>83.37</td>
+<td>12.35</td>
+<td>-</td>
+<td>342</td>
+</tr>
+<tr>
+<td>PP-HGNet_small</td>
+<td>81.51</td>
+<td>4.24</td>
+<td>108.21</td>
+<td>94</td>
+</tr>
+<tr>
+<td>PP-HGNetV2_B0</td>
+<td>77.77</td>
+<td>0.68</td>
+<td>6.41</td>
+<td>23</td>
+</tr>
+<tr>
+<td>ResNet50</td>
+<td>76.50</td>
+<td>3.12</td>
+<td>50.90</td>
+<td>98</td>
+</tr>
+<tr>
+<td>PP-LCNet_x1_0</td>
+<td>71.32</td>
+<td>1.01</td>
+<td>3.39</td>
+<td>7</td>
+</tr>
+<tr>
+<td>MobileNetV3_small_x1_0</td>
+<td>68.24</td>
+<td>1.09</td>
+<td>3.65</td>
+<td>12</td>
+</tr>
+</tbody>
+</table>
+> <b>注：以上精度指标为 <a href="https://www.image-net.org/index.php" target="_blank">ImageNet-1k</a> 验证集 Top1 Acc，GPU 推理耗时基于 NVIDIA Tesla T4 机器，精度类型为 FP32， CPU 推理速度基于 Intel(R) Xeon(R) Gold 5117 CPU @ 2.00GHz，线程数为 8，精度类型为 FP32。</b>
 
 简单来说，表格从上到下，模型推理速度更快，从下到上，模型精度更高。本教程以 `PP-LCNet_x1_0` 模型为例，完成一次模型全流程开发。您可以依据自己的实际使用场景，判断并选择一个合适的模型做训练，训练完成后可在产线内评估合适的模型权重，并最终用于实际使用场景中。
 
@@ -114,7 +180,7 @@ python main.py -c paddlex/configs/image_classification/PP-LCNet_x1_0.yaml \
 
 </center>
 
-**注**：只有通过数据校验的数据才可以训练和评估。
+<b>注</b>：只有通过数据校验的数据才可以训练和评估。
 
 
 ### 4.3 数据集划分（非必选）
@@ -156,12 +222,12 @@ PaddleX 中每个模型都提供了模型开发的配置文件，用于设置相
 
 更多超参数介绍，请参考 [PaddleX 通用模型配置文件参数说明](../module_usage/instructions/config_parameters_common.md)。
 
-**注：**
+<b>注：</b>
 - 以上参数可以通过追加令行参数的形式进行设置，如指定模式为模型训练：`-o Global.mode=train`；指定前 2 卡 gpu 训练：`-o Global.device=gpu:0,1`；设置训练轮次数为 10：`-o Train.epochs_iters=10`。
 - 模型训练过程中，PaddleX 会自动保存模型权重文件，默认为`output`，如需指定保存路径，可通过配置文件中 `-o Global.output` 字段
 - PaddleX 对您屏蔽了动态图权重和静态图权重的概念。在模型训练的过程中，会同时产出动态图和静态图的权重，在模型推理时，默认选择静态图权重推理。
 
-**训练产出解释:**
+<b>训练产出解释:</b>
 
 在完成模型训练后，所有产出保存在指定的输出目录（默认为`./output/`）下，通常有以下产出：
 
@@ -182,7 +248,7 @@ python main.py -c paddlex/configs/image_classification/PP-LCNet_x1_0.yaml \
 
 与模型训练类似，模型评估支持修改配置文件或追加命令行参数的方式设置。
 
-**注：** 在模型评估时，需要指定模型权重文件路径，每个配置文件中都内置了默认的权重保存路径，如需要改变，只需要通过追加命令行参数的形式进行设置即可，如`-o Evaluate.weight_path=./output/best_model/best_model.pdparams`。
+<b>注：</b> 在模型评估时，需要指定模型权重文件路径，每个配置文件中都内置了默认的权重保存路径，如需要改变，只需要通过追加命令行参数的形式进行设置即可，如`-o Evaluate.weight_path=./output/best_model/best_model.pdparams`。
 
 ### 5.3 模型调优
 
@@ -197,25 +263,98 @@ python main.py -c paddlex/configs/image_classification/PP-LCNet_x1_0.yaml \
 学习率探寻实验结果：
 <center>
 
-| 实验  | 轮次 | 学习率   | batch\_size | 训练环境 | Top1 Acc |
-|-----|----|-------|-------------|------|----------|
-| 实验一 | 20 | 0\.01 | 64          | 4卡   | **73\.83%**  |
-| 实验二 | 20 | 0\.001 | 64          | 4卡   | 30\.64%   |
-| 实验三 | 20 | 0\.1  | 64          | 4卡   | 71\.53%  |
+<table>
+<thead>
+<tr>
+<th>实验</th>
+<th>轮次</th>
+<th>学习率</th>
+<th>batch_size</th>
+<th>训练环境</th>
+<th>Top1 Acc</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>实验一</td>
+<td>20</td>
+<td>0.01</td>
+<td>64</td>
+<td>4卡</td>
+<td><strong>73.83%</strong></td>
+</tr>
+<tr>
+<td>实验二</td>
+<td>20</td>
+<td>0.001</td>
+<td>64</td>
+<td>4卡</td>
+<td>30.64%</td>
+</tr>
+<tr>
+<td>实验三</td>
+<td>20</td>
+<td>0.1</td>
+<td>64</td>
+<td>4卡</td>
+<td>71.53%</td>
+</tr>
+</tbody>
+</table>
 </center>
 
 改变 epoch 实验结果：
 <center>
 
-| 实验        | 轮次  | 学习率   | batch\_size | 训练环境 | Top1 Acc |
-|-----------|-----|-------|-------------|------|----------|
-| 实验一       | 20  | 0\.01 | 64          | 4卡   | 73\.83%   |
-| 实验一增大训练轮次 | 50  | 0\.01 | 64          | 4卡   | 77\.32%   |
-| 实验一增大训练轮次 | 80  | 0\.01 | 64          | 4卡   | 77\.60%   |
-| 实验一增大训练轮次 | 100 | 0\.01 | 64          | 4卡   | **77\.80%**   |
+<table>
+<thead>
+<tr>
+<th>实验</th>
+<th>轮次</th>
+<th>学习率</th>
+<th>batch_size</th>
+<th>训练环境</th>
+<th>Top1 Acc</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>实验一</td>
+<td>20</td>
+<td>0.01</td>
+<td>64</td>
+<td>4卡</td>
+<td>73.83%</td>
+</tr>
+<tr>
+<td>实验一增大训练轮次</td>
+<td>50</td>
+<td>0.01</td>
+<td>64</td>
+<td>4卡</td>
+<td>77.32%</td>
+</tr>
+<tr>
+<td>实验一增大训练轮次</td>
+<td>80</td>
+<td>0.01</td>
+<td>64</td>
+<td>4卡</td>
+<td>77.60%</td>
+</tr>
+<tr>
+<td>实验一增大训练轮次</td>
+<td>100</td>
+<td>0.01</td>
+<td>64</td>
+<td>4卡</td>
+<td><strong>77.80%</strong></td>
+</tr>
+</tbody>
+</table>
 </center>
 
-** 注：本教程为 4 卡教程，如果您只有 1 张 GPU，可通过调整训练卡数完成本次实验，但最终指标未必和上述指标对齐，属正常情况。**
+<b> 注：本教程为 4 卡教程，如果您只有 1 张 GPU，可通过调整训练卡数完成本次实验，但最终指标未必和上述指标对齐，属正常情况。</b>
 
 ## 6. 产线测试
 

@@ -1,4 +1,6 @@
-简体中文 | [English](document_scene_information_extraction(seal_recognition)_tutorial_en.md)
+---
+comments: true
+---
 
 # PaddleX 3.0 文档场景信息抽取v3（PP-ChatOCRv3_doc） —— 印章信息抽取教程
 
@@ -49,7 +51,7 @@ chat_result = pipeline.chat(
 chat_result.print()
 ```
 
-**注**：目前仅支持文心大模型，支持在[百度云千帆平台](https://console.bce.baidu.com/qianfan/ais/console/onlineService)或者[星河社区 AIStudio](https://aistudio.baidu.com/)上获取相关的 ak/sk(access_token)。如果使用百度云千帆平台，可以参考[AK和SK鉴权调用API流程](https://cloud.baidu.com/doc/WENXINWORKSHOP/s/Hlwerugt8) 获取ak/sk，如果使用星河社区 AIStudio，可以在[星河社区 AIStudio 访问令牌](https://aistudio.baidu.com/account/accessToken)中获取 access_token。
+<b>注</b>：目前仅支持文心大模型，支持在[百度云千帆平台](https://console.bce.baidu.com/qianfan/ais/console/onlineService)或者[星河社区 AIStudio](https://aistudio.baidu.com/)上获取相关的 ak/sk(access_token)。如果使用百度云千帆平台，可以参考[AK和SK鉴权调用API流程](https://cloud.baidu.com/doc/WENXINWORKSHOP/s/Hlwerugt8) 获取ak/sk，如果使用星河社区 AIStudio，可以在[星河社区 AIStudio 访问令牌](https://aistudio.baidu.com/account/accessToken)中获取 access_token。
 
 
 输出打印的结果如下：
@@ -67,7 +69,7 @@ The retrieved vectorstore is not for PaddleX and will return vectorstore directl
 
 其中印章文本识别结果可视化如下：
 
-![](https://raw.githubusercontent.com/cuicheng01/PaddleX_doc_images/main/images/practical_tutorials/PP-ChatOCRv3_doc/seal_01.png)
+<img src="https://raw.githubusercontent.com/cuicheng01/PaddleX_doc_images/main/images/practical_tutorials/PP-ChatOCRv3_doc/seal_01.png">
 
 
 通过上面的文档场景信息抽取的快速体验可以进行 Badcase 分析，发现文档场景信息抽取产线的官方模型，在当前需求场景中存在下面的问题：在OCR识别的可视化中，印章的文本弯曲检测框有偏差，导致印章文本识别错误；印章的信息没有被正确的抽取出来。在`{'chat_res': {'印章': '未知'}, 'prompt': ''}`中的结果是未知。因此，本节工作聚焦于印章信息抽取的场景，对文档场景信息抽取产线中的印章文本检测模型进行微调，从而达到能够精确提取文档中印章文本信息的能力。
@@ -75,9 +77,9 @@ The retrieved vectorstore is not for PaddleX and will return vectorstore directl
 
 ### 2.2 在线体验
 
-您可以在 **AI Studio 星河社区** 体验文档场景信息抽取v3产线的效果，点击链接下载 [印章测试文件](https://paddle-model-ecology.bj.bcebos.com/paddlex/PaddleX3.0/doc_images/practical_tutorial/PP-ChatOCRv3_doc_seal/test.png)，上传至[官方文档场景信息抽取v3 应用](https://aistudio.baidu.com/community/app/182491/webUI?source=appCenter) 体验抽取效果。如下：
+您可以在 <b>AI Studio 星河社区</b> 体验文档场景信息抽取v3产线的效果，点击链接下载 [印章测试文件](https://paddle-model-ecology.bj.bcebos.com/paddlex/PaddleX3.0/doc_images/practical_tutorial/PP-ChatOCRv3_doc_seal/test.png)，上传至[官方文档场景信息抽取v3 应用](https://aistudio.baidu.com/community/app/182491/webUI?source=appCenter) 体验抽取效果。如下：
 
-![](https://paddle-model-ecology.bj.bcebos.com/paddlex/PaddleX3.0/doc_images/practical_tutorial/PP-ChatOCRv3_doc_seal/06.png)
+<img src="https://paddle-model-ecology.bj.bcebos.com/paddlex/PaddleX3.0/doc_images/practical_tutorial/PP-ChatOCRv3_doc_seal/06.png">
 
 
 
@@ -85,12 +87,37 @@ The retrieved vectorstore is not for PaddleX and will return vectorstore directl
 
 PaddleX 提供了 2 个端到端的印章文本检测模型，具体可参考 [模型列表](../support_list/models_list.md)，其中印章文本检测模型的 benchmark 如下：
 
-|模型名称|检测Hmean（%）|GPU推理耗时（ms）|CPU推理耗时（ms）|模型存储大小|yaml 文件|
-|-|-|-|-|-|-|
-|PP-OCRv4_mobile_seal_det|96.47|10.5878|131.813|4.7M |[PP-OCRv4_mobile_seal_det.yaml](../../paddlex/configs/text_detection_seal/PP-OCRv4_mobile_seal_det.yaml)|
-|PP-OCRv4_server_seal_det|98.21|84.341|2425.06|108.3 M|[PP-OCRv4_server_seal_det.yaml](../../paddlex/configs/text_detection_seal/PP-OCRv4_server_seal_det.yaml)|
-
-**注：以上精度指标的评估集是 PaddleX 自建的印章数据集，包含500印章图像。**
+<table>
+<thead>
+<tr>
+<th>模型名称</th>
+<th>检测Hmean（%）</th>
+<th>GPU推理耗时（ms）</th>
+<th>CPU推理耗时（ms）</th>
+<th>模型存储大小</th>
+<th>yaml 文件</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PP-OCRv4_mobile_seal_det</td>
+<td>96.47</td>
+<td>10.5878</td>
+<td>131.813</td>
+<td>4.7M</td>
+<td><a href="../../paddlex/configs/text_detection_seal/PP-OCRv4_mobile_seal_det.yaml">PP-OCRv4_mobile_seal_det.yaml</a></td>
+</tr>
+<tr>
+<td>PP-OCRv4_server_seal_det</td>
+<td>98.21</td>
+<td>84.341</td>
+<td>2425.06</td>
+<td>108.3 M</td>
+<td><a href="../../paddlex/configs/text_detection_seal/PP-OCRv4_server_seal_det.yaml">PP-OCRv4_server_seal_det.yaml</a></td>
+</tr>
+</tbody>
+</table>
+<b>注：以上精度指标的评估集是 PaddleX 自建的印章数据集，包含500印章图像。</b>
 
 
 ## 4. 数据准备和校验
@@ -171,7 +198,7 @@ python main.py -c paddlex/configs/text_detection_seal/PP-OCRv4_server_seal_det.y
 
 </center>
 
-**注**：只有通过数据校验的数据才可以训练和评估。
+<b>注</b>：只有通过数据校验的数据才可以训练和评估。
 
 
 ### 4.3 数据集划分（非必选）
@@ -216,12 +243,12 @@ PaddleX 中每个模型都提供了模型开发的配置文件，用于设置相
 
 更多超参数介绍，请参考 [PaddleX 通用模型配置文件参数说明](../module_usage/instructions/config_parameters_common.md)。
 
-**注：**
+<b>注：</b>
 - 以上参数可以通过追加令行参数的形式进行设置，如指定模式为模型训练：`-o Global.mode=train`；指定前 2 卡 gpu 训练：`-o Global.device=gpu:0,1`；设置训练轮次数为 10：`-o Train.epochs_iters=10`。
 - 模型训练过程中，PaddleX 会自动保存模型权重文件，默认为`output`，如需指定保存路径，可通过配置文件中 `-o Global.output` 字段
 - PaddleX 对您屏蔽了动态图权重和静态图权重的概念。在模型训练的过程中，会同时产出动态图和静态图的权重，在模型推理时，默认选择静态图权重推理。
 
-**训练产出解释:**
+<b>训练产出解释:</b>
 
 在完成模型训练后，所有产出保存在指定的输出目录（默认为`./output/`）下，通常有以下产出：
 
@@ -243,7 +270,7 @@ python main.py -c paddlex/configs/text_detection_seal/PP-OCRv4_server_seal_det.y
 
 与模型训练类似，模型评估支持修改配置文件或追加命令行参数的方式设置。
 
-**注：** 在模型评估时，需要指定模型权重文件路径，每个配置文件中都内置了默认的权重保存路径，如需要改变，只需要通过追加命令行参数的形式进行设置即可，如`-o Evaluate.weight_path=./output/best_accuracy/best_accuracy.pdparams`。
+<b>注：</b> 在模型评估时，需要指定模型权重文件路径，每个配置文件中都内置了默认的权重保存路径，如需要改变，只需要通过追加命令行参数的形式进行设置即可，如`-o Evaluate.weight_path=./output/best_accuracy/best_accuracy.pdparams`。
 
 ### 5.3 模型调优
 
@@ -258,13 +285,32 @@ python main.py -c paddlex/configs/text_detection_seal/PP-OCRv4_server_seal_det.y
 
 <center>
 
-| 实验ID           | 学习率 |  检测 Hmean(%) | 
-| --------------- | ------------- | -------------------- |
-| **1** | **0.001**     | **97.35**       | 
-| 2 | 0.0001   | 93.32       |
-| 3 | 0.00001       | 87.63    |
-
-
+<table>
+<thead>
+<tr>
+<th>实验ID</th>
+<th>学习率</th>
+<th>检测 Hmean(%)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>1</strong></td>
+<td><strong>0.001</strong></td>
+<td><strong>97.35</strong></td>
+</tr>
+<tr>
+<td>2</td>
+<td>0.0001</td>
+<td>93.32</td>
+</tr>
+<tr>
+<td>3</td>
+<td>0.00001</td>
+<td>87.63</td>
+</tr>
+</tbody>
+</table>
 </center>
 
 接下来，我们可以在学习率设置为 0.001 的基础上，增加训练轮次，对比下面实验 [1，4] 可知，训练轮次增大，模型精度有了进一步的提升。
@@ -272,14 +318,30 @@ python main.py -c paddlex/configs/text_detection_seal/PP-OCRv4_server_seal_det.y
 <center>
 
 
-| 实验ID           | 训练轮次 |  检测 Hmean(%) | 
-| --------------- | ------------- | -------------------- |
-| 1 | 30    |97.35   |
-| 4 |100  | 98.13   |
-
+<table>
+<thead>
+<tr>
+<th>实验ID</th>
+<th>训练轮次</th>
+<th>检测 Hmean(%)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>30</td>
+<td>97.35</td>
+</tr>
+<tr>
+<td>4</td>
+<td>100</td>
+<td>98.13</td>
+</tr>
+</tbody>
+</table>
 </center>
 
-** 注：本教程为 4 卡教程，如果您只有 1 张 GPU，可通过调整训练卡数完成本次实验，但最终指标未必和上述指标完全对齐，属正常情况。**
+<b> 注：本教程为 4 卡教程，如果您只有 1 张 GPU，可通过调整训练卡数完成本次实验，但最终指标未必和上述指标完全对齐，属正常情况。</b>
 
 在选择训练环境时，要考虑训练卡数和总 batch_size，以及学习率的关系。首先训练卡数乘以单卡 batch_size 等于总 batch_size。其次，总 batch_size 和学习率是相关的，学习率应与总 batch_size 保持同步调整。 目前默认学习率对应基于 4 卡训练的总 batch_size，若您打算在单卡环境下进行训练，则设置学习率时需相应除以 4。若您打算在 8 卡环境下进行训练，则设置学习率时需相应乘以 2。
 
@@ -318,7 +380,7 @@ Pipeline:
   llm_name: "ernie-3.5"
   llm_params:
     api_type: qianfan
-    ak: 
+    ak:
     sk:
 ```
 
@@ -361,7 +423,7 @@ chat_result.print()
 
 印章文本检测的可视化结果如下，已经正确抽取印章信息：
 
-![](https://raw.githubusercontent.com/cuicheng01/PaddleX_doc_images/main/images/practical_tutorials/PP-ChatOCRv3_doc/seal_04.png)
+<img src="https://raw.githubusercontent.com/cuicheng01/PaddleX_doc_images/main/images/practical_tutorials/PP-ChatOCRv3_doc/seal_04.png">
 
 
 ## 7. 开发集成/部署
@@ -405,5 +467,3 @@ chat_result.print()
 * 端侧部署：端侧部署是一种将计算和数据处理功能放在用户设备本身上的方式，设备可以直接处理数据，而不需要依赖远程的服务器。PaddleX 支持将模型部署在 Android 等端侧设备上，详细的端侧部署流程请参考 [PaddleX端侧部署指南](../pipeline_deploy/edge_deploy.md)。
 
 您可以根据需要选择合适的方式部署模型产线，进而进行后续的 AI 应用集成。
-
-

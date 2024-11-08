@@ -1,4 +1,6 @@
-简体中文 | [English](object_detection_fall_tutorial_en.md)
+---
+comments: true
+---
 
 # PaddleX 3.0 通用目标检测模型产线———行人跌倒检测教程
 
@@ -11,7 +13,7 @@ PaddleX 提供了丰富的模型产线，模型产线由一个或多个模型组
 
 ## 2. 快速体验
 
-PaddleX 提供了两种体验的方式，一种是可以直接通过 PaddleX wheel 包在本地体验，另外一种是可以在 **AI Studio 星河社区**上体验。
+PaddleX 提供了两种体验的方式，一种是可以直接通过 PaddleX wheel 包在本地体验，另外一种是可以在 <b>AI Studio 星河社区</b>上体验。
 
   - 本地体验方式：
     ```bash
@@ -19,7 +21,7 @@ PaddleX 提供了两种体验的方式，一种是可以直接通过 PaddleX whe
         --input https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/fall.png
     ```
 
-  - 星河社区体验方式：前往[AI Studio 星河社区](https://aistudio.baidu.com/pipeline/mine)，点击【创建产线】，创建【**通用目标检测**】产线进行快速体验；
+  - 星河社区体验方式：前往[AI Studio 星河社区](https://aistudio.baidu.com/pipeline/mine)，点击【创建产线】，创建【<b>通用目标检测</b>】产线进行快速体验；
 
   快速体验产出推理结果示例：
   <center>
@@ -34,16 +36,62 @@ PaddleX 提供了两种体验的方式，一种是可以直接通过 PaddleX whe
 
 PaddleX 提供了 37 个端到端的目标检测模型，具体可参考 [模型列表](../support_list/models_list.md)，其中部分模型的benchmark如下：
 
-| 模型列表         | mAP(%) | GPU 推理耗时(ms) | CPU 推理耗时(ms) | 模型存储大小(M) |
-| --------------- | ------ | ---------------- | ---------------- | --------------- |
-| RT-DETR-H       | 56.3   | 100.65           | 8451.92          | 471             |
-| RT-DETR-L       | 53.0   | 27.89            | 841.00           | 125             |
-| PP-YOLOE_plus-L | 52.9   | 29.67            | 700.97           | 200             |
-| PP-YOLOE_plus-S | 43.7   | 8.11             | 137.23           | 31              |
-| PicoDet-L       | 42.6   | 10.09            | 129.32           | 23              |
-| PicoDet-S       | 29.1   | 3.17             | 13.36            | 5               |
-
-> **注：以上精度指标为 <a href="https://cocodataset.org/#home" target="_blank">COCO2017</a> 验证集 mAP(0.5:0.95)。GPU 推理耗时基于 NVIDIA Tesla T4 机器，精度类型为 FP32， CPU 推理速度基于 Intel(R) Xeon(R) Gold 5117 CPU @ 2.00GHz，线程数为8，精度类型为 FP32。**
+<table>
+<thead>
+<tr>
+<th>模型列表</th>
+<th>mAP(%)</th>
+<th>GPU 推理耗时(ms)</th>
+<th>CPU 推理耗时(ms)</th>
+<th>模型存储大小(M)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>RT-DETR-H</td>
+<td>56.3</td>
+<td>100.65</td>
+<td>8451.92</td>
+<td>471</td>
+</tr>
+<tr>
+<td>RT-DETR-L</td>
+<td>53.0</td>
+<td>27.89</td>
+<td>841.00</td>
+<td>125</td>
+</tr>
+<tr>
+<td>PP-YOLOE_plus-L</td>
+<td>52.9</td>
+<td>29.67</td>
+<td>700.97</td>
+<td>200</td>
+</tr>
+<tr>
+<td>PP-YOLOE_plus-S</td>
+<td>43.7</td>
+<td>8.11</td>
+<td>137.23</td>
+<td>31</td>
+</tr>
+<tr>
+<td>PicoDet-L</td>
+<td>42.6</td>
+<td>10.09</td>
+<td>129.32</td>
+<td>23</td>
+</tr>
+<tr>
+<td>PicoDet-S</td>
+<td>29.1</td>
+<td>3.17</td>
+<td>13.36</td>
+<td>5</td>
+</tr>
+</tbody>
+</table>
+> <b>注：以上精度指标为 <a href="https://cocodataset.org/#home" target="_blank">COCO2017</a> 验证集 mAP(0.5:0.95)。GPU 推理耗时基于 NVIDIA Tesla T4 机器，精度类型为 FP32， CPU 推理速度基于 Intel(R) Xeon(R) Gold 5117 CPU @ 2.00GHz，线程数为8，精度类型为 FP32。</b>
 
 简单来说，表格从上到下，模型推理速度更快，从下到上，模型精度更高。本教程以PP-YOLOE_plus-S模型为例，完成一次模型全流程开发。您可以依据自己的实际使用场景，判断并选择一个合适的模型做训练，训练完成后可在产线内评估合适的模型权重，并最终用于实际使用场景中。
 
@@ -110,7 +158,7 @@ python main.py -c paddlex/configs/object_detection/PP-YOLOE_plus-S.yaml \
 
 </center>
 
-**注**：只有通过数据校验的数据才可以训练和评估。
+<b>注</b>：只有通过数据校验的数据才可以训练和评估。
 
 
 ### 4.3 数据集格式转换/数据集划分（非必选）
@@ -155,12 +203,12 @@ PaddleX 中每个模型都提供了模型开发的配置文件，用于设置相
 
 更多超参数介绍，请参考 [PaddleX 通用模型配置文件参数说明](../module_usage/instructions/config_parameters_common.md)。
 
-**注：**
+<b>注：</b>
 - 以上参数可以通过追加令行参数的形式进行设置，如指定模式为模型训练：`-o Global.mode=train`；指定前 2 卡 gpu 训练：`-o Global.device=gpu:0,1`；设置训练轮次数为 10：`-o Train.epochs_iters=10`。
 - 模型训练过程中，PaddleX 会自动保存模型权重文件，默认为`output`，如需指定保存路径，可通过配置文件中 `-o Global.output` 字段
 - PaddleX 对您屏蔽了动态图权重和静态图权重的概念。在模型训练的过程中，会同时产出动态图和静态图的权重，在模型推理时，默认选择静态图权重推理。
 
-**训练产出解释:**
+<b>训练产出解释:</b>
 
 在完成模型训练后，所有产出保存在指定的输出目录（默认为`./output/`）下，通常有以下产出：
 
@@ -181,7 +229,7 @@ python main.py -c paddlex/configs/object_detection/PP-YOLOE_plus-S.yaml \
 
 与模型训练类似，模型评估支持修改配置文件或追加命令行参数的方式设置。
 
-**注：** 在模型评估时，需要指定模型权重文件路径，每个配置文件中都内置了默认的权重保存路径，如需要改变，只需要通过追加命令行参数的形式进行设置即可，如`-o Evaluate.weight_path=./output/best_model/best_model.pdparams`。
+<b>注：</b> 在模型评估时，需要指定模型权重文件路径，每个配置文件中都内置了默认的权重保存路径，如需要改变，只需要通过追加命令行参数的形式进行设置即可，如`-o Evaluate.weight_path=./output/best_model/best_model.pdparams`。
 
 ### 5.3 模型调优
 
@@ -196,25 +244,90 @@ python main.py -c paddlex/configs/object_detection/PP-YOLOE_plus-S.yaml \
 学习率探寻实验结果：
 <center>
 
-| 实验  | 轮次 | 学习率   | batch\_size | 训练环境 | mAP@0\.5 |
-|-----|----|-------|-------------|------|----------|
-| 实验一 | 10 | 0\.00002 | 8          | 4卡   | 0\.880   |
-| 实验二 | 10 | 0\.0001 | 8          | 4卡   |**0\.910**|
-| 实验三 | 10 | 0\.0005 | 8          | 4卡   | 0\.888   |
-
+<table>
+<thead>
+<tr>
+<th>实验</th>
+<th>轮次</th>
+<th>学习率</th>
+<th>batch_size</th>
+<th>训练环境</th>
+<th>mAP@0.5</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>实验一</td>
+<td>10</td>
+<td>0.00002</td>
+<td>8</td>
+<td>4卡</td>
+<td>0.880</td>
+</tr>
+<tr>
+<td>实验二</td>
+<td>10</td>
+<td>0.0001</td>
+<td>8</td>
+<td>4卡</td>
+<td><strong>0.910</strong></td>
+</tr>
+<tr>
+<td>实验三</td>
+<td>10</td>
+<td>0.0005</td>
+<td>8</td>
+<td>4卡</td>
+<td>0.888</td>
+</tr>
+</tbody>
+</table>
 </center>
 
 改变 epoch 实验结果：
 <center>
 
-| 实验        | 轮次  | 学习率   | batch\_size | 训练环境 | mAP@0\.5 |
-|-----------|-----|-------|-------------|------|----------|
-| 实验二       | 10  | 0\.0001 | 8          | 4卡   | 0\.910   |
-| 实验二增大训练轮次 | 50  | 0\.0001 | 8          | 4卡   | 0\.944   |
-| 实验二增大训练轮次 | 100  | 0\.0001 | 8          | 4卡   | **0\.947**   |
+<table>
+<thead>
+<tr>
+<th>实验</th>
+<th>轮次</th>
+<th>学习率</th>
+<th>batch_size</th>
+<th>训练环境</th>
+<th>mAP@0.5</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>实验二</td>
+<td>10</td>
+<td>0.0001</td>
+<td>8</td>
+<td>4卡</td>
+<td>0.910</td>
+</tr>
+<tr>
+<td>实验二增大训练轮次</td>
+<td>50</td>
+<td>0.0001</td>
+<td>8</td>
+<td>4卡</td>
+<td>0.944</td>
+</tr>
+<tr>
+<td>实验二增大训练轮次</td>
+<td>100</td>
+<td>0.0001</td>
+<td>8</td>
+<td>4卡</td>
+<td><strong>0.947</strong></td>
+</tr>
+</tbody>
+</table>
 </center>
 
-**注：本教程为4卡教程，如果您只有1张GPU，可通过调整训练卡数完成本次实验，但最终指标未必和上述指标对齐，属正常情况。**
+<b>注：本教程为4卡教程，如果您只有1张GPU，可通过调整训练卡数完成本次实验，但最终指标未必和上述指标对齐，属正常情况。</b>
 
 ## 6. 产线测试
 

@@ -1,4 +1,6 @@
-简体中文 | [English](seal_text_detection_en.md)
+---
+comments: true
+---
 
 # 印章文本检测模块使用教程
 
@@ -8,12 +10,37 @@
 ## 二、支持模型列表
 
 
-|模型|检测Hmean（%）|GPU推理耗时（ms）|CPU推理耗时 (ms)|模型存储大小（M)|介绍|
-|-|-|-|-|-|-|
-|PP-OCRv4_server_seal_det|98.21|84.341|2425.06|109|PP-OCRv4的服务端印章文本检测模型，精度更高，适合在较好的服务器上部署|
-|PP-OCRv4_mobile_seal_det|96.47|10.5878|131.813|4.6|PP-OCRv4的移动端印章文本检测模型，效率更高，适合在端侧部署|
-
-**注：以上精度指标的评估集是自建的数据集，包含500张圆形印章图像。GPU 推理耗时基于 NVIDIA Tesla T4 机器，精度类型为 FP32， CPU 推理速度基于 Intel(R) Xeon(R) Gold 5117 CPU @ 2.00GHz，线程数为 8，精度类型为 FP32。**
+<table>
+<thead>
+<tr>
+<th>模型</th>
+<th>检测Hmean（%）</th>
+<th>GPU推理耗时（ms）</th>
+<th>CPU推理耗时 (ms)</th>
+<th>模型存储大小（M)</th>
+<th>介绍</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PP-OCRv4_server_seal_det</td>
+<td>98.21</td>
+<td>84.341</td>
+<td>2425.06</td>
+<td>109</td>
+<td>PP-OCRv4的服务端印章文本检测模型，精度更高，适合在较好的服务器上部署</td>
+</tr>
+<tr>
+<td>PP-OCRv4_mobile_seal_det</td>
+<td>96.47</td>
+<td>10.5878</td>
+<td>131.813</td>
+<td>4.6</td>
+<td>PP-OCRv4的移动端印章文本检测模型，效率更高，适合在端侧部署</td>
+</tr>
+</tbody>
+</table>
+<b>注：以上精度指标的评估集是自建的数据集，包含500张圆形印章图像。GPU 推理耗时基于 NVIDIA Tesla T4 机器，精度类型为 FP32， CPU 推理速度基于 Intel(R) Xeon(R) Gold 5117 CPU @ 2.00GHz，线程数为 8，精度类型为 FP32。</b>
 
 
 ## 三、快速集成
@@ -36,7 +63,7 @@ for res in output:
 如果你追求更高精度的现有模型，可以使用PaddleX的二次开发能力，开发更好的印章文本检测模型。在使用PaddleX开发印章文本检测模型之前，请务必安装 PaddleOCR 插件，安装过程可以参考[PaddleX本地安装教程](../../../installation/installation.md)。
 
 ### 4.1 数据准备
-在进行模型训练前，需要准备相应任务模块的数据集。PaddleX 针对每一个模块提供了数据校验功能，**只有通过数据校验的数据才可以进行模型训练**。此外，PaddleX 为每一个模块都提供了 Demo 数据集，您可以基于官方提供的 Demo 数据完成后续的开发。若您希望用私有数据集进行后续的模型训练，可以参考[PaddleX文本检测/文本识别任务模块数据标注教程](../../../data_annotations/ocr_modules/text_detection_recognition.md)。
+在进行模型训练前，需要准备相应任务模块的数据集。PaddleX 针对每一个模块提供了数据校验功能，<b>只有通过数据校验的数据才可以进行模型训练</b>。此外，PaddleX 为每一个模块都提供了 Demo 数据集，您可以基于官方提供的 Demo 数据完成后续的开发。若您希望用私有数据集进行后续的模型训练，可以参考[PaddleX文本检测/文本识别任务模块数据标注教程](../../../data_annotations/ocr_modules/text_detection_recognition.md)。
 
 #### 4.1.1 Demo 数据下载
 您可以参考下面的命令将 Demo 数据集下载到指定文件夹：
@@ -55,89 +82,76 @@ python main.py -c paddlex/configs/text_detection_seal/PP-OCRv4_server_seal_det.y
 ```
 执行上述命令后，PaddleX 会对数据集进行校验，并统计数据集的基本信息，命令运行成功后会在log中打印出`Check dataset passed !`信息。校验结果文件保存在`./output/check_dataset_result.json`，同时相关产出会保存在当前目录的`./output/check_dataset`目录下，产出目录中包括可视化的示例样本图片和样本分布直方图。
 
-<details>
-  <summary>👉 <b>校验结果详情（点击展开）</b></summary>
+<details><summary>👉 <b>校验结果详情（点击展开）</b></summary>
 
-
-校验结果文件具体内容为：
-
-```bash
-{
-  "done_flag": true,
-  "check_pass": true,
-  "attributes": {
-    "train_samples": 606,
-    "train_sample_paths": [
-      "..\/ocr_curve_det_dataset_examples\/images\/circle_Aug07834.png",
-      "..\/ocr_curve_det_dataset_examples\/images\/circle_Aug09943.png",
-      "..\/ocr_curve_det_dataset_examples\/images\/circle_Aug04079.png",
-      "..\/ocr_curve_det_dataset_examples\/images\/circle_Aug05701.png",
-      "..\/ocr_curve_det_dataset_examples\/images\/circle_Aug08324.png",
-      "..\/ocr_curve_det_dataset_examples\/images\/circle_Aug07451.png",
-      "..\/ocr_curve_det_dataset_examples\/images\/circle_Aug09562.png",
-      "..\/ocr_curve_det_dataset_examples\/images\/circle_Aug08237.png",
-      "..\/ocr_curve_det_dataset_examples\/images\/circle_Aug01788.png",
-      "..\/ocr_curve_det_dataset_examples\/images\/circle_Aug06481.png"
+<p>校验结果文件具体内容为：</p>
+<pre><code class="language-bash">{
+  &quot;done_flag&quot;: true,
+  &quot;check_pass&quot;: true,
+  &quot;attributes&quot;: {
+    &quot;train_samples&quot;: 606,
+    &quot;train_sample_paths&quot;: [
+      &quot;..\/ocr_curve_det_dataset_examples\/images\/circle_Aug07834.png&quot;,
+      &quot;..\/ocr_curve_det_dataset_examples\/images\/circle_Aug09943.png&quot;,
+      &quot;..\/ocr_curve_det_dataset_examples\/images\/circle_Aug04079.png&quot;,
+      &quot;..\/ocr_curve_det_dataset_examples\/images\/circle_Aug05701.png&quot;,
+      &quot;..\/ocr_curve_det_dataset_examples\/images\/circle_Aug08324.png&quot;,
+      &quot;..\/ocr_curve_det_dataset_examples\/images\/circle_Aug07451.png&quot;,
+      &quot;..\/ocr_curve_det_dataset_examples\/images\/circle_Aug09562.png&quot;,
+      &quot;..\/ocr_curve_det_dataset_examples\/images\/circle_Aug08237.png&quot;,
+      &quot;..\/ocr_curve_det_dataset_examples\/images\/circle_Aug01788.png&quot;,
+      &quot;..\/ocr_curve_det_dataset_examples\/images\/circle_Aug06481.png&quot;
     ],
-    "val_samples": 152,
-    "val_sample_paths": [
-      "..\/ocr_curve_det_dataset_examples\/images\/circle_Aug03724.png",
-      "..\/ocr_curve_det_dataset_examples\/images\/circle_Aug06456.png",
-      "..\/ocr_curve_det_dataset_examples\/images\/circle_Aug04029.png",
-      "..\/ocr_curve_det_dataset_examples\/images\/circle_Aug03603.png",
-      "..\/ocr_curve_det_dataset_examples\/images\/circle_Aug05454.png",
-      "..\/ocr_curve_det_dataset_examples\/images\/circle_Aug06269.png",
-      "..\/ocr_curve_det_dataset_examples\/images\/circle_Aug00624.png",
-      "..\/ocr_curve_det_dataset_examples\/images\/circle_Aug02818.png",
-      "..\/ocr_curve_det_dataset_examples\/images\/circle_Aug00538.png",
-      "..\/ocr_curve_det_dataset_examples\/images\/circle_Aug04935.png"
+    &quot;val_samples&quot;: 152,
+    &quot;val_sample_paths&quot;: [
+      &quot;..\/ocr_curve_det_dataset_examples\/images\/circle_Aug03724.png&quot;,
+      &quot;..\/ocr_curve_det_dataset_examples\/images\/circle_Aug06456.png&quot;,
+      &quot;..\/ocr_curve_det_dataset_examples\/images\/circle_Aug04029.png&quot;,
+      &quot;..\/ocr_curve_det_dataset_examples\/images\/circle_Aug03603.png&quot;,
+      &quot;..\/ocr_curve_det_dataset_examples\/images\/circle_Aug05454.png&quot;,
+      &quot;..\/ocr_curve_det_dataset_examples\/images\/circle_Aug06269.png&quot;,
+      &quot;..\/ocr_curve_det_dataset_examples\/images\/circle_Aug00624.png&quot;,
+      &quot;..\/ocr_curve_det_dataset_examples\/images\/circle_Aug02818.png&quot;,
+      &quot;..\/ocr_curve_det_dataset_examples\/images\/circle_Aug00538.png&quot;,
+      &quot;..\/ocr_curve_det_dataset_examples\/images\/circle_Aug04935.png&quot;
     ]
   },
-  "analysis": {
-    "histogram": "check_dataset\/histogram.png"
+  &quot;analysis&quot;: {
+    &quot;histogram&quot;: &quot;check_dataset\/histogram.png&quot;
   },
-  "dataset_path": ".\/ocr_curve_det_dataset_examples",
-  "show_type": "image",
-  "dataset_type": "TextDetDataset"
+  &quot;dataset_path&quot;: &quot;.\/ocr_curve_det_dataset_examples&quot;,
+  &quot;show_type&quot;: &quot;image&quot;,
+  &quot;dataset_type&quot;: &quot;TextDetDataset&quot;
 }
-```
-上述校验结果中，`check_pass` 为 `True` 表示数据集格式符合要求，其他部分指标的说明如下：
-
-* `attributes.train_samples`：该数据集训练集样本数量为 606；
-* `attributes.val_samples`：该数据集验证集样本数量为 152；
-* `attributes.train_sample_paths`：该数据集训练集样本可视化图片相对路径列表；
-* `attributes.val_sample_paths`：该数据集验证集样本可视化图片相对路径列表；
-
-
-数据集校验还对数据集中所有类别的样本数量分布情况进行了分析，并绘制了分布直方图（histogram.png）：
-
-![](https://raw.githubusercontent.com/cuicheng01/PaddleX_doc_images/main/images/modules/curved_text_dec/01.png)
-</details>
+</code></pre>
+<p>上述校验结果中，<code>check_pass</code> 为 <code>True</code> 表示数据集格式符合要求，其他部分指标的说明如下：</p>
+<ul>
+<li><code>attributes.train_samples</code>：该数据集训练集样本数量为 606；</li>
+<li><code>attributes.val_samples</code>：该数据集验证集样本数量为 152；</li>
+<li><code>attributes.train_sample_paths</code>：该数据集训练集样本可视化图片相对路径列表；</li>
+<li><code>attributes.val_sample_paths</code>：该数据集验证集样本可视化图片相对路径列表；</li>
+</ul>
+<p>数据集校验还对数据集中所有类别的样本数量分布情况进行了分析，并绘制了分布直方图（histogram.png）：</p>
+<p><img src="https://raw.githubusercontent.com/cuicheng01/PaddleX_doc_images/main/images/modules/curved_text_dec/01.png"></p></details>
 
 #### 4.1.3 数据集格式转换/数据集划分（可选）
-在您完成数据校验之后，可以通过**修改配置文件**或是**追加超参数**的方式对数据集的格式进行转换，也可以对数据集的训练/验证比例进行重新划分。您可以展开查看详情。
+在您完成数据校验之后，可以通过<b>修改配置文件</b>或是<b>追加超参数</b>的方式对数据集的格式进行转换，也可以对数据集的训练/验证比例进行重新划分。您可以展开查看详情。
 
-<details>
-  <summary>👉 <b>格式转换/数据集划分详情（点击展开）</b></summary>
+<details><summary>👉 <b>格式转换/数据集划分详情（点击展开）</b></summary>
 
-
-**（1）数据集格式转换**
-
-印章文本检测不支持数据格式转换。
-
-**（2）数据集划分**
-
-数据集划分的参数可以通过修改配置文件中 `CheckDataset` 下的字段进行设置，配置文件中部分参数的示例说明如下：
-
-* `CheckDataset`:
-  * `split`:
-    * `enable`: 是否进行重新划分数据集，为 `True` 时进行数据集格式转换，默认为 `False`；
-    * `train_percent`: 如果重新划分数据集，则需要设置训练集的百分比，类型为0-100之间的任意整数，需要保证与 `val_percent` 的值之和为100；
-    * `val_percent`: 如果重新划分数据集，则需要设置验证集的百分比，类型为0-100之间的任意整数，需要保证与 `train_percent` 的值之和为100；
-例如，您想重新划分数据集为 训练集占比90%、验证集占比10%，则需将配置文件修改为：
-
-```bash
-......
+<p><b>（1）数据集格式转换</b></p>
+<p>印章文本检测不支持数据格式转换。</p>
+<p><b>（2）数据集划分</b></p>
+<p>数据集划分的参数可以通过修改配置文件中 <code>CheckDataset</code> 下的字段进行设置，配置文件中部分参数的示例说明如下：</p>
+<ul>
+<li><code>CheckDataset</code>:</li>
+<li><code>split</code>:</li>
+<li><code>enable</code>: 是否进行重新划分数据集，为 <code>True</code> 时进行数据集格式转换，默认为 <code>False</code>；</li>
+<li><code>train_percent</code>: 如果重新划分数据集，则需要设置训练集的百分比，类型为0-100之间的任意整数，需要保证与 <code>val_percent</code> 的值之和为100；</li>
+<li><code>val_percent</code>: 如果重新划分数据集，则需要设置验证集的百分比，类型为0-100之间的任意整数，需要保证与 <code>train_percent</code> 的值之和为100；
+例如，您想重新划分数据集为 训练集占比90%、验证集占比10%，则需将配置文件修改为：</li>
+</ul>
+<pre><code class="language-bash">......
 CheckDataset:
   ......
   split:
@@ -145,27 +159,21 @@ CheckDataset:
     train_percent: 90
     val_percent: 10
   ......
-```
-随后执行命令：
-
-```bash
-python main.py -c paddlex/configs/text_detection_seal/PP-OCRv4_server_seal_det.yaml \
+</code></pre>
+<p>随后执行命令：</p>
+<pre><code class="language-bash">python main.py -c paddlex/configs/text_detection_seal/PP-OCRv4_server_seal_det.yaml \
     -o Global.mode=check_dataset \
     -o Global.dataset_dir=./dataset/ocr_curve_det_dataset_examples
-```
-数据划分执行之后，原有标注文件会被在原路径下重命名为 `xxx.bak`。
-
-以上参数同样支持通过追加命令行参数的方式进行设置：
-
-```bash
-python main.py -c paddlex/configs/text_detection_seal/PP-OCRv4_server_seal_det.yaml  \
+</code></pre>
+<p>数据划分执行之后，原有标注文件会被在原路径下重命名为 <code>xxx.bak</code>。</p>
+<p>以上参数同样支持通过追加命令行参数的方式进行设置：</p>
+<pre><code class="language-bash">python main.py -c paddlex/configs/text_detection_seal/PP-OCRv4_server_seal_det.yaml  \
     -o Global.mode=check_dataset \
     -o Global.dataset_dir=./dataset/ocr_curve_det_dataset_examples \
     -o CheckDataset.split.enable=True \
     -o CheckDataset.split.train_percent=90 \
     -o CheckDataset.split.val_percent=10
-```
-</details>
+</code></pre></details>
 
 ### 4.2 模型训练
 一条命令即可完成模型的训练，以此处PP-OCRv4服务端印章文本检测模型（PP-OCRv4_server_seal_det）的训练为例：
@@ -182,21 +190,23 @@ python main.py -c paddlex/configs/text_detection_seal/PP-OCRv4_server_seal_det.y
 * 指定训练数据集路径：`-o Global.dataset_dir`
 其他相关参数均可通过修改`.yaml`配置文件中的`Global`和`Train`下的字段来进行设置，也可以通过在命令行中追加参数来进行调整。如指定前 2 卡 gpu 训练：`-o Global.device=gpu:0,1`；设置训练轮次数为 10：`-o Train.epochs_iters=10`。更多可修改的参数及其详细解释，可以查阅模型对应任务模块的配置文件说明[PaddleX通用模型配置文件参数说明](../../instructions/config_parameters_common.md)。
 
-<details>
-  <summary>👉 <b>更多说明（点击展开）</b></summary>
+<details><summary>👉 <b>更多说明（点击展开）</b></summary>
 
+<ul>
+<li>模型训练过程中，PaddleX 会自动保存模型权重文件，默认为<code>output</code>，如需指定保存路径，可通过配置文件中 <code>-o Global.output</code> 字段进行设置。</li>
+<li>PaddleX 对您屏蔽了动态图权重和静态图权重的概念。在模型训练的过程中，会同时产出动态图和静态图的权重，在模型推理时，默认选择静态图权重推理。</li>
+<li>
+<p>在完成模型训练后，所有产出保存在指定的输出目录（默认为<code>./output/</code>）下，通常有以下产出：</p>
+</li>
+<li>
+<p><code>train_result.json</code>：训练结果记录文件，记录了训练任务是否正常完成，以及产出的权重指标、相关文件路径等；</p>
+</li>
+<li><code>train.log</code>：训练日志文件，记录了训练过程中的模型指标变化、loss 变化等；</li>
+<li><code>config.yaml</code>：训练配置文件，记录了本次训练的超参数的配置；</li>
+<li><code>.pdparams</code>、<code>.pdema</code>、<code>.pdopt.pdstate</code>、<code>.pdiparams</code>、<code>.pdmodel</code>：模型权重相关文件，包括网络参数、优化器、EMA、静态图网络参数、静态图网络结构等；</li>
+</ul></details>
 
-* 模型训练过程中，PaddleX 会自动保存模型权重文件，默认为`output`，如需指定保存路径，可通过配置文件中 `-o Global.output` 字段进行设置。
-* PaddleX 对您屏蔽了动态图权重和静态图权重的概念。在模型训练的过程中，会同时产出动态图和静态图的权重，在模型推理时，默认选择静态图权重推理。
-* 在完成模型训练后，所有产出保存在指定的输出目录（默认为`./output/`）下，通常有以下产出：
-
-* `train_result.json`：训练结果记录文件，记录了训练任务是否正常完成，以及产出的权重指标、相关文件路径等；
-* `train.log`：训练日志文件，记录了训练过程中的模型指标变化、loss 变化等；
-* `config.yaml`：训练配置文件，记录了本次训练的超参数的配置；
-* `.pdparams`、`.pdema`、`.pdopt.pdstate`、`.pdiparams`、`.pdmodel`：模型权重相关文件，包括网络参数、优化器、EMA、静态图网络参数、静态图网络结构等；
-</details>
-
-### **4.3 模型评估**
+### <b>4.3 模型评估</b>
 在完成模型训练后，可以对指定的模型权重文件在验证集上进行评估，验证模型精度。使用 PaddleX 进行模型评估，一条命令即可完成模型的评估：
 
 ```bash
@@ -211,21 +221,13 @@ python main.py -c paddlex/configs/text_detection_seal/PP-OCRv4_server_seal_det.y
 * 指定验证数据集路径：`-o Global.dataset_dir`
 其他相关参数均可通过修改`.yaml`配置文件中的`Global`和`Evaluate`下的字段来进行设置，详细请参考[PaddleX通用模型配置文件参数说明](../../instructions/config_parameters_common.md)。
 
-<details>
-  <summary>👉 <b>更多说明（点击展开）</b></summary>
+<details><summary>👉 <b>更多说明（点击展开）</b></summary>
 
+<p>在模型评估时，需要指定模型权重文件路径，每个配置文件中都内置了默认的权重保存路径，如需要改变，只需要通过追加命令行参数的形式进行设置即可，如<code>-o Evaluate.weight_path=./output/best_accuracy/best_accuracy.pdparams</code>。</p>
+<p>在完成模型评估后，通常有以下产出：</p>
+<p>在完成模型评估后，会产出<code>evaluate_result.json</code>，其记录了评估的结果，具体来说，记录了评估任务是否正常完成，以及模型的评估指标，包含precision，recall和hmean.</p></details>
 
-
-
-在模型评估时，需要指定模型权重文件路径，每个配置文件中都内置了默认的权重保存路径，如需要改变，只需要通过追加命令行参数的形式进行设置即可，如`-o Evaluate.weight_path=./output/best_accuracy/best_accuracy.pdparams`。
-
-在完成模型评估后，通常有以下产出：
-
-在完成模型评估后，会产出`evaluate_result.json`，其记录了评估的结果，具体来说，记录了评估任务是否正常完成，以及模型的评估指标，包含precision，recall和hmean.
-
-</details>
-
-### **4.4 模型推理和模型集成**
+### <b>4.4 模型推理和模型集成</b>
 在完成模型的训练和评估后，即可使用训练好的模型权重进行推理预测或者进行Python集成。
 
 #### 4.4.1 模型推理
@@ -248,10 +250,10 @@ python main.py -c paddlex/configs/text_detection_seal/PP-OCRv4_server_seal_det.y
 #### 4.4.2 模型集成
 模型可以直接集成到PaddleX产线中，也可以直接集成到您自己的项目中。
 
-1.**产线集成**
+1.<b>产线集成</b>
 
 印章文本检测模块可以集成的PaddleX产线有[文档场景信息抽取v3产线（PP-ChatOCRv3）](../../../pipeline_usage/tutorials/information_extraction_pipelines/document_scene_information_extraction.md)，只需要替换模型路径即可完成印章文本检测模块的模型更新。在产线集成中，你可以使用高性能部署和服务化部署来部署你得到的模型。
 
-2.**模块集成**
+2.<b>模块集成</b>
 
 您产出的权重可以直接集成到印章文本检测模块中，可以参考[快速集成](#三快速集成)的 Python 示例代码，只需要将模型替换为你训练的到的模型路径即可。
