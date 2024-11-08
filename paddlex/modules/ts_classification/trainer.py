@@ -86,7 +86,7 @@ training!"
         Returns:
             dict: the arguments of training function.
         """
-        train_args = {"device": self.get_device()}
+        train_args = {"device": self.get_device(using_device_number=1)}
         if self.global_config.output is not None:
             train_args["save_dir"] = self.global_config.output
         return train_args

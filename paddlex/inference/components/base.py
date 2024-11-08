@@ -17,7 +17,9 @@ from abc import ABC, abstractmethod
 from copy import deepcopy
 from types import GeneratorType
 
+from ...utils.flags import INFER_BENCHMARK
 from ...utils import logging
+from ..utils.benchmark import Timer
 
 
 class BaseComponent(ABC):
@@ -32,6 +34,10 @@ class BaseComponent(ABC):
     def __init__(self):
         self.inputs = self.DEAULT_INPUTS if hasattr(self, "DEAULT_INPUTS") else {}
         self.outputs = self.DEAULT_OUTPUTS if hasattr(self, "DEAULT_OUTPUTS") else {}
+
+        if INFER_BENCHMARK:
+            self.timer = Timer()
+            self.apply = self.timer.watch_func(self.apply)
 
     def __call__(self, input_list):
         # use list type for batched data

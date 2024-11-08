@@ -1,8 +1,10 @@
-简体中文 | [English](paddlepaddle_install_DCU_en.md)
+---
+comments: true
+---
 
 # 海光 DCU 飞桨安装教程
 
-当前 PaddleX 支持海光 Z100 系列芯片。考虑到环境差异性，我们推荐使用**飞桨官方发布的海光 DCU 开发镜像**，该镜像预装有海光 DCU 基础运行环境库（DTK）。
+当前 PaddleX 支持海光 Z100 系列芯片。考虑到环境差异性，我们推荐使用<b>飞桨官方发布的海光 DCU 开发镜像</b>，该镜像预装有海光 DCU 基础运行环境库（DTK）。
 
 ## 1、docker环境准备
 拉取镜像，此镜像仅为开发环境，镜像中不包含预编译的飞桨安装包
@@ -20,7 +22,7 @@ docker run -it --name paddle-dcu-dev -v `pwd`:/work \
 ```
 
 ## 2、安装paddle包
-在启动的 docker 容器中，下载并安装飞桨官网发布的 wheel 包。**注意**：飞桨框架 DCU 版仅支持海光 C86 架构。
+在启动的 docker 容器中，下载并安装飞桨官网发布的 wheel 包。<b>注意</b>：飞桨框架 DCU 版仅支持海光 C86 架构。
 
 ```
 # 下载并安装 wheel 包

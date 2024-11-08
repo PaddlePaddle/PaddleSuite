@@ -133,7 +133,7 @@ class PPChatOCRPipeline(_TableRecPipeline):
         else:
             self.doc_image_unwarp_predictor = None
 
-        self.img_reader = ReadImage(format="RGB")
+        self.img_reader = ReadImage(format="BGR")
         self.llm_api = create_llm_api(
             llm_name,
             llm_params,
@@ -248,9 +248,11 @@ class PPChatOCRPipeline(_TableRecPipeline):
                 img_info_list, self.doc_image_unwarp_predictor
             )
         img_list = [img_info["img"] for img_info in img_info_list]
+
         for idx, (img_info, layout_pred) in enumerate(
             zip(img_info_list, self.layout_predictor(img_list))
         ):
+            page_id = idx
             single_img_res = {
                 "input_path": "",
                 "layout_result": DetResult({}),
@@ -329,10 +331,18 @@ class PPChatOCRPipeline(_TableRecPipeline):
             if isinstance(all_curve_res, dict):
                 all_curve_res = [all_curve_res]
             for sub, curve_res in zip(curve_subs, all_curve_res):
+                dt_polys_list = [
+                    list(map(list, sublist)) for sublist in curve_res["dt_polys"]
+                ]
+                sorted_items = sorted(
+                    zip(dt_polys_list, curve_res["rec_text"]),
+                    key=lambda x: (x[0][0][1], x[0][0][0]),
+                )
+                _, sorted_text = zip(*sorted_items)
                 structure_res.append(
                     {
                         "layout_bbox": sub["box"],
-                        "印章": "".join(curve_res["rec_text"]),
+                        "印章": " ".join(sorted_text),
                     }
                 )
 
@@ -372,8 +382,8 @@ class PPChatOCRPipeline(_TableRecPipeline):
             single_img_res["ocr_result"] = ocr_res
             single_img_res["table_ocr_result"] = all_table_ocr_res
             single_img_res["layout_parsing_result"] = structure_res
-
-            yield VisualResult(single_img_res)
+            single_img_res["layout_parsing_result"]["page_id"] = page_id + 1
+            yield VisualResult(single_img_res, page_id, inputs)
 
     def decode_visual_result(self, visual_result):
         ocr_text = []

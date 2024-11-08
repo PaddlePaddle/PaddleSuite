@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import os
+
 from ...utils.device import parse_device, set_env_for_device, get_default_device
 from ...utils import logging
 from .new_ir_blacklist import NEWIR_BLOCKLIST
@@ -34,8 +36,17 @@ class PaddlePredictorOption(object):
         super().__init__()
         self.model_name = model_name
         self._cfg = {}
-        self._observers = []
         self._init_option(**kwargs)
+        self._changed = False
+
+    @property
+    def changed(self):
+        return self._changed
+
+    @changed.setter
+    def changed(self, v):
+        assert isinstance(v, bool)
+        self._changed = v
 
     def _init_option(self, **kwargs):
         for k, v in kwargs.items():
@@ -67,7 +78,7 @@ class PaddlePredictorOption(object):
 
     def _update(self, k, v):
         self._cfg[k] = v
-        self.notify()
+        self.changed = True
 
     @property
     def run_mode(self):
@@ -113,6 +124,9 @@ class PaddlePredictorOption(object):
         if device_type not in ("cpu"):
             if device_ids is None or len(device_ids) > 1:
                 logging.debug(f"The device ID has been set to {device_id}.")
+        # XXX(gaotingquan): set flag to accelerate inference in paddle 3.0b2
+        if device_type in ("gpu", "cpu"):
+            os.environ["FLAGS_enable_pir_api"] = "1"
 
     @property
     def min_subgraph_size(self):
@@ -219,17 +233,3 @@ class PaddlePredictorOption(object):
             for name, prop in vars(self.__class__).items()
             if isinstance(prop, property) and prop.fset is not None
         ]
-
-    def attach(self, observer):
-        if observer not in self._observers:
-            self._observers.append(observer)
-
-    def detach(self, observer):
-        try:
-            self._observers.remove(observer)
-        except ValueError:
-            pass
-
-    def notify(self):
-        for observer in self._observers:
-            observer.reset()

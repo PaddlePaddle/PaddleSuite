@@ -41,8 +41,7 @@ class BasePaddlePredictor(BaseComponent):
             if self.option and option == self.option:
                 return
             self._option = option
-            self._option.attach(self)
-            self.reset()
+            self._reset()
 
     @property
     def option(self):
@@ -52,9 +51,10 @@ class BasePaddlePredictor(BaseComponent):
     def option(self, option):
         self._update_option(option)
 
-    def reset(self):
+    def _reset(self):
         if not self.option:
             self.option = PaddlePredictorOption()
+        logging.debug(f"Env: {self.option}")
         (
             self.predictor,
             self.inference_config,
@@ -62,7 +62,7 @@ class BasePaddlePredictor(BaseComponent):
             self.input_handlers,
             self.output_handlers,
         ) = self._create()
-        logging.debug(f"Env: {self.option}")
+        self.option.changed = False
 
     def _create(self):
         """_create"""
@@ -75,27 +75,14 @@ class BasePaddlePredictor(BaseComponent):
 
         if self.option.device in ("gpu", "dcu"):
             config.enable_use_gpu(200, self.option.device_id)
-            if paddle.is_compiled_with_rocm():
-                os.environ["FLAGS_conv_workspace_size_limit"] = "2000"
-            elif hasattr(config, "enable_new_ir"):
+            if hasattr(config, "enable_new_ir"):
                 config.enable_new_ir(self.option.enable_new_ir)
         elif self.option.device == "npu":
             config.enable_custom_device("npu")
-            os.environ["FLAGS_npu_jit_compile"] = "0"
-            os.environ["FLAGS_use_stride_kernel"] = "0"
-            os.environ["FLAGS_allocator_strategy"] = "auto_growth"
-            os.environ["CUSTOM_DEVICE_BLACK_LIST"] = (
-                "pad3d,pad3d_grad,set_value,set_value_with_tensor"
-            )
-            os.environ["FLAGS_npu_scale_aclnn"] = "True"
-            os.environ["FLAGS_npu_split_aclnn"] = "True"
         elif self.option.device == "xpu":
-            os.environ["BKCL_FORCE_SYNC"] = "1"
-            os.environ["BKCL_TIMEOUT"] = "1800"
-            os.environ["FLAGS_use_stride_kernel"] = "0"
+            pass
         elif self.option.device == "mlu":
             config.enable_custom_device("mlu")
-            os.environ["FLAGS_use_stride_kernel"] = "0"
         else:
             assert self.option.device == "cpu"
             config.disable_gpu()
@@ -148,6 +135,13 @@ No need to generate again."
         config.disable_glog_info()
         for del_p in self.option.delete_pass:
             config.delete_pass(del_p)
+
+        if self.option.device in ("gpu", "dcu"):
+            if paddle.is_compiled_with_rocm():
+                # Delete unsupported passes in dcu
+                config.delete_pass("conv2d_add_act_fuse_pass")
+                config.delete_pass("conv2d_add_fuse_pass")
+
         # Enable shared memory
         config.enable_memory_optim()
         config.switch_ir_optim(True)
@@ -174,6 +168,8 @@ No need to generate again."
         return self.input_names
 
     def apply(self, **kwargs):
+        if self.option.changed:
+            self._reset()
         x = self.to_batch(**kwargs)
         for idx in range(len(x)):
             self.input_handlers[idx].reshape(x[idx].shape)
@@ -205,12 +201,16 @@ class ImagePredictor(BasePaddlePredictor):
 
 class ImageDetPredictor(BasePaddlePredictor):
 
-    INPUT_KEYS = [["img", "scale_factors"], ["img", "scale_factors", "img_size"], ["img", "img_size"]]
+    INPUT_KEYS = [
+        ["img", "scale_factors"],
+        ["img", "scale_factors", "img_size"],
+        ["img", "img_size"],
+    ]
     OUTPUT_KEYS = [["boxes"], ["boxes", "masks"]]
     DEAULT_INPUTS = {"img": "img", "scale_factors": "scale_factors"}
     DEAULT_OUTPUTS = None
 
-    def to_batch(self, img, scale_factors=[[1., 1.]], img_size=None):
+    def to_batch(self, img, scale_factors=[[1.0, 1.0]], img_size=None):
         scale_factors = [scale_factor[::-1] for scale_factor in scale_factors]
         if img_size is None:
             return [

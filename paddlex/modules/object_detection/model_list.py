@@ -26,7 +26,10 @@ MODELS = [
     "RT-DETR-R50",
     "RT-DETR-X",
     "PicoDet_layout_1x",
+    "PicoDet-S_layout_3cls",
+    "PicoDet-S_layout_17cls",
     "PicoDet-L_layout_3cls",
+    "PicoDet-L_layout_17cls",
     "RT-DETR-H_layout_3cls",
     "RT-DETR-H_layout_17cls",
     "YOLOv3-DarkNet53",
@@ -64,4 +67,7 @@ MODELS = [
     "CenterNet-DLA-34",
     "CenterNet-ResNet50",
     "PicoDet_LCNet_x2_5_face",
+    "BlazeFace",
+    "BlazeFace-FPN-SSH",
+    "PP-YOLOE_plus-S_face",
 ]

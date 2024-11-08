@@ -7,7 +7,6 @@ editdistance
 openpyxl
 premailer
 python-docx
-requests <= 2.29
 ######## For Chatocrv3 #######
 qianfan==0.0.3
 langchain==0.1.5

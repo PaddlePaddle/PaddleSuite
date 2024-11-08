@@ -1,4 +1,6 @@
-简体中文 | [English](ts_forecast_en.md)
+---
+comments: true
+---
 
 # PaddleX 3.0 时序预测模型产线———用电量长期预测应用教程
 
@@ -8,7 +10,7 @@ PaddleX 提供了丰富的模型产线，模型产线由一个或多个模型组
 首先，需要根据您的任务场景，选择对应的 PaddleX 产线，本任务目标是基于历史数据对未来一段时间电力消耗量进行预测。了解到这个任务属于时序预测任务，对应 PaddleX 的时序预测产线。如果无法确定任务和产线的对应关系，您可以在 PaddleX 支持的 [PaddleX产线列表(CPU/GPU)](../support_list/pipelines_list.md) 中了解相关产线的能力介绍。
 
 ## 2. 快速体验
-PaddleX 提供了两种体验的方式，一种是可以直接通过 PaddleX 在本地体验，另外一种是可以在 **AI Studio 星河社区** 上体验。
+PaddleX 提供了两种体验的方式，一种是可以直接通过 PaddleX 在本地体验，另外一种是可以在 <b>AI Studio 星河社区</b> 上体验。
 
 * 本地体验方式：
 ```
@@ -25,15 +27,55 @@ for res in output:
 ## 3. 选择模型
 PaddleX 提供了5个端到端的时序预测模型，具体可参考 [模型列表](../support_list/models_list.md)，其中模型的benchmark如下：
 
-|模型名称|mse|mae|模型存储大小（M)|介绍|
-|-|-|-|-|-|
-|DLinear|0.382|0.394|76k|DLinear结构简单，效率高且易用的时序预测模型|
-|Nonstationary|0.600|0.515|60.3M|基于transformer结构，针对性优化非平稳时间序列的长时序预测模型|
-|PatchTST|0.385|0.397|2.2M|PatchTST是兼顾局部模式和全局依赖关系的高精度长时序预测模型|
-|TiDE|0.405|0.412|34.9M|TiDE是适用于处理多变量、长期的时间序列预测问题的高精度模型|
-|TimesNet|0.417|0.431|5.2M|通过多周期分析，TimesNet是适应性强的高精度时间序列分析模型|
-
-**注：以上精度指标测量自**ETTH1**测试数据集，输入序列长度为96，预测序列长度除 TiDE 外为96，TiDE为720 。**
+<table>
+<thead>
+<tr>
+<th>模型名称</th>
+<th>mse</th>
+<th>mae</th>
+<th>模型存储大小（M)</th>
+<th>介绍</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DLinear</td>
+<td>0.382</td>
+<td>0.394</td>
+<td>76k</td>
+<td>DLinear结构简单，效率高且易用的时序预测模型</td>
+</tr>
+<tr>
+<td>Nonstationary</td>
+<td>0.600</td>
+<td>0.515</td>
+<td>60.3M</td>
+<td>基于transformer结构，针对性优化非平稳时间序列的长时序预测模型</td>
+</tr>
+<tr>
+<td>PatchTST</td>
+<td>0.385</td>
+<td>0.397</td>
+<td>2.2M</td>
+<td>PatchTST是兼顾局部模式和全局依赖关系的高精度长时序预测模型</td>
+</tr>
+<tr>
+<td>TiDE</td>
+<td>0.405</td>
+<td>0.412</td>
+<td>34.9M</td>
+<td>TiDE是适用于处理多变量、长期的时间序列预测问题的高精度模型</td>
+</tr>
+<tr>
+<td>TimesNet</td>
+<td>0.417</td>
+<td>0.431</td>
+<td>5.2M</td>
+<td>通过多周期分析，TimesNet是适应性强的高精度时间序列分析模型</td>
+</tr>
+</tbody>
+</table>
+<b>注：以上精度指标测量自</b>ETTH1<b>测试数据集，输入序列长度为96，预测序列长度除 TiDE 外为96，TiDE为720 。</b>
 
 你可以依据自己的实际使用场景，判断并选择一个合适的模型做训练，训练完成后可在产线内评估合适的模型权重，并最终用于实际使用场景中。
 
@@ -50,7 +92,7 @@ cd /path/to/paddlex
 wget https://paddle-model-ecology.bj.bcebos.com/paddlex/PaddleX3.0/doc_images/practical_tutorial/timeseries_forecast/electricity.tar -P ./dataset
 tar -xf ./dataset/electricity.tar -C ./dataset/
 ```
-* **数据注意事项**
+* <b>数据注意事项</b>
   * 为了训练出高精度的模型，贴近实际场景的真实数据尤为关键，因此通常需要一批真实数据加入训练集。
   * 标注时序预测任务数据时，基于收集的真实数据，将所有数据按照时间的顺序排列即可。训练时将数据自动分为多个时间片段，历史的时间序列数据和未来的序列分别表示训练模型输入数据和其对应的预测目标，构成了一组训练样本。
   * 缺失值处理：为了保证数据的质量和完整性，可以基于专家经验或统计方法进行缺失值填充。
@@ -171,7 +213,7 @@ python main.py -c paddlex/configs/ts_forecast/DLinear.yaml \
   "dataset_path": "./dataset/electricity",
   "show_type": "csv",
   "dataset_type": "TSDataset"
-} 
+}
 ```
 上述校验结果中，check_pass 为 True 表示数据集格式符合要求，其他部分指标的说明如下：
 
@@ -179,7 +221,7 @@ python main.py -c paddlex/configs/ts_forecast/DLinear.yaml \
 * attributes.val_samples：该数据集验证集样本数量为 3424；
 * attributes.train_table：该数据集训练集样本示例数据行；
 * attributes.val_table：该数据集验证集样本示例数据行；
-**注**：只有通过数据校验的数据才可以训练和评估。
+<b>注</b>：只有通过数据校验的数据才可以训练和评估。
 
 ### 4.3 数据集格式转换/数据集划分（非必选）
 如需对数据集格式进行转换或是重新划分数据集，可通过修改配置文件或是追加超参数的方式进行设置。可以参考[时序预测模块开发教程](../module_usage/tutorials/time_series_modules/time_series_forecasting.md)中4.1.3。
@@ -223,25 +265,22 @@ PaddleX 中每个模型都提供了模型开发的配置文件，用于设置相
 * 以上参数可以通过追加令行参数的形式进行设置，如指定模式为模型训练：`-o Global.mode=train`；指定前 1 卡 gpu 训练：`-o Global.device=gpu:0`；设置训练轮次数为 10：`-o Train.epochs_iters=10`；
 * 模型训练过程中，PaddleX 会自动保存模型权重文件，默认为`output`，如需指定保存路径，可通过配置文件中 `-o Global.output` 字段。
 
-<details>
-   <summary> 更多说明（点击展开） </summary>
+<details><summary> 更多说明（点击展开） </summary>
 
-* 模型训练过程中，PaddleX 会自动保存模型权重文件，默认为`output`，如需指定保存路径，可通过配置文件中 `-o Global.output` 字段进行设置。
-* PaddleX 对您屏蔽了动态图权重和静态图权重的概念。在模型训练的过程中，会同时产出动态图和静态图的权重，在模型推理时，默认选择静态图权重推理。
-* 训练其他模型时，需要的指定相应的配置文件，模型和配置的文件的对应关系，可以查阅[PaddleX模型列表（CPU/GPU）](../support_list/models_list.md)。
-在完成模型训练后，所有产出保存在指定的输出目录（默认为`./output/`）下，通常有以下产出：
-
-
-**训练产出解释:**
-
-在完成模型训练后，所有产出保存在指定的输出目录（默认为`./output/`）下，通常有以下产出：
-
-* train_result.json：训练结果记录文件，记录了训练任务是否正常完成，以及产出的权重指标、相关文件路径等；
-* train.log：训练日志文件，记录了训练过程中的模型指标变化、loss 变化等；
-* config.yaml：训练配置文件，记录了本次训练的超参数的配置；
-* `best_accuracy.pdparams.tar`、`scaler.pkl`、`.checkpoints` 、`.inference`：模型权重相关文件，包括网络参数、优化器、静态图权重等。
-
-</details>
+<ul>
+<li>模型训练过程中，PaddleX 会自动保存模型权重文件，默认为<code>output</code>，如需指定保存路径，可通过配置文件中 <code>-o Global.output</code> 字段进行设置。</li>
+<li>PaddleX 对您屏蔽了动态图权重和静态图权重的概念。在模型训练的过程中，会同时产出动态图和静态图的权重，在模型推理时，默认选择静态图权重推理。</li>
+<li>训练其他模型时，需要的指定相应的配置文件，模型和配置的文件的对应关系，可以查阅<a href="../support_list/models_list.md">PaddleX模型列表（CPU/GPU）</a>。
+在完成模型训练后，所有产出保存在指定的输出目录（默认为<code>./output/</code>）下，通常有以下产出：</li>
+</ul>
+<p><b>训练产出解释:</b></p>
+<p>在完成模型训练后，所有产出保存在指定的输出目录（默认为<code>./output/</code>）下，通常有以下产出：</p>
+<ul>
+<li>train_result.json：训练结果记录文件，记录了训练任务是否正常完成，以及产出的权重指标、相关文件路径等；</li>
+<li>train.log：训练日志文件，记录了训练过程中的模型指标变化、loss 变化等；</li>
+<li>config.yaml：训练配置文件，记录了本次训练的超参数的配置；</li>
+<li><code>best_accuracy.pdparams.tar</code>、<code>scaler.pkl</code>、<code>.checkpoints</code> 、<code>.inference</code>：模型权重相关文件，包括网络参数、优化器、静态图权重等。</li>
+</ul></details>
 
 ### 5.2 模型评估
 在完成模型训练后，可以对指定的模型权重文件在验证集上进行评估，验证模型精度。使用 PaddleX 进行模型评估，只需一行命令：
@@ -253,7 +292,7 @@ PaddleX 中每个模型都提供了模型开发的配置文件，用于设置相
 ```
 与模型训练类似，模型评估支持修改配置文件或追加命令行参数的方式设置。
 
-**注：** 在模型评估时，需要指定模型权重文件路径，每个配置文件中都内置了默认的权重保存路径，如需要改变，只需要通过追加命令行参数的形式进行设置即可，如`-o Evaluate.weight_path=./output/best_model/model.pdparams`。
+<b>注：</b> 在模型评估时，需要指定模型权重文件路径，每个配置文件中都内置了默认的权重保存路径，如需要改变，只需要通过追加命令行参数的形式进行设置即可，如`-o Evaluate.weight_path=./output/best_model/model.pdparams`。
 
 ### 5.3 模型调优
 在学习了模型训练和评估后，我们可以通过调整超参数来提升模型的精度。通过合理调整训练轮数，您可以控制模型的训练深度，避免过拟合或欠拟合；而学习率的设置则关乎模型收敛的速度和稳定性。因此，在优化模型性能时，务必审慎考虑这两个参数的取值，并根据实际情况进行灵活调整，以获得最佳的训练效果。
@@ -268,26 +307,128 @@ PaddleX 中每个模型都提供了模型开发的配置文件，用于设置相
 4. 可以发现增大训练轮次后实验四精度最高，接下来尝试增大输入长度到 144，也就是用历史 144 小时的数据，预测未来 96 小时，得到实验五的指标。精度达到 0.188。
 学习率探寻实验结果：
 
-|实验id|轮次|学习率|batch_size|输入长度|预测长度|训练环境|验证集 mse|
-|-|-|-|-|-|-|-|-|
-|实验一|5|0.0001|16|96|96|1卡|0.314|
-|实验二|5|0.001|16|96|96|1卡|0.302|
-|实验三|5|0.01|16|96|96|1卡|0.320|
-
+<table>
+<thead>
+<tr>
+<th>实验id</th>
+<th>轮次</th>
+<th>学习率</th>
+<th>batch_size</th>
+<th>输入长度</th>
+<th>预测长度</th>
+<th>训练环境</th>
+<th>验证集 mse</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>实验一</td>
+<td>5</td>
+<td>0.0001</td>
+<td>16</td>
+<td>96</td>
+<td>96</td>
+<td>1卡</td>
+<td>0.314</td>
+</tr>
+<tr>
+<td>实验二</td>
+<td>5</td>
+<td>0.001</td>
+<td>16</td>
+<td>96</td>
+<td>96</td>
+<td>1卡</td>
+<td>0.302</td>
+</tr>
+<tr>
+<td>实验三</td>
+<td>5</td>
+<td>0.01</td>
+<td>16</td>
+<td>96</td>
+<td>96</td>
+<td>1卡</td>
+<td>0.320</td>
+</tr>
+</tbody>
+</table>
 增大训练轮次实验结果：
 
-|实验id|轮次|学习率|batch_size|输入长度|预测长度|训练环境|验证集 mse|
-|-|-|-|-|-|-|-|-|
-|实验二|5|0.001|16|96|96|1卡|0.302|
-|实验四|30|0.001|16|96|96|1卡|0.301|
-
+<table>
+<thead>
+<tr>
+<th>实验id</th>
+<th>轮次</th>
+<th>学习率</th>
+<th>batch_size</th>
+<th>输入长度</th>
+<th>预测长度</th>
+<th>训练环境</th>
+<th>验证集 mse</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>实验二</td>
+<td>5</td>
+<td>0.001</td>
+<td>16</td>
+<td>96</td>
+<td>96</td>
+<td>1卡</td>
+<td>0.302</td>
+</tr>
+<tr>
+<td>实验四</td>
+<td>30</td>
+<td>0.001</td>
+<td>16</td>
+<td>96</td>
+<td>96</td>
+<td>1卡</td>
+<td>0.301</td>
+</tr>
+</tbody>
+</table>
 增大输入长度实验结果：
 
-|实验id|轮次|学习率|batch_size|输入长度|预测长度|训练环境|验证集 mse|
-|-|-|-|-|-|-|-|-|
-|实验四|30|0.001|16|96|96|1卡|0.301|
-|实验五|30|0.001|16|144|96|1卡|0.188|
-
+<table>
+<thead>
+<tr>
+<th>实验id</th>
+<th>轮次</th>
+<th>学习率</th>
+<th>batch_size</th>
+<th>输入长度</th>
+<th>预测长度</th>
+<th>训练环境</th>
+<th>验证集 mse</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>实验四</td>
+<td>30</td>
+<td>0.001</td>
+<td>16</td>
+<td>96</td>
+<td>96</td>
+<td>1卡</td>
+<td>0.301</td>
+</tr>
+<tr>
+<td>实验五</td>
+<td>30</td>
+<td>0.001</td>
+<td>16</td>
+<td>144</td>
+<td>96</td>
+<td>1卡</td>
+<td>0.188</td>
+</tr>
+</tbody>
+</table>
 ## 6. 产线测试
 将产线中的模型替换为微调后的模型进行测试，使用[本案例中的电力测试数据](https://paddle-model-ecology.bj.bcebos.com/paddlex/PaddleX3.0/doc_images/practical_tutorial/timeseries_forecast/test.csv)，进行预测：
 

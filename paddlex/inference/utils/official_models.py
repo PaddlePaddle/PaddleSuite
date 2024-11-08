@@ -254,10 +254,18 @@ PP-LCNet_x1_0_vehicle_attribute_infer.tar",
     "PP-YOLOE_plus_SOD-largesize-L": "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b1_v2/PP-YOLOE_plus_SOD-largesize-L_infer.tar",
     "CenterNet-DLA-34": "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b1_v2/CenterNet-DLA-34_infer.tar",
     "CenterNet-ResNet50": "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b1_v2/CenterNet-ResNet50_infer.tar",
+    "PicoDet-S_layout_3cls": "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b1_v2/PicoDet-S_layout_3cls_infer.tar",
+    "PicoDet-S_layout_17cls": "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b1_v2/PicoDet-S_layout_17cls_infer.tar",
     "PicoDet-L_layout_3cls": "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b1_v2/PicoDet-L_layout_3cls_infer.tar",
+    "PicoDet-L_layout_17cls": "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b1_v2/PicoDet-L_layout_17cls_infer.tar",
     "RT-DETR-H_layout_3cls": "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b1_v2/RT-DETR-H_layout_3cls_infer.tar",
     "RT-DETR-H_layout_17cls": "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b1_v2/RT-DETR-H_layout_17cls_infer.tar",
     "PicoDet_LCNet_x2_5_face": "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b1_v2/PicoDet_LCNet_x2_5_face_infer.tar",
+    "BlazeFace": "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b1_v2/BlazeFace_infer.tar",
+    "BlazeFace-FPN-SSH": "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b1_v2/BlazeFace-FPN-SSH_infer.tar",
+    "PP-YOLOE_plus-S_face": "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b1_v2/PP-YOLOE_plus-S_face_infer.tar",
+    "MobileFaceNet": "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b1_v2/MobileFaceNet_infer.tar",
+    "ResNet50_face": "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b1_v2/ResNet50_face_infer.tar",
 }
 
 

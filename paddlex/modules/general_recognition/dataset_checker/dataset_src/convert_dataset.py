@@ -16,6 +16,7 @@
 import os
 import json
 from .....utils.file_interface import custom_open
+from .....utils.errors import ConvertFailedError
 
 
 def check_src_dataset(root_dir, dataset_type):
@@ -42,7 +43,7 @@ def convert(dataset_type, input_dir):
     """convert dataset to multilabel format"""
     # check format validity
     check_src_dataset(input_dir, dataset_type)
-    
+
     if dataset_type in ("LabelMe"):
         convert_labelme_dataset(input_dir)
     else:
@@ -59,7 +60,7 @@ def convert_labelme_dataset(root_dir):
     gallery_rate = 30
     query_rate = 20
     tags = ["train", "gallery", "query"]
-    label_dict = {}   
+    label_dict = {}
     image_files = []
 
     with custom_open(label_path, "r") as f:
@@ -76,7 +77,7 @@ def convert_labelme_dataset(root_dir):
             for label, value in data["flags"].items():
                 if value:
                     image_files.append(f"{image_path} {label_dict[label]}\n")
-    
+
     start = 0
     image_num = len(image_files)
     rate_list = [train_rate, gallery_rate, query_rate]

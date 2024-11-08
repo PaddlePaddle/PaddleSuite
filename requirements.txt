@@ -1,3 +1,4 @@
+prettytable # only for benchmark
 imagesize
 colorlog
 PyYAML

@@ -1,11 +1,13 @@
-简体中文 | [English](service_deploy_en.md)
+---
+comments: true
+---
 
 # PaddleX 服务化部署指南
 
 服务化部署是实际生产环境中常见的一种部署形式。通过将推理功能封装为服务，客户端可以通过网络请求来访问这些服务，以获取推理结果。PaddleX 支持用户以低成本实现产线的服务化部署。本文档将首先介绍使用 PaddleX 进行服务化部署的基本流程，然后介绍将服务用于生产环境时的注意事项以及可能需要执行的操作。
 
-**注意**
-- **服务化部署提供模型产线的服务，而不具体到某个产线模块。**
+<b>注意</b>
+- <b>服务化部署提供模型产线的服务，而不具体到某个产线模块。</b>
 
 服务化部署示例图：
 
@@ -44,44 +46,127 @@ INFO:     Application startup complete.
 INFO:     Uvicorn running on http://0.0.0.0:8080 (Press CTRL+C to quit)
 ```
 
---pipeline可指定为官方产线名称或本地产线配置文件路径。PaddleX 以此构建产线并部署为服务。如需调整配置（如模型路径、batch_size、部署设备等），请参考[通用图像分类产线使用教程](../pipeline_usage/tutorials/cv_pipelines/image_classification.md)中的 **“模型应用”** 部分（对于其他产线，可参考 **“1.3 调用服务”** 表格中的对应教程）。
+--pipeline可指定为官方产线名称或本地产线配置文件路径。PaddleX 以此构建产线并部署为服务。如需调整配置（如模型路径、batch_size、部署设备等），请参考[通用图像分类产线使用教程](../pipeline_usage/tutorials/cv_pipelines/image_classification.md)中的 <b>“模型应用”</b> 部分（对于其他产线，可参考 <b>“1.3 调用服务”</b> 表格中的对应教程）。
 与服务化部署相关的命令行选项如下：
 
-| 名称             | 说明                                                                                                                                                        |
-|------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `--pipeline`       | 产线名称或产线配置文件路径。                                                                                                                                |
-| `--device`         | 产线部署设备。默认为 `cpu`（如 GPU 不可用）或 `gpu`（如 GPU 可用）。                                                                                       |
-| `--host`           | 服务器绑定的主机名或 IP 地址。默认为0.0.0.0。                                                                                                               |
-| `--port`           | 服务器监听的端口号。默认为8080。                                                                                                                            |
-| `--use_hpip`       | 如果指定，则启用高性能推理插件。                                                                                                                            |
-| `--serial_number`  | 高性能推理插件使用的序列号。只在启用高性能推理插件时生效。 请注意，并非所有产线、模型都支持使用高性能推理插件，详细的支持情况请参考[PaddleX 高性能推理指南](./high_performance_inference.md)。 |
-| `--update_license` | 如果指定，则进行联网激活。只在启用高性能推理插件时生效。                                                                                                    |
-
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--pipeline</code></td>
+<td>产线名称或产线配置文件路径。</td>
+</tr>
+<tr>
+<td><code>--device</code></td>
+<td>产线部署设备。默认为 <code>cpu</code>（如 GPU 不可用）或 <code>gpu</code>（如 GPU 可用）。</td>
+</tr>
+<tr>
+<td><code>--host</code></td>
+<td>服务器绑定的主机名或 IP 地址。默认为0.0.0.0。</td>
+</tr>
+<tr>
+<td><code>--port</code></td>
+<td>服务器监听的端口号。默认为8080。</td>
+</tr>
+<tr>
+<td><code>--use_hpip</code></td>
+<td>如果指定，则启用高性能推理插件。</td>
+</tr>
+<tr>
+<td><code>--serial_number</code></td>
+<td>高性能推理插件使用的序列号。只在启用高性能推理插件时生效。 请注意，并非所有产线、模型都支持使用高性能推理插件，详细的支持情况请参考<a href="./high_performance_inference.md">PaddleX 高性能推理指南</a>。</td>
+</tr>
+<tr>
+<td><code>--update_license</code></td>
+<td>如果指定，则进行联网激活。只在启用高性能推理插件时生效。</td>
+</tr>
+</tbody>
+</table>
 </table>
 
 ### 1.3 调用服务
 
-请参考各产线使用教程中的 **“开发集成/部署”** 部分。
+请参考各产线使用教程中的 <b>“开发集成/部署”</b> 部分。
 
-| 模型产线               | 使用教程                       |
-|------------------------|--------------------------------|
-| 通用图像分类产线       | [通用图像分类产线使用教程](../pipeline_usage/tutorials/cv_pipelines/image_classification.md)       |
-| 通用目标检测产线       | [通用目标检测产线使用教程](../pipeline_usage/tutorials/cv_pipelines/object_detection.md)       |
-| 通用语义分割产线       | [通用语义分割产线使用教程](../pipeline_usage/tutorials/cv_pipelines/semantic_segmentation.md)       |
-| 通用实例分割产线       | [通用实例分割产线使用教程](../pipeline_usage/tutorials/cv_pipelines/instance_segmentation.md)       |
-| 通用图像多标签分类产线 | [通用图像多标签分类产线使用教程](../pipeline_usage/tutorials/cv_pipelines/image_multi_label_classification.md) |
-| 小目标检测产线         | [小目标检测产线使用教程](../pipeline_usage/tutorials/cv_pipelines/small_object_detection.md)         |
-| 图像异常检测产线       | [图像异常检测产线使用教程](../pipeline_usage/tutorials/cv_pipelines/image_anomaly_detection.md)       |
-| 通用OCR产线            | [通用OCR产线使用教程](../pipeline_usage/tutorials/ocr_pipelines/OCR.md)            |
-| 通用表格识别产线       | [通用表格识别产线使用教程](../pipeline_usage/tutorials/ocr_pipelines/table_recognition.md)       |
-| 通用版面解析产线       | [通用版面解析产线使用教程](../pipeline_usage/tutorials/ocr_pipelines/layout_parsing.md)       |
-| 公式识别产线       | [公式识别产线使用教程](../pipeline_usage/tutorials/ocr_pipelines/formula_recognition.md)       |
-| 印章文本识别产线       | [印章文本识别产线使用教程](../pipeline_usage/tutorials/ocr_pipelines/seal_recognition.md)       |
-| 时序预测产线           | [时序预测产线使用教程](../pipeline_usage/tutorials/time_series_pipelines/time_series_forecasting.md)           |
-| 时序异常检测产线       | [时序异常检测产线使用教程](../pipeline_usage/tutorials/time_series_pipelines/time_series_anomaly_detection.md)       |
-| 时序分类产线           | [时序分类产线使用教程](../pipeline_usage/tutorials/time_series_pipelines/time_series_classification.md)           |
-| 文档场景信息抽取v3产线 | [文档场景信息抽取v3产线使用教程](../pipeline_usage/tutorials/information_extraction_pipelines/document_scene_information_extraction.md) |
-
+<table>
+<thead>
+<tr>
+<th>模型产线</th>
+<th>使用教程</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>通用图像分类产线</td>
+<td><a href="../pipeline_usage/tutorials/cv_pipelines/image_classification.md">通用图像分类产线使用教程</a></td>
+</tr>
+<tr>
+<td>通用目标检测产线</td>
+<td><a href="../pipeline_usage/tutorials/cv_pipelines/object_detection.md">通用目标检测产线使用教程</a></td>
+</tr>
+<tr>
+<td>通用语义分割产线</td>
+<td><a href="../pipeline_usage/tutorials/cv_pipelines/semantic_segmentation.md">通用语义分割产线使用教程</a></td>
+</tr>
+<tr>
+<td>通用实例分割产线</td>
+<td><a href="../pipeline_usage/tutorials/cv_pipelines/instance_segmentation.md">通用实例分割产线使用教程</a></td>
+</tr>
+<tr>
+<td>通用图像多标签分类产线</td>
+<td><a href="../pipeline_usage/tutorials/cv_pipelines/image_multi_label_classification.md">通用图像多标签分类产线使用教程</a></td>
+</tr>
+<tr>
+<td>小目标检测产线</td>
+<td><a href="../pipeline_usage/tutorials/cv_pipelines/small_object_detection.md">小目标检测产线使用教程</a></td>
+</tr>
+<tr>
+<td>图像异常检测产线</td>
+<td><a href="../pipeline_usage/tutorials/cv_pipelines/image_anomaly_detection.md">图像异常检测产线使用教程</a></td>
+</tr>
+<tr>
+<td>通用OCR产线</td>
+<td><a href="../pipeline_usage/tutorials/ocr_pipelines/OCR.md">通用OCR产线使用教程</a></td>
+</tr>
+<tr>
+<td>通用表格识别产线</td>
+<td><a href="../pipeline_usage/tutorials/ocr_pipelines/table_recognition.md">通用表格识别产线使用教程</a></td>
+</tr>
+<tr>
+<td>通用版面解析产线</td>
+<td><a href="../pipeline_usage/tutorials/ocr_pipelines/layout_parsing.md">通用版面解析产线使用教程</a></td>
+</tr>
+<tr>
+<td>公式识别产线</td>
+<td><a href="../pipeline_usage/tutorials/ocr_pipelines/formula_recognition.md">公式识别产线使用教程</a></td>
+</tr>
+<tr>
+<td>印章文本识别产线</td>
+<td><a href="../pipeline_usage/tutorials/ocr_pipelines/seal_recognition.md">印章文本识别产线使用教程</a></td>
+</tr>
+<tr>
+<td>时序预测产线</td>
+<td><a href="../pipeline_usage/tutorials/time_series_pipelines/time_series_forecasting.md">时序预测产线使用教程</a></td>
+</tr>
+<tr>
+<td>时序异常检测产线</td>
+<td><a href="../pipeline_usage/tutorials/time_series_pipelines/time_series_anomaly_detection.md">时序异常检测产线使用教程</a></td>
+</tr>
+<tr>
+<td>时序分类产线</td>
+<td><a href="../pipeline_usage/tutorials/time_series_pipelines/time_series_classification.md">时序分类产线使用教程</a></td>
+</tr>
+<tr>
+<td>文档场景信息抽取v3产线</td>
+<td><a href="../pipeline_usage/tutorials/information_extraction_pipelines/document_scene_information_extraction.md">文档场景信息抽取v3产线使用教程</a></td>
+</tr>
+</tbody>
+</table>
 ## 2、将服务用于生产
 
 将服务应用于生产环境中时，服务的稳定性、高效性与安全性尤为重要。以下是一些针对将服务用于生产的建议。

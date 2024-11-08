@@ -16,10 +16,15 @@ from abc import abstractmethod
 import inspect
 
 from ....utils.subclass_register import AutoRegisterABCMetaClass
+from ....utils.flags import (
+    INFER_BENCHMARK,
+    INFER_BENCHMARK_WARMUP,
+)
 from ....utils import logging
 from ...components.base import BaseComponent, ComponentsEngine
 from ...utils.pp_option import PaddlePredictorOption
 from ...utils.process_hook import generatorable_method
+from ...utils.benchmark import Benchmark
 from .base_predictor import BasePredictor
 
 
@@ -42,6 +47,31 @@ class BasicPredictor(
         self._build_components()
         self.engine = ComponentsEngine(self.components)
         logging.debug(f"{self.__class__.__name__}: {self.model_dir}")
+
+        if INFER_BENCHMARK:
+            self.benchmark = Benchmark(self.components)
+
+    def __call__(self, input, **kwargs):
+        self.set_predictor(**kwargs)
+        if self.benchmark:
+            self.benchmark.start()
+            if INFER_BENCHMARK_WARMUP > 0:
+                output = super().__call__(input)
+                warmup_num = 0
+                for _ in range(INFER_BENCHMARK_WARMUP):
+                    try:
+                        next(output)
+                        warmup_num += 1
+                    except StopIteration:
+                        logging.warning(
+                            f"There are only {warmup_num} batches in input data, but `INFER_BENCHMARK_WARMUP` has been set to {INFER_BENCHMARK_WARMUP}."
+                        )
+                        break
+                self.benchmark.warmup_stop(warmup_num)
+            output = list(super().__call__(input))
+            self.benchmark.collect(len(output))
+        else:
+            yield from super().__call__(input)
 
     def apply(self, input):
         """predict"""

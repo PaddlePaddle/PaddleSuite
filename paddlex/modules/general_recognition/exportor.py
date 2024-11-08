@@ -18,5 +18,5 @@ from .model_list import MODELS
 
 class ShiTuRecExportor(ClsExportor):
     """ShiTu Recognition Model Exportor"""
-    
+
     entities = MODELS

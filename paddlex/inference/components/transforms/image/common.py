@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import ast
 import math
 from pathlib import Path
 from copy import deepcopy
@@ -19,6 +20,11 @@ from copy import deepcopy
 import numpy as np
 import cv2
 
+from .....utils.flags import (
+    INFER_BENCHMARK,
+    INFER_BENCHMARK_ITER,
+    INFER_BENCHMARK_DATA_SIZE,
+)
 from .....utils.cache import CACHE_DIR, temp_file_manager
 from ....utils.io import ImageReader, ImageWriter, PDFReader
 from ...base import BaseComponent
@@ -89,21 +95,42 @@ class ReadImage(_BaseRead):
 
     def apply(self, img):
         """apply"""
-        if isinstance(img, np.ndarray):
+
+        def rand_data():
+            def parse_size(s):
+                res = ast.literal_eval(s)
+                if isinstance(res, int):
+                    return (res, res)
+                else:
+                    assert isinstance(res, (tuple, list))
+                    assert len(res) == 2
+                    assert all(isinstance(item, int) for item in res)
+                    return res
+
+            size = parse_size(INFER_BENCHMARK_DATA_SIZE)
+            return np.random.randint(0, 256, (*size, 3), dtype=np.uint8)
+
+        def process_ndarray(img):
             with temp_file_manager.temp_file_context(suffix=".png") as temp_file:
                 img_path = Path(temp_file.name)
                 self._writer.write(img_path, img)
                 if self.format == "RGB":
                     img = img[:, :, ::-1]
-                yield [
-                    {
-                        "input_path": img_path,
-                        "img": img,
-                        "img_size": [img.shape[1], img.shape[0]],
-                        "ori_img": deepcopy(img),
-                        "ori_img_size": deepcopy([img.shape[1], img.shape[0]]),
-                    }
-                ]
+                return {
+                    "input_path": img_path,
+                    "img": img,
+                    "img_size": [img.shape[1], img.shape[0]],
+                    "ori_img": deepcopy(img),
+                    "ori_img_size": deepcopy([img.shape[1], img.shape[0]]),
+                }
+
+        if INFER_BENCHMARK and img is None:
+            for _ in range(INFER_BENCHMARK_ITER):
+                yield [process_ndarray(rand_data()) for _ in range(self.batch_size)]
+
+        elif isinstance(img, np.ndarray):
+            yield [process_ndarray(img)]
+
         elif isinstance(img, str):
             file_path = img
             file_path = self._download_from_url(file_path)

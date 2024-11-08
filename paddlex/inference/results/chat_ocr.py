@@ -33,45 +33,92 @@ class VisualInfoResult(BaseResult):
 class VisualResult(BaseResult):
     """VisualInfoResult"""
 
+    def __init__(self, data, page_id=None, src_input_name=None):
+        super().__init__(data)
+        self.page_id = page_id
+        self.src_input_name = src_input_name
+
     def _to_str(self, _, *args, **kwargs):
         return super()._to_str(
             {"layout_parsing_result": self["layout_parsing_result"]}, *args, **kwargs
         )
 
-    def save_to_html(self, save_path):
-        if not save_path.lower().endswith(("html")):
-            input_path = self["input_path"]
-            save_path = Path(save_path) / f"{Path(input_path).stem}"
+    def get_target_name(self, save_path):
+        if self.src_input_name.endswith(".pdf"):
+            save_path = (
+                Path(save_path)
+                / f"{Path(self.src_input_name).stem}_pdf"
+                / Path("page_{:04d}".format(self.page_id + 1))
+            )
+        else:
+            save_path = Path(save_path) / f"{Path(self.src_input_name).stem}"
+        return save_path
+
+    def save_to_json(self, save_path):
+        if not save_path.lower().endswith(("json")):
+            save_path = self.get_target_name(save_path)
         else:
             save_path = Path(save_path).stem
-        for table_result in self["table_result"]:
+        layout_save_path = f"{save_path}_layout.jpg"
+        ocr_save_path = f"{save_path}_ocr.jpg"
+        table_save_path = f"{save_path}_table"
+        self["input_path"] = layout_save_path
+        self["layout_result"]["input_path"] = layout_save_path
+        self["layout_parsing_result"]["input_path"] = layout_save_path
+        self["ocr_result"]["input_path"] = ocr_save_path
+        table_result_num = len(self["table_result"])
+        for idx in range(table_result_num):
+            self["table_result"][idx]["input_path"] = "{}_{:04d}".format(
+                table_save_path, idx + 1
+            )
+
+        if not str(save_path).endswith(".json"):
+            save_path = "{}.json".format(save_path)
+        super().save_to_json(save_path)
+
+    def save_to_html(self, save_path):
+        if not save_path.lower().endswith(("html")):
+            save_path = self.get_target_name(save_path)
+        else:
+            save_path = Path(save_path).stem
+        table_save_path = f"{save_path}_table"
+        for idx, table_result in enumerate(self["table_result"]):
+            basename = (Path(table_result["input_path"]).name).split(".")[0]
+            table_result["input_path"] = Path(
+                str(table_result["input_path"]).replace(
+                    basename, "{}_{:04d}".format(table_save_path, idx + 1)
+                )
+            )
             table_result.save_to_html(save_path)
 
     def save_to_xlsx(self, save_path):
         if not save_path.lower().endswith(("xlsx")):
-            input_path = self["input_path"]
-            save_path = Path(save_path) / f"{Path(input_path).stem}"
+            save_path = self.get_target_name(save_path)
         else:
             save_path = Path(save_path).stem
-        for table_result in self["table_result"]:
+        table_save_path = f"{save_path}_table"
+        for idx, table_result in enumerate(self["table_result"]):
+            basename = (Path(table_result["input_path"]).name).split(".")[0]
+            table_result["input_path"] = Path(
+                str(table_result["input_path"]).replace(
+                    basename, "{}_{:04d}".format(table_save_path, idx + 1)
+                )
+            )
             table_result.save_to_xlsx(save_path)
 
     def save_to_img(self, save_path):
         if not save_path.lower().endswith((".jpg", ".png")):
-            input_path = self["input_path"]
-            save_path = Path(save_path) / f"{Path(input_path).stem}"
+            save_path = self.get_target_name(save_path)
         else:
             save_path = Path(save_path).stem
 
         oricls_save_path = f"{save_path}_oricls.jpg"
         oricls_result = self["oricls_result"]
         if oricls_result:
-            oricls_result._HARD_FLAG = True
             oricls_result.save_to_img(oricls_save_path)
         uvdoc_save_path = f"{save_path}_uvdoc.jpg"
         unwarp_result = self["unwarp_result"]
         if unwarp_result:
-            # unwarp_result._HARD_FLAG = True
             unwarp_result.save_to_img(uvdoc_save_path)
         curve_save_path = f"{save_path}_curve"
         curve_results = self["curve_result"]
@@ -79,21 +126,17 @@ class VisualResult(BaseResult):
         if isinstance(curve_results, dict):
             curve_results = [curve_results]
         for idx, curve_result in enumerate(curve_results):
-            curve_result._HARD_FLAG = True if not unwarp_result else False
             curve_result.save_to_img(f"{curve_save_path}_{idx}.jpg")
         layout_save_path = f"{save_path}_layout.jpg"
         layout_result = self["layout_result"]
         if layout_result:
-            layout_result._HARD_FLAG = True if not unwarp_result else False
             layout_result.save_to_img(layout_save_path)
         ocr_save_path = f"{save_path}_ocr.jpg"
         table_save_path = f"{save_path}_table"
         ocr_result = self["ocr_result"]
         if ocr_result:
-            ocr_result._HARD_FLAG = True if not unwarp_result else False
             ocr_result.save_to_img(ocr_save_path)
         for idx, table_result in enumerate(self["table_result"]):
-            table_result._HARD_FLAG = True if not unwarp_result else False
             table_result.save_to_img(f"{table_save_path}_{idx}.jpg")
 
 

@@ -38,9 +38,7 @@ register_model_info(
     {
         "model_name": "PP-ShiTuV2_rec",
         "suite": "ShiTuRec",
-        "config_path": osp.join(
-            PDX_CONFIG_DIR, "PP-ShiTuV2_rec.yaml"
-        ),
+        "config_path": osp.join(PDX_CONFIG_DIR, "PP-ShiTuV2_rec.yaml"),
         "supported_apis": ["train", "evaluate", "predict", "export"],
         "supported_dataset_types": ["ShiTuRecDataset"],
         "infer_config": None,
@@ -51,9 +49,7 @@ register_model_info(
     {
         "model_name": "PP-ShiTuV2_rec_CLIP_vit_base",
         "suite": "ShiTuRec",
-        "config_path": osp.join(
-            PDX_CONFIG_DIR, "PP-ShiTuV2_rec_CLIP_vit_base.yaml"
-        ),
+        "config_path": osp.join(PDX_CONFIG_DIR, "PP-ShiTuV2_rec_CLIP_vit_base.yaml"),
         "supported_apis": ["train", "evaluate", "predict", "export"],
         "supported_dataset_types": ["ShiTuRecDataset"],
         "infer_config": None,
@@ -64,9 +60,7 @@ register_model_info(
     {
         "model_name": "PP-ShiTuV2_rec_CLIP_vit_large",
         "suite": "ShiTuRec",
-        "config_path": osp.join(
-            PDX_CONFIG_DIR, "PP-ShiTuV2_rec_CLIP_vit_large.yaml"
-        ),
+        "config_path": osp.join(PDX_CONFIG_DIR, "PP-ShiTuV2_rec_CLIP_vit_large.yaml"),
         "supported_apis": ["train", "evaluate", "predict", "export"],
         "supported_dataset_types": ["ShiTuRecDataset"],
         "infer_config": None,

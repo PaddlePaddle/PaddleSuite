@@ -36,18 +36,19 @@ def draw_box(img, boxes):
 
     draw_thickness = int(max(img.size) * 0.005)
     draw = ImageDraw.Draw(img)
-    clsid2color = {}
+    label2color = {}
     catid2fontcolor = {}
     color_list = get_colormap(rgb=True)
 
     for i, dt in enumerate(boxes):
-        clsid, bbox, score = dt["cls_id"], dt["coordinate"], dt["score"]
-        if clsid not in clsid2color:
+        # clsid = dt["cls_id"]
+        label, bbox, score = dt["label"], dt["coordinate"], dt["score"]
+        if label not in label2color:
             color_index = i % len(color_list)
-            clsid2color[clsid] = color_list[color_index]
-            catid2fontcolor[clsid] = font_colormap(color_index)
-        color = tuple(clsid2color[clsid])
-        font_color = tuple(catid2fontcolor[clsid])
+            label2color[label] = color_list[color_index]
+            catid2fontcolor[label] = font_colormap(color_index)
+        color = tuple(label2color[label])
+        font_color = tuple(catid2fontcolor[label])
 
         xmin, ymin, xmax, ymax = bbox
         # draw bbox
@@ -63,7 +64,7 @@ def draw_box(img, boxes):
             tw, th = draw.textsize(text, font=font)
         else:
             left, top, right, bottom = draw.textbbox((0, 0), text, font)
-            tw, th = right - left, bottom - top
+            tw, th = right - left, bottom - top + 4
         if ymin < th:
             draw.rectangle([(xmin, ymin), (xmin + tw + 4, ymin + th + 1)], fill=color)
             draw.text((xmin + 2, ymin - 2), text, fill=font_color, font=font)
@@ -77,14 +78,9 @@ def draw_box(img, boxes):
 class DetResult(CVResult):
     """Save Result Transform"""
 
-    _HARD_FLAG = False
-
     def _to_img(self):
         """apply"""
         boxes = self["boxes"]
         image = self._img_reader.read(self["input_path"])
-        if self._HARD_FLAG:
-            image_np = np.array(image)
-            image = Image.fromarray(image_np[:, :, ::-1])
         image = draw_box(image, boxes)
         return image

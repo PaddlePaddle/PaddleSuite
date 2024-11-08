@@ -14,7 +14,7 @@
 
 import os
 
-
+from .utils.lazy_loader import disable_pir_bydefault
 from .utils.result_saver import try_except_decorator
 from .utils.config import parse_args, get_config
 from .utils.errors import raise_unsupported_api_error
@@ -37,15 +37,18 @@ class Engine(object):
         if self._mode == "check_dataset":
             return self._model.check_dataset()
         elif self._mode == "train":
+            disable_pir_bydefault()
             self._model.train()
         elif self._mode == "evaluate":
+            disable_pir_bydefault()
             return self._model.evaluate()
         elif self._mode == "export":
+            disable_pir_bydefault()
             return self._model.export()
         elif self._mode == "predict":
             for res in self._model.predict():
                 res.print(json_format=False)
-            if self._output:
-                res.save_all(save_path=self._output)
+                if self._output:
+                    res.save_all(save_path=self._output)
         else:
             raise_unsupported_api_error(f"{self._mode}", self.__class__)

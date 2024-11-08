@@ -41,6 +41,8 @@ class BasePredictor(BaseComponent):
         # alias predict() to the __call__()
         self.predict = self.__call__
 
+        self.benchmark = None
+
     def __call__(self, input, **kwargs):
         self.set_predictor(**kwargs)
         for res in super().__call__(input):
