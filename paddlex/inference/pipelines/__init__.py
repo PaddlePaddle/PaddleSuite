@@ -39,7 +39,10 @@ from .seal_recognition import SealOCRPipeline
 from .ppchatocrv3 import PPChatOCRPipeline
 from .layout_parsing import LayoutParsingPipeline
 from .pp_shitu_v2 import ShiTuV2Pipeline
-from .attribute_recognition import AttributeRecPipeline
+from .attribute_recognition import (
+    PedestrianAttributeRecPipeline,
+    VehicleAttributeRecPipeline,
+)
 
 
 def load_pipeline_config(pipeline: str) -> Dict[str, Any]:

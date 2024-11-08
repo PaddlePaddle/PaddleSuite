@@ -252,40 +252,40 @@ Below are the API reference and multi-language service invocation examples:
 
 <p>For all operations provided by the service:</p>
 <ul>
-<li>The response body and the request body of POST requests are both JSON data (JSON objects).</li>
-<li>When the request is successfully processed, the response status code is <code>200</code>, and the attributes of the response body are as follows:</li>
+<li>Both the response body and the request body for POST requests are JSON data (JSON objects).</li>
+<li>When the request is processed successfully, the response status code is <code>200</code>, and the response body properties are as follows:</li>
 </ul>
 <table>
 <thead>
 <tr>
 <th>Name</th>
 <th>Type</th>
-<th>Meaning</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><code>errorCode</code></td>
 <td><code>integer</code></td>
-<td>Error code. Fixed to <code>0</code>.</td>
+<td>Error code. Fixed as <code>0</code>.</td>
 </tr>
 <tr>
 <td><code>errorMsg</code></td>
 <td><code>string</code></td>
-<td>Error description. Fixed to <code>"Success"</code>.</td>
+<td>Error description. Fixed as <code>"Success"</code>.</td>
 </tr>
 </tbody>
 </table>
-<p>The response body may also have a <code>result</code> attribute of type <code>object</code>, which stores the operation result information.</p>
+<p>The response body may also have a <code>result</code> property of type <code>object</code>, which stores the operation result information.</p>
 <ul>
-<li>When the request is not successfully processed, the attributes of the response body are as follows:</li>
+<li>When the request is not processed successfully, the response body properties are as follows:</li>
 </ul>
 <table>
 <thead>
 <tr>
 <th>Name</th>
 <th>Type</th>
-<th>Meaning</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
@@ -301,21 +301,21 @@ Below are the API reference and multi-language service invocation examples:
 </tr>
 </tbody>
 </table>
-<p>The operations provided by the service are as follows:</p>
+<p>Operations provided by the service are as follows:</p>
 <ul>
 <li><b><code>infer</code></b></li>
 </ul>
-<p>Obtain OCR results for an image.</p>
-<p><code>POST /ocr</code></p>
+<p>Get pedestrian attribute recognition results.</p>
+<p><code>POST /pedestrian-attribute-recognition</code></p>
 <ul>
-<li>The attributes of the request body are as follows:</li>
+<li>The request body properties are as follows:</li>
 </ul>
 <table>
 <thead>
 <tr>
 <th>Name</th>
 <th>Type</th>
-<th>Meaning</th>
+<th>Description</th>
 <th>Required</th>
 </tr>
 </thead>
@@ -323,18 +323,88 @@ Below are the API reference and multi-language service invocation examples:
 <tr>
 <td><code>image</code></td>
 <td><code>string</code></td>
-<td>The URL of an accessible image file or the Base64 encoded result of the image file content.</td>
+<td>The URL of an image file accessible by the service or the Base64 encoded result of the image file content.</td>
 <td>Yes</td>
-</tr>
-<tr>
-<td><code>inferenceParams</code></td>
-<td><code>object</code></td>
-<td>Inference parameters.</td>
-<td>No</td>
 </tr>
 </tbody>
 </table>
-<p>The attributes of```markdown</p>
+<ul>
+<li>When the request is processed successfully, the <code>result</code> of the response body has the following properties:</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>pedestrians</code></td>
+<td><code>array</code></td>
+<td>Information about the pedestrian's location and attributes.</td>
+</tr>
+<tr>
+<td><code>image</code></td>
+<td><code>string</code></td>
+<td>The pedestrian attribute recognition result image. The image is in JPEG format and encoded using Base64.</td>
+</tr>
+</tbody>
+</table>
+<p>Each element in <code>pedestrians</code> is an <code>object</code> with the following properties:</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>bbox</code></td>
+<td><code>array</code></td>
+<td>The location of the pedestrian. The elements in the array are the x-coordinate of the top-left corner, the y-coordinate of the top-left corner, the x-coordinate of the bottom-right corner, and the y-coordinate of the bottom-right corner of the bounding box, respectively.</td>
+</tr>
+<tr>
+<td><code>attributes</code></td>
+<td><code>array</code></td>
+<td>The pedestrian attributes.</td>
+</tr>
+<tr>
+<td><code>score</code></td>
+<td><code>number</code></td>
+<td>The detection score.</td>
+</tr>
+</tbody>
+</table>
+<p>Each element in <code>attributes</code> is an <code>object</code> with the following properties:</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>label</code></td>
+<td><code>string</code></td>
+<td>The label of the attribute.</td>
+</tr>
+<tr>
+<td><code>score</code></td>
+<td><code>number</code></td>
+<td>The classification score.</td>
+</tr>
+</tbody>
+</table>
+</details>
+
+<details><summary>Multi-Language Service Invocation Examples</summary>
+
 <details>
 <summary>Python</summary>
 
@@ -342,337 +412,27 @@ Below are the API reference and multi-language service invocation examples:
 <pre><code class="language-python">import base64
 import requests
 
-API_URL = &quot;http://localhost:8080/ocr&quot; # Service URL
+API_URL = &quot;http://localhost:8080/pedestrian-attribute-recognition&quot;
 image_path = &quot;./demo.jpg&quot;
 output_image_path = &quot;./out.jpg&quot;
 
-# Encode the local image to Base64
 with open(image_path, &quot;rb&quot;) as file:
     image_bytes = file.read()
     image_data = base64.b64encode(image_bytes).decode(&quot;ascii&quot;)
 
-payload = {&quot;image&quot;: image_data}  # Base64 encoded file content or image URL
+payload = {&quot;image&quot;: image_data}
 
-# Call the API
 response = requests.post(API_URL, json=payload)
 
-# Process the response data
 assert response.status_code == 200
 result = response.json()[&quot;result&quot;]
 with open(output_image_path, &quot;wb&quot;) as file:
     file.write(base64.b64decode(result[&quot;image&quot;]))
 print(f&quot;Output image saved at {output_image_path}&quot;)
-print(&quot;\nDetected texts:&quot;)
-print(result[&quot;texts&quot;])
+print(&quot;\nDetected pedestrians:&quot;)
+print(result[&quot;pedestrians&quot;])
 </code></pre></details>
-
-<details><summary>C++</summary>
-
-<pre><code class="language-cpp">#include &lt;iostream&gt;
-#include &quot;cpp-httplib/httplib.h&quot; // https://github.com/Huiyicc/cpp-httplib
-#include &quot;nlohmann/json.hpp&quot; // https://github.com/nlohmann/json
-#include &quot;base64.hpp&quot; // https://github.com/tobiaslocker/base64
-
-int main() {
-    httplib::Client client(&quot;localhost:8080&quot;);
-    const std::string imagePath = &quot;./demo.jpg&quot;;
-    const std::string outputImagePath = &quot;./out.jpg&quot;;
-
-    httplib::Headers headers = {
-        {&quot;Content-Type&quot;, &quot;application/json&quot;}
-    };
-
-    // Encode the local image to Base64
-    std::ifstream file(imagePath, std::ios::binary | std::ios::ate);
-    std::streamsize size = file.tellg();
-    file.seekg(0, std::ios::beg);
-
-    std::vector&lt;char&gt; buffer(size);
-    if (!file.read(buffer.data(), size)) {
-        std::cerr &lt;&lt; &quot;Error reading file.&quot; &lt;&lt; std::endl;
-        return 1;
-    }
-    std::string bufferStr(reinterpret_cast&lt;const char*&gt;(buffer.data()), buffer.size());
-    std::string encodedImage = base64::to_base64(bufferStr);
-
-    nlohmann::json jsonObj;
-    jsonObj[&quot;image&quot;] = encodedImage;
-    std::string body = jsonObj.dump();
-
-    // Call the API
-    auto response = client.Post(&quot;/ocr&quot;, headers, body, &quot;application/json&quot;);
-    // Process the response data
-    if (response &amp;&amp; response-&gt;status == 200) {
-        nlohmann::json jsonResponse = nlohmann::json::parse(response-&gt;body);
-        auto result = jsonResponse[&quot;result&quot;];
-
-        encodedImage = result[&quot;image&quot;];
-        std::string decodedString = base64::from_base64(encodedImage);
-        std::vector&lt;unsigned char&gt; decodedImage(decodedString.begin(), decodedString.end());
-        std::ofstream outputImage(outputImagePath, std::ios::binary | std::ios::out);
-        if (outputImage.is_open()) {
-            outputImage.write(reinterpret_cast&lt;char*&gt;(decodedImage.data()), decodedImage.size());
-            outputImage.close();
-            std::cout &lt;&lt; &quot;Output image saved at &quot; &lt;&lt; outputImagePath &lt;&lt; std::endl;
-        } else {
-            std::cerr &lt;&lt; &quot;Unable to open file for writing: &quot; &lt;&lt; outputImagePath &lt;&lt; std::endl;
-        }
-
-        auto texts = result[&quot;texts&quot;];
-        std::cout &lt;&lt; &quot;\nDetected texts:&quot; &lt;&lt; std::endl;
-        for (const auto&amp; text : texts) {
-            std::cout &lt;&lt; text &lt;&lt; std::endl;
-        }
-    } else {
-        std::cout &lt;&lt; &quot;Failed to send HTTP request.&quot; &lt;&lt; std::endl;
-        return 1;
-    }
-
-    return 0;
-}
-
-</code></pre></details>
-``````markdown
-# Tutorial on Artificial Intelligence and Computer Vision
-
-This tutorial, intended for numerous developers, covers the basics and applications of AI and Computer Vision.
-
-<details><summary>Java</summary>
-
-<pre><code class="language-java">import okhttp3.*;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.Base64;
-
-public class Main {
-    public static void main(String[] args) throws IOException {
-        String API_URL = &quot;http://localhost:8080/ocr&quot;; // Service URL
-        String imagePath = &quot;./demo.jpg&quot;; // Local image path
-        String outputImagePath = &quot;./out.jpg&quot;; // Output image path
-
-        // Encode the local image to Base64
-        File file = new File(imagePath);
-        byte[] fileContent = java.nio.file.Files.readAllBytes(file.toPath());
-        String imageData = Base64.getEncoder().encodeToString(fileContent);
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        ObjectNode params = objectMapper.createObjectNode();
-        params.put(&quot;image&quot;, imageData); // Base64-encoded file content or image URL
-
-        // Create an OkHttpClient instance
-        OkHttpClient client = new OkHttpClient();
-        MediaType JSON = MediaType.get(&quot;application/json; charset=utf-8&quot;);
-        RequestBody body = RequestBody.create(params.toString(), JSON);
-        Request request = new Request.Builder()
-                .url(API_URL)
-                .post(body)
-                .build();
-
-        // Call the API and process the response
-        try (Response response = client.newCall(request).execute()) {
-            if (response.isSuccessful()) {
-                String responseBody = response.body().string();
-                JsonNode resultNode = objectMapper.readTree(responseBody);
-                JsonNode result = resultNode.get(&quot;result&quot;);
-                String base64Image = result.get(&quot;image&quot;).asText();
-                JsonNode texts = result.get(&quot;texts&quot;);
-
-                byte[] imageBytes = Base64.getDecoder().decode(base64Image);
-                try (FileOutputStream fos = new FileOutputStream(outputImagePath)) {
-                    fos.write(imageBytes);
-                }
-                System.out.println(&quot;Output image saved at &quot; + outputImagePath);
-                System.out.println(&quot;\nDetected texts: &quot; + texts.toString());
-            } else {
-                System.err.println(&quot;Request failed with code: &quot; + response.code());
-            }
-        }
-    }
-}
-</code></pre></details>
-
-<details><summary>Go</summary>
-
-<pre><code class="language-go">package main
-
-import (
-    &quot;bytes&quot;
-    &quot;encoding/base64&quot;
-    &quot;encoding/json&quot;
-    &quot;fmt&quot;
-    &quot;io/ioutil&quot;
-    &quot;net/http&quot;
-)
-
-func main() {
-    API_URL := &quot;http://localhost:8080/ocr&quot;
-    imagePath := &quot;./demo.jpg&quot;
-    outputImagePath := &quot;./out.jpg&quot;
-
-    // Encode the local image to Base64
-    imageBytes, err := ioutil.ReadFile(imagePath)
-    if err != nil {
-        fmt.Println(&quot;Error reading image file:&quot;, err)
-        return
-    }
-    imageData := base64.StdEncoding.EncodeToString(imageBytes)
-
-    payload := map[string]string{&quot;image&quot;: imageData} // Base64-encoded file content or image URL
-    payloadBytes, err := json.Marshal(payload)
-    if err != nil {
-        fmt.Println(&quot;Error marshaling payload:&quot;, err)
-        return
-    }
-
-    // Call the API
-    client := &amp;http.Client{}
-    req, err := http.NewRequest(&quot;POST&quot;, API_URL, bytes.NewBuffer(payloadBytes))
-    if err != nil {
-        fmt.Println(&quot;Error creating request:&quot;, err)
-        return
-    }
-
-    res, err := client.Do(req)
-    if err != nil {
-        fmt.Println(&quot;Error sending request:&quot;, err)
-        return
-    }
-    defer res.Body.Close()
-
-    // Process the response
-    body, err := ioutil.ReadAll(res.Body)
-    if err != nil {
-        fmt.Println(&quot;Error reading response body:&quot;, err)
-        return
-    }```markdown
-# An English Tutorial on Artificial Intelligence and Computer Vision
-
-This tutorial document is intended for numerous developers and covers content related to artificial intelligence and computer vision.
-
-&lt;details&gt;
-&lt;summary&gt;C#&lt;/summary&gt;
-
-```csharp
-using System;
-using System.IO;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json.Linq;
-
-class Program
-{
-static readonly string API_URL = &quot;http://localhost:8080/ocr&quot;;
-static readonly string imagePath = &quot;./demo.jpg&quot;;
-static readonly string outputImagePath = &quot;./out.jpg&quot;;
-
-static async Task Main(string[] args)
-{
-var httpClient = new HttpClient();
-
-// Encode the local image to Base64
-byte[] imageBytes = File.ReadAllBytes(imagePath);
-string image_data = Convert.ToBase64String(imageBytes);
-
-var payload = new JObject{ { &quot;image&quot;, image_data } }; // Base64 encoded file content or image URL
-var content = new StringContent(payload.ToString(), Encoding.UTF8, &quot;application/json&quot;);
-
-// Call the API
-HttpResponseMessage response = await httpClient.PostAsync(API_URL, content);
-response.EnsureSuccessStatusCode();
-
-// Process the API response
-string responseBody = await response.Content.ReadAsStringAsync();
-JObject jsonResponse = JObject.Parse(responseBody);
-
-string base64Image = jsonResponse[&quot;result&quot;][&quot;image&quot;].ToString();
-byte[] outputImageBytes = Convert.FromBase64String(base64Image);
-
-File.WriteAllBytes(outputImagePath, outputImageBytes);
-Console.WriteLine($&quot;Output image saved at {outputImagePath}&quot;);
-Console.WriteLine(&quot;\nDetected texts:&quot;);
-Console.WriteLine(jsonResponse[&quot;result&quot;][&quot;texts&quot;].ToString());
-}
-}
-</code></pre></details>
-
-<details><summary>Node.js</summary>
-
-<pre><code class="language-js">const axios = require('axios');
-const fs = require('fs');
-
-const API_URL = 'http://localhost:8080/ocr';
-const imagePath = './demo.jpg';
-const outputImagePath = &quot;./out.jpg&quot;;
-
-let config = {
-   method: 'POST',
-   maxBodyLength: Infinity,
-   url: API_URL,
-   data: JSON.stringify({
-    'image': encodeImageToBase64(imagePath)  // Base64 encoded file content or image URL
-  })
-};
-
-// Encode the local image to Base64
-function encodeImageToBase64(filePath) {
-  const bitmap = fs.readFileSync(filePath);
-  return Buffer.from(bitmap).toString('base64');
-}
-
-// Call the API
-axios.request(config)
-.then((response) =&gt; {
-    // Process the API response
-    const result = response.data[&quot;result&quot;];
-    const imageBuffer = Buffer.from(result[&quot;image&quot;], 'base64');
-    fs.writeFile(outputImagePath, imageBuffer, (err) =&gt; {
-      if (err) throw err;
-      console.log(`Output image saved at ${outputImagePath}`);
-    });
-    console.log(&quot;\nDetected texts:&quot;);
-    console.log(result[&quot;texts&quot;]);
-})
-.catch((error) =&gt; {
-  console.log(error);
-});
-</code></pre></details>
-
-<details>
-<summary>PHP</summary>
-
-```php
-<?php
-
-$API_URL = "http://localhost:8080/ocr"; // Service URL
-$image_path = "./demo.jpg";
-$output_image_path = "./out.jpg";
-
-// Encode the local image to Base64
-$image_data = base64_encode(file_get_contents($image_path));
-$payload = array("image" => $image_data); // Base64 encoded file content or image URL
-
-// Call the API
-$ch = curl_init($API_URL);
-curl_setopt($ch, CURLOPT_POST, true);
-curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-$response = curl_exec($ch);
-curl_close($ch);
-
-// Process the API response
-$result = json_decode($response, true)["result"];
-file_put_contents($output
-```
-
-<details>
-<details>
+</details>
 <br/>
 
 📱 <b>Edge Deployment</b>: Edge deployment is a method where computing and data processing functions are placed on the user's device itself, allowing the device to process data directly without relying on remote servers. PaddleX supports deploying models on edge devices such as Android. For detailed edge deployment procedures, please refer to the [PaddleX Edge Deployment Guide](../../../pipeline_deploy/edge_deploy.en.md).

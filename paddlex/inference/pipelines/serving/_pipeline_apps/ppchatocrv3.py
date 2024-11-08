@@ -14,10 +14,7 @@
 
 import asyncio
 import os
-import re
-import uuid
 from typing import Awaitable, Final, List, Literal, Optional, Tuple, Union
-from urllib.parse import parse_qs, urlparse
 
 import cv2
 import numpy as np
@@ -155,46 +152,6 @@ class ChatResult(BaseModel):
     prompts: Optional[Prompts] = None
 
 
-def _generate_request_id() -> str:
-    return str(uuid.uuid4())
-
-
-def _infer_file_type(url: str) -> FileType:
-    # Is it more reliable to guess the file type based on the response headers?
-    SUPPORTED_IMG_EXTS: Final[List[str]] = [".jpg", ".jpeg", ".png"]
-
-    url_parts = urlparse(url)
-    ext = os.path.splitext(url_parts.path)[1]
-    # HACK: The support for BOS URLs with query params is implementation-based,
-    # not interface-based.
-    is_bos_url = (
-        re.fullmatch(r"(?:bj|bd|su|gz|cd|hkg|fwh|fsh)\.bcebos\.com", url_parts.netloc)
-        is not None
-    )
-    if is_bos_url and url_parts.query:
-        params = parse_qs(url_parts.query)
-        if (
-            "responseContentDisposition" not in params
-            or len(params["responseContentDisposition"]) != 1
-        ):
-            raise ValueError("`responseContentDisposition` not found")
-        match_ = re.match(
-            r"attachment;filename=(.*)", params["responseContentDisposition"][0]
-        )
-        if not match_ or not match_.groups()[0] is not None:
-            raise ValueError(
-                "Failed to extract the filename from `responseContentDisposition`"
-            )
-        ext = os.path.splitext(match_.groups()[0])[1]
-    ext = ext.lower()
-    if ext == ".pdf":
-        return 0
-    elif ext in SUPPORTED_IMG_EXTS:
-        return 1
-    else:
-        raise ValueError("Unsupported file type")
-
-
 def _llm_params_to_dict(llm_params: LLMParams) -> dict:
     if llm_params.apiType == "qianfan":
         return {
@@ -206,31 +163,6 @@ def _llm_params_to_dict(llm_params: LLMParams) -> dict:
         return {"api_type": "aistudio", "access_token": llm_params.accessToken}
     else:
         assert_never(llm_params.apiType)
-
-
-def _bytes_to_arrays(
-    file_bytes: bytes,
-    file_type: FileType,
-    *,
-    max_img_size: Tuple[int, int],
-    max_num_imgs: int,
-) -> List[np.ndarray]:
-    if file_type == 0:
-        images = serving_utils.read_pdf(
-            file_bytes, resize=True, max_num_imgs=max_num_imgs
-        )
-    elif file_type == 1:
-        images = [serving_utils.image_bytes_to_array(file_bytes)]
-    else:
-        assert_never(file_type)
-    h, w = images[0].shape[0:2]
-    if w > max_img_size[1] or h > max_img_size[0]:
-        if w / h > max_img_size[0] / max_img_size[1]:
-            factor = max_img_size[0] / w
-        else:
-            factor = max_img_size[1] / h
-        images = [cv2.resize(img, (int(factor * w), int(factor * h))) for img in images]
-    return images
 
 
 def _postprocess_image(
@@ -274,12 +206,12 @@ def create_pipeline_app(pipeline: PPChatOCRPipeline, app_config: AppConfig) -> F
         pipeline = ctx.pipeline
         aiohttp_session = ctx.aiohttp_session
 
-        request_id = _generate_request_id()
+        request_id = serving_utils.generate_request_id()
 
         if request.fileType is None:
             if serving_utils.is_url(request.file):
                 try:
-                    file_type = _infer_file_type(request.file)
+                    file_type = serving_utils.infer_file_type(request.file)
                 except Exception as e:
                     logging.exception(e)
                     raise HTTPException(
@@ -289,7 +221,7 @@ def create_pipeline_app(pipeline: PPChatOCRPipeline, app_config: AppConfig) -> F
             else:
                 raise HTTPException(status_code=422, detail="Unknown file type")
         else:
-            file_type = request.fileType
+            file_type = "PDF" if request.fileType == 0 else "IMAGE"
 
         if request.inferenceParams:
             max_long_side = request.inferenceParams.maxLongSide
@@ -304,7 +236,7 @@ def create_pipeline_app(pipeline: PPChatOCRPipeline, app_config: AppConfig) -> F
                 request.file, aiohttp_session
             )
             images = await serving_utils.call_async(
-                _bytes_to_arrays,
+                serving_utils.file_to_images,
                 file_bytes,
                 file_type,
                 max_img_size=ctx.extra["max_img_size"],
