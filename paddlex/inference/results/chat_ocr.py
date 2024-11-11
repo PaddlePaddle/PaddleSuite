@@ -36,7 +36,10 @@ class VisualResult(BaseResult):
     def __init__(self, data, page_id=None, src_input_name=None):
         super().__init__(data)
         self.page_id = page_id
-        self.src_input_name = src_input_name
+        if isinstance(src_input_name, list):
+            self.src_input_name = src_input_name[page_id]
+        else:
+            self.src_input_name = src_input_name
 
     def _to_str(self, _, *args, **kwargs):
         return super()._to_str(

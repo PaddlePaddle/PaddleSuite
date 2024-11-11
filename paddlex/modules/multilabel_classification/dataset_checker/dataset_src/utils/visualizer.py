@@ -144,7 +144,6 @@ def draw_multi_label(image, label, label_map_dict):
     draw = ImageDraw.Draw(new_image)
     font_color = tuple(font_colormap(3))
     for i, text in enumerate(text_lines):
-        text_width, _ = font.getsize(text)
         draw.text(
             (0, image_height + i * int(row_height * 1.2)),
             text,

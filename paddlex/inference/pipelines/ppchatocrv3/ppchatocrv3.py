@@ -236,7 +236,14 @@ class PPChatOCRPipeline(_TableRecPipeline):
         recovery=True,
     ):
         # get oricls and unwarp results
-        img_info_list = list(self.img_reader(inputs))[0]
+        if isinstance(inputs, str):
+            img_info_list = list(self.img_reader(inputs))[0]
+        elif isinstance(inputs, list):
+            assert not any(
+                s.endswith(".pdf") for s in inputs
+            ), "List containing pdf is not supported; only a list of images or a single PDF is supported."
+            img_info_list = [x[0] for x in list(self.img_reader(inputs))]
+
         oricls_results = []
         if self.doc_image_ori_cls_predictor and use_doc_image_ori_cls_model:
             oricls_results = get_oriclas_results(
@@ -576,7 +583,7 @@ class PPChatOCRPipeline(_TableRecPipeline):
                 user_task_description,
             )
             logging.debug(prompt)
-            prompt_res["ocr_prompt"] = prompt
+            prompt_res["ocr_prompt"] = [prompt]
             res = self.get_llm_result(llm_api, prompt)
             if res:
                 final_results.update(res)
