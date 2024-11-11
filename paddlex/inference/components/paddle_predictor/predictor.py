@@ -181,7 +181,8 @@ class BasePaddlePredictor(BaseComponent):
                 config.enable_new_ir(self.option.enable_new_ir)
             if hasattr(config, "enable_new_executor"):
                 config.enable_new_executor()
-            config.set_optimization_level(3)
+            if self.option.device in ("cpu", "gpu"):
+                config.set_optimization_level(3)
 
         for del_p in self.option.delete_pass:
             config.delete_pass(del_p)
