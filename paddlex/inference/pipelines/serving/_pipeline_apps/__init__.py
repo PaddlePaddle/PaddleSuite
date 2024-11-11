@@ -16,7 +16,10 @@ from typing import Any, Dict
 
 from fastapi import FastAPI
 
-from ...attribute_recognition import PedestrianAttributeRecPipeline
+from ...attribute_recognition import (
+    PedestrianAttributeRecPipeline,
+    VehicleAttributeRecPipeline,
+)
 from ...base import BasePipeline
 from ...formula_recognition import FormulaRecognitionPipeline
 from ...layout_parsing import LayoutParsingPipeline
@@ -51,6 +54,9 @@ from .object_detection import create_pipeline_app as create_object_detection_app
 from .ocr import create_pipeline_app as create_ocr_app
 from .pedestrian_attribute_recognition import (
     create_pipeline_app as create_pedestrian_attribute_recognition_app,
+)
+from .vehicle_attribute_recognition import (
+    create_pipeline_app as create_vehicle_attribute_recognition_app,
 )
 from .ppchatocrv3 import create_pipeline_app as create_ppchatocrv3_app
 from .seal_recognition import create_pipeline_app as create_seal_recognition_app
@@ -168,6 +174,12 @@ def create_pipeline_app(
                 "Expected `pipeline` to be an instance of `PedestrianAttributeRecPipeline`."
             )
         return create_pedestrian_attribute_recognition_app(pipeline, app_config)
+    elif pipeline_name == "vehicle_attribute_recognition":
+        if not isinstance(pipeline, VehicleAttributeRecPipeline):
+            raise TypeError(
+                "Expected `pipeline` to be an instance of `VehicleAttributeRecPipeline`."
+            )
+        return create_vehicle_attribute_recognition_app(pipeline, app_config)
     else:
         if BasePipeline.get(pipeline_name):
             raise ValueError(
