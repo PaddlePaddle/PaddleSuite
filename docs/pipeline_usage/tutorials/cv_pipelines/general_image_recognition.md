@@ -19,24 +19,24 @@ PP-ShiTuV2 是一个实用的通用图像识别系统，主要由主体检测、
 <b>主体检测模块：</b>
 
 <table>
-  <tr>
-    <th>模型</th>
-    <th>mAP(0.5:0.95)</th>
-    <th>mAP(0.5)</th>
-    <th>GPU推理耗时（ms）</th>
-    <th>CPU推理耗时 (ms)</th>
-    <th>模型存储大小（M）</th>
-    <th>介绍</th>
-  </tr>
-  <tr>
-    <td>PP-ShiTuV2_det</td>
-    <td>41.5</td>
-    <td>62.0</td>
-    <td>33.7</td>
-    <td>537.0</td>
-    <td>27.54</td>
-    <td>基于PicoDet_LCNet_x2_5的主体检测模型，模型可能会同时检测出多个常见主体。</td>
-  </tr>
+<tr>
+<th>模型</th>
+<th>mAP(0.5:0.95)</th>
+<th>mAP(0.5)</th>
+<th>GPU推理耗时（ms）</th>
+<th>CPU推理耗时 (ms)</th>
+<th>模型存储大小（M）</th>
+<th>介绍</th>
+</tr>
+<tr>
+<td>PP-ShiTuV2_det</td>
+<td>41.5</td>
+<td>62.0</td>
+<td>33.7</td>
+<td>537.0</td>
+<td>27.54</td>
+<td>基于PicoDet_LCNet_x2_5的主体检测模型，模型可能会同时检测出多个常见主体。</td>
+</tr>
 </table>
 
 注：以上精度指标为 PaddleClas 主体检测数据集。
@@ -45,36 +45,36 @@ PP-ShiTuV2 是一个实用的通用图像识别系统，主要由主体检测、
 
 
 <table>
-  <tr>
-    <th>模型</th>
-    <th>recall@1 (%)</th>
-    <th>GPU推理耗时 (ms)</th>
-    <th>CPU推理耗时 (ms)</th>
-    <th>模型存储大小 (M)</th>
-    <th>介绍</th>
-  </tr>
-  <tr>
-    <td>PP-ShiTuV2_rec</td>
-    <td>84.2</td>
-    <td>5.23428</td>
-    <td>19.6005</td>
-    <td>16.3 M</td>
-    <td rowspan="3">PP-ShiTuV2是一个通用图像特征系统，由主体检测、特征提取、向量检索三个模块构成，这些模型是其中的特征提取模块的模型之一，可以根据系统的情况选择不同的模型。</td>
-  </tr>
-  <tr>
-    <td>PP-ShiTuV2_rec_CLIP_vit_base</td>
-    <td>88.69</td>
-    <td>13.1957</td>
-    <td>285.493</td>
-    <td>306.6 M</td>
-  </tr>
-  <tr>
-    <td>PP-ShiTuV2_rec_CLIP_vit_large</td>
-    <td>91.03</td>
-    <td>51.1284</td>
-    <td>1131.28</td>
-    <td>1.05 G</td>
-  </tr>
+<tr>
+<th>模型</th>
+<th>recall@1 (%)</th>
+<th>GPU推理耗时 (ms)</th>
+<th>CPU推理耗时 (ms)</th>
+<th>模型存储大小 (M)</th>
+<th>介绍</th>
+</tr>
+<tr>
+<td>PP-ShiTuV2_rec</td>
+<td>84.2</td>
+<td>5.23428</td>
+<td>19.6005</td>
+<td>16.3 M</td>
+<td rowspan="3">PP-ShiTuV2是一个通用图像特征系统，由主体检测、特征提取、向量检索三个模块构成，这些模型是其中的特征提取模块的模型之一，可以根据系统的情况选择不同的模型。</td>
+</tr>
+<tr>
+<td>PP-ShiTuV2_rec_CLIP_vit_base</td>
+<td>88.69</td>
+<td>13.1957</td>
+<td>285.493</td>
+<td>306.6 M</td>
+</tr>
+<tr>
+<td>PP-ShiTuV2_rec_CLIP_vit_large</td>
+<td>91.03</td>
+<td>51.1284</td>
+<td>1131.28</td>
+<td>1.05 G</td>
+</tr>
 </table>
 
 注：以上精度指标为 AliProducts recall@1。所有模型 GPU 推理耗时基于 NVIDIA Tesla T4 机器，精度类型为 FP32， CPU 推理速度基于 Intel(R) Xeon(R) Gold 5117 CPU @ 2.00GHz，线程数为8，精度类型为 FP32。
@@ -255,12 +255,12 @@ for res in output:
 <tr>
 <td>print</td>
 <td>打印结果到终端</td>
-<td><code>- format_json</code>：bool类型，是否对输出内容进行使用json缩进格式化，默认为True；<br><code>- indent</code>：int类型，json格式化设置，仅当format_json为True时有效，默认为4；<br><code>- ensure_ascii</code>：bool类型，json格式化设置，仅当format_json为True时有效，默认为False；</td>
+<td><code>- format_json</code>：bool类型，是否对输出内容进行使用json缩进格式化，默认为True；<br/><code>- indent</code>：int类型，json格式化设置，仅当format_json为True时有效，默认为4；<br/><code>- ensure_ascii</code>：bool类型，json格式化设置，仅当format_json为True时有效，默认为False；</td>
 </tr>
 <tr>
 <td>save_to_json</td>
 <td>将结果保存为json格式的文件</td>
-<td><code>- save_path</code>：str类型，保存的文件路径，当为目录时，保存文件命名与输入文件类型命名一致；<br><code>- indent</code>：int类型，json格式化设置，默认为4；<br><code>- ensure_ascii</code>：bool类型，json格式化设置，默认为False；</td>
+<td><code>- save_path</code>：str类型，保存的文件路径，当为目录时，保存文件命名与输入文件类型命名一致；<br/><code>- indent</code>：int类型，json格式化设置，默认为4；<br/><code>- ensure_ascii</code>：bool类型，json格式化设置，默认为False；</td>
 </tr>
 <tr>
 <td>save_to_img</td>

@@ -19,8 +19,8 @@ The face recognition pipeline is an end-to-end system dedicated to solving face 
 <table>
 <thead>
 <tr>
-<th>Model</th>
-<th>AP (%)<br>Easy/Medium/Hard</th>
+<th>Model</th><th>Model Download Link</th>
+<th>AP (%)<br/>Easy/Medium/Hard</th>
 <th>GPU Inference Time (ms)</th>
 <th>CPU Inference Time</th>
 <th>Model Size (M)</th>
@@ -29,7 +29,7 @@ The face recognition pipeline is an end-to-end system dedicated to solving face 
 </thead>
 <tbody>
 <tr>
-<td>BlazeFace</td>
+<td>BlazeFace</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/BlazeFace_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/BlazeFace_pretrained.pdparams">Trained Model</a></td>
 <td>77.7/73.4/49.5</td>
 <td></td>
 <td></td>
@@ -37,7 +37,7 @@ The face recognition pipeline is an end-to-end system dedicated to solving face 
 <td>A lightweight and efficient face detection model</td>
 </tr>
 <tr>
-<td>BlazeFace-FPN-SSH</td>
+<td>BlazeFace-FPN-SSH</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/BlazeFace-FPN-SSH_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/BlazeFace-FPN-SSH_pretrained.pdparams">Trained Model</a></td>
 <td>83.2/80.5/60.5</td>
 <td></td>
 <td></td>
@@ -45,7 +45,7 @@ The face recognition pipeline is an end-to-end system dedicated to solving face 
 <td>Improved BlazeFace with FPN and SSH structures</td>
 </tr>
 <tr>
-<td>PicoDet_LCNet_x2_5_face</td>
+<td>PicoDet_LCNet_x2_5_face</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PicoDet_LCNet_x2_5_face_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PicoDet_LCNet_x2_5_face_pretrained.pdparams">Trained Model</a></td>
 <td>93.7/90.7/68.1</td>
 <td></td>
 <td></td>
@@ -53,7 +53,7 @@ The face recognition pipeline is an end-to-end system dedicated to solving face 
 <td>Face detection model based on PicoDet_LCNet_x2_5</td>
 </tr>
 <tr>
-<td>PP-YOLOE_plus-S_face</td>
+<td>PP-YOLOE_plus-S_face</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-YOLOE_plus-S_face_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-YOLOE_plus-S_face_pretrained.pdparams">Trained Model</a></td>
 <td>93.9/91.8/79.8</td>
 <td></td>
 <td></td>
@@ -67,9 +67,9 @@ The face recognition pipeline is an end-to-end system dedicated to solving face 
 <table>
 <thead>
 <tr>
-<th>Model</th>
+<th>Model</th><th>Model Download Link</th>
 <th>Output Feature Dimension</th>
-<th>AP (%)<br>AgeDB-30/CFP-FP/LFW</th>
+<th>AP (%)<br/>AgeDB-30/CFP-FP/LFW</th>
 <th>GPU Inference Time (ms)</th>
 <th>CPU Inference Time</th>
 <th>Model Size (M)</th>
@@ -78,7 +78,7 @@ The face recognition pipeline is an end-to-end system dedicated to solving face 
 </thead>
 <tbody>
 <tr>
-<td>MobileFaceNet</td>
+<td>MobileFaceNet</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/MobileFaceNet_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/MobileFaceNet_pretrained.pdparams">Trained Model</a></td>
 <td>128</td>
 <td>96.28/96.71/99.58</td>
 <td></td>
@@ -87,7 +87,7 @@ The face recognition pipeline is an end-to-end system dedicated to solving face 
 <td>Face recognition model trained on MS1Mv3 based on MobileFaceNet</td>
 </tr>
 <tr>
-<td>ResNet50_face</td>
+<td>ResNet50_face</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/ResNet50_face_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/ResNet50_face_pretrained.pdparams">Trained Model</a></td>
 <td>512</td>
 <td>98.12/98.56/99.77</td>
 <td></td>
@@ -191,7 +191,7 @@ In the above Python script, the following steps are executed:
 </tr>
 <tr>
 <td><code>index_dir</code></td>
-<td>The save path for the feature library. After successfully calling the <code>build_index</code> method, two files will be generated in this path:<br> <code>"id_map.pkl"</code> saves the mapping relationship between image IDs and image feature labels;<br> <code>"vector.index"</code> stores the feature vectors of each image.</td>
+<td>The save path for the feature library. After successfully calling the <code>build_index</code> method, two files will be generated in this path:<br/> <code>"id_map.pkl"</code> saves the mapping relationship between image IDs and image feature labels;<br/> <code>"vector.index"</code> stores the feature vectors of each image.</td>
 <td><code>str</code></td>
 <td>None</td>
 </tr>
@@ -249,12 +249,12 @@ In the above Python script, the following steps are executed:
 <tr>
 <td>print</td>
 <td>Print results to the terminal</td>
-<td><code>- format_json</code>: Boolean, whether to format the output with JSON indentation, default is True; <br><code>- indent</code>: Integer, JSON formatting setting, effective only when format_json is True, default is 4; <br><code>- ensure_ascii</code>: Boolean, JSON formatting setting, effective only when format_json is True, default is False;</td>
+<td><code>- format_json</code>: Boolean, whether to format the output with JSON indentation, default is True; <br/><code>- indent</code>: Integer, JSON formatting setting, effective only when format_json is True, default is 4; <br/><code>- ensure_ascii</code>: Boolean, JSON formatting setting, effective only when format_json is True, default is False;</td>
 </tr>
 <tr>
 <td>save_to_json</td>
 <td>Save results as a JSON file</td>
-<td><code>- save_path</code>: String, file path for saving; if it's a directory, the saved file name matches the input file name; <br><code>- indent</code>: Integer, JSON formatting setting, default is 4; <br><code>- ensure_ascii</code>: Boolean, JSON formatting setting, default is False;</td>
+<td><code>- save_path</code>: String, file path for saving; if it's a directory, the saved file name matches the input file name; <br/><code>- indent</code>: Integer, JSON formatting setting, default is 4; <br/><code>- ensure_ascii</code>: Boolean, JSON formatting setting, default is False;</td>
 </tr>
 <tr>
 <td>save_to_img</td>

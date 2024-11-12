@@ -14,9 +14,9 @@ comments: true
 <table>
 <thead>
 <tr>
-<th>模型</th>
+<th>模型</th><th>模型下载链接</th>
 <th>输出特征维度</th>
-<th>AP (%)<br>AgeDB-30/CFP-FP/LFW</th>
+<th>AP (%)<br/>AgeDB-30/CFP-FP/LFW</th>
 <th>GPU推理耗时 (ms)</th>
 <th>CPU推理耗时</th>
 <th>模型存储大小 (M)</th>
@@ -25,7 +25,7 @@ comments: true
 </thead>
 <tbody>
 <tr>
-<td>MobileFaceNet</td>
+<td>MobileFaceNet</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/MobileFaceNet_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/MobileFaceNet_pretrained.pdparams">训练模型</a></td>
 <td>128</td>
 <td>96.28/96.71/99.58</td>
 <td></td>
@@ -34,7 +34,7 @@ comments: true
 <td>基于MobileFaceNet在MS1Mv3数据集上训练的人脸特征提取模型</td>
 </tr>
 <tr>
-<td>ResNet50_face</td>
+<td>ResNet50_face</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/ResNet50_face_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/ResNet50_face_pretrained.pdparams">训练模型</a></td>
 <td>512</td>
 <td>98.12/98.56/99.77</td>
 <td></td>

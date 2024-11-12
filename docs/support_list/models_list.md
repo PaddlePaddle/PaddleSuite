@@ -35,6 +35,7 @@ PaddleX 内置了多条产线，每条产线都包含了若干模块，每个模
 <td>1.04 G</td>
 <td><a href="https://github.com/PaddlePaddle/PaddleX/blob/develop/paddlex/configs/image_classification/CLIP_vit_large_patch14_224.yaml">CLIP_vit_large_patch14_224.yaml</a></td>
 </tr>
+
 <tr>
 <td>ConvNeXt_base_224</td>
 <td>83.84</td>

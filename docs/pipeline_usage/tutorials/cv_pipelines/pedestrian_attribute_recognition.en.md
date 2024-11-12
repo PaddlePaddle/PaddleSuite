@@ -16,7 +16,7 @@ Pedestrian attribute recognition is a key function in computer vision systems, u
 <p><b>Pedestrian Detection Module</b>:</p>
 <table>
 <tr>
-<th>Model</th>
+<th>Model</th><th>Model Download Link</th>
 <th>mAP(0.5:0.95)</th>
 <th>mAP(0.5)</th>
 <th>GPU Inference Time (ms)</th>
@@ -25,7 +25,7 @@ Pedestrian attribute recognition is a key function in computer vision systems, u
 <th>Description</th>
 </tr>
 <tr>
-<td>PP-YOLOE-L_human</td>
+<td>PP-YOLOE-L_human</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-YOLOE-L_human_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-YOLOE-L_human_pretrained.pdparams">Trained Model</a></td>
 <td>48.0</td>
 <td>81.9</td>
 <td>32.8</td>
@@ -34,7 +34,7 @@ Pedestrian attribute recognition is a key function in computer vision systems, u
 <td rowspan="2">Pedestrian detection model based on PP-YOLOE</td>
 </tr>
 <tr>
-<td>PP-YOLOE-S_human</td>
+<td>PP-YOLOE-S_human</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-YOLOE-S_human_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-YOLOE-S_human_pretrained.pdparams">Trained Model</a></td>
 <td>42.5</td>
 <td>77.9</td>
 <td>15.0</td>
@@ -48,7 +48,7 @@ Pedestrian attribute recognition is a key function in computer vision systems, u
 <table>
 <thead>
 <tr>
-<th>Model</th>
+<th>Model</th><th>Model Download Link</th>
 <th>mA (%)</th>
 <th>GPU Inference Time (ms)</th>
 <th>CPU Inference Time (ms)</th>
@@ -58,7 +58,7 @@ Pedestrian attribute recognition is a key function in computer vision systems, u
 </thead>
 <tbody>
 <tr>
-<td>PP-LCNet_x1_0_pedestrian_attribute</td>
+<td>PP-LCNet_x1_0_pedestrian_attribute</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-LCNet_x1_0_pedestrian_attribute_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-LCNet_x1_0_pedestrian_attribute_pretrained.pdparams">Trained Model</a></td>
 <td>92.2</td>
 <td>3.84845</td>
 <td>9.23735</td>
@@ -208,12 +208,12 @@ In the above Python script, the following steps are executed:
 <tr>
 <td><code>print</code></td>
 <td>Print the results to the terminal</td>
-<td><code>- format_json</code>: bool, whether to format the output content with json indentation, default is True;<br><code>- indent</code>: int, json formatting setting, only effective when <code>format_json</code> is True, default is 4;<br><code>- ensure_ascii</code>: bool, json formatting setting, only effective when <code>format_json</code> is True, default is False;</td>
+<td><code>- format_json</code>: bool, whether to format the output content with json indentation, default is True;<br/><code>- indent</code>: int, json formatting setting, only effective when <code>format_json</code> is True, default is 4;<br/><code>- ensure_ascii</code>: bool, json formatting setting, only effective when <code>format_json</code> is True, default is False;</td>
 </tr>
 <tr>
 <td><code>save_to_json</code></td>
 <td>Save the results as a json-formatted file</td>
-<td><code>- save_path</code>: str, the path to save the file, when it is a directory, the saved file name is consistent with the input file name;<br><code>- indent</code>: int, json formatting setting, default is 4;<br><code>- ensure_ascii</code>: bool, json formatting setting, default is False;</td>
+<td><code>- save_path</code>: str, the path to save the file, when it is a directory, the saved file name is consistent with the input file name;<br/><code>- indent</code>: int, json formatting setting, default is 4;<br/><code>- ensure_ascii</code>: bool, json formatting setting, default is False;</td>
 </tr>
 <tr>
 <td><code>save_to_img</code></td>

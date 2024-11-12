@@ -11,36 +11,36 @@ comments: true
 
 
 <table>
-  <tr>
-    <th>模型</th>
-    <th>recall@1 (%)</th>
-    <th>GPU推理耗时 (ms)</th>
-    <th>CPU推理耗时 (ms)</th>
-    <th>模型存储大小 (M)</th>
-    <th>介绍</th>
-  </tr>
-  <tr>
-    <td>PP-ShiTuV2_rec</td>
-    <td>84.2</td>
-    <td>5.23428</td>
-    <td>19.6005</td>
-    <td>16.3 M</td>
-    <td rowspan="3">PP-ShiTuV2是一个通用图像特征系统，由主体检测、特征提取、向量检索三个模块构成，这些模型是其中的特征提取模块的模型之一，可以根据系统的情况选择不同的模型。</td>
-  </tr>
-  <tr>
-    <td>PP-ShiTuV2_rec_CLIP_vit_base</td>
-    <td>88.69</td>
-    <td>13.1957</td>
-    <td>285.493</td>
-    <td>306.6 M</td>
-  </tr>
-  <tr>
-    <td>PP-ShiTuV2_rec_CLIP_vit_large</td>
-    <td>91.03</td>
-    <td>51.1284</td>
-    <td>1131.28</td>
-    <td>1.05 G</td>
-  </tr>
+<tr>
+<th>模型</th><th>模型下载链接</th>
+<th>recall@1 (%)</th>
+<th>GPU推理耗时 (ms)</th>
+<th>CPU推理耗时 (ms)</th>
+<th>模型存储大小 (M)</th>
+<th>介绍</th>
+</tr>
+<tr>
+<td>PP-ShiTuV2_rec</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-ShiTuV2_rec_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-ShiTuV2_rec_pretrained.pdparams">训练模型</a></td>
+<td>84.2</td>
+<td>5.23428</td>
+<td>19.6005</td>
+<td>16.3 M</td>
+<td rowspan="3">PP-ShiTuV2是一个通用图像特征系统，由主体检测、特征提取、向量检索三个模块构成，这些模型是其中的特征提取模块的模型之一，可以根据系统的情况选择不同的模型。</td>
+</tr>
+<tr>
+<td>PP-ShiTuV2_rec_CLIP_vit_base</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-ShiTuV2_rec_CLIP_vit_base_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-ShiTuV2_rec_CLIP_vit_base_pretrained.pdparams">训练模型</a></td>
+<td>88.69</td>
+<td>13.1957</td>
+<td>285.493</td>
+<td>306.6 M</td>
+</tr>
+<tr>
+<td>PP-ShiTuV2_rec_CLIP_vit_large</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-ShiTuV2_rec_CLIP_vit_large_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-ShiTuV2_rec_CLIP_vit_large_pretrained.pdparams">训练模型</a></td>
+<td>91.03</td>
+<td>51.1284</td>
+<td>1131.28</td>
+<td>1.05 G</td>
+</tr>
 </table>
 
 

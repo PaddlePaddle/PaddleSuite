@@ -11,41 +11,40 @@ comments: true
 
 
 <table>
-  <tr>
-    <th >模型</th>
-    <th >mAP(0.5:0.95)</th>
-    <th >mAP(0.5)</th>
-    <th >GPU推理耗时（ms）</th>
-    <th >CPU推理耗时 (ms)</th>
-    <th >模型存储大小（M）</th>
-    <th >介绍</th>
-  </tr>
-  <tr>
-    <td>PP-YOLOE_plus_SOD-L</td>
-    <td>31.9</td>
-    <td>52.1</td>
-    <td>57.1</td>
-    <td>1007.0</td>
-    <td>324.93</td>
-    <td rowspan="3">基于VisDrone训练的PP-YOLOE_plus小目标检测模型。VisDrone是针对无人机视觉数据的基准数据集，由于目标较小同时具有一定的挑战性而被用于小目标检测任务的训练和评测</td>
-
-  </tr>
-  <tr>
-    <td>PP-YOLOE_plus_SOD-S</td>
-    <td>25.1</td>
-    <td>42.8</td>
-    <td>65.5</td>
-    <td>324.4</td>
-    <td>77.29</td>
-  </tr>
-  <tr>
-    <td>PP-YOLOE_plus_SOD-largesize-L</td>
-    <td>42.7</td>
-    <td>65.9</td>
-    <td>458.5</td>
-    <td>11172.7</td>
-    <td>340.42</td>
-  </tr>
+<tr>
+<th>模型</th><th>模型下载链接</th>
+<th>mAP(0.5:0.95)</th>
+<th>mAP(0.5)</th>
+<th>GPU推理耗时（ms）</th>
+<th>CPU推理耗时 (ms)</th>
+<th>模型存储大小（M）</th>
+<th>介绍</th>
+</tr>
+<tr>
+<td>PP-YOLOE_plus_SOD-L</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-YOLOE_plus_SOD-L_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-YOLOE_plus_SOD-L_pretrained.pdparams">训练模型</a></td>
+<td>31.9</td>
+<td>52.1</td>
+<td>57.1</td>
+<td>1007.0</td>
+<td>324.93</td>
+<td rowspan="3">基于VisDrone训练的PP-YOLOE_plus小目标检测模型。VisDrone是针对无人机视觉数据的基准数据集，由于目标较小同时具有一定的挑战性而被用于小目标检测任务的训练和评测</td>
+</tr>
+<tr>
+<td>PP-YOLOE_plus_SOD-S</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-YOLOE_plus_SOD-S_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-YOLOE_plus_SOD-S_pretrained.pdparams">训练模型</a></td>
+<td>25.1</td>
+<td>42.8</td>
+<td>65.5</td>
+<td>324.4</td>
+<td>77.29</td>
+</tr>
+<tr>
+<td>PP-YOLOE_plus_SOD-largesize-L</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-YOLOE_plus_SOD-largesize-L_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-YOLOE_plus_SOD-largesize-L_pretrained.pdparams">训练模型</a></td>
+<td>42.7</td>
+<td>65.9</td>
+<td>458.5</td>
+<td>11172.7</td>
+<td>340.42</td>
+</tr>
 </table>
 
 <b>注：以上精度指标为 VisDrone-DET 验证集 mAP(0.5:0.95)。所有模型 GPU 推理耗时基于 NVIDIA Tesla T4 机器，精度类型为 FP32， CPU 推理速度基于 Intel(R) Xeon(R) Gold 5117 CPU @ 2.00GHz，线程数为8，精度类型为 FP32</b>。

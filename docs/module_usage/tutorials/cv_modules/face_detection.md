@@ -12,8 +12,8 @@ comments: true
 <table>
 <thead>
 <tr>
-<th>模型</th>
-<th style="text-align: center;">AP (%)<br>Easy/Medium/Hard</th>
+<th>模型</th><th>模型下载链接</th>
+<th style="text-align: center;">AP (%)<br/>Easy/Medium/Hard</th>
 <th>GPU推理耗时 (ms)</th>
 <th>CPU推理耗时</th>
 <th>模型存储大小 (M)</th>
@@ -22,7 +22,7 @@ comments: true
 </thead>
 <tbody>
 <tr>
-<td>BlazeFace</td>
+<td>BlazeFace</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/BlazeFace_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/BlazeFace_pretrained.pdparams">训练模型</a></td>
 <td style="text-align: center;">77.7/73.4/49.5</td>
 <td></td>
 <td></td>
@@ -30,7 +30,7 @@ comments: true
 <td>轻量高效的人脸检测模型</td>
 </tr>
 <tr>
-<td>BlazeFace-FPN-SSH</td>
+<td>BlazeFace-FPN-SSH</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/BlazeFace-FPN-SSH_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/BlazeFace-FPN-SSH_pretrained.pdparams">训练模型</a></td>
 <td style="text-align: center;">83.2/80.5/60.5</td>
 <td></td>
 <td></td>
@@ -38,7 +38,7 @@ comments: true
 <td>BlazeFace的改进模型，增加FPN和SSH结构</td>
 </tr>
 <tr>
-<td>PicoDet_LCNet_x2_5_face</td>
+<td>PicoDet_LCNet_x2_5_face</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PicoDet_LCNet_x2_5_face_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PicoDet_LCNet_x2_5_face_pretrained.pdparams">训练模型</a></td>
 <td style="text-align: center;">93.7/90.7/68.1</td>
 <td></td>
 <td></td>
@@ -46,7 +46,7 @@ comments: true
 <td>基于PicoDet_LCNet_x2_5的人脸检测模型</td>
 </tr>
 <tr>
-<td>PP-YOLOE_plus-S_face</td>
+<td>PP-YOLOE_plus-S_face</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-YOLOE_plus-S_face_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-YOLOE_plus-S_face_pretrained.pdparams">训练模型</a></td>
 <td style="text-align: center;">93.9/91.8/79.8</td>
 <td></td>
 <td></td>
