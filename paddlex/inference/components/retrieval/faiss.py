@@ -33,25 +33,30 @@ class FaissIndexer(BaseComponent):
 
     def __init__(
         self,
-        index_dir,
+        index_bytes=None,
+        vector_path=None,
+        id_map=None,
         metric_type="IP",
         return_k=1,
         score_thres=None,
         hamming_radius=None,
     ):
         super().__init__()
-        index_dir = Path(index_dir)
-        vector_path = (index_dir / "vector.index").as_posix()
-        id_map_path = (index_dir / "id_map.pkl").as_posix()
 
         if metric_type == "hamming":
-            self._indexer = faiss.read_index_binary(vector_path)
+            if index_bytes is not None:
+                self._indexer = faiss.deserialize_index(index_bytes)
+            else:
+                self._indexer = faiss.read_index_binary(vector_path)
             self.hamming_radius = hamming_radius
         else:
-            self._indexer = faiss.read_index(vector_path)
+            if index_bytes is not None:
+                self._indexer = faiss.deserialize_index(index_bytes)
+            else:
+                self._indexer = faiss.read_index(vector_path)
             self.score_thres = score_thres
-        with open(id_map_path, "rb") as fd:
-            self.id_map = pickle.load(fd)
+
+        self.id_map = id_map
         self.metric_type = metric_type
         self.return_k = return_k
 
@@ -166,6 +171,7 @@ class FaissBuilder:
         # calculate id for new data
         index, ids = self._add_gallery(index, ids, features, gallery_docs)
         self._save_gallery(index, ids, index_dir)
+        return faiss.serialize_index(index), ids
 
     def remove(
         self,
@@ -186,6 +192,7 @@ class FaissBuilder:
         # remove ids in id_map, remove index data in faiss index
         index, ids = self._rm_id_in_galllery(index, ids, gallery_docs)
         self._save_gallery(index, ids, index_dir)
+        return faiss.serialize_index(index), ids
 
     def append(
         self,
@@ -204,6 +211,7 @@ class FaissBuilder:
         # calculate id for new data
         index, ids = self._add_gallery(index, ids, features, gallery_docs)
         self._save_gallery(index, ids, index_dir)
+        return faiss.serialize_index(index), ids
 
     def _load_index(self, index_dir):
         assert os.path.join(

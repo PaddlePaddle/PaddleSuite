@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import pickle
 from pathlib import Path
 import numpy as np
 
@@ -50,16 +51,32 @@ class ShiTuV2Pipeline(BasePipeline):
             score_thres,
             hamming_radius,
         )
-        self._indexer = self._build_indexer(index_dir) if index_dir else None
+        self._indexer = self._build_indexer(index_dir=index_dir) if index_dir else None
 
-    def _build_indexer(self, index_dir):
-        return FaissIndexer(
-            index_dir,
-            self._metric_type,
-            self._return_k,
-            self._score_thres,
-            self._hamming_radius,
-        )
+    def _build_indexer(self, index_bytes=None, id_map=None, index_dir=None):
+        if index_bytes is not None and id_map is not None:
+            return FaissIndexer(
+                index_bytes=index_bytes,
+                id_map=id_map,
+                metric_type=self._metric_type,
+                return_k=self._return_k,
+                score_thres=self._score_thres,
+                hamming_radius=self._hamming_radius,
+            )
+        else:
+            assert index_dir
+            vector_path = (Path(index_dir) / "vector.index").as_posix()
+            with open(Path(index_dir) / "id_map.pkl", "rb") as fd:
+                id_map = pickle.load(fd)
+
+            return FaissIndexer(
+                vector_path=vector_path,
+                id_map=id_map,
+                metric_type=self._metric_type,
+                return_k=self._return_k,
+                score_thres=self._score_thres,
+                hamming_radius=self._hamming_radius,
+            )
 
     def _build_predictor(self, det_model, rec_model):
         self.det_model = self._create(model=det_model)
@@ -76,8 +93,13 @@ class ShiTuV2Pipeline(BasePipeline):
             self.det_model.set_predictor(device=device)
             self.rec_model.set_predictor(device=device)
 
-    def predict(self, input, index_dir=None, **kwargs):
-        indexer = self._build_indexer(index_dir) if index_dir else self._indexer
+    def predict(self, input, index_bytes=None, id_map=None, index_dir=None, **kwargs):
+        if index_bytes is not None or index_dir is not None:
+            indexer = self._build_indexer(
+                index_bytes=index_bytes, id_map=id_map, index_dir=index_dir
+            )
+        else:
+            indexer = self._indexer
         assert indexer
         self.set_predictor(**kwargs)
         for det_res in self.det_model(input):
@@ -133,18 +155,26 @@ class ShiTuV2Pipeline(BasePipeline):
             index_type=index_type,
         )
         if mode == "new":
-            builder.build(Path(data_root) / "gallery.txt", data_root, index_dir)
+            index_bytes, id_map = builder.build(
+                Path(data_root) / "gallery.txt", data_root, index_dir
+            )
         elif mode == "remove":
-            builder.remove(Path(data_root) / "gallery.txt", data_root, index_dir)
+            index_bytes, id_map = builder.remove(
+                Path(data_root) / "gallery.txt", data_root, index_dir
+            )
         elif mode == "append":
-            builder.append(Path(data_root) / "gallery.txt", data_root, index_dir)
+            index_bytes, id_map = builder.append(
+                Path(data_root) / "gallery.txt", data_root, index_dir
+            )
         else:
             raise Exception("`mode` only support `new`, `remove` and `append`.")
+
+        return index_bytes, id_map
 
     def build_index(
         self, data_root, index_dir, metric_type="IP", index_type="HNSW32", **kwargs
     ):
-        self._build_index(
+        return self._build_index(
             data_root=data_root,
             index_dir=index_dir,
             mode="new",
@@ -156,7 +186,7 @@ class ShiTuV2Pipeline(BasePipeline):
     def remove_index(
         self, data_root, index_dir, metric_type="IP", index_type="HNSW32", **kwargs
     ):
-        self._build_index(
+        return self._build_index(
             data_root=data_root,
             index_dir=index_dir,
             mode="remove",
@@ -168,7 +198,7 @@ class ShiTuV2Pipeline(BasePipeline):
     def append_index(
         self, data_root, index_dir, metric_type="IP", index_type="HNSW32", **kwargs
     ):
-        self._build_index(
+        return self._build_index(
             data_root=data_root,
             index_dir=index_dir,
             mode="append",
