@@ -41,9 +41,7 @@ def check_dataset(dataset_dir, output, sample_num=10):
         mapping_file = osp.join(dataset_dir, f"{tag}.txt")
         if not osp.exists(mapping_file):
             info(f"The mapping file ({mapping_file}) doesn't exist, ignored.")
-            info(
-                "If you are using MVTec_AD dataset, add args below in your training commands:"
-            )
+            info("If you are using MVTec_AD dataset, add args below in your training commands:")
             info("-o CheckDataset.convert.enable=True")
             info("-o CheckDataset.convert.src_dataset_type=MVTec_AD")
             continue
@@ -65,7 +63,8 @@ def check_dataset(dataset_dir, output, sample_num=10):
                     f"The shape of {img_file}:{img.shape[:2]} and "
                     f"{ann_file}:{ann.shape} must be the same!"
                 )
-                class_ids = class_ids | set(ann.reshape([-1]).tolist())
+                if tag == "val":
+                    class_ids = class_ids | set(ann.reshape([-1]).tolist())
                 if i < sample_num:
                     vis_img = visualize(img, ann)
                     vis_img = Image.fromarray(vis_img)
