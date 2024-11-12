@@ -41,7 +41,9 @@ def check_dataset(dataset_dir, output, sample_num=10):
         mapping_file = osp.join(dataset_dir, f"{tag}.txt")
         if not osp.exists(mapping_file):
             info(f"The mapping file ({mapping_file}) doesn't exist, ignored.")
-            info("If you are using MVTec_AD dataset, add args below in your training commands:")
+            info(
+                "If you are using MVTec_AD dataset, add args below in your training commands:"
+            )
             info("-o CheckDataset.convert.enable=True")
             info("-o CheckDataset.convert.src_dataset_type=MVTec_AD")
             continue
