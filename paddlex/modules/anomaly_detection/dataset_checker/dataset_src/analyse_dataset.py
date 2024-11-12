@@ -42,7 +42,7 @@ def anaylse_dataset(dataset_dir, output):
                         label2count[tag][0] = 1
                     else:
                         label2count[tag][0] += 1
-                
+
                 if tag == "val":
                     for idx in set(ann.reshape([-1]).tolist()):
                         if idx == 255:
