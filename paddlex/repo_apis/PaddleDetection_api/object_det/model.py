@@ -133,10 +133,6 @@ class DetModel(BaseModel):
         uniform_output_enabled = kwargs.pop("uniform_output_enabled", True)
         config.update({"uniform_output_enabled": uniform_output_enabled})
         config.update({"pdx_model_name": self.name})
-        hpi_config_path = self.model_info.get("hpi_config_path", None)
-        if hpi_config_path:
-            hpi_config_path = hpi_config_path.as_posix()
-        config.update({"hpi_config_path": hpi_config_path})
 
         self._assert_empty_kwargs(kwargs)
 
@@ -177,7 +173,7 @@ class DetModel(BaseModel):
         if batch_size is not None:
             config.update_batch_size(batch_size, "eval")
         device_type, device_ids = parse_device(device)
-        if len(device_ids) > 1:
+        if device_ids is not None and len(device_ids) > 1:
             raise ValueError(
                 f"multi-{device_type} evaluation is not supported. Please use a single {device_type}."
             )
@@ -285,11 +281,9 @@ class DetModel(BaseModel):
             cli_args.append(CLIArgument("-o", f"exclude_nms={bool(exclude_nms)}"))
 
         # PDX related settings
+        uniform_output_enabled = kwargs.pop("uniform_output_enabled", True)
+        config.update({"uniform_output_enabled": uniform_output_enabled})
         config.update({"pdx_model_name": self.name})
-        hpi_config_path = self.model_info.get("hpi_config_path", None)
-        if hpi_config_path:
-            hpi_config_path = hpi_config_path.as_posix()
-        config.update({"hpi_config_path": hpi_config_path})
 
         if self.name in official_categories.keys():
             anno_val_file = abspath(

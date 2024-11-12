@@ -17,7 +17,6 @@ import json
 import time
 import tarfile
 from pathlib import Path
-import lazy_paddle as paddle
 
 from ..base import BaseTrainer
 from ...utils.config import AttrDict
@@ -76,6 +75,8 @@ training!"
             self.pdx_config.update_learning_rate(self.train_config.learning_rate)
         if self.train_config.epochs_iters is not None:
             self.pdx_config.update_epochs(self.train_config.epochs_iters)
+        if self.train_config.log_interval is not None:
+            self.pdx_config.update_log_interval(self.train_config.log_interval)
         if self.global_config.output is not None:
             self.pdx_config.update_save_dir(self.global_config.output)
 
@@ -85,7 +86,7 @@ training!"
         Returns:
             dict: the arguments of training function.
         """
-        train_args = {"device": self.get_device()}
+        train_args = {"device": self.get_device(using_device_number=1)}
         if self.global_config.output is not None:
             train_args["save_dir"] = self.global_config.output
         return train_args

@@ -1,4 +1,6 @@
-简体中文 | [English](text_image_unwarping_en.md)
+---
+comments: true
+---
 
 # 文本图像矫正模块使用教程
 
@@ -7,18 +9,28 @@
 
 ## 二、支持模型列表
 
-<details>
-   <summary> 👉模型列表详情</summary>
 
 
-|模型|MS-SSIM （%）|模型存储大小（M)|介绍|
-|-|-|-|-|
-|UVDoc|54.40|30.3 M|高精度文本图像矫正模型|
+<table>
+<thead>
+<tr>
+<th>模型</th>
+<th>MS-SSIM （%）</th>
+<th>模型存储大小（M)</th>
+<th>介绍</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>UVDoc</td>
+<td>54.40</td>
+<td>30.3 M</td>
+<td>高精度文本图像矫正模型</td>
+</tr>
+</tbody>
+</table>
+<b>模型的精度指标测量自 [DocUNet benchmark](https://www3.cs.stonybrook.edu/~cvl/docunet.html)。</b>
 
-
-**模型的精度指标测量自 [DocUNet benchmark](https://www3.cs.stonybrook.edu/~cvl/docunet.html)。**
-
-</details>
 
 ## 三、快速集成
 在快速集成前，首先需要安装PaddleX的wheel包，wheel的安装方式请参考 [PaddleX本地安装教程](../../../installation/installation.md)。完成wheel包的安装后，几行代码即可完成文本检测模块的推理，可以任意切换该模块下的模型，您也可以将文本检测的模块中的模型推理集成到您的项目中。运行以下代码前，请您下载[示例图片](https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/doc_test.jpg)到本地。

@@ -17,7 +17,9 @@ from abc import ABC, abstractmethod
 from copy import deepcopy
 from types import GeneratorType
 
+from ...utils.flags import INFER_BENCHMARK
 from ...utils import logging
+from ..utils.benchmark import Timer
 
 
 class BaseComponent(ABC):
@@ -32,6 +34,10 @@ class BaseComponent(ABC):
     def __init__(self):
         self.inputs = self.DEAULT_INPUTS if hasattr(self, "DEAULT_INPUTS") else {}
         self.outputs = self.DEAULT_OUTPUTS if hasattr(self, "DEAULT_OUTPUTS") else {}
+
+        if INFER_BENCHMARK:
+            self.timer = Timer()
+            self.apply = self.timer.watch_func(self.apply)
 
     def __call__(self, input_list):
         # use list type for batched data
@@ -100,6 +106,9 @@ class BaseComponent(ABC):
                     raise Exception(
                         f"The parameter ({param.name}) is needed by {self.__class__.__name__}, but {list(args.keys())} only found!"
                     )
+
+        if self.inputs is None:
+            return [({}, None)]
 
         if self.need_batch_input:
             args = {}
@@ -259,6 +268,10 @@ class BaseComponent(ABC):
     @property
     def name(self):
         return getattr(self, "NAME", self.__class__.__name__)
+
+    @property
+    def sub_cmps(self):
+        return None
 
     @abstractmethod
     def apply(self, input):

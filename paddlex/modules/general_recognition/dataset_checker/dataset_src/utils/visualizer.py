@@ -133,9 +133,7 @@ def draw_label(image, label):
     if tuple(map(int, PIL.__version__.split("."))) <= (10, 0, 0):
         text_width, text_height = draw.textsize(label, font)
     else:
-        left, top, right, bottom = draw.textbbox(
-            (0, 0), label, font
-        )
+        left, top, right, bottom = draw.textbbox((0, 0), label, font)
         text_width, text_height = right - left, bottom - top
 
     rect_left = 3

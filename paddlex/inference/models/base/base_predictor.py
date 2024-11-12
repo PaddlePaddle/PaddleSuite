@@ -18,7 +18,6 @@ from pathlib import Path
 from abc import abstractmethod
 
 from ...components.base import BaseComponent
-from ...utils.pp_option import PaddlePredictorOption
 from ...utils.process_hook import generatorable_method
 
 
@@ -41,6 +40,8 @@ class BasePredictor(BaseComponent):
 
         # alias predict() to the __call__()
         self.predict = self.__call__
+
+        self.benchmark = None
 
     def __call__(self, input, **kwargs):
         self.set_predictor(**kwargs)

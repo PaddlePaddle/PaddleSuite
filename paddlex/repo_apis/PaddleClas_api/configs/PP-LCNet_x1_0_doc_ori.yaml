@@ -27,9 +27,8 @@ AMP:
 # model architecture
 Arch:
   name: PPLCNet_x1_0
-  pretrained: True
   class_num: 4
-  use_last_conv: False
+  pretrained: True
 
 # loss function config for traing/eval process
 Loss:
@@ -47,7 +46,7 @@ Optimizer:
   momentum: 0.9
   lr:
     name: Cosine
-    learning_rate: 0.14
+    learning_rate: 0.4
     warmup_epoch: 5
   regularizer:
     name: 'L2'
@@ -58,9 +57,9 @@ Optimizer:
 DataLoader:
   Train:
     dataset:
-      name: CustomLabelDataset
-      image_root: ./dataset/OrientationDataset/
-      cls_label_path: ./dataset/OrientationDataset/train_list.txt
+      name: ImageNetDataset
+      image_root: ./dataset/text_image_orientation/
+      cls_label_path: ./dataset/text_image_orientation/train_list.txt
       transform_ops:
         - DecodeImage:
             to_rgb: True
@@ -85,21 +84,20 @@ DataLoader:
             attempt: 10
             use_log_aspect: True
             mode: pixel
-        - RandomRot90:
     sampler:
       name: DistributedBatchSampler
       batch_size: 256
       drop_last: False
       shuffle: True
     loader:
-      num_workers: 12
+      num_workers: 8
       use_shared_memory: True
 
   Eval:
     dataset: 
       name: ImageNetDataset
-      image_root: ./dataset/OrientationDataset/
-      cls_label_path: ./dataset/OrientationDataset/val_list.txt
+      image_root: ./dataset/text_image_orientation/
+      cls_label_path: ./dataset/text_image_orientation/test_list.txt
       transform_ops:
         - DecodeImage:
             to_rgb: True

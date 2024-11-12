@@ -25,16 +25,11 @@ from .base import BaseResult, CVResult
 class TableRecResult(CVResult):
     """SaveTableResults"""
 
-    _HARD_FLAG = False
-
     def __init__(self, data):
         super().__init__(data)
 
     def _to_img(self):
         image = self._img_reader.read(self["input_path"])
-        if self._HARD_FLAG:
-            image_np = np.array(image)
-            image = Image.fromarray(image_np[:, :, ::-1])
         bbox_res = self["bbox"]
         if len(bbox_res) > 0 and len(bbox_res[0]) == 4:
             vis_img = self.draw_rectangle(image, bbox_res)
@@ -65,15 +60,19 @@ class StructureTableResult(TableRecResult, HtmlMixin, XlsxMixin):
     def __init__(self, data):
         super().__init__(data)
         HtmlMixin.__init__(self)
-        self._show_func_register("save_to_html")(self.save_to_html)
         XlsxMixin.__init__(self)
 
     def _to_html(self):
         return self["html"]
 
 
-class TableResult(BaseResult):
+class TableResult(CVResult, HtmlMixin, XlsxMixin):
     """TableResult"""
+
+    def __init__(self, data):
+        super().__init__(data)
+        HtmlMixin.__init__(self)
+        XlsxMixin.__init__(self)
 
     def save_to_html(self, save_path):
         if not save_path.lower().endswith(("html")):
@@ -101,10 +100,10 @@ class TableResult(BaseResult):
             save_path = Path(save_path).stem
         layout_save_path = f"{save_path}_layout.jpg"
         ocr_save_path = f"{save_path}_ocr.jpg"
-        table_save_path = f"{save_path}_table.jpg"
+        table_save_path = f"{save_path}_table"
         layout_result = self["layout_result"]
         layout_result.save_to_img(layout_save_path)
         ocr_result = self["ocr_result"]
         ocr_result.save_to_img(ocr_save_path)
-        for table_result in self["table_result"]:
-            table_result.save_to_img(table_save_path)
+        for idx, table_result in enumerate(self["table_result"]):
+            table_result.save_to_img(f"{table_save_path}_{idx}.jpg")

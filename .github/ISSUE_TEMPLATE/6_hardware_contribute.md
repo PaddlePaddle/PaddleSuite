@@ -1,6 +1,18 @@
-# 说明
+---
+name: 6. 新硬件贡献
+about: 请描述您准备贡献的模型与芯片信息
+title: ''
+labels: ''
+assignees: ''
 
-1. 请描述您准备贡献的模型与芯片信息
+---
+
+## Checklist:
+
+- [ ] 查找[历史相关issue](https://github.com/PaddlePaddle/PaddleX/issues)寻求解答
+- [ ] 翻阅[FAQ](https://paddlepaddle.github.io/PaddleX/main/FAQ.html)
+- [ ] 翻阅[PaddleX 文档](https://paddlepaddle.github.io/PaddleX/main/index.html)
+
 
 # 环境
 

@@ -15,3 +15,4 @@
 from .transforms import *
 from .paddle_predictor import *
 from .task_related import *
+from .retrieval import *

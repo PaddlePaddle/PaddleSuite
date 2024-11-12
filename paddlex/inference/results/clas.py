@@ -24,7 +24,6 @@ from .base import CVResult
 
 
 class TopkResult(CVResult):
-    _HARD_FLAG = False
 
     def _to_img(self):
         """Draw label on image"""
@@ -32,9 +31,6 @@ class TopkResult(CVResult):
         label_str = f"{labels[0]} {self['scores'][0]:.2f}"
 
         image = self._img_reader.read(self["input_path"])
-        if self._HARD_FLAG:
-            image_np = np.array(image)
-            image = Image.fromarray(image_np[:, :, ::-1])
         image_size = image.size
         draw = ImageDraw.Draw(image)
         min_font_size = int(image_size[0] * 0.02)
@@ -90,7 +86,6 @@ class MLClassResult(TopkResult):
     def _to_img(self):
         """Draw label on image"""
         image = self._img_reader.read(self["input_path"])
-        image = image.convert("RGB")
         label_names = self["label_names"]
         scores = self["scores"]
         image = image.convert("RGB")
@@ -104,7 +99,10 @@ class MLClassResult(TopkResult):
         row_text = "\t"
         for label_name, score in zip(label_names, scores):
             text = f"{label_name}({score})\t"
-            text_width, row_height = font.getsize(text)
+            if int(PIL.__version__.split(".")[0]) < 10:
+                text_width, row_height = font.getsize(text)
+            else:
+                text_width, row_height = font.getbbox(text)[2:]
             if row_width + text_width <= image_width:
                 row_text += text
                 row_width += text_width
@@ -122,7 +120,10 @@ class MLClassResult(TopkResult):
         draw = ImageDraw.Draw(new_image)
         font_color = tuple(self._get_font_colormap(3))
         for i, text in enumerate(text_lines):
-            text_width, _ = font.getsize(text)
+            if int(PIL.__version__.split(".")[0]) < 10:
+                text_width, _ = font.getsize(text)
+            else:
+                text_width, _ = font.getbbox(text)[2:]
             draw.text(
                 (0, image_height + i * int(row_height * 1.2)),
                 text,

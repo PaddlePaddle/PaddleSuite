@@ -1,4 +1,6 @@
-简体中文 | [English](CHANGLOG_en.md)
+---
+comments: true
+---
 
 # 版本更新信息
 
@@ -6,20 +8,20 @@
 ### PaddleX v3.0.0beta1(9.30/2024)
 PaddleX 3.0 Beta1 提供 200+ 模型通过极简的 Python API 一键调用；实现基于统一命令的模型全流程开发，并开源 PP-ChatOCRv3 特色模型产线基础能力；支持 100+ 模型高性能推理和服务化部署，7 类重点视觉模型端侧部署；70+ 模型开发全流程适配昇腾 910B，15+ 模型开发全流程适配昆仑芯和寒武纪。
 
-- **模型丰富一键调用：** 将覆盖文档图像智能分析、OCR、目标检测、时序预测等多个关键领域的 200+ 飞桨模型整合为 13 条模型产线，通过极简的 Python API 一键调用，快速体验模型效果。同时支持 20+ 单功能模块，方便开发者进行模型组合使用。
-- **提高效率降低门槛：** 实现基于图形界面和统一命令的模型全流程开发，打造大小模型结合、大模型半监督学习和多模型融合的8条特色模型产线，大幅度降低迭代模型的成本。
-- **多种场景灵活部署：** 支持高性能部署、服务化部署和端侧部署等多种部署方式，确保不同应用场景下模型的高效运行和快速响应。
-- **主流硬件高效支持：** 支持英伟达 GPU、昆仑芯、昇腾和寒武纪等多种主流硬件的无缝切换，确保高效运行。
+- <b>模型丰富一键调用：</b> 将覆盖文档图像智能分析、OCR、目标检测、时序预测等多个关键领域的 200+ 飞桨模型整合为 13 条模型产线，通过极简的 Python API 一键调用，快速体验模型效果。同时支持 20+ 单功能模块，方便开发者进行模型组合使用。
+- <b>提高效率降低门槛：</b> 实现基于图形界面和统一命令的模型全流程开发，打造大小模型结合、大模型半监督学习和多模型融合的8条特色模型产线，大幅度降低迭代模型的成本。
+- <b>多种场景灵活部署：</b> 支持高性能部署、服务化部署和端侧部署等多种部署方式，确保不同应用场景下模型的高效运行和快速响应。
+- <b>主流硬件高效支持：</b> 支持英伟达 GPU、昆仑芯、昇腾和寒武纪等多种主流硬件的无缝切换，确保高效运行。
 
 ### PaddleX v3.0.0beta(6.27/2024)
 PaddleX 3.0beta 集成了飞桨生态的优势能力，覆盖 7 大场景任务，构建了 16 条模型产线，提供低代码开发模式，助力开发者在多种主流硬件上实现模型全流程开发。
 
-- **基础模型产线（模型丰富，场景全面）：** 精选 68 个优质飞桨模型，涵盖图像分类、目标检测、图像分割、OCR、文本图像版面分析、时序预测等任务场景。
-- **特色模型产线（显著提升效率）：** 提供大小模型结合、大模型半监督学习和多模型融合的高效解决方案。
-- **低代码开发模式（便捷开发与部署）：** 提供零代码和低代码两种开发方式。
+- <b>基础模型产线（模型丰富，场景全面）：</b> 精选 68 个优质飞桨模型，涵盖图像分类、目标检测、图像分割、OCR、文本图像版面分析、时序预测等任务场景。
+- <b>特色模型产线（显著提升效率）：</b> 提供大小模型结合、大模型半监督学习和多模型融合的高效解决方案。
+- <b>低代码开发模式（便捷开发与部署）：</b> 提供零代码和低代码两种开发方式。
   - 零代码开发：用户通过图形界面（GUI）交互式提交后台训练任务，打通在线和离线部署，并支持以 API 形式调用在线服务。
   - 低代码开发：通过统一的 API 接口实现 16 条模型产线的全流程开发，同时支持用户自定义模型流程串联。
-- **多硬件本地支持（兼容性强）：** 支持英伟达 GPU、昆仑芯、昇腾和寒武纪等多种硬件，纯离线使用。
+- <b>多硬件本地支持（兼容性强）：</b> 支持英伟达 GPU、昆仑芯、昇腾和寒武纪等多种硬件，纯离线使用。
 
 ### PaddleX v2.1.0(12.10/2021)
 
@@ -53,7 +55,7 @@ PaddleX 3.0beta 集成了飞桨生态的优势能力，覆盖 7 大场景任务�
 
 ### PaddleX v2.0.0rc0(5.19/2021)
 * 全面支持飞桨2.0动态图，更易用的开发模式
-* 目标检测任务新增[PP-YOLOv2](https://github.com/PaddlePaddle/PaddleX/blob/release/2.0-rc/tutorials/train/object_detection/ppyolov2.py), COCO test数据集精度达到49.5%、V100预测速度达到68.9 FPS 
+* 目标检测任务新增[PP-YOLOv2](https://github.com/PaddlePaddle/PaddleX/blob/release/2.0-rc/tutorials/train/object_detection/ppyolov2.py), COCO test数据集精度达到49.5%、V100预测速度达到68.9 FPS
 * 目标检测任务新增4.2MB的超轻量级模型[PP-YOLO tiny](https://github.com/PaddlePaddle/PaddleX/blob/release/2.0-rc/tutorials/train/object_detection/ppyolotiny.py)
 * 语义分割任务新增实时分割模型[BiSeNetV2](https://github.com/PaddlePaddle/PaddleX/blob/release/2.0-rc/tutorials/train/semantic_segmentation/bisenetv2.py)
 * C++部署模块全面升级
@@ -66,7 +68,7 @@ PaddleX 3.0beta 集成了飞桨生态的优势能力，覆盖 7 大场景任务�
 ### PaddleX v1.3.0(12.19/2020)
 
 - 模型更新
-  > - 图像分类模型ResNet50_vd新增10万分类预训练模型 
+  > - 图像分类模型ResNet50_vd新增10万分类预训练模型
   > - 目标检测模型FasterRCNN新增模型裁剪支持
   > - 目标检测模型新增多通道图像训练支持
 
@@ -77,32 +79,30 @@ PaddleX 3.0beta 集成了飞桨生态的优势能力，覆盖 7 大场景任务�
 - 产业案例更新
  > - 新增工业质检产业案例，提供基于GPU和CPU两种部署场景下的工业质检方案，及与质检相关的优化策略
 
-- **新增RestFUL API模块**
+- <b>新增RestFUL API模块</b>
 新增RestFUL API模块，开发者可通过此模块快速开发基于PaddleX的训练平台
  > - 增加基于RestFUL API的HTML Demo
  > - 增加基于RestFUL API的Remote版可视化客户端
-新增模型通过OpenVINO的部署方案[详情链接](https://paddlex.readthedocs.io/zh_CN/develop/deploy/openvino/index.html)
+新增模型通过OpenVINO的部署方案
 
 ### PaddleX v1.2.0(9.9/2020)
 - 模型更新
-  > - 新增目标检测模型PPYOLO[详情链接](https://paddlex.readthedocs.io/zh_CN/develop/apis/models/detection.html#paddlex-det-ppyolo)
+  > - 新增目标检测模型PPYOLO
   > - FasterRCNN、MaskRCNN、YOLOv3、DeepLabv3p等模型新增内置COCO数据集预训练模型
-  > - 目标检测模型FasterRCNN和MaskRCNN新增backbone HRNet_W18[详情链接](https://paddlex.readthedocs.io/zh_CN/develop/apis/models/detection.html#paddlex-det-fasterrcnn)
-  > - 语义分割模型DeepLabv3p新增backbone MobileNetV3_large_ssld[详情链接](https://paddlex.readthedocs.io/zh_CN/develop/apis/models/semantic_segmentation.html#paddlex-seg-deeplabv3p)
+  > - 目标检测模型FasterRCNN和MaskRCNN新增backbone HRNet_W18
+  > - 语义分割模型DeepLabv3p新增backbone MobileNetV3_large_ssld
 
 - 模型部署更新
-  > - 新增模型通过OpenVINO的部署方案[详情链接](https://paddlex.readthedocs.io/zh_CN/develop/deploy/openvino/index.html)
-  > - 新增模型在树莓派上的部署方案[详情链接](https://paddlex.readthedocs.io/zh_CN/develop/deploy/raspberry/index.html)
+  > - 新增模型通过OpenVINO的部署方案
+  > - 新增模型在树莓派上的部署方案
   > - 优化PaddleLite Android部署的数据预处理和后处理代码性能
   > - 优化Paddle服务端C++代码部署代码，增加use_mkl等参数，通过mkldnn显著提升模型在CPU上的预测性能
 
 - 产业案例更新
-  > - 新增RGB图像遥感分割案例[详情链接](https://paddlex.readthedocs.io/zh_CN/develop/examples/remote_sensing.html)
-  > - 新增多通道遥感分割案例[详情链接](https://paddlex.readthedocs.io/zh_CN/develop/examples/multi-channel_remote_sensing/README.html)
-
+  > - 新增RGB图像遥感分割案例
+  > - 新增多通道遥感分割案例
 - 其它
-  > - 新增数据集切分功能，支持通过命令行切分ImageNet、PascalVOC、MSCOCO和语义分割数据集[详情链接](https://paddlex.readthedocs.io/zh_CN/develop/data/format/classification.html#id2)
-
+  > - 新增数据集切分功能，支持通过命令行切分ImageNet、PascalVOC、MSCOCO和语义分割数据集
 ### PaddleX v1.1.0(7.13/2020)
 - 模型更新
 > - 新增语义分割模型HRNet、FastSCNN
@@ -122,16 +122,15 @@ PaddleX 3.0beta 集成了飞桨生态的优势能力，覆盖 7 大场景任务�
 
 ### PaddleX v1.0.0(5.21/2020)
 
-- **全流程打通**
-  - **数据准备**：支持[EasyData智能数据服务平台](https://ai.baidu.com/easydata/)数据协议，通过平台便捷完成智能标注,低质数据清洗工作, 同时兼容主流标注工具协议, 助力开发者更快完成数据准备工作。
-  - **模型训练**：集成[PaddleClas](https://github.com/PaddlePaddle/PaddleClas), [PaddleDetection](https://github.com/PaddlePaddle/PaddleDetection), [PaddleSeg](https://github.com/PaddlePaddle/PaddleSeg)视觉开发套件，丰富的高质量预训练模型，更快实现工业级模型效果。
-  - **模型调优**：内置模型可解释性模块、[VisualDL](https://github.com/PaddlePaddle/VisualDL)可视化分析组件, 提供丰富的信息更好地理解模型，优化模型。
-  - **多端安全部署**：内置[PaddleSlim](https://github.com/PaddlePaddle/PaddleSlim)模型压缩工具和**模型加密部署模块**，结合Paddle Inference或[Paddle Lite](https://github.com/PaddlePaddle/Paddle-Lite)便捷完成高性能的多端安全部署。
+- <b>全流程打通</b>
+  - <b>数据准备</b>：支持[EasyData智能数据服务平台](https://ai.baidu.com/easydata/)数据协议，通过平台便捷完成智能标注,低质数据清洗工作, 同时兼容主流标注工具协议, 助力开发者更快完成数据准备工作。
+  - <b>模型训练</b>：集成[PaddleClas](https://github.com/PaddlePaddle/PaddleClas), [PaddleDetection](https://github.com/PaddlePaddle/PaddleDetection), [PaddleSeg](https://github.com/PaddlePaddle/PaddleSeg)视觉开发套件，丰富的高质量预训练模型，更快实现工业级模型效果。
+  - <b>模型调优</b>：内置模型可解释性模块、[VisualDL](https://github.com/PaddlePaddle/VisualDL)可视化分析组件, 提供丰富的信息更好地理解模型，优化模型。
+  - <b>多端安全部署</b>：内置[PaddleSlim](https://github.com/PaddlePaddle/PaddleSlim)模型压缩工具和<b>模型加密部署模块</b>，结合Paddle Inference或[Paddle Lite](https://github.com/PaddlePaddle/Paddle-Lite)便捷完成高性能的多端安全部署。
 
-- **融合产业实践**
+- <b>融合产业实践</b>
   - 精选飞桨产业实践的成熟模型结构，开放案例实践教程，加速开发者产业落地。
 
-- **易用易集成**
+- <b>易用易集成</b>
   - 统一易用的全流程API，5步完成模型训练，10行代码实现Python/C++高性能部署。
   - 提供以PaddleX为核心集成的跨平台可视化工具PaddleX-GUI，快速体验飞桨深度学习全流程。
-

@@ -34,8 +34,15 @@ from .single_model_pipeline import (
 from .ocr import OCRPipeline
 from .formula_recognition import FormulaRecognitionPipeline
 from .table_recognition import TableRecPipeline
+from .face_recognition import FaceRecPipeline
 from .seal_recognition import SealOCRPipeline
 from .ppchatocrv3 import PPChatOCRPipeline
+from .layout_parsing import LayoutParsingPipeline
+from .pp_shitu_v2 import ShiTuV2Pipeline
+from .attribute_recognition import (
+    PedestrianAttributeRecPipeline,
+    VehicleAttributeRecPipeline,
+)
 
 
 def load_pipeline_config(pipeline: str) -> Dict[str, Any]:
@@ -78,7 +85,10 @@ def create_pipeline_from_config(
     elif "pp_option" in pipeline_setting:
         predictor_kwargs["pp_option"] = pipeline_setting.pop("pp_option")
 
-    device = device if device else pipeline_setting.pop("device", None)
+    if device:
+        pipeline_setting.pop("device", None)
+    else:
+        device = pipeline_setting.pop("device", None)
 
     pipeline_setting.update(kwargs)
     pipeline = BasePipeline.get(pipeline_name)(

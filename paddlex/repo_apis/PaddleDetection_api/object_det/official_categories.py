@@ -1,3 +1,17 @@
+# copyright (c) 2024 PaddlePaddle Authors. All Rights Reserve.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 official_categories = {
     "PP-YOLOE-L_human": [{"name": "pedestrian", "id": 0}],
     "PP-YOLOE-S_human": [{"name": "pedestrian", "id": 0}],
@@ -11,10 +25,53 @@ official_categories = {
         {"name": "Table", "id": 3},
         {"name": "Figure", "id": 4},
     ],
+    "PicoDet-S_layout_3cls": [
+        {"name": "image", "id": 0},
+        {"name": "table", "id": 1},
+        {"name": "seal", "id": 2},
+    ],
+    "PicoDet-S_layout_17cls": [
+        {"name": "paragraph_title", "id": 0},
+        {"name": "image", "id": 1},
+        {"name": "text", "id": 2},
+        {"name": "number", "id": 3},
+        {"name": "abstract", "id": 4},
+        {"name": "content", "id": 5},
+        {"name": "figure_title", "id": 6},
+        {"name": "formula", "id": 7},
+        {"name": "table", "id": 8},
+        {"name": "table_title", "id": 9},
+        {"name": "reference", "id": 10},
+        {"name": "doc_title", "id": 11},
+        {"name": "footnote", "id": 12},
+        {"name": "header", "id": 13},
+        {"name": "algorithm", "id": 14},
+        {"name": "footer", "id": 15},
+        {"name": "seal", "id": 16},
+    ],
     "PicoDet-L_layout_3cls": [
         {"name": "image", "id": 0},
         {"name": "table", "id": 1},
         {"name": "seal", "id": 2},
+    ],
+    "PicoDet-L_layout_17cls": [
+        {"name": "paragraph_title", "id": 0},
+        {"name": "image", "id": 1},
+        {"name": "text", "id": 2},
+        {"name": "number", "id": 3},
+        {"name": "abstract", "id": 4},
+        {"name": "content", "id": 5},
+        {"name": "figure_title", "id": 6},
+        {"name": "formula", "id": 7},
+        {"name": "table", "id": 8},
+        {"name": "table_title", "id": 9},
+        {"name": "reference", "id": 10},
+        {"name": "doc_title", "id": 11},
+        {"name": "footnote", "id": 12},
+        {"name": "header", "id": 13},
+        {"name": "algorithm", "id": 14},
+        {"name": "footer", "id": 15},
+        {"name": "seal", "id": 16},
     ],
     "RT-DETR-H_layout_3cls": [
         {"name": "image", "id": 0},

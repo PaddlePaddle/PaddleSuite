@@ -1,4 +1,6 @@
-简体中文 | [English](pipeline_python_API_en.md)
+---
+comments: true
+---
 
 # PaddleX模型产线Python脚本使用说明
 

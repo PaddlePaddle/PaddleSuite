@@ -166,7 +166,7 @@ class ErnieBot(BaseLLM):
         """caculate similar with key and doc"""
         if not self.is_vector_store(vector):
             logging.warning(
-                "The retrieved vectorstore is not for PaddleX and will return vectorstore directly"
+                "The retrieved vectorstore is not for PaddleX and will return the visual results of the query image"
             )
             return vector
         # XXX: The initialization parameters are hard-coded.

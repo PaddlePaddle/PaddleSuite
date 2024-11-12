@@ -17,13 +17,12 @@ import re
 import json
 import numpy as np
 from .utils import *
+from ...results import *
 from copy import deepcopy
 from ...components import *
 from ..ocr import OCRPipeline
 from ....utils import logging
-from ...results import *
 from ...components.llm import ErnieBot
-from ...utils.io import ImageReader, PDFReader
 from ..table_recognition import _TableRecPipeline
 from ...components.llm import create_llm_api, ErnieBot
 from ....utils.file_interface import read_yaml_file
@@ -83,7 +82,6 @@ class PPChatOCRPipeline(_TableRecPipeline):
                 doc_image_ori_cls_batch_size=doc_image_ori_cls_batch_size,
                 doc_image_unwarp_batch_size=doc_image_unwarp_batch_size,
                 seal_text_det_batch_size=seal_text_det_batch_size,
-                device=device,
             )
 
         # get base prompt from yaml info
@@ -135,7 +133,7 @@ class PPChatOCRPipeline(_TableRecPipeline):
         else:
             self.doc_image_unwarp_predictor = None
 
-        self.img_reader = ReadImage(format="RGB")
+        self.img_reader = ReadImage(format="BGR")
         self.llm_api = create_llm_api(
             llm_name,
             llm_params,
@@ -238,7 +236,14 @@ class PPChatOCRPipeline(_TableRecPipeline):
         recovery=True,
     ):
         # get oricls and unwarp results
-        img_info_list = list(self.img_reader(inputs))[0]
+        if isinstance(inputs, str):
+            img_info_list = list(self.img_reader(inputs))[0]
+        elif isinstance(inputs, list):
+            assert not any(
+                s.endswith(".pdf") for s in inputs
+            ), "List containing pdf is not supported; only a list of images or a single PDF is supported."
+            img_info_list = [x[0] for x in list(self.img_reader(inputs))]
+
         oricls_results = []
         if self.doc_image_ori_cls_predictor and use_doc_image_ori_cls_model:
             oricls_results = get_oriclas_results(
@@ -250,16 +255,18 @@ class PPChatOCRPipeline(_TableRecPipeline):
                 img_info_list, self.doc_image_unwarp_predictor
             )
         img_list = [img_info["img"] for img_info in img_info_list]
+
         for idx, (img_info, layout_pred) in enumerate(
             zip(img_info_list, self.layout_predictor(img_list))
         ):
+            page_id = idx
             single_img_res = {
                 "input_path": "",
                 "layout_result": DetResult({}),
                 "ocr_result": OCRResult({}),
                 "table_ocr_result": [],
                 "table_result": StructureTableResult([]),
-                "structure_result": [],
+                "layout_parsing_result": {},
                 "oricls_result": TopkResult({}),
                 "unwarp_result": DocTrResult({}),
                 "curve_result": [],
@@ -331,10 +338,18 @@ class PPChatOCRPipeline(_TableRecPipeline):
             if isinstance(all_curve_res, dict):
                 all_curve_res = [all_curve_res]
             for sub, curve_res in zip(curve_subs, all_curve_res):
+                dt_polys_list = [
+                    list(map(list, sublist)) for sublist in curve_res["dt_polys"]
+                ]
+                sorted_items = sorted(
+                    zip(dt_polys_list, curve_res["rec_text"]),
+                    key=lambda x: (x[0][0][1], x[0][0][0]),
+                )
+                _, sorted_text = zip(*sorted_items)
                 structure_res.append(
                     {
                         "layout_bbox": sub["box"],
-                        "印章": "".join(curve_res["rec_text"]),
+                        "印章": " ".join(sorted_text),
                     }
                 )
 
@@ -363,21 +378,26 @@ class PPChatOCRPipeline(_TableRecPipeline):
 
             # sort the layout result by the left top point of the box
             structure_res = sorted_layout_boxes(structure_res, w=single_img.shape[1])
-            structure_res = [LayoutStructureResult(item) for item in structure_res]
+            structure_res = LayoutParsingResult(
+                {
+                    "input_path": layout_pred["input_path"],
+                    "parsing_result": structure_res,
+                }
+            )
 
             single_img_res["table_result"] = all_table_res
             single_img_res["ocr_result"] = ocr_res
             single_img_res["table_ocr_result"] = all_table_ocr_res
-            single_img_res["structure_result"] = structure_res
-
-            yield VisualResult(single_img_res)
+            single_img_res["layout_parsing_result"] = structure_res
+            single_img_res["layout_parsing_result"]["page_id"] = page_id + 1
+            yield VisualResult(single_img_res, page_id, inputs)
 
     def decode_visual_result(self, visual_result):
         ocr_text = []
         table_text_list = []
         table_html = []
         for single_img_pred in visual_result:
-            layout_res = single_img_pred["structure_result"]
+            layout_res = single_img_pred["layout_parsing_result"]["parsing_result"]
             layout_res_copy = deepcopy(layout_res)
             # layout_res is [{"layout_bbox": [x1, y1, x2, y2], "layout": "single","words in text block":"xxx"}, {"layout_bbox": [x1, y1, x2, y2], "layout": "double","印章":"xxx"}
             ocr_res = {}
@@ -506,6 +526,11 @@ class PPChatOCRPipeline(_TableRecPipeline):
 
         prompt_res = {"ocr_prompt": "str", "table_prompt": [], "html_prompt": []}
 
+        if llm_name:
+            llm_api = create_llm_api(llm_name, llm_params)
+        else:
+            llm_api = self.llm_api
+
         final_results = {}
         failed_results = ["大模型调用失败", "未知", "未找到关键信息", "None", ""]
         if html_list:
@@ -515,7 +540,7 @@ class PPChatOCRPipeline(_TableRecPipeline):
             prompt_res["html_prompt"] = prompt_list
             for prompt, table_text in zip(prompt_list, table_text_list):
                 logging.debug(prompt)
-                res = self.get_llm_result(prompt)
+                res = self.get_llm_result(llm_api, prompt)
                 # TODO: why use one html but the whole table_text in next step
                 if list(res.values())[0] in failed_results:
                     logging.debug(
@@ -526,7 +551,7 @@ class PPChatOCRPipeline(_TableRecPipeline):
                     )
                     logging.debug(prompt)
                     prompt_res["table_prompt"].append(prompt)
-                    res = self.get_llm_result(prompt)
+                    res = self.get_llm_result(llm_api, prompt)
                 for key, value in res.items():
                     if value not in failed_results and key in key_list:
                         key_list.remove(key)
@@ -558,23 +583,23 @@ class PPChatOCRPipeline(_TableRecPipeline):
                 user_task_description,
             )
             logging.debug(prompt)
-            prompt_res["ocr_prompt"] = prompt
-            res = self.get_llm_result(prompt)
+            prompt_res["ocr_prompt"] = [prompt]
+            res = self.get_llm_result(llm_api, prompt)
             if res:
                 final_results.update(res)
         if not res and not final_results:
-            final_results = self.llm_api.ERROR_MASSAGE
+            final_results = {"error": llm_api.ERROR_MASSAGE}
         if save_prompt:
             return ChatResult({"chat_res": final_results, "prompt": prompt_res})
         else:
             return ChatResult({"chat_res": final_results, "prompt": ""})
 
-    def get_llm_result(self, prompt):
+    def get_llm_result(self, llm_api, prompt):
         """get llm result and decode to dict"""
-        llm_result = self.llm_api.pred(prompt)
+        llm_result = llm_api.pred(prompt)
         # when the llm pred failed, return None
         if not llm_result:
-            return None
+            return {}
 
         if "json" in llm_result or "```" in llm_result:
             llm_result = (
