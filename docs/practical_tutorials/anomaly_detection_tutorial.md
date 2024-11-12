@@ -44,7 +44,7 @@ PaddleX 提供了 1 个端到端的高精度异常检测模型，具体可参考
 ## 4. 数据准备和校验
 ### 4.1 数据准备
 
-本教程采用 `食品外观质检数据集` 作为示例数据集，可通过以下命令获取示例数据集。如果您使用自备的已标注数据集，需要按照 PaddleX 的格式要求对自备数据集进行调整，以满足 PaddleX 的数据格式要求。关于数据格式介绍，您可以参考 [PaddleX 异常检测任务模块数据标注教程](../data_annotations/cv_modules/anomaly_detection.md)。
+本教程采用 `食品外观质检数据集` 作为示例数据集，可通过以下命令获取示例数据集。如果您使用自备的已标注数据集，需要按照 PaddleX 的格式要求对自备数据集进行调整，以满足 PaddleX 的数据格式要求。关于数据格式介绍，您可以参考 [PaddleX 分割任务模块数据标注教程](../data_annotations/cv_modules/semantic_segmentation.md)。
 
 数据集获取命令：
 ```bash
@@ -255,7 +255,7 @@ for res in output:
     res.save_to_img("./output/") # 保存结果可视化图像
     res.save_to_json("./output/") # 保存预测的结构化输出
 ```
-更多参数请参考 [异常检测产线使用教程](../pipeline_usage/tutorials/cv_pipelines/anomaly_detection.md)。
+更多参数请参考 [异常检测产线使用教程](../pipeline_usage/tutorials/cv_pipelines/image_anomaly_detection.md)。
 
 2. 此外，PaddleX 也提供了其他三种部署方式，详细说明如下：
 
