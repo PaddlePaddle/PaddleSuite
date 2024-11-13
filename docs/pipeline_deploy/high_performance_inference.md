@@ -182,81 +182,7 @@ PaddleX 结合模型信息与运行环境信息为每个模型提供默认的高
   </tr>
 
   <tr>
-    <td>通用图像分类</td>
-    <td>图像分类</td>
-    <td>✅</td>
-  </tr>
-
-  <tr>
-    <td>通用图像多标签分类</td>
-    <td>图像多标签分类</td>
-    <td>✅</td>
-  </tr>
-
-  <tr>
-    <td>通用目标检测</td>
-    <td>目标检测</td>
-    <td>FasterRCNN-Swin-Tiny-FPN ❌</br>CenterNet-DLA-34 ❌ </br>CenterNet-ResNet50 ❌</td>
-  </tr>
-
-  <tr>
-    <td>小目标检测</td>
-    <td>小目标检测</td>
-    <td>✅</td>
-  </tr>
-
-  <tr>
-    <td>通用语义分割</td>
-    <td>语义分割</td>
-    <td>✅</td>
-  </tr>
-
-  <tr>
-    <td>通用实例分割</td>
-    <td>实例分割</td>
-    <td>Mask-RT-DETR-S ❌</td>
-  </tr>
-
-  <tr>
     <td rowspan="2">通用OCR</td>
-    <td>文本检测</td>
-    <td>✅</td>
-  </tr>
-
-  <tr>
-    <td>文本识别</td>
-    <td>✅</td>
-  </tr>
-
-  <tr>
-    <td rowspan="3">印章文本识别</td>
-    <td>版面区域分析</td>
-    <td>✅</td>
-  </tr>
-
-  <tr>
-    <td>印章文本检测</td>
-    <td>✅</td>
-  </tr>
-
-  <tr>
-    <td>文本识别</td>
-    <td>✅</td>
-  </tr>
-
-
-  <tr>
-    <td rowspan="4">通用表格识别</td>
-    <td>版面区域检测</td>
-    <td>✅</td>
-  </tr>
-
-  <tr>
-    <td>表格识别</td>
-    <td>✅</td>
-  </tr>
-
-  <tr>
     <td>文本检测</td>
     <td>✅</td>
   </tr>
@@ -303,25 +229,129 @@ PaddleX 结合模型信息与运行环境信息为每个模型提供默认的高
   </tr>
 
   <tr>
-    <td>通用时序预测</td>
+    <td rowspan="4">通用表格识别</td>
+    <td>版面区域检测</td>
+    <td>✅</td>
+  </tr>
+
+  <tr>
+    <td>表格识别</td>
+    <td>✅</td>
+  </tr>
+
+  <tr>
+    <td>文本检测</td>
+    <td>✅</td>
+  </tr>
+
+  <tr>
+    <td>文本识别</td>
+    <td>✅</td>
+  </tr>
+
+  <tr>
+    <td>通用目标检测</td>
+    <td>目标检测</td>
+    <td>FasterRCNN-Swin-Tiny-FPN ❌</br>CenterNet-DLA-34 ❌ </br>CenterNet-ResNet50 ❌</td>
+  </tr>
+
+  <tr>
+    <td>通用实例分割</td>
+    <td>实例分割</td>
+    <td>Mask-RT-DETR-S ❌</td>
+  </tr>
+
+  <tr>
+    <td>通用图像分类</td>
+    <td>图像分类</td>
+    <td>✅</td>
+  </tr>
+
+  <tr>
+    <td>通用语义分割</td>
+    <td>语义分割</td>
+    <td>✅</td>
+  </tr>
+
+  <tr>
     <td>时序预测</td>
-    <td>✅</td>
+    <td>时序预测</td>
+    <td>❌</td>
   </tr>
 
   <tr>
-    <td>通用时序异常检测</td>
+    <td>时序异常检测</td>
     <td>时序异常预测</td>
-    <td>TimesNet_ad ❌</td>
+    <td>❌</td>
   </tr>
 
   <tr>
-    <td>通用时序分类</td>
     <td>时序分类</td>
+    <td>时序分类</td>
+    <td>❌</td>
+  </tr>
+
+  <tr>
+    <td>小目标检测</td>
+    <td>小目标检测</td>
     <td>✅</td>
   </tr>
 
   <tr>
-    <td rowspan="2">通用公式识别</td>
+    <td>图像多标签分类</td>
+    <td>图像多标签分类</td>
+    <td>✅</td>
+  </tr>
+
+  <tr>
+    <td>图像异常检测</td>
+    <td>无监督异常检测</td>
+    <td>✅</td>
+  </tr>
+
+  <tr>
+    <td rowspan="8">通用版面解析</td>
+    <td>表格结构识别</td>
+    <td>✅</td>
+  </tr>
+
+  <tr>
+    <td>版面区域分析</td>
+    <td>✅</td>
+  </tr>
+
+  <tr>
+    <td>文本检测</td>
+    <td>✅</td>
+  </tr>
+
+  <tr>
+    <td>文本识别</td>
+    <td>✅</td>
+  </tr>
+
+  <tr>
+    <td>公式识别</td>
+    <td>❌</td>
+  </tr>
+
+  <tr>
+    <td>印章文本检测</td>
+    <td>✅</td>
+  </tr>
+
+  <tr>
+    <td>文本图像矫正</td>
+    <td>✅</td>
+  </tr>
+
+  <tr>
+    <td>文档图像方向分类</td>
+    <td>✅</td>
+  </tr>
+
+  <tr>
+    <td rowspan="2">公式识别</td>
     <td>版面区域检测</td>
     <td>❌</td>
   </tr>
@@ -332,8 +362,18 @@ PaddleX 结合模型信息与运行环境信息为每个模型提供默认的高
   </tr>
 
   <tr>
-    <td>图像异常检测</td>
-    <td>无监督异常检测</td>
+    <td rowspan="3">印章文本识别</td>
+    <td>版面区域分析</td>
+    <td>✅</td>
+  </tr>
+
+  <tr>
+    <td>印章文本检测</td>
+    <td>✅</td>
+  </tr>
+
+  <tr>
+    <td>文本识别</td>
     <td>✅</td>
   </tr>
 
@@ -346,6 +386,28 @@ PaddleX 结合模型信息与运行环境信息为每个模型提供默认的高
   <tr>
     <td>图像特征</td>
     <td>✅</td>
+  </tr>
+
+  <tr>
+    <td rowspan="2">行人属性识别</td>
+    <td>行人检测</td>
+    <td>❌</td>
+  </tr>
+
+  <tr>
+    <td>行人属性识别</td>
+    <td>❌</td>
+  </tr>
+
+  <tr>
+    <td rowspan="2">车辆属性识别</td>
+    <td>车辆检测</td>
+    <td>❌</td>
+  </tr>
+
+  <tr>
+    <td>车辆属性识别</td>
+    <td>❌</td>
   </tr>
 
   <tr>
