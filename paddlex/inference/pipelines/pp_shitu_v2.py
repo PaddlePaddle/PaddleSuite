@@ -146,7 +146,7 @@ class ShiTuV2Pipeline(BasePipeline):
     def _build_index(
         self,
         data_root,
-        index_dir,
+        index_dir=None,
         mode="new",
         metric_type="IP",
         index_type="HNSW32",
@@ -178,7 +178,7 @@ class ShiTuV2Pipeline(BasePipeline):
         return index_bytes, id_map
 
     def build_index(
-        self, data_root, index_dir, metric_type="IP", index_type="HNSW32", **kwargs
+        self, data_root, index_dir=None, metric_type="IP", index_type="HNSW32", **kwargs
     ):
         return self._build_index(
             data_root=data_root,
@@ -190,7 +190,7 @@ class ShiTuV2Pipeline(BasePipeline):
         )
 
     def remove_index(
-        self, data_root, index_dir, metric_type="IP", index_type="HNSW32", **kwargs
+        self, data_root, index_dir=None, metric_type="IP", index_type="HNSW32", **kwargs
     ):
         return self._build_index(
             data_root=data_root,
@@ -202,7 +202,7 @@ class ShiTuV2Pipeline(BasePipeline):
         )
 
     def append_index(
-        self, data_root, index_dir, metric_type="IP", index_type="HNSW32", **kwargs
+        self, data_root, index_dir=None, metric_type="IP", index_type="HNSW32", **kwargs
     ):
         return self._build_index(
             data_root=data_root,

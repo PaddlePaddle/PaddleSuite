@@ -144,7 +144,7 @@ class FaissBuilder:
         self,
         label_file,
         image_root,
-        index_dir,
+        index_dir=None,
     ):
         file_list, gallery_docs = get_file_list(label_file, image_root)
 
@@ -170,19 +170,27 @@ class FaissBuilder:
 
         # calculate id for new data
         index, ids = self._add_gallery(index, ids, features, gallery_docs)
-        self._save_gallery(index, ids, index_dir)
+        if index_dir:
+            self._save_gallery(index, ids, index_dir)
         return faiss.serialize_index(index), ids
 
     def remove(
         self,
         label_file,
         image_root,
-        index_dir,
+        index_dir=None,
+        index_bytes=None,
+        vector_path=None,
+        id_map=None,
     ):
         file_list, gallery_docs = get_file_list(label_file, image_root)
 
-        # load vector.index and id_map.pkl
-        index, ids = self._load_index(index_dir)
+        if index_bytes is not None:
+            index = faiss.deserialize_index(index_bytes)
+            ids = id_map
+        else:
+            # load vector.index and id_map.pkl
+            index, ids = self._load_index(index_dir)
 
         if self._index_type == "HNSW32":
             raise RuntimeError(
@@ -191,26 +199,35 @@ class FaissBuilder:
 
         # remove ids in id_map, remove index data in faiss index
         index, ids = self._rm_id_in_galllery(index, ids, gallery_docs)
-        self._save_gallery(index, ids, index_dir)
+        if index_dir:
+            self._save_gallery(index, ids, index_dir)
         return faiss.serialize_index(index), ids
 
     def append(
         self,
         label_file,
         image_root,
-        index_dir,
+        index_dir=None,
+        index_bytes=None,
+        vector_path=None,
+        id_map=None,
     ):
         file_list, gallery_docs = get_file_list(label_file, image_root)
         features = [res["feature"] for res in self._predict(file_list)]
         dtype = np.uint8 if self._metric_type in self.BINARY_METRIC_TYPE else np.float32
         features = np.array(features).astype(dtype)
 
-        # load vector.index and id_map.pkl
-        index, ids = self._load_index(index_dir)
+        if index_bytes is not None:
+            index = faiss.deserialize_index(index_bytes)
+            ids = id_map
+        else:
+            # load vector.index and id_map.pkl
+            index, ids = self._load_index(index_dir)
 
         # calculate id for new data
         index, ids = self._add_gallery(index, ids, features, gallery_docs)
-        self._save_gallery(index, ids, index_dir)
+        if index_dir:
+            self._save_gallery(index, ids, index_dir)
         return faiss.serialize_index(index), ids
 
     def _load_index(self, index_dir):
