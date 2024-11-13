@@ -176,12 +176,14 @@ class BasePaddlePredictor(BaseComponent):
 
         config.set_cpu_math_library_num_threads(self.option.cpu_threads)
 
-        if not (self.option.device == "gpu" and self.option.run_mode.startswith("trt")):
-            if hasattr(config, "enable_new_ir"):
-                config.enable_new_ir(self.option.enable_new_ir)
-            if hasattr(config, "enable_new_executor"):
-                config.enable_new_executor()
-            if self.option.device in ("cpu", "gpu"):
+        if self.option.device in ("cpu", "gpu"):
+            if not (
+                self.option.device == "gpu" and self.option.run_mode.startswith("trt")
+            ):
+                if hasattr(config, "enable_new_ir"):
+                    config.enable_new_ir(self.option.enable_new_ir)
+                if hasattr(config, "enable_new_executor"):
+                    config.enable_new_executor()
                 config.set_optimization_level(3)
 
         for del_p in self.option.delete_pass:
