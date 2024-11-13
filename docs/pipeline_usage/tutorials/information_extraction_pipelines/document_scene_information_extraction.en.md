@@ -1014,7 +1014,7 @@ Below are the API references and multi-language service invocation examples:
 <li><b><code>chat</code></b></li>
 </ul>
 <p>Interact with large language models to extract key information.</p>
-<p><code>POST /chatocr-vision</code></p>
+<p><code>POST /chatocr-chat</code></p>
 <ul>
 <li>Request body properties:</li>
 </ul>

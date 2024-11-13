@@ -983,7 +983,7 @@ chat_result.print()
 <li><b><code>chat</code></b></li>
 </ul>
 <p>与大语言模型交互，利用大语言模型提炼关键信息。</p>
-<p><code>POST /chatocr-vision</code></p>
+<p><code>POST /chatocr-chat</code></p>
 <ul>
 <li>请求体的属性如下：</li>
 </ul>
