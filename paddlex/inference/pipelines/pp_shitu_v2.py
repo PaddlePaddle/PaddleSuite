@@ -107,11 +107,17 @@ class ShiTuV2Pipeline(BasePipeline):
             yield self.get_final_result(det_res, rec_res)
 
     def get_rec_result(self, det_res, indexer):
-        full_img = self._img_reader.read(det_res["input_path"])
-        w, h = full_img.shape[:2]
-        det_res["boxes"].append(
-            {"cls_id": 0, "label": "full_img", "score": 0, "coordinate": [0, 0, h, w]}
-        )
+        if len(det_res["boxes"]) == 0:
+            full_img = self._img_reader.read(det_res["input_path"])
+            w, h = full_img.shape[:2]
+            det_res["boxes"].append(
+                {
+                    "cls_id": 0,
+                    "label": "full_img",
+                    "score": 0,
+                    "coordinate": [0, 0, h, w],
+                }
+            )
         subs_of_img = list(self._crop_by_boxes(det_res))
         img_list = [img["img"] for img in subs_of_img]
         all_rec_res = list(self.rec_model(img_list))

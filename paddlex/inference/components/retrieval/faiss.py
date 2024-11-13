@@ -270,7 +270,7 @@ class FaissBuilder:
             pickle.dump(ids, fd)
 
 
-def get_file_list(data_file, root_dir, delimiter="\t"):
+def get_file_list(data_file, root_dir, delimiter=" "):
     root_dir = Path(root_dir)
     files = []
     labels = []

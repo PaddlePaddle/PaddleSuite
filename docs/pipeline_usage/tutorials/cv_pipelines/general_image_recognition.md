@@ -107,14 +107,14 @@ PaddleX 所提供的预训练的模型产线均可以快速体验效果，你可
 
 #### 2.2.2 Python脚本方式集成
 
-* 在该产线的运行示例中需要预先构建特征向量库，您可以下载官方提供的饮料识别测试数据集[drink_dataset_v2.0](https://paddle-imagenet-models-name.bj.bcebos.com/dygraph/rec/data/drink_dataset_v2.0.tar) 构建特征向量库。若您希望用私有数据集，可以参考[2.3节 构建特征库的数据组织方式](#23-构建特征库的数据组织方式)。之后通过几行代码即可完成建立特征向量库和通用图像识别产线的快速推理。
+* 在该产线的运行示例中需要预先构建特征向量库，您可以下载官方提供的饮料识别测试数据集[drink_dataset_v2.0](https://paddle-model-ecology.bj.bcebos.com/paddlex/data/drink_dataset_v2.0.tar) 构建特征向量库。若您希望用私有数据集，可以参考[2.3节 构建特征库的数据组织方式](#23-构建特征库的数据组织方式)。之后通过几行代码即可完成建立特征向量库和通用图像识别产线的快速推理。
 
 ```python
 from paddlex import create_pipeline
 
 pipeline = create_pipeline(pipeline="PP-ShiTuV2")
 
-pipeline.build_index(data_root="drink_dataset_v2.0/gallery/", index_dir="index_dir")
+pipeline.build_index(data_root="drink_dataset_v2.0/", index_dir="index_dir")
 
 output = pipeline.predict("./drink_dataset_v2.0/test_images/", index_dir="index_dir")
 for res in output:
@@ -292,9 +292,9 @@ for res in output:
 from paddlex import create_pipeline
 
 pipeline = create_pipeline("PP-ShiTuV2")
-pipeline.build_index(data_root="drink_dataset_v2.0/gallery/", index_dir="index_dir", index_type="IVF")
-pipeline.append_index(data_root="drink_dataset_v2.0/gallery/", index_dir="index_dir", index_type="IVF")
-pipeline.remove_index(data_root="drink_dataset_v2.0/gallery/", index_dir="index_dir", index_type="IVF")
+pipeline.build_index(data_root="drink_dataset_v2.0/", index_dir="index_dir", index_type="IVF")
+pipeline.append_index(data_root="drink_dataset_v2.0/", index_dir="index_dir", index_type="IVF")
+pipeline.remove_index(data_root="drink_dataset_v2.0/", index_dir="index_dir", index_type="IVF")
 ```
 
 上述方法参数说明如下：
@@ -942,7 +942,7 @@ print_r($result[&quot;texts&quot;]);
 
 由于通用图像识别产线包含两个模块（主体检测模块和图像特征模块），模型产线的效果不及预期可能来自于其中任何一个模块。
 
-您可以对识别效果差的图片进行分析，如果在分析过程中发现有较多的主体目标未被检测出来，那么可能是主体检测模型存在不足，您需要参考[主体检测模块开发教程](../../../module_usage/tutorials/cv_modules/object_detection.md)中的[二次开发](../../../module_usage/tutorials/cv_modules/object_detection.md#四二次开发)章节，使用您的私有数据集对主体检测模型进行微调；如果在已检测到的主体出现匹配错误，这表明图像特征模型需要进一步改进，您需要参考[图像特征模块开发教程](../../../module_usage/tutorials/cv_modules/image_feature.md)中的[二次开发](../../../module_usage/tutorials/cv_modules/image_feature.md#四二次开发)章节,对图像特征模型进行微调。
+您可以对识别效果差的图片进行分析，如果在分析过程中发现有较多的主体目标未被检测出来，那么可能是主体检测模型存在不足，您需要参考[主体检测模块开发教程](../../../module_usage/tutorials/cv_modules/mainbody_detection.md)中的[二次开发](../../../module_usage/tutorials/cv_modules/mainbody_detection.md#四二次开发)章节，使用您的私有数据集对主体检测模型进行微调；如果在已检测到的主体出现匹配错误，这表明图像特征模型需要进一步改进，您需要参考[图像特征模块开发教程](../../../module_usage/tutorials/cv_modules/image_feature.md)中的[二次开发](../../../module_usage/tutorials/cv_modules/image_feature.md#四二次开发)章节,对图像特征模型进行微调。
 
 ### 4.2 模型应用
 
