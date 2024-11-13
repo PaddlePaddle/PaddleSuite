@@ -210,7 +210,7 @@ plugins:
             心跳监测时序数据分类应用教程: Heartbeat Monitoring Time Series Data Classification Application Tutorial
             用电量长期预测应用教程: Long-term Electricity Consumption Forecasting Application Tutorial
             FAQ: FAQ
-  - git-committers: # 显示贡献者
+            近期更新: Recently Update
       repository: PaddlePaddle/PaddleX #仓库名称
       branch: release/3.0-beta1 #仓库分支
   - git-revision-date-localized: #显示更新时间
@@ -412,3 +412,4 @@ nav:
        - 心跳监测时序数据分类应用教程: practical_tutorials/ts_classification.md
        - 用电量长期预测应用教程: practical_tutorials/ts_forecast.md
   - FAQ: FAQ.md
+  - 近期更新: CHANGLOG.md

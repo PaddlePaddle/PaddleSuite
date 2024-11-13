@@ -112,17 +112,20 @@ PaddleX 3.0 is a low-code development tool for AI models built on the PaddlePadd
 
 🔥🔥 <b>"PaddleX Document Information Personalized Extraction Upgrade"</b>, PP-ChatOCRv3 innovatively provides custom development functions for OCR models based on data fusion technology, offering stronger model fine-tuning capabilities. Millions of high-quality general OCR text recognition data are automatically integrated into vertical model training data at a specific ratio, solving the problem of weakened general text recognition capabilities caused by vertical model training in the industry. Suitable for practical scenarios in industries such as automated office, financial risk control, healthcare, education and publishing, and legal and government sectors. <b>October 24th (Thursday) 19:00</b> Join our live session for an in-depth analysis of the open-source version of PP-ChatOCRv3 and the outstanding advantages of PaddleX 3.0 Beta1 in terms of accuracy and speed. [Registration Link](https://www.wjx.top/vm/wpPu8HL.aspx?udsid=994465)
 
+>[❗ more courses](https://aistudio.baidu.com/education/group/info/32160)
+
 🔥🔥 <b>9.30, 2024</b>, PaddleX 3.0 Beta1 open source version is officially released, providing <b>more than 200 models</b> that can be called with a simple Python API; achieve model full-process development based on unified commands, and open source the basic capabilities of the <b>PP-ChatOCRv3</b> pipeline; support <b>more than 100 models for high-performance inference and service-oriented deployment</b> (iterating continuously), <b>more than 7 key visual models for edge-deployment</b>; <b>more than 70 models have been adapted for the full development process of Ascend 910B</b>, <b>more than 15 models have been adapted for the full development process of Kunlun chips and Cambricon</b>
 
 🔥 <b>6.27, 2024</b>, PaddleX 3.0 Beta open source version is officially released, supporting the use of various mainstream hardware for pipeline and model development in a low-code manner on the local side.
 
 🔥 <b>3.25, 2024</b>, PaddleX 3.0 cloud release, supporting the creation of pipelines in the AI Studio Galaxy Community in a zero-code manner.
 
+> [more](https://paddlepaddle.github.io/PaddleX/latest/en/CHANGLOG.html)
+
 ## 🔠 Explanation of Pipeline
 PaddleX is dedicated to achieving pipeline-level model training, inference, and deployment. A pipeline refers to a series of predefined development processes for specific AI tasks, which includes a combination of single models (single-function modules) capable of independently completing a certain type of task.
 
 ## 📊 What can PaddleX do？
-
 
 All pipelines of PaddleX support <b>online experience</b> on [AI Studio](https://aistudio.baidu.com/overview) and local <b>fast inference</b>. You can quickly experience the effects of each pre-trained pipeline. If you are satisfied with the effects of the pre-trained pipeline, you can directly perform [high-performance inference](https://paddlepaddle.github.io/PaddleX/latest/en/pipeline_deploy/high_performance_inference.html) / [serving deployment](https://paddlepaddle.github.io/PaddleX/latest/en/pipeline_deploy/service_deploy.html) / [edge deployment](https://paddlepaddle.github.io/PaddleX/latest/en/pipeline_deploy/edge_deploy.html) on the pipeline. If not satisfied, you can also <b>Custom Development</b> to improve the pipeline effect. For the complete pipeline development process, please refer to the [PaddleX pipeline Development Tool Local Use Tutorial](https://paddlepaddle.github.io/PaddleX/latest/en/pipeline_usage/pipeline_develop_guide.html).
 

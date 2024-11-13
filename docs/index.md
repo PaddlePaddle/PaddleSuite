@@ -110,17 +110,19 @@ PaddleX 3.0 是基于飞桨框架构建的低代码开发工具，它集成了�
 
 🔥🔥 <b>2024.9.30</b>，PaddleX 3.0 Beta1 开源版正式发布，提供 <b>200+ 模型</b> 通过极简的 Python API 一键调用；实现基于统一命令的模型全流程开发，并开源 <b>PP-ChatOCRv3</b> 特色模型产线基础能力；支持 <b>100+ 模型高性能推理和服务化部署</b>（持续迭代中），<b>4条模型产线8个重点视觉模型端侧部署</b>；<b>100+ 模型开发全流程适配昇腾 910B</b>，<b>39+ 模型开发全流程适配昆仑芯和寒武纪</b>。低成本完成一站式全流程开发，加速产业应用。新增文本图像智能分析利器，大小模型融合策略显著增强版面解析能力，实现高精度实时预测。<b>10月24日（周四）19：00<b>直播为您深度解析 PP-ChatOCRv3 开源版本以及 PaddleX 3.0 Beta1 在精度、速度方面的卓越优势。 [报名链接](https://www.wjx.top/vm/wpPu8HL.aspx?udsid=994465)
 
+>[❗ 更多宝藏课程](https://aistudio.baidu.com/education/group/info/32160)
+
 🔥 <b>2024.6.27</b>，PaddleX 3.0 Beta 开源版正式发布，支持以低代码的方式在本地端使用多种主流硬件进行产线和模型开发。
 
 🔥 <b>2024.3.25</b>，PaddleX 3.0 云端发布，支持在 AI Studio 星河社区 以零代码的方式【创建产线】使用。
 
+> [更多]()
 ## 🔠 模型产线说明
 
  <b>PaddleX 致力于实现产线级别的模型训练、推理与部署。模型产线是指一系列预定义好的、针对特定AI任务的开发流程，其中包含能够独立完成某类任务的单模型（单功能模块）组合。</b>
 
 
  ## 📊 能力支持
-
 
 PaddleX的各个产线均支持本地<b>快速推理</b>，部分模型支持在[AI Studio星河社区](https://aistudio.baidu.com/overview)上进行<b>在线体验</b>，您可以快速体验各个产线的预训练模型效果，如果您对产线的预训练模型效果满意，可以直接对产线进行[高性能推理](https://paddlepaddle.github.io/PaddleX/latest/pipeline_deploy/high_performance_inference.html)/[服务化部署](https://paddlepaddle.github.io/PaddleX/latest/pipeline_deploy/service_deploy.html)/[端侧部署](https://paddlepaddle.github.io/PaddleX/latest/pipeline_deploy/edge_deploy.html)，如果不满意，您也可以使用产线的<b>二次开发</b>能力，提升效果。完整的产线开发流程请参考[PaddleX产线使用概览](https://paddlepaddle.github.io/PaddleX/latest/pipeline_usage/pipeline_develop_guide.html)或各产线使用[教程](#-文档)。
 
