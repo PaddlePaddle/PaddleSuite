@@ -220,7 +220,7 @@ SVTRv2 是一种由复旦大学视觉与学习实验室（FVL）的OpenOCR团队
 <table>
 <thead>
 <tr>
-<th>模型名称</th>
+<th>模型</th><th>模型下载链接</th>
 <th>BLEU score</th>
 <th>normed edit distance</th>
 <th>ExpRate （%）</th>
@@ -231,7 +231,7 @@ SVTRv2 是一种由复旦大学视觉与学习实验室（FVL）的OpenOCR团队
 </thead>
 <tbody>
 <tr>
-<td>LaTeX_OCR_rec</td>
+<td>LaTeX_OCR_rec</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/LaTeX_OCR_rec_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/LaTeX_OCR_rec_pretrained.pdparams">训练模型</a></td>
 <td>0.8821</td>
 <td>0.0823</td>
 <td>40.01</td>

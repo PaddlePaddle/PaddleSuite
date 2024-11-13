@@ -119,7 +119,7 @@ comments: true
 <table>
 <thead>
 <tr>
-<th>模型名称</th>
+<th>模型</th><th>模型下载链接</th>
 <th>检测Hmean（%）</th>
 <th>GPU推理耗时（ms）</th>
 <th>CPU推理耗时（ms）</th>
@@ -128,14 +128,14 @@ comments: true
 </thead>
 <tbody>
 <tr>
-<td>PP-OCRv4_mobile_det</td>
+<td>PP-OCRv4_mobile_det</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-OCRv4_mobile_det_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-OCRv4_mobile_det_pretrained.pdparams">训练模型</a></td>
 <td>77.79</td>
 <td>10.6923</td>
 <td>120.177</td>
 <td>4.2 M</td>
 </tr>
 <tr>
-<td>PP-OCRv4_server_det</td>
+<td>PP-OCRv4_server_det</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-OCRv4_server_det_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-OCRv4_server_det_pretrained.pdparams">训练模型</a></td>
 <td>82.69</td>
 <td>83.3501</td>
 <td>2434.01</td>
@@ -148,7 +148,7 @@ comments: true
 <table>
 <thead>
 <tr>
-<th>模型名称</th>
+<th>模型</th><th>模型下载链接</th>
 <th>识别Avg Accuracy(%)</th>
 <th>GPU推理耗时（ms）</th>
 <th>CPU推理耗时（ms）</th>
@@ -157,14 +157,14 @@ comments: true
 </thead>
 <tbody>
 <tr>
-<td>PP-OCRv4_mobile_rec</td>
+<td>PP-OCRv4_mobile_rec</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-OCRv4_mobile_rec_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-OCRv4_mobile_rec_pretrained.pdparams">训练模型</a></td>
 <td>78.20</td>
 <td>7.95018</td>
 <td>46.7868</td>
 <td>10.6 M</td>
 </tr>
 <tr>
-<td>PP-OCRv4_server_rec</td>
+<td>PP-OCRv4_server_rec</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-OCRv4_server_rec_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-OCRv4_server_rec_pretrained.pdparams">训练模型</a></td>
 <td>79.20</td>
 <td>7.19439</td>
 <td>140.179</td>

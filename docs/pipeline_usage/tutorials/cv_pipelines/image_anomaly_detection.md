@@ -15,14 +15,14 @@ comments: true
 <table>
 <thead>
 <tr>
-<th>模型名称</th>
+<th>模型</th><th>模型下载链接</th>
 <th>Avg（%）</th>
 <th>模型存储大小（M)</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>STFPM</td>
+<td>STFPM</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/STFPM_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/STFPM_pretrained.pdparams">训练模型</a></td>
 <td>96.2</td>
 <td>21.5 M</td>
 </tr>

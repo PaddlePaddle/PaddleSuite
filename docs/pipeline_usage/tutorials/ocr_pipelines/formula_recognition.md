@@ -20,7 +20,7 @@ comments: true
 <table>
 <thead>
 <tr>
-<th>模型名称</th>
+<th>模型</th><th>模型下载链接</th>
 <th>mAP（%）</th>
 <th>GPU推理耗时（ms）</th>
 <th>CPU推理耗时（ms）</th>
@@ -29,7 +29,7 @@ comments: true
 </thead>
 <tbody>
 <tr>
-<td>RT-DETR-H_layout_17cls</td>
+<td>RT-DETR-H_layout_17cls</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/RT-DETR-H_layout_17cls_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/RT-DETR-H_layout_17cls_pretrained.pdparams">训练模型</a></td>
 <td>92.6</td>
 <td>115.126</td>
 <td>3827.25</td>
@@ -42,7 +42,7 @@ comments: true
 <table>
 <thead>
 <tr>
-<th>模型名称</th>
+<th>模型</th><th>模型下载链接</th>
 <th>BLEU score</th>
 <th>normed edit distance</th>
 <th>ExpRate （%）</th>
@@ -53,7 +53,7 @@ comments: true
 </thead>
 <tbody>
 <tr>
-<td>LaTeX_OCR_rec</td>
+<td>LaTeX_OCR_rec</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/LaTeX_OCR_rec_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/LaTeX_OCR_rec_pretrained.pdparams">训练模型</a></td>
 <td>0.8821</td>
 <td>0.0823</td>
 <td>40.01</td>

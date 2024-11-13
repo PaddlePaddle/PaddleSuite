@@ -19,7 +19,7 @@ comments: true
 <table>
 <thead>
 <tr>
-<th>模型名称</th>
+<th>模型</th><th>模型下载链接</th>
 <th>precison</th>
 <th>recall</th>
 <th>f1_score</th>
@@ -28,35 +28,35 @@ comments: true
 </thead>
 <tbody>
 <tr>
-<td>AutoEncoder_ad</td>
+<td>AutoEncoder_ad</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/AutoEncoder_ad_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/AutoEncoder_ad_pretrained.pdparams">训练模型</a></td>
 <td>99.36</td>
 <td>84.36</td>
 <td>91.25</td>
 <td>52K</td>
 </tr>
 <tr>
-<td>DLinear_ad</td>
+<td>DLinear_ad</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/DLinear_ad_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/DLinear_ad_pretrained.pdparams">训练模型</a></td>
 <td>98.98</td>
 <td>93.96</td>
 <td>96.41</td>
 <td>112K</td>
 </tr>
 <tr>
-<td>Nonstationary_ad</td>
+<td>Nonstationary_ad</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/Nonstationary_ad_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/Nonstationary_ad_pretrained.pdparams">训练模型</a></td>
 <td>98.55</td>
 <td>88.95</td>
 <td>93.51</td>
 <td>1.8M</td>
 </tr>
 <tr>
-<td>PatchTST_ad</td>
+<td>PatchTST_ad</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PatchTST_ad_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PatchTST_ad_pretrained.pdparams">训练模型</a></td>
 <td>98.78</td>
 <td>90.70</td>
 <td>94.57</td>
 <td>320K</td>
 </tr>
 <tr>
-<td>TimesNet_ad</td>
+<td>TimesNet_ad</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/TimesNet_ad_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/TimesNet_ad_pretrained.pdparams">训练模型</a></td>
 <td>98.37</td>
 <td>94.80</td>
 <td>96.56</td>

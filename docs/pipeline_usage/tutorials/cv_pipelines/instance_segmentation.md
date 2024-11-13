@@ -16,7 +16,7 @@ comments: true
 <table>
 <thead>
 <tr>
-<th>模型名称</th>
+<th>模型</th><th>模型下载链接</th>
 <th>Mask AP</th>
 <th>GPU推理耗时（ms）</th>
 <th>CPU推理耗时（ms）</th>
@@ -25,105 +25,105 @@ comments: true
 </thead>
 <tbody>
 <tr>
-<td>Mask-RT-DETR-H</td>
+<td>Mask-RT-DETR-H</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/Mask-RT-DETR-H_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/Mask-RT-DETR-H_pretrained.pdparams">训练模型</a></td>
 <td>50.6</td>
 <td>132.693</td>
 <td>4896.17</td>
 <td>449.9</td>
 </tr>
 <tr>
-<td>Mask-RT-DETR-L</td>
+<td>Mask-RT-DETR-L</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/Mask-RT-DETR-L_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/Mask-RT-DETR-L_pretrained.pdparams">训练模型</a></td>
 <td>45.7</td>
 <td>46.5059</td>
 <td>2575.92</td>
 <td>113.6</td>
 </tr>
 <tr>
-<td>Mask-RT-DETR-M</td>
+<td>Mask-RT-DETR-M</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/Mask-RT-DETR-M_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/Mask-RT-DETR-M_pretrained.pdparams">训练模型</a></td>
 <td>42.7</td>
 <td>36.8329</td>
 <td>-</td>
 <td>66.6 M</td>
 </tr>
 <tr>
-<td>Mask-RT-DETR-S</td>
+<td>Mask-RT-DETR-S</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/Mask-RT-DETR-S_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/Mask-RT-DETR-S_pretrained.pdparams">训练模型</a></td>
 <td>41.0</td>
 <td>33.5007</td>
 <td>-</td>
 <td>51.8 M</td>
 </tr>
 <tr>
-<td>Mask-RT-DETR-X</td>
+<td>Mask-RT-DETR-X</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/Mask-RT-DETR-X_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/Mask-RT-DETR-X_pretrained.pdparams">训练模型</a></td>
 <td>47.5</td>
 <td>75.755</td>
 <td>3358.04</td>
 <td>237.5 M</td>
 </tr>
 <tr>
-<td>Cascade-MaskRCNN-ResNet50-FPN</td>
+<td>Cascade-MaskRCNN-ResNet50-FPN</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/Cascade-MaskRCNN-ResNet50-FPN_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/Cascade-MaskRCNN-ResNet50-FPN_pretrained.pdparams">训练模型</a></td>
 <td>36.3</td>
 <td>-</td>
 <td>-</td>
 <td>254.8</td>
 </tr>
 <tr>
-<td>Cascade-MaskRCNN-ResNet50-vd-SSLDv2-FPN</td>
+<td>Cascade-MaskRCNN-ResNet50-vd-SSLDv2-FPN</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/Cascade-MaskRCNN-ResNet50-vd-SSLDv2-FPN_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/Cascade-MaskRCNN-ResNet50-vd-SSLDv2-FPN_pretrained.pdparams">训练模型</a></td>
 <td>39.1</td>
 <td>-</td>
 <td>-</td>
 <td>254.7</td>
 </tr>
 <tr>
-<td>MaskRCNN-ResNet50-FPN</td>
+<td>MaskRCNN-ResNet50-FPN</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/MaskRCNN-ResNet50-FPN_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/MaskRCNN-ResNet50-FPN_pretrained.pdparams">训练模型</a></td>
 <td>35.6</td>
 <td>-</td>
 <td>-</td>
 <td>157.5 M</td>
 </tr>
 <tr>
-<td>MaskRCNN-ResNet50-vd-FPN</td>
+<td>MaskRCNN-ResNet50-vd-FPN</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/MaskRCNN-ResNet50-vd-FPN_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/MaskRCNN-ResNet50-vd-FPN_pretrained.pdparams">训练模型</a></td>
 <td>36.4</td>
 <td>-</td>
 <td>-</td>
 <td>157.5 M</td>
 </tr>
 <tr>
-<td>MaskRCNN-ResNet50</td>
+<td>MaskRCNN-ResNet50</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/MaskRCNN-ResNet50_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/MaskRCNN-ResNet50_pretrained.pdparams">训练模型</a></td>
 <td>32.8</td>
 <td>-</td>
 <td>-</td>
 <td>127.8 M</td>
 </tr>
 <tr>
-<td>MaskRCNN-ResNet101-FPN</td>
+<td>MaskRCNN-ResNet101-FPN</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/MaskRCNN-ResNet101-FPN_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/MaskRCNN-ResNet101-FPN_pretrained.pdparams">训练模型</a></td>
 <td>36.6</td>
 <td>-</td>
 <td>-</td>
 <td>225.4 M</td>
 </tr>
 <tr>
-<td>MaskRCNN-ResNet101-vd-FPN</td>
+<td>MaskRCNN-ResNet101-vd-FPN</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/MaskRCNN-ResNet101-vd-FPN_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/MaskRCNN-ResNet101-vd-FPN_pretrained.pdparams">训练模型</a></td>
 <td>38.1</td>
 <td>-</td>
 <td>-</td>
 <td>225.1 M</td>
 </tr>
 <tr>
-<td>MaskRCNN-ResNeXt101-vd-FPN</td>
+<td>MaskRCNN-ResNeXt101-vd-FPN</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/MaskRCNN-ResNeXt101-vd-FPN_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/MaskRCNN-ResNeXt101-vd-FPN_pretrained.pdparams">训练模型</a></td>
 <td>39.5</td>
 <td>-</td>
 <td>-</td>
 <td>370.0 M</td>
 </tr>
 <tr>
-<td>PP-YOLOE_seg-S</td>
+<td>PP-YOLOE_seg-S</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-YOLOE_seg-S_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-YOLOE_seg-S_pretrained.pdparams">训练模型</a></td>
 <td>32.5</td>
 <td>-</td>
 <td>-</td>
 <td>31.5 M</td>
 </tr>
 <tr>
-<td>SOLOv2</td>
+<td>SOLOv2</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/SOLOv2_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/SOLOv2_pretrained.pdparams">训练模型</a></td>
 <td>35.5</td>
 <td>-</td>
 <td>-</td>
