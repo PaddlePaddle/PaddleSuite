@@ -34,7 +34,7 @@ class ShiTuV2Pipeline(BasePipeline):
         rec_model,
         det_batch_size=1,
         rec_batch_size=1,
-        index_dir=None,
+        index=None,
         metric_type="IP",
         score_thres=None,
         hamming_radius=None,
@@ -51,32 +51,16 @@ class ShiTuV2Pipeline(BasePipeline):
             score_thres,
             hamming_radius,
         )
-        self._indexer = self._build_indexer(index_dir=index_dir) if index_dir else None
+        self._indexer = self._build_indexer(index=index) if index else None
 
-    def _build_indexer(self, index_bytes=None, id_map=None, index_dir=None):
-        if index_bytes is not None and id_map is not None:
-            return FaissIndexer(
-                index_bytes=index_bytes,
-                id_map=id_map,
-                metric_type=self._metric_type,
-                return_k=self._return_k,
-                score_thres=self._score_thres,
-                hamming_radius=self._hamming_radius,
-            )
-        else:
-            assert index_dir
-            vector_path = (Path(index_dir) / "vector.index").as_posix()
-            with open(Path(index_dir) / "id_map.pkl", "rb") as fd:
-                id_map = pickle.load(fd)
-
-            return FaissIndexer(
-                vector_path=vector_path,
-                id_map=id_map,
-                metric_type=self._metric_type,
-                return_k=self._return_k,
-                score_thres=self._score_thres,
-                hamming_radius=self._hamming_radius,
-            )
+    def _build_indexer(self, index):
+        return FaissIndexer(
+            index=index,
+            metric_type=self._metric_type,
+            return_k=self._return_k,
+            score_thres=self._score_thres,
+            hamming_radius=self._hamming_radius,
+        )
 
     def _build_predictor(self, det_model, rec_model):
         self.det_model = self._create(model=det_model)
@@ -93,13 +77,8 @@ class ShiTuV2Pipeline(BasePipeline):
             self.det_model.set_predictor(device=device)
             self.rec_model.set_predictor(device=device)
 
-    def predict(self, input, index_bytes=None, id_map=None, index_dir=None, **kwargs):
-        if index_bytes is not None or index_dir is not None:
-            indexer = self._build_indexer(
-                index_bytes=index_bytes, id_map=id_map, index_dir=index_dir
-            )
-        else:
-            indexer = self._indexer
+    def predict(self, input, index=None, **kwargs):
+        indexer = self._build_indexer(index) if index is not None else self._indexer
         assert indexer
         self.set_predictor(**kwargs)
         for det_res in self.det_model(input):
@@ -143,72 +122,45 @@ class ShiTuV2Pipeline(BasePipeline):
             )
         return ShiTuResult(single_img_res)
 
-    def _build_index(
+    def build_index(
         self,
-        data_root,
-        index_dir=None,
-        mode="new",
+        gallery_imgs,
+        gallery_label,
         metric_type="IP",
         index_type="HNSW32",
-        **kwargs,
+        **kwargs
     ):
-        self.set_predictor(**kwargs)
-        self._metric_type = metric_type if metric_type else self._metric_type
-        builder = FaissBuilder(
+        return FaissBuilder.build(
+            gallery_imgs,
+            gallery_label,
             self.rec_model.predict,
-            mode=mode,
-            metric_type=self._metric_type,
-            index_type=index_type,
-        )
-        if mode == "new":
-            index_bytes, id_map = builder.build(
-                Path(data_root) / "gallery.txt", data_root, index_dir
-            )
-        elif mode == "remove":
-            index_bytes, id_map = builder.remove(
-                Path(data_root) / "gallery.txt", data_root, index_dir
-            )
-        elif mode == "append":
-            index_bytes, id_map = builder.append(
-                Path(data_root) / "gallery.txt", data_root, index_dir
-            )
-        else:
-            raise Exception("`mode` only support `new`, `remove` and `append`.")
-
-        return index_bytes, id_map
-
-    def build_index(
-        self, data_root, index_dir=None, metric_type="IP", index_type="HNSW32", **kwargs
-    ):
-        return self._build_index(
-            data_root=data_root,
-            index_dir=index_dir,
-            mode="new",
             metric_type=metric_type,
             index_type=index_type,
-            **kwargs,
+            **kwargs
         )
 
     def remove_index(
-        self, data_root, index_dir=None, metric_type="IP", index_type="HNSW32", **kwargs
+        self, gallery_imgs, gallery_label, index, index_type="HNSW32", **kwargs
     ):
-        return self._build_index(
-            data_root=data_root,
-            index_dir=index_dir,
-            mode="remove",
-            metric_type=metric_type,
-            index_type=index_type,
-            **kwargs,
+        return FaissBuilder.remove(
+            gallery_imgs, gallery_label, index, index_type=index_type, **kwargs
         )
 
     def append_index(
-        self, data_root, index_dir=None, metric_type="IP", index_type="HNSW32", **kwargs
+        self,
+        gallery_imgs,
+        gallery_label,
+        index,
+        id_map=None,
+        metric_type="IP",
+        index_type="HNSW32",
+        **kwargs
     ):
-        return self._build_index(
-            data_root=data_root,
-            index_dir=index_dir,
-            mode="append",
+        return FaissBuilder.append(
+            gallery_imgs,
+            gallery_label,
+            self.rec_model.predict,
+            index,
             metric_type=metric_type,
-            index_type=index_type,
-            **kwargs,
+            **kwargs
         )

@@ -107,16 +107,17 @@ PaddleX 所提供的预训练的模型产线均可以快速体验效果，你可
 
 #### 2.2.2 Python脚本方式集成
 
-* 在该产线的运行示例中需要预先构建特征向量库，您可以下载官方提供的饮料识别测试数据集[drink_dataset_v2.0](https://paddle-model-ecology.bj.bcebos.com/paddlex/data/drink_dataset_v2.0.tar) 构建特征向量库。若您希望用私有数据集，可以参考[2.3节 构建特征库的数据组织方式](#23-构建特征库的数据组织方式)。之后通过几行代码即可完成建立特征向量库和通用图像识别产线的快速推理。
+* 在该产线的运行示例中需要预先构建索引库，您可以下载官方提供的饮料识别测试数据集[drink_dataset_v2.0](https://paddle-model-ecology.bj.bcebos.com/paddlex/data/drink_dataset_v2.0.tar) 构建索引库。若您希望用私有数据集，可以参考[2.3节 构建索引库的数据组织方式](#23-构建索引库的数据组织方式)。之后通过几行代码即可完成建立索引库和通用图像识别产线的快速推理。
 
 ```python
 from paddlex import create_pipeline
 
 pipeline = create_pipeline(pipeline="PP-ShiTuV2")
 
-pipeline.build_index(data_root="drink_dataset_v2.0/", index_dir="index_dir")
+index_data = pipeline.build_index(data_root="drink_dataset_v2.0/", label_path="drink_dataset_v2.0/gallery.txt")
+index_data.save("drink.index")
 
-output = pipeline.predict("./drink_dataset_v2.0/test_images/", index_dir="index_dir")
+output = pipeline.predict("./drink_dataset_v2.0/test_images/", index=index_data)
 for res in output:
     res.print()
     res.save_to_img("./output/")
@@ -143,8 +144,8 @@ for res in output:
 <td>无</td>
 </tr>
 <tr>
-<td><code>index_dir</code></td>
-<td>产线推理预测所用的检索库文件所在的目录，如不传入该参数，则需要在<code>predict()</code>中指定<code>index_dir</code>。</td>
+<td><code>index</code></td>
+<td>产线推理预测所用的索引库文件路径，如不传入该参数，则需要在<code>predict()</code>中指定<code>index</code>。</td>
 <td><code>str</code></td>
 <td>None</td>
 </tr>
@@ -162,7 +163,7 @@ for res in output:
 </tr>
 </tbody>
 </table>
-（2）调用通用图像识别产线对象的 `build_index` 方法，构建特征向量库。具体参数为说明如下：
+（2）调用通用图像识别产线对象的 `build_index` 方法，构建索引库。具体参数为说明如下：
 
 <table>
 <thead>
@@ -176,18 +177,40 @@ for res in output:
 <tbody>
 <tr>
 <td><code>data_root</code></td>
-<td>数据集的根目录，数据组织方式参考<a href="#2.3-构建特征库的数据组织方式">2.3节 构建特征库的数据组织方式</a></td>
+<td>数据集的根目录，数据组织方式参考<a href="#2.3-构建索引库的数据组织方式">2.3节 构建索引库的数据组织方式</a></td>
 <td><code>str</code></td>
 <td>无</td>
 </tr>
 <tr>
-<td><code>index_dir</code></td>
-<td>特征库的保存路径。成功调用<code>build_index</code>方法后会在改路径下生成两个文件： <code>"id_map.pkl"</code> 保存了图像ID与图像特征标签之间的映射关系；<code>“vector.index”</code>存储了每张图像的特征向量</td>
+<td><code>label_path</code></td>
+<td>数据标注文件路径，数据组织方式参考<a href="#2.3-构建索引库的数据组织方式">2.3节 构建索引库的数据组织方式</a></td>
 <td><code>str</code></td>
 <td>无</td>
 </tr>
 </tbody>
 </table>
+
+索引库对象 `index` 支持 `save` 方法，用于将索引库保存到磁盘：
+
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>参数说明</th>
+<th>参数类型</th>
+<th>默认值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>save_path</code></td>
+<td>索引库的保存路径，如<code>drink.index</code>。</td>
+<td><code>str</code></td>
+<td>无</td>
+</tr>
+</tbody>
+</table>
+
 （3）调用通用图像识别产线对象的 `predict` 方法进行推理预测：`predict` 方法参数为 `input`，用于输入待预测数据，支持多种输入方式，具体示例如下：
 
 <table>
@@ -224,7 +247,7 @@ for res in output:
 </tr>
 </tbody>
 </table>
-另外，`predict`方法支持参数`index_dir`用于设置检索库：
+另外，`predict`方法支持参数`index`用于设置索引库：
 <table>
 <thead>
 <tr>
@@ -234,8 +257,8 @@ for res in output:
 </thead>
 <tbody>
 <tr>
-<td><code>index_dir</code></td>
-<td>产线推理预测所用的检索库文件所在的目录，如不传入该参数，则默认使用在<code>create_pipeline()</code>中通过参数<code>index_dir</code>指定的检索库。</td>
+<td><code>index</code></td>
+<td>产线推理预测所用的索引库文件路径或是索引库对象，如不传入该参数，则默认使用在<code>create_pipeline()</code>中通过参数<code>index</code>指定的索引库。</td>
 </tr>
 </tbody>
 </table>
@@ -275,7 +298,7 @@ for res in output:
 
 ```python
 from paddlex import create_pipeline
-pipeline = create_pipeline(pipeline="./my_path/PP-ShiTuV2.yaml", index_dir="index_dir")
+pipeline = create_pipeline(pipeline="./my_path/PP-ShiTuV2.yaml", index="drink.index")
 
 output = pipeline.predict("./drink_dataset_v2.0/test_images/")
 for res in output:
@@ -284,17 +307,18 @@ for res in output:
 ```
 
 
-#### 2.2.3 特征库的添加和删除操作
+#### 2.2.3 索引库的添加和删除操作
 
-若您希望将更多的图像添加到特征库中，则可以调用 `append_index` 方法；删除图像特征，则可以调用 `remove_index` 方法。
+若您希望将更多的图像添加到索引库中，则可以调用 `append_index` 方法；删除图像特征，则可以调用 `remove_index` 方法。
 
 ```python
 from paddlex import create_pipeline
 
 pipeline = create_pipeline("PP-ShiTuV2")
-pipeline.build_index(data_root="drink_dataset_v2.0/", index_dir="index_dir", index_type="IVF")
-pipeline.append_index(data_root="drink_dataset_v2.0/", index_dir="index_dir", index_type="IVF")
-pipeline.remove_index(data_root="drink_dataset_v2.0/", index_dir="index_dir", index_type="IVF")
+index_data = pipeline.build_index(data_root="drink_dataset_v2.0/", label_path="drink_dataset_v2.0/gallery.txt", index="drink.index", index_type="IVF")
+index_data = pipeline.append_index(data_root="drink_dataset_v2.0/", label_path="drink_dataset_v2.0/gallery.txt", index="drink.index", index_type="IVF")
+index_data = pipeline.remove_index(data_root="drink_dataset_v2.0/", label_path="drink_dataset_v2.0/gallery.txt", index="drink.index", index_type="IVF")
+index_data.save("drink.index")
 ```
 
 上述方法参数说明如下：
@@ -310,13 +334,19 @@ pipeline.remove_index(data_root="drink_dataset_v2.0/", index_dir="index_dir", in
 <tbody>
 <tr>
 <td><code>data_root</code></td>
-<td>要添加的数据集的根目录。数据组织方式与构建特征库时相同，参考<a href="#2.3-构建特征库的数据组织方式">2.3节 构建特征库的数据组织方式</a></td>
+<td>要添加的数据集的根目录。数据组织方式与构建索引库时相同，参考<a href="#2.3-构建索引库的数据组织方式">2.3节 构建索引库的数据组织方式</a></td>
 <td><code>str</code></td>
 <td>无</td>
 </tr>
 <tr>
-<td><code>index_dir</code></td>
-<td>特征库的存储目录，在 <code>append_index</code> 和 <code>remove_index</code> 中，同时也是被修改（或删除）的特征库的路径，</td>
+<td><code>label_path</code></td>
+<td>要添加的数据集标注文件的路径。数据组织方式与构建索引库时相同，参考<a href="#2.3-构建索引库的数据组织方式">2.3节 构建索引库的数据组织方式</a></td>
+<td><code>str</code></td>
+<td>无</td>
+</tr>
+<tr>
+<td><code>index</code></td>
+<td>索引库文件的路径，或是索引库对象，仅在 <code>append_index</code> 和 <code>remove_index</code> 中有效，表示待修改的索引库。</td>
 <td><code>str</code></td>
 <td>无</td>
 </tr>
@@ -334,15 +364,15 @@ pipeline.remove_index(data_root="drink_dataset_v2.0/", index_dir="index_dir", in
 </tr>
 </tbody>
 </table>
-### 2.3 构建特征库的数据组织方式
+### 2.3 构建索引库的数据组织方式
 
-PaddleX 的通用图像识别产线示例需要使用预先构建好的特征库进行特征检索。如果您希望用私有数据构建特征向量库，则需要按照如下方式组织数据：
+PaddleX 的通用图像识别产线示例需要使用预先构建好的索引库进行特征检索。如果您希望用私有数据构建索引库，则需要按照如下方式组织数据：
 
 ```bash
 data_root             # 数据集根目录，目录名称可以改变
 ├── images            # 图像的保存目录，目录名称可以改变
 │   │   ...
-└── gallery.txt       # 特征库数据集标注文件，文件名称不可改变。每行给出待检索图像路径和图像标签，使用空格分隔，内容举例： “0/0.jpg 脉动”
+└── gallery.txt       # 索引库数据集标注文件，文件名称不可改变。每行给出待检索图像路径和图像标签，使用空格分隔，内容举例： “0/0.jpg 脉动”
 ```
 
 ## 3. 开发集成/部署

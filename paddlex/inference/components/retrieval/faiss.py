@@ -22,6 +22,47 @@ from ....utils import logging
 from ..base import BaseComponent
 
 
+class IndexData:
+    def __init__(self, index, id_map):
+        self._index = index
+        self._id_map = id_map
+
+    @property
+    def index(self):
+        return self._index
+
+    @property
+    def index_bytes(self):
+        return faiss.serialize_index(self._index)
+
+    @property
+    def id_map(self):
+        return self._id_map
+
+    def save(self, save_path):
+        index_data = {
+            "index_bytes": self.index_bytes,
+            "id_map": self.id_map,
+        }
+        with open(save_path, "wb") as fd:
+            pickle.dump(index_data, fd)
+
+    @classmethod
+    def load(self, index):
+        if isinstance(index, str):
+            with open(index, "rb") as fd:
+                index_data = pickle.load(fd)
+            index_ = faiss.deserialize_index(index_data["index_bytes"])
+            id_map = index_data["id_map"]
+            assert index_.ntotal == len(
+                id_map
+            ), "data number in index is not equal in in id_map"
+            return index_, id_map
+        else:
+            assert isinstance(index, IndexData)
+            return index.index, index.id_map
+
+
 class FaissIndexer(BaseComponent):
 
     INPUT_KEYS = "feature"
@@ -33,9 +74,7 @@ class FaissIndexer(BaseComponent):
 
     def __init__(
         self,
-        index_bytes=None,
-        vector_path=None,
-        id_map=None,
+        index,
         metric_type="IP",
         return_k=1,
         score_thres=None,
@@ -44,19 +83,11 @@ class FaissIndexer(BaseComponent):
         super().__init__()
 
         if metric_type == "hamming":
-            if index_bytes is not None:
-                self._indexer = faiss.deserialize_index(index_bytes)
-            else:
-                self._indexer = faiss.read_index_binary(vector_path)
             self.hamming_radius = hamming_radius
         else:
-            if index_bytes is not None:
-                self._indexer = faiss.deserialize_index(index_bytes)
-            else:
-                self._indexer = faiss.read_index(vector_path)
             self.score_thres = score_thres
 
-        self.id_map = id_map
+        self._indexer, self.id_map = IndexData.load(index)
         self.metric_type = metric_type
         self.return_k = return_k
 
@@ -82,192 +113,155 @@ class FaissIndexer(BaseComponent):
 
 class FaissBuilder:
 
-    SUPPORT_MODE = ("new", "remove", "append")
     SUPPORT_METRIC_TYPE = ("hamming", "IP", "L2")
     SUPPORT_INDEX_TYPE = ("Flat", "IVF", "HNSW32")
     BINARY_METRIC_TYPE = ("hamming",)
     BINARY_SUPPORT_INDEX_TYPE = ("Flat", "IVF", "BinaryHash")
 
-    def __init__(self, predict, mode="new", index_type="HNSW32", metric_type="IP"):
-        super().__init__()
-        assert (
-            mode in self.SUPPORT_MODE
-        ), f"Supported modes only: {self.SUPPORT_MODE}. But received {mode}!"
-        assert (
-            metric_type in self.SUPPORT_METRIC_TYPE
-        ), f"Supported metric types only: {self.SUPPORT_METRIC_TYPE}!"
-        assert (
-            index_type in self.SUPPORT_INDEX_TYPE
-        ), f"Supported index types only: {self.SUPPORT_INDEX_TYPE}!"
-
-        self._predict = predict
-        self._mode = mode
-        self._metric_type = metric_type
-        self._index_type = index_type
-
-    def _get_index_type(self, num=None):
+    @classmethod
+    def _get_index_type(cls, metric_type, index_type, num=None):
         # if IVF method, cal ivf number automaticlly
-        if self._index_type == "IVF":
-            index_type = self._index_type + str(min(int(num // 8), 65536))
-            if self._metric_type in self.BINARY_METRIC_TYPE:
+        if index_type == "IVF":
+            index_type = index_type + str(min(int(num // 8), 65536))
+            if metric_type in cls.BINARY_METRIC_TYPE:
                 index_type += ",BFlat"
             else:
                 index_type += ",Flat"
 
         # for binary index, add B at head of index_type
-        if self._metric_type in self.BINARY_METRIC_TYPE:
+        if metric_type in cls.BINARY_METRIC_TYPE:
             assert (
-                self._index_type in self.BINARY_SUPPORT_INDEX_TYPE
-            ), f"The metric type({self._metric_type}) only support {self.BINARY_SUPPORT_INDEX_TYPE} index types!"
+                index_type in cls.BINARY_SUPPORT_INDEX_TYPE
+            ), f"The metric type({metric_type}) only support {cls.BINARY_SUPPORT_INDEX_TYPE} index types!"
             index_type = "B" + index_type
 
-        if self._index_type == "HNSW32":
+        if index_type == "HNSW32":
             logging.warning("The HNSW32 method dose not support 'remove' operation")
             index_type = "HNSW32"
 
-        if self._index_type == "Flat":
+        if index_type == "Flat":
             index_type = "Flat"
 
         return index_type
 
-    def _get_metric_type(self):
-        if self._metric_type == "hamming":
+    @classmethod
+    def _get_metric_type(cls, metric_type):
+        if metric_type == "hamming":
             return faiss.METRIC_Hamming
-        elif self._metric_type == "jaccard":
+        elif metric_type == "jaccard":
             return faiss.METRIC_Jaccard
-        elif self._metric_type == "IP":
+        elif metric_type == "IP":
             return faiss.METRIC_INNER_PRODUCT
-        elif self._metric_type == "L2":
+        elif metric_type == "L2":
             return faiss.METRIC_L2
 
+    @classmethod
     def build(
-        self,
-        label_file,
-        image_root,
-        index_dir=None,
+        cls,
+        gallery_imgs,
+        gallery_label,
+        predict_func,
+        metric_type="IP",
+        index_type="HNSW32",
     ):
-        file_list, gallery_docs = get_file_list(label_file, image_root)
+        assert (
+            metric_type in cls.SUPPORT_METRIC_TYPE
+        ), f"Supported metric types only: {cls.SUPPORT_METRIC_TYPE}!"
 
-        features = [res["feature"] for res in self._predict(file_list)]
-        dtype = np.uint8 if self._metric_type in self.BINARY_METRIC_TYPE else np.float32
+        gallery_list, gallery_docs = cls.get_gallery(gallery_imgs, gallery_label)
+
+        features = [res["feature"] for res in predict_func(gallery_list)]
+        dtype = np.uint8 if metric_type in cls.BINARY_METRIC_TYPE else np.float32
         features = np.array(features).astype(dtype)
         vector_num, vector_dim = features.shape
 
-        if self._metric_type in self.BINARY_METRIC_TYPE:
+        if metric_type in cls.BINARY_METRIC_TYPE:
             index = faiss.index_binary_factory(
                 vector_dim,
-                self._get_index_type(vector_num),
-                self._get_metric_type(),
+                cls._get_index_type(metric_type, index_type, vector_num),
+                cls._get_metric_type(metric_type),
             )
         else:
             index = faiss.index_factory(
                 vector_dim,
-                self._get_index_type(vector_num),
-                self._get_metric_type(),
+                cls._get_index_type(metric_type, index_type, vector_num),
+                cls._get_metric_type(metric_type),
             )
             index = faiss.IndexIDMap2(index)
         ids = {}
 
         # calculate id for new data
-        index, ids = self._add_gallery(index, ids, features, gallery_docs)
-        if index_dir:
-            self._save_gallery(index, ids, index_dir)
-        return faiss.serialize_index(index), ids
+        index, ids = cls._add_gallery(
+            metric_type, index, ids, features, gallery_docs, mode="new"
+        )
+        return IndexData(index, ids)
 
+    @classmethod
     def remove(
-        self,
-        label_file,
-        image_root,
-        index_dir=None,
-        index_bytes=None,
-        vector_path=None,
-        id_map=None,
+        cls,
+        gallery_imgs,
+        gallery_label,
+        index,
+        index_type="HNSW32",
     ):
-        file_list, gallery_docs = get_file_list(label_file, image_root)
+        assert (
+            index_type in cls.SUPPORT_INDEX_TYPE
+        ), f"Supported index types only: {cls.SUPPORT_INDEX_TYPE}!"
 
-        if index_bytes is not None:
-            index = faiss.deserialize_index(index_bytes)
-            ids = id_map
-        else:
-            # load vector.index and id_map.pkl
-            index, ids = self._load_index(index_dir)
+        gallery_list, gallery_docs = cls.get_gallery(gallery_imgs, gallery_label)
+        index, ids = IndexData.load(index)
 
-        if self._index_type == "HNSW32":
+        if index_type == "HNSW32":
             raise RuntimeError(
                 "The index_type: HNSW32 dose not support 'remove' operation"
             )
 
         # remove ids in id_map, remove index data in faiss index
-        index, ids = self._rm_id_in_galllery(index, ids, gallery_docs)
-        if index_dir:
-            self._save_gallery(index, ids, index_dir)
-        return faiss.serialize_index(index), ids
+        index, ids = cls._rm_id_in_gallery(index, ids, gallery_docs)
+        return IndexData(index, ids)
 
-    def append(
-        self,
-        label_file,
-        image_root,
-        index_dir=None,
-        index_bytes=None,
-        vector_path=None,
-        id_map=None,
-    ):
-        file_list, gallery_docs = get_file_list(label_file, image_root)
-        features = [res["feature"] for res in self._predict(file_list)]
-        dtype = np.uint8 if self._metric_type in self.BINARY_METRIC_TYPE else np.float32
+    @classmethod
+    def append(cls, gallery_imgs, gallery_label, predict_func, index, metric_type="IP"):
+        assert (
+            metric_type in cls.SUPPORT_METRIC_TYPE
+        ), f"Supported metric types only: {cls.SUPPORT_METRIC_TYPE}!"
+
+        gallery_list, gallery_docs = cls.get_gallery(gallery_imgs, gallery_label)
+        features = [res["feature"] for res in predict_func(gallery_list)]
+        dtype = np.uint8 if metric_type in cls.BINARY_METRIC_TYPE else np.float32
         features = np.array(features).astype(dtype)
 
-        if index_bytes is not None:
-            index = faiss.deserialize_index(index_bytes)
-            ids = id_map
-        else:
-            # load vector.index and id_map.pkl
-            index, ids = self._load_index(index_dir)
+        index, ids = IndexData.load(index)
 
         # calculate id for new data
-        index, ids = self._add_gallery(index, ids, features, gallery_docs)
-        if index_dir:
-            self._save_gallery(index, ids, index_dir)
-        return faiss.serialize_index(index), ids
-
-    def _load_index(self, index_dir):
-        assert os.path.join(
-            index_dir, "vector.index"
-        ), "The vector.index dose not exist in {} when 'index_operation' is not None".format(
-            index_dir
+        index, ids = cls._add_gallery(
+            metric_type, index, ids, features, gallery_docs, mode="append"
         )
-        assert os.path.join(
-            index_dir, "id_map.pkl"
-        ), "The id_map.pkl dose not exist in {} when 'index_operation' is not None".format(
-            index_dir
-        )
-        index = faiss.read_index(os.path.join(index_dir, "vector.index"))
-        with open(os.path.join(index_dir, "id_map.pkl"), "rb") as fd:
-            ids = pickle.load(fd)
-        assert index.ntotal == len(
-            ids.keys()
-        ), "data number in index is not equal in in id_map"
-        return index, ids
+        return IndexData(index, ids)
 
-    def _add_gallery(self, index, ids, gallery_features, gallery_docs):
+    @classmethod
+    def _add_gallery(
+        cls, metric_type, index, ids, gallery_features, gallery_docs, mode
+    ):
         start_id = max(ids.keys()) + 1 if ids else 0
         ids_now = (np.arange(0, len(gallery_docs)) + start_id).astype(np.int64)
 
         # only train when new index file
-        if self._mode == "new":
-            if self._metric_type in self.BINARY_METRIC_TYPE:
+        if mode == "new":
+            if metric_type in cls.BINARY_METRIC_TYPE:
                 index.add(gallery_features)
             else:
                 index.train(gallery_features)
 
-        if not self._metric_type in self.BINARY_METRIC_TYPE:
+        if not metric_type in cls.BINARY_METRIC_TYPE:
             index.add_with_ids(gallery_features, ids_now)
 
         for i, d in zip(list(ids_now), gallery_docs):
             ids[i] = d
         return index, ids
 
-    def _rm_id_in_galllery(self, index, ids, gallery_docs):
+    @classmethod
+    def _rm_id_in_gallery(cls, index, ids, gallery_docs):
         remove_ids = list(filter(lambda k: ids.get(k) in gallery_docs, ids.keys()))
         remove_ids = np.asarray(remove_ids)
         index.remove_ids(remove_ids)
@@ -276,28 +270,23 @@ class FaissBuilder:
 
         return index, ids
 
-    def _save_gallery(self, index, ids, index_dir):
-        Path(index_dir).mkdir(parents=True, exist_ok=True)
-        if self._metric_type in self.BINARY_METRIC_TYPE:
-            faiss.write_index_binary(index, os.path.join(index_dir, "vector.index"))
+    @classmethod
+    def get_gallery(cls, gallery_imgs, gallery_label, delimiter=" "):
+        if isinstance(gallery_label, str):
+            assert isinstance(gallery_imgs, str)
+            gallery_imgs = Path(gallery_imgs)
+            files = []
+            labels = []
+            lines = []
+            with open(gallery_label, "r", encoding="utf-8") as f:
+                lines = f.readlines()
+            for line in lines:
+                path, label = line.strip().split(delimiter)
+                file_path = gallery_imgs / path
+                files.append(file_path.as_posix())
+                labels.append(label)
+            return files, labels
         else:
-            faiss.write_index(index, os.path.join(index_dir, "vector.index"))
-
-        with open(os.path.join(index_dir, "id_map.pkl"), "wb") as fd:
-            pickle.dump(ids, fd)
-
-
-def get_file_list(data_file, root_dir, delimiter=" "):
-    root_dir = Path(root_dir)
-    files = []
-    labels = []
-    lines = []
-    with open(data_file, "r", encoding="utf-8") as f:
-        lines = f.readlines()
-    for line in lines:
-        path, label = line.strip().split(delimiter)
-        file_path = root_dir / path
-        files.append(file_path.as_posix())
-        labels.append(label)
-
-    return files, labels
+            assert isinstance(gallery_imgs, list)
+            assert isinstance(gallery_label, list)
+            return gallery_imgs, gallery_label
