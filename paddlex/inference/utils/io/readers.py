@@ -20,8 +20,16 @@ import fitz
 from PIL import Image, ImageOps
 import pandas as pd
 import numpy as np
+import yaml
 
-__all__ = ["ReaderType", "ImageReader", "VideoReader", "CSVReader", "PDFReader"]
+__all__ = [
+    "ReaderType",
+    "ImageReader",
+    "VideoReader",
+    "CSVReader",
+    "PDFReader",
+    "YAMLReader",
+]
 
 
 class ReaderType(enum.Enum):
@@ -33,6 +41,7 @@ class ReaderType(enum.Enum):
     JSON = 4
     TS = 5
     PDF = 6
+    YAML = 8
 
 
 class _BaseReader(object):
@@ -160,6 +169,24 @@ class VideoReader(_GenerativeReader):
             return OpenCVVideoReaderBackend(**bk_args)
         else:
             raise ValueError("Unsupported backend type")
+
+
+class YAMLReader(_BaseReader):
+
+    def __init__(self, backend="PyYAML", **bk_args):
+        super().__init__(backend, **bk_args)
+
+    def read(self, in_path):
+        return self._backend.read_file(str(in_path))
+
+    def _init_backend(self, bk_type, bk_args):
+        if bk_type == "PyYAML":
+            return YAMLReaderBackend(**bk_args)
+        else:
+            raise ValueError("Unsupported backend type")
+
+    def get_type(self):
+        return ReaderType.YAML
 
 
 class _BaseReaderBackend(object):
@@ -316,3 +343,11 @@ class PandasCSVReaderBackend(_CSVReaderBackend):
     def read_file(self, in_path):
         """read image file from path by OpenCV"""
         return pd.read_csv(in_path)
+
+
+class YAMLReaderBackend(_BaseReaderBackend):
+
+    def read_file(self, in_path, **kwargs):
+        with open(in_path, "r", encoding="utf-8", **kwargs) as yaml_file:
+            data = yaml.safe_load(yaml_file)
+        return data

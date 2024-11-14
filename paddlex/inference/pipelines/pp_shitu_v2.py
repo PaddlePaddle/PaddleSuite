@@ -35,7 +35,6 @@ class ShiTuV2Pipeline(BasePipeline):
         det_batch_size=1,
         rec_batch_size=1,
         index=None,
-        metric_type="IP",
         score_thres=None,
         hamming_radius=None,
         return_k=5,
@@ -45,8 +44,7 @@ class ShiTuV2Pipeline(BasePipeline):
         super().__init__(device, predictor_kwargs)
         self._build_predictor(det_model, rec_model)
         self.set_predictor(det_batch_size, rec_batch_size, device)
-        self._metric_type, self._return_k, self._score_thres, self._hamming_radius = (
-            metric_type,
+        self._return_k, self._score_thres, self._hamming_radius = (
             return_k,
             score_thres,
             hamming_radius,
@@ -56,7 +54,6 @@ class ShiTuV2Pipeline(BasePipeline):
     def _build_indexer(self, index):
         return FaissIndexer(
             index=index,
-            metric_type=self._metric_type,
             return_k=self._return_k,
             score_thres=self._score_thres,
             hamming_radius=self._hamming_radius,
@@ -139,10 +136,8 @@ class ShiTuV2Pipeline(BasePipeline):
             **kwargs
         )
 
-    def remove_index(self, gallery_label, index, index_type="HNSW32", **kwargs):
-        return FaissBuilder.remove(
-            gallery_label, index, index_type=index_type, **kwargs
-        )
+    def remove_index(self, remove_ids, index, **kwargs):
+        return FaissBuilder.remove(remove_ids, index, **kwargs)
 
     def append_index(
         self,
