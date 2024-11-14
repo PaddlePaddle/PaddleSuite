@@ -139,11 +139,9 @@ class ShiTuV2Pipeline(BasePipeline):
             **kwargs
         )
 
-    def remove_index(
-        self, gallery_imgs, gallery_label, index, index_type="HNSW32", **kwargs
-    ):
+    def remove_index(self, gallery_label, index, index_type="HNSW32", **kwargs):
         return FaissBuilder.remove(
-            gallery_imgs, gallery_label, index, index_type=index_type, **kwargs
+            gallery_label, index, index_type=index_type, **kwargs
         )
 
     def append_index(
