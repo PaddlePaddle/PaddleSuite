@@ -115,7 +115,7 @@ from paddlex import create_pipeline
 pipeline = create_pipeline(pipeline="PP-ShiTuV2")
 
 index_data = pipeline.build_index(data_root="drink_dataset_v2.0/", label_path="drink_dataset_v2.0/gallery.txt")
-index_data.save("drink.index")
+index_data.save("drink_index")
 
 output = pipeline.predict("./drink_dataset_v2.0/test_images/", index=index_data)
 for res in output:
@@ -145,7 +145,7 @@ for res in output:
 </tr>
 <tr>
 <td><code>index</code></td>
-<td>产线推理预测所用的索引库文件路径，如不传入该参数，则需要在<code>predict()</code>中指定<code>index</code>。</td>
+<td>产线推理预测所用的索引库，支持：1. <code>str</code>类型表示的目录（该目录下需要包含索引库文件，包括<code>vector.index</code>和<code>index_info.yaml</code>）；2. <code>IndexData</code>对象。如不传入该参数，则需要在<code>predict()</code>中指定<code>index</code>。</td>
 <td><code>str</code></td>
 <td>None</td>
 </tr>
@@ -204,7 +204,7 @@ for res in output:
 <tbody>
 <tr>
 <td><code>save_path</code></td>
-<td>索引库的保存路径，如<code>drink.index</code>。</td>
+<td>索引库文件的保存目录，如<code>drink_index</code>。</td>
 <td><code>str</code></td>
 <td>无</td>
 </tr>
@@ -258,7 +258,7 @@ for res in output:
 <tbody>
 <tr>
 <td><code>index</code></td>
-<td>产线推理预测所用的索引库文件路径或是索引库对象，如不传入该参数，则默认使用在<code>create_pipeline()</code>中通过参数<code>index</code>指定的索引库。</td>
+<td>产线推理预测所用的索引库，支持：1. <code>str</code>类型表示的目录（该目录下需要包含索引库文件，包括<code>vector.index</code>和<code>index_info.yaml</code>）；2. <code>IndexData</code>对象。如不传入该参数，则默认使用在<code>create_pipeline()</code>中通过参数<code>index</code>指定的索引库。</td>
 </tr>
 </tbody>
 </table>
@@ -298,7 +298,7 @@ for res in output:
 
 ```python
 from paddlex import create_pipeline
-pipeline = create_pipeline(pipeline="./my_path/PP-ShiTuV2.yaml", index="drink.index")
+pipeline = create_pipeline(pipeline="./my_path/PP-ShiTuV2.yaml", index="drink_index")
 
 output = pipeline.predict("./drink_dataset_v2.0/test_images/")
 for res in output:
@@ -315,10 +315,10 @@ for res in output:
 from paddlex import create_pipeline
 
 pipeline = create_pipeline("PP-ShiTuV2")
-index_data = pipeline.build_index(data_root="drink_dataset_v2.0/", label_path="drink_dataset_v2.0/gallery.txt", index="drink.index", index_type="IVF")
-index_data = pipeline.append_index(data_root="drink_dataset_v2.0/", label_path="drink_dataset_v2.0/gallery.txt", index="drink.index", index_type="IVF")
-index_data = pipeline.remove_index(data_root="drink_dataset_v2.0/", label_path="drink_dataset_v2.0/gallery.txt", index="drink.index", index_type="IVF")
-index_data.save("drink.index")
+index_data = pipeline.build_index(gallery_imgs="drink_dataset_v2.0/", gallery_label="drink_dataset_v2.0/gallery.txt", index_type="IVF", metric_type="IP")
+index_data = pipeline.append_index(gallery_imgs="drink_dataset_v2.0/", gallery_label="drink_dataset_v2.0/gallery.txt", index=index_data)
+index_data = pipeline.remove_index(remove_ids="drink_dataset_v2.0/remove_ids.txt", index=index_data)
+index_data.save("drink_index")
 ```
 
 上述方法参数说明如下：
@@ -333,21 +333,27 @@ index_data.save("drink.index")
 </thead>
 <tbody>
 <tr>
-<td><code>data_root</code></td>
-<td>要添加的数据集的根目录。数据组织方式与构建索引库时相同，参考<a href="#2.3-构建索引库的数据组织方式">2.3节 构建索引库的数据组织方式</a></td>
-<td><code>str</code></td>
+<td><code>gallery_imgs</code></td>
+<td>要添加的底库图片，支持：1. <code>str</code>类型表示的图片根目录，数据组织方式与构建索引库时相同，参考<a href="#2.3-构建索引库的数据组织方式">2.3节 构建索引库的数据组织方式</a>；2. <code>[numpy.ndarray, numpy.ndarray, ..]</code>类型的底库图片数据。</td>
+<td><code>str</code>|<code>list</code></td>
 <td>无</td>
 </tr>
 <tr>
-<td><code>label_path</code></td>
-<td>要添加的数据集标注文件的路径。数据组织方式与构建索引库时相同，参考<a href="#2.3-构建索引库的数据组织方式">2.3节 构建索引库的数据组织方式</a></td>
-<td><code>str</code></td>
+<td><code>gallery_label</code></td>
+<td>底库图片的标注信息，支持：1. <code>str</code>类型表示的标注文件的路径，数据组织方式与构建索引库时相同，参考<a href="#2.3-构建索引库的数据组织方式">2.3节 构建索引库的数据组织方式</a>；2. <code>[str, str, ..]</code>类型表示的底库图片标注。</td>
+<td><code>str</code>|<code>list</code></td>
+<td>无</td>
+</tr>
+<tr>
+<td><code>remove_ids</code></td>
+<td>待删除的索引序号，支持：1. <code>str</code>类型表示的txt文件的路径，内容为待删除的索引id，每行一个“id”；2. <code>[int, int, ..]</code>类型表示的待删除的索引序号。仅在 <code>remove_index</code> 中有效。</td>
+<td><code>str</code>|<code>list</code></td>
 <td>无</td>
 </tr>
 <tr>
 <td><code>index</code></td>
-<td>索引库文件的路径，或是索引库对象，仅在 <code>append_index</code> 和 <code>remove_index</code> 中有效，表示待修改的索引库。</td>
-<td><code>str</code></td>
+<td>索引库，支持：1. 索引库文件（<code>vector.index</code>和<code>index_info.yaml</code>）所在目录的路径；2. <code>IndexData</code>类型的索引库对象，仅在 <code>append_index</code> 和 <code>remove_index</code> 中有效，表示待修改的索引库。</td>
+<td><code>str</code>|<code>IndexData</code></td>
 <td>无</td>
 </tr>
 <tr>
@@ -372,7 +378,7 @@ PaddleX 的通用图像识别产线示例需要使用预先构建好的索引库
 data_root             # 数据集根目录，目录名称可以改变
 ├── images            # 图像的保存目录，目录名称可以改变
 │   │   ...
-└── gallery.txt       # 索引库数据集标注文件，文件名称不可改变。每行给出待检索图像路径和图像标签，使用空格分隔，内容举例： “0/0.jpg 脉动”
+└── gallery.txt       # 索引库数据集标注文件，文件名称可以改变。每行给出待检索图像路径和图像标签，使用空格分隔，内容举例： “0/0.jpg 脉动”
 ```
 
 ## 3. 开发集成/部署
