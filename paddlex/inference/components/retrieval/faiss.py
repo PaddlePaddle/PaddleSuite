@@ -29,10 +29,11 @@ class IndexData:
     IDMAP_FN = "id_map"
     IDMAP_SUFFIX = ".yaml"
 
-    def __init__(self, index, id_map, metric_type):
+    def __init__(self, index, id_map, metric_type, index_type):
         self._index = index
         self._id_map = id_map
         self._metric_type = metric_type
+        self._index_type = index_type
 
     @property
     def index(self):
@@ -50,13 +51,24 @@ class IndexData:
     def metric_type(self):
         return self._metric_type
 
-    def _convert_int(self, id_map):
-        converted = {int(k): str(v) for k, v in id_map.items()}
-        return converted
+    @property
+    def index_type(self):
+        return self._index_type
 
-    def _convert_np(self, id_map):
-        converted = {np.int(k): str(v) for k, v in id_map.items()}
-        return converted
+    @property
+    def index_info(self):
+        return {
+            "index_type": self.index_type,
+            "metric_type": self.metric_type,
+            "id_map": self._convert_int(self.id_map),
+        }
+
+    def _convert_int(self, id_map):
+        return {int(k): str(v) for k, v in id_map.items()}
+
+    @staticmethod
+    def _convert_int64(id_map):
+        return {np.int64(k): str(v) for k, v in id_map.items()}
 
     def save(self, save_dir):
         save_dir = Path(save_dir)
@@ -69,38 +81,38 @@ class IndexData:
         else:
             faiss.write_index(self.index, vector_path)
 
-        index_info = {
-            "metric_type": self.metric_type,
-            "id_map": self._convert_int(self.id_map),
-        }
         yaml_writer = YAMLWriter()
         yaml_writer.write(
-            index_info_path, index_info, default_flow_style=False, allow_unicode=True
+            index_info_path,
+            self.index_info,
+            default_flow_style=False,
+            allow_unicode=True,
         )
 
     @classmethod
-    def load(self, index):
+    def load(cls, index):
         if isinstance(index, str):
             index_root = Path(index)
-            vector_path = index_root / f"{self.VECTOR_FN}{self.VECTOR_SUFFIX}"
-            index_info_path = index_root / f"{self.IDMAP_FN}{self.IDMAP_SUFFIX}"
+            vector_path = index_root / f"{cls.VECTOR_FN}{cls.VECTOR_SUFFIX}"
+            index_info_path = index_root / f"{cls.IDMAP_FN}{cls.IDMAP_SUFFIX}"
 
             assert (
                 vector_path.exists()
-            ), f"Not found the {self.VECTOR_FN}{self.VECTOR_SUFFIX} file in {index}!"
+            ), f"Not found the {cls.VECTOR_FN}{cls.VECTOR_SUFFIX} file in {index}!"
             assert (
                 index_info_path.exists()
-            ), f"Not found the {self.IDMAP_FN}{self.IDMAP_SUFFIX} file in {index}!"
+            ), f"Not found the {cls.IDMAP_FN}{cls.IDMAP_SUFFIX} file in {index}!"
 
             yaml_reader = YAMLReader()
             index_info = yaml_reader.read(index_info_path)
-            assert "id_map" in index_info and "metric_type" in index_info, index_info
-            # id_map = self._convert_np(index_info["id_map"])
-            # print(index_info["id_map"])
-            id_map = index_info["id_map"]
-            metric_type = index_info["metric_type"]
+            assert (
+                "id_map" in index_info
+                and "metric_type" in index_info
+                and "index_type" in index_info
+            ), f"The index_info file({index_info_path}) may have been damaged, `id_map` or `metric_type` or `index_type` not found in `index_info`."
+            id_map = IndexData._convert_int64(index_info["id_map"])
 
-            if metric_type in FaissBuilder.BINARY_METRIC_TYPE:
+            if index_info["metric_type"] in FaissBuilder.BINARY_METRIC_TYPE:
                 index = faiss.read_index_binary(vector_path.as_posix())
             else:
                 index = faiss.read_index(vector_path.as_posix())
@@ -108,10 +120,10 @@ class IndexData:
                 id_map
             ), "data number in index is not equal in in id_map"
 
-            return index, id_map, metric_type
+            return index, id_map, index_info["metric_type"], index_info["index_type"]
         else:
             assert isinstance(index, IndexData)
-            return index.index, index.id_map, index.metric_type
+            return index.index, index.id_map, index.metric_type, index.index_type
 
 
 class FaissIndexer(BaseComponent):
@@ -131,7 +143,7 @@ class FaissIndexer(BaseComponent):
         hamming_radius=None,
     ):
         super().__init__()
-        self._indexer, self.id_map, self.metric_type = IndexData.load(index)
+        self._indexer, self.id_map, self.metric_type, index_type = IndexData.load(index)
         self.return_k = return_k
         if self.metric_type in FaissBuilder.BINARY_METRIC_TYPE:
             self.hamming_radius = hamming_radius
@@ -212,6 +224,10 @@ class FaissBuilder:
         index_type="HNSW32",
     ):
         assert (
+            index_type in cls.SUPPORT_INDEX_TYPE
+        ), f"Supported index types only: {cls.SUPPORT_INDEX_TYPE}!"
+
+        assert (
             metric_type in cls.SUPPORT_METRIC_TYPE
         ), f"Supported metric types only: {cls.SUPPORT_METRIC_TYPE}!"
 
@@ -244,25 +260,19 @@ class FaissBuilder:
         index, ids = cls._add_gallery(
             metric_type, index, ids, features, gallery_docs, mode="new"
         )
-        return IndexData(index, ids, metric_type)
+        return IndexData(index, ids, metric_type, index_type)
 
     @classmethod
     def remove(
         cls,
         remove_ids,
         index,
-        # index_type="HNSW32",
     ):
-        # assert (
-        #     index_type in cls.SUPPORT_INDEX_TYPE
-        # ), f"Supported index types only: {cls.SUPPORT_INDEX_TYPE}!"
-
-        # if index_type == "HNSW32":
-        #     raise RuntimeError(
-        #         "The index_type: HNSW32 dose not support 'remove' operation"
-        #     )
-
-        index, ids, metric_type = IndexData.load(index)
+        index, ids, metric_type, index_type = IndexData.load(index)
+        if index_type == "HNSW32":
+            raise RuntimeError(
+                "The index_type: HNSW32 dose not support 'remove' operation"
+            )
         if isinstance(remove_ids, str):
             lines = []
             with open(remove_ids) as f:
@@ -278,10 +288,11 @@ class FaissBuilder:
         # remove ids in id_map, remove index data in faiss index
         index.remove_ids(remove_ids)
         ids = {k: v for k, v in ids.items() if k not in remove_ids}
-        return IndexData(index, ids, metric_type)
+        return IndexData(index, ids, metric_type, index_type)
 
     @classmethod
-    def append(cls, gallery_imgs, gallery_label, predict_func, index, metric_type="IP"):
+    def append(cls, gallery_imgs, gallery_label, predict_func, index):
+        index, ids, metric_type, index_type = IndexData.load(index)
         assert (
             metric_type in cls.SUPPORT_METRIC_TYPE
         ), f"Supported metric types only: {cls.SUPPORT_METRIC_TYPE}!"
@@ -295,13 +306,11 @@ class FaissBuilder:
         dtype = np.uint8 if metric_type in cls.BINARY_METRIC_TYPE else np.float32
         features = np.array(features).astype(dtype)
 
-        index, ids, metric_type = IndexData.load(index)
-
         # calculate id for new data
         index, ids = cls._add_gallery(
             metric_type, index, ids, features, gallery_docs, mode="append"
         )
-        return IndexData(index, ids, metric_type)
+        return IndexData(index, ids, metric_type, index_type)
 
     @classmethod
     def _add_gallery(
