@@ -333,8 +333,11 @@ class FaissBuilder:
             else:
                 index.train(gallery_features)
 
-        if not metric_type in cls.BINARY_METRIC_TYPE:
+        if metric_type not in cls.BINARY_METRIC_TYPE:
             index.add_with_ids(gallery_features, ids_now)
+        # TODO(gaotingquan): how append when using hamming metric type
+        # else:
+        #   pass
 
         for i, d in zip(list(ids_now), gallery_docs):
             ids[i] = d

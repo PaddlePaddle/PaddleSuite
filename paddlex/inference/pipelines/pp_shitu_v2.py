@@ -133,27 +133,20 @@ class ShiTuV2Pipeline(BasePipeline):
             self.rec_model.predict,
             metric_type=metric_type,
             index_type=index_type,
-            **kwargs
         )
 
-    def remove_index(self, remove_ids, index, **kwargs):
-        return FaissBuilder.remove(remove_ids, index, **kwargs)
+    def remove_index(self, remove_ids, index):
+        return FaissBuilder.remove(remove_ids, index)
 
     def append_index(
         self,
         gallery_imgs,
         gallery_label,
         index,
-        id_map=None,
-        metric_type="IP",
-        index_type="HNSW32",
-        **kwargs
     ):
         return FaissBuilder.append(
             gallery_imgs,
             gallery_label,
             self.rec_model.predict,
             index,
-            metric_type=metric_type,
-            **kwargs
         )
