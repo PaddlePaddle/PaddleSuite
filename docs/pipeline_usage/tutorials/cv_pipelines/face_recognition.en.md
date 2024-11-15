@@ -374,9 +374,10 @@ Below are the API reference and multi-language service invocation examples:
 
 <details><summary>API Reference</summary>
 
-<p>For all operations provided by the service:</p>
+<p>For main operations provided by the service:</p>
 <ul>
-<li>The response body and the request body of POST requests are both JSON data (JSON objects).</li>
+<li>The HTTP request method is POST.</li>
+<li>The request body and the response body are both JSON data (JSON objects).</li>
 <li>When the request is successfully processed, the response status code is <code>200</code>, and the attributes of the response body are as follows:</li>
 </ul>
 <table>
@@ -425,7 +426,7 @@ Below are the API reference and multi-language service invocation examples:
 </tr>
 </tbody>
 </table>
-<p>The operations provided by the service are as follows:</p>
+<p>The main operations provided by the service are as follows:</p>
 <ul>
 <li><b><code>infer</code></b></li>
 </ul>

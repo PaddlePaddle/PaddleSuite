@@ -367,9 +367,10 @@ Below are the API references and multi-language service invocation examples:
 
 <details><summary>API Reference</summary>
 
-<p>For all operations provided by the service:</p>
+<p>For main operations provided by the service:</p>
 <ul>
-<li>Both the response body and the request body for POST requests are JSON data (JSON objects).</li>
+<li>The HTTP request method is POST.</li>
+<li>The request body and the response body are both JSON data (JSON objects).</li>
 <li>When the request is processed successfully, the response status code is <code>200</code>, and the response body properties are as follows:</li>
 </ul>
 <table>
@@ -377,32 +378,32 @@ Below are the API references and multi-language service invocation examples:
 <tr>
 <th>Name</th>
 <th>Type</th>
-<th>Description</th>
+<th>Meaning</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><code>errorCode</code></td>
 <td><code>integer</code></td>
-<td>Error code. Fixed as <code>0</code>.</td>
+<td>Error code. Fixed to <code>0</code>.</td>
 </tr>
 <tr>
 <td><code>errorMsg</code></td>
 <td><code>string</code></td>
-<td>Error message. Fixed as <code>"Success"</code>.</td>
+<td>Error description. Fixed to <code>"Success"</code>.</td>
 </tr>
 </tbody>
 </table>
-<p>The response body may also have a <code>result</code> property of type <code>object</code>, which stores the operation result information.</p>
+<p>The response body may also have a <code>result</code> property, which is an <code>object</code> type that stores operation result information.</p>
 <ul>
-<li>When the request is not processed successfully, the response body properties are as follows:</li>
+<li>When the request is not processed successfully, the properties of the response body are as follows:</li>
 </ul>
 <table>
 <thead>
 <tr>
 <th>Name</th>
 <th>Type</th>
-<th>Description</th>
+<th>Meaning</th>
 </tr>
 </thead>
 <tbody>
@@ -414,25 +415,221 @@ Below are the API references and multi-language service invocation examples:
 <tr>
 <td><code>errorMsg</code></td>
 <td><code>string</code></td>
-<td>Error message.</td>
+<td>Error description.</td>
 </tr>
 </tbody>
 </table>
-<p>Operations provided by the service are as follows:</p>
+<p>The main operations provided by the service are as follows:</p>
 <ul>
-<li><b><code>infer</code></b></li>
+<li><b><code>buildIndex</code></b></li>
 </ul>
-<p>Classify images.</p>
-<p><code>POST /image-classification</code></p>
+<p>Build feature vector index.</p>
+<p><code>POST /shitu-index-build</code></p>
 <ul>
-<li>The request body properties are as follows:</li>
+<li>The properties of the request body are as follows:</li>
 </ul>
 <table>
 <thead>
 <tr>
 <th>Name</th>
 <th>Type</th>
-<th>Description</th>
+<th>Meaning</th>
+<th>Required</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>imageLabelPairs</code></td>
+<td><code>array</code></td>
+<td>Image-label pairs for building the index.</td>
+<td>Yes</td>
+</tr>
+</tbody>
+</table>
+<p>Each element in <code>imageLabelPairs</code> is an <code>object</code> with the following properties:</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>image</code></td>
+<td><code>string</code></td>
+<td>The URL of an image file accessible by the service, or the Base64 encoding result of the image file content.</td>
+</tr>
+<tr>
+<td><code>label</code></td>
+<td><code>string</code></td>
+<td>Label.</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>When the request is processed successfully, the <code>result</code> of the response body has the following properties:</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>indexKey</code></td>
+<td><code>string</code></td>
+<td>The key corresponding to the index, used to identify the established index. Can be used as input for other operations.</td>
+</tr>
+<tr>
+<td><code>idMap</code></td>
+<td><code>object</code></td>
+<td>Mapping from vector ID to label.</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><b><code>addImagesToIndex</code></b></li>
+</ul>
+<p>Add images (corresponding feature vectors) to the index.</p>
+<p><code>POST /shitu-index-add</code></p>
+<ul>
+<li>The properties of the request body are as follows:</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Meaning</th>
+<th>Required</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>imageLabelPairs</code></td>
+<td><code>array</code></td>
+<td>Image-label pairs for building the index.</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td><code>indexKey</code></td>
+<td><code>string</code></td>
+<td>The key corresponding to the index. Provided by the <code>buildIndex</code> operation.</td>
+<td>Yes</td>
+</tr>
+</tbody>
+</table>
+<p>Each element in <code>imageLabelPairs</code> is an <code>object</code> with the following properties:</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>image</code></td>
+<td><code>string</code></td>
+<td>The URL of an image file accessible by the service, or the Base64 encoding result of the image file content.</td>
+</tr>
+<tr>
+<td><code>label</code></td>
+<td><code>string</code></td>
+<td>Label.</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>When the request is processed successfully, the <code>result</code> of the response body has the following properties:</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>idMap</code></td>
+<td><code>object</code></td>
+<td>Mapping from vector ID to label.</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><b><code>removeImagesFromIndex</code></b></li>
+</ul>
+<p>Remove images (corresponding feature vectors) from the index.</p>
+<p><code>POST /shitu-index-remove</code></p>
+<ul>
+<li>The properties of the request body are as follows:</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Meaning</th>
+<th>Required</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ids</code></td>
+<td><code>array</code></td>
+<td>IDs of the vectors to be removed from the index.</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td><code>indexKey</code></td>
+<td><code>string</code></td>
+<td>The key corresponding to the index. Provided by the <code>buildIndex</code> operation.</td>
+<td>Yes</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>When the request is processed successfully, the <code>result</code> of the response body has the following properties:</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>idMap</code></td>
+<td><code>object</code></td>
+<td>Mapping from vector ID to label.</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><b><code>infer</code></b></li>
+</ul>
+<p>Perform image recognition.</p>
+<p><code>POST /shitu-infer</code></p>
+<ul>
+<li>The properties of the request body are as follows:</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Meaning</th>
 <th>Required</th>
 </tr>
 </thead>
@@ -440,32 +637,13 @@ Below are the API references and multi-language service invocation examples:
 <tr>
 <td><code>image</code></td>
 <td><code>string</code></td>
-<td>The URL of an image file accessible by the service or the Base64 encoded result of the image file content.</td>
+<td>The URL of an image file accessible by the service, or the Base64 encoding result of the image file content.</td>
 <td>Yes</td>
 </tr>
 <tr>
-<td><code>inferenceParams</code></td>
-<td><code>object</code></td>
-<td>Inference parameters.</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
-<p>The properties of <code>inferenceParams</code> are as follows:</p>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-<th>Required</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>topK</code></td>
-<td><code>integer</code></td>
-<td>Only the top <code>topK</code> categories with the highest scores will be retained in the results.</td>
+<td><code>indexKey</code></td>
+<td><code>string</code></td>
+<td>The key corresponding to the index. Provided by the <code>buildIndex</code> operation.</td>
 <td>No</td>
 </tr>
 </tbody>
@@ -478,61 +656,72 @@ Below are the API references and multi-language service invocation examples:
 <tr>
 <th>Name</th>
 <th>Type</th>
-<th>Description</th>
+<th>Meaning</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>categories</code></td>
+<td><code>detectedObjects</code></td>
 <td><code>array</code></td>
-<td>Image category information.</td>
+<td>Information of the detected targets.</td>
 </tr>
 <tr>
 <td><code>image</code></td>
 <td><code>string</code></td>
-<td>The image classification result image. The image is in JPEG format and encoded using Base64.</td>
+<td>Recognition result image. The image is in JPEG format, encoded with Base64.</td>
 </tr>
 </tbody>
 </table>
-<p>Each element in <code>categories</code> is an <code>object</code> with the following properties:</p>
+<p>Each element in <code>detectedObjects</code> is an <code>object</code> with the following properties:</p>
 <table>
 <thead>
 <tr>
 <th>Name</th>
 <th>Type</th>
-<th>Description</th>
+<th>Meaning</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>id</code></td>
-<td><code>integer</code></td>
-<td>Category ID.</td>
+<td><code>bbox</code></td>
+<td><code>array</code></td>
+<td>Target location. The elements in the array are the x-coordinate of the upper-left corner, the y-coordinate of the upper-left corner, the x-coordinate of the lower-right corner, and the y-coordinate of the lower-right corner, respectively.</td>
 </tr>
 <tr>
-<td><code>name</code></td>
-<td><code>string</code></td>
-<td>Category name.</td>
+<td><code>recResults</code></td>
+<td><code>array</code></td>
+<td>Recognition results.</td>
 </tr>
 <tr>
 <td><code>score</code></td>
 <td><code>number</code></td>
-<td>Category score.</td>
+<td>Detection score.</td>
 </tr>
 </tbody>
 </table>
-<p>An example of <code>result</code> is as follows:</p>
-<pre><code class="language-json">{
-&quot;categories&quot;: [
-{
-&quot;id&quot;: 5,
-&quot;name&quot;: &quot;Rabbit&quot;,
-&quot;score&quot;: 0.93
-}
-],
-&quot;image&quot;: &quot;xxxxxx&quot;
-}
-</code></pre></details>
+<p>Each element in <code>recResults</code> is an <code>object</code> with the following properties:</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>label</code></td>
+<td><code>string</code></td>
+<td>Label.</td>
+</tr>
+<tr>
+<td><code>score</code></td>
+<td><code>number</code></td>
+<td>Recognition score.</td>
+</tr>
+</tbody>
+</table>
+</details>
 
 <details><summary>Multi-Language Service Invocation Examples</summary>
 
@@ -541,336 +730,72 @@ Below are the API references and multi-language service invocation examples:
 
 
 <pre><code class="language-python">import base64
+import pprint
+import sys
+
 import requests
 
-API_URL = &quot;http://localhost:8080/image-classification&quot;
-image_path = &quot;./demo.jpg&quot;
+API_BASE_URL = &quot;http://0.0.0.0:8080&quot;
+
+base_image_label_pairs = [
+    {&quot;image&quot;: &quot;./demo0.jpg&quot;, &quot;label&quot;: &quot;rabbit&quot;},
+    {&quot;image&quot;: &quot;./demo1.jpg&quot;, &quot;label&quot;: &quot;rabbit&quot;},
+    {&quot;image&quot;: &quot;./demo2.jpg&quot;, &quot;label&quot;: &quot;puppy&quot;},
+]
+image_label_pairs_to_add = [
+    {&quot;image&quot;: &quot;./demo3.jpg&quot;, &quot;label&quot;: &quot;puppy&quot;},
+]
+infer_image_path = &quot;./demo4.jpg&quot;
 output_image_path = &quot;./out.jpg&quot;
 
-with open(image_path, &quot;rb&quot;) as file:
+for pair in base_image_label_pairs:
+    with open(pair[&quot;image&quot;], &quot;rb&quot;) as file:
+        image_bytes = file.read()
+        image_data = base64.b64encode(image_bytes).decode(&quot;ascii&quot;)
+    pair[&quot;image&quot;] = image_data
+
+payload = {&quot;imageLabelPairs&quot;: base_image_label_pairs}
+resp_index_build = requests.post(f&quot;{API_BASE_URL}/shitu-index-build&quot;, json=payload)
+if resp_index_build.status_code != 200:
+    print(f&quot;Request to shitu-index-build failed with status code {resp_index_build}.&quot;)
+    pprint.pp(resp_index_build.json())
+    sys.exit(1)
+result_index_build = resp_index_build.json()[&quot;result&quot;]
+print(f&quot;Number of images indexed: {len(result_index_build['idMap'])}&quot;)
+
+for pair in image_label_pairs_to_add:
+    with open(pair[&quot;image&quot;], &quot;rb&quot;) as file:
+        image_bytes = file.read()
+        image_data = base64.b64encode(image_bytes).decode(&quot;ascii&quot;)
+    pair[&quot;image&quot;] = image_data
+
+payload = {&quot;imageLabelPairs&quot;: image_label_pairs_to_add, &quot;indexKey&quot;: result_index_build[&quot;indexKey&quot;]}
+resp_index_add = requests.post(f&quot;{API_BASE_URL}/shitu-index-add&quot;, json=payload)
+if resp_index_add.status_code != 200:
+    print(f&quot;Request to shitu-index-add failed with status code {resp_index_add}.&quot;)
+    pprint.pp(resp_index_add.json())
+    sys.exit(1)
+result_index_add = resp_index_add.json()[&quot;result&quot;]
+print(f&quot;Number of images indexed: {len(result_index_add['idMap'])}&quot;)
+
+with open(infer_image_path, &quot;rb&quot;) as file:
     image_bytes = file.read()
     image_data = base64.b64encode(image_bytes).decode(&quot;ascii&quot;)
 
-payload = {&quot;image&quot;: image_data}
+payload = {&quot;image&quot;: image_data, &quot;indexKey&quot;: result_index_build[&quot;indexKey&quot;]}
+resp_infer = requests.post(f&quot;{API_BASE_URL}/shitu-infer&quot;, json=payload)
+if resp_infer.status_code != 200:
+    print(f&quot;Request to shitu-infer failed with status code {resp_infer}.&quot;)
+    pprint.pp(resp_infer.json())
+    sys.exit(1)
+result_infer = resp_infer.json()[&quot;result&quot;]
 
-response = requests.post(API_URL, json=payload)
-
-assert response.status_code == 200
-result = response.json()[&quot;result&quot;]
 with open(output_image_path, &quot;wb&quot;) as file:
-    file.write(base64.b64decode(result[&quot;image&quot;]))
+    file.write(base64.b64decode(result_infer[&quot;image&quot;]))
 print(f&quot;Output image saved at {output_image_path}&quot;)
-print(&quot;\nCategories:&quot;)
-print(result[&quot;categories&quot;])
+print(&quot;\nDetected objects:&quot;)
+pprint.pp(result_infer[&quot;detectedObjects&quot;])
 </code></pre></details>
-<details><summary>C++</summary>
-
-<pre><code class="language-cpp">#include &lt;iostream&gt;
-#include &quot;cpp-httplib/httplib.h&quot; // https://github.com/Huiyicc/cpp-httplib
-#include &quot;nlohmann/json.hpp&quot; // https://github.com/nlohmann/json
-#include &quot;base64.hpp&quot; // https://github.com/tobiaslocker/base64
-
-int main() {
-    httplib::Client client(&quot;localhost:8080&quot;);
-    const std::string imagePath = &quot;./demo.jpg&quot;;
-    const std::string outputImagePath = &quot;./out.jpg&quot;;
-
-    httplib::Headers headers = {
-        {&quot;Content-Type&quot;, &quot;application/json&quot;}
-    };
-
-    std::ifstream file(imagePath, std::ios::binary | std::ios::ate);
-    std::streamsize size = file.tellg();
-    file.seekg(0, std::ios::beg);
-
-    std::vector&lt;char&gt; buffer(size);
-    if (!file.read(buffer.data(), size)) {
-        std::cerr &lt;&lt; &quot;Error reading file.&quot; &lt;&lt; std::endl;
-        return 1;
-    }
-    std::string bufferStr(reinterpret_cast&lt;const char*&gt;(buffer.data()), buffer.size());
-    std::string encodedImage = base64::to_base64(bufferStr);
-
-    nlohmann::json jsonObj;
-    jsonObj[&quot;image&quot;] = encodedImage;
-    std::string body = jsonObj.dump();
-
-    auto response = client.Post(&quot;/image-classification&quot;, headers, body, &quot;application/json&quot;);
-    if (response &amp;&amp; response-&gt;status == 200) {
-        nlohmann::json jsonResponse = nlohmann::json::parse(response-&gt;body);
-        auto result = jsonResponse[&quot;result&quot;];
-
-        encodedImage = result[&quot;image&quot;];
-        std::string decodedString = base64::from_base64(encodedImage);
-        std::vector&lt;unsigned char&gt; decodedImage(decodedString.begin(), decodedString.end());
-        std::ofstream outputImage(outPutImagePath, std::ios::binary | std::ios::out);
-        if (outputImage.is_open()) {
-            outputImage.write(reinterpret_cast&lt;char*&gt;(decodedImage.data()), decodedImage.size());
-            outputImage.close();
-            std::cout &lt;&lt; &quot;Output image saved at &quot; &lt;&lt; outPutImagePath &lt;&lt; std::endl;
-        } else {
-            std::cerr &lt;&lt; &quot;Unable to open file for writing: &quot; &lt;&lt; outPutImagePath &lt;&lt; std::endl;
-        }
-
-        auto categories = result[&quot;categories&quot;];
-        std::cout &lt;&lt; &quot;\nCategories:&quot; &lt;&lt; std::endl;
-        for (const auto&amp; category : categories) {
-            std::cout &lt;&lt; category &lt;&lt; std::endl;
-        }
-    } else {
-        std::cout &lt;&lt; &quot;Failed to send HTTP request.&quot; &lt;&lt; std::endl;
-        return 1;
-    }
-
-    return 0;
-}
-</code></pre></details>
-
-<details><summary>Java</summary>
-
-<pre><code class="language-java">import okhttp3.*;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.Base64;
-
-public class Main {
-    public static void main(String[] args) throws IOException {
-        String API_URL = &quot;http://localhost:8080/image-classification&quot;;
-        String imagePath = &quot;./demo.jpg&quot;;
-        String outputImagePath = &quot;./out.jpg&quot;;
-
-        File file = new File(imagePath);
-        byte[] fileContent = java.nio.file.Files.readAllBytes(file.toPath());
-        String imageData = Base64.getEncoder().encodeToString(fileContent);
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        ObjectNode params = objectMapper.createObjectNode();
-        params.put(&quot;image&quot;, imageData);
-
-        OkHttpClient client = new OkHttpClient();
-        MediaType JSON = MediaType.Companion.get(&quot;application/json; charset=utf-8&quot;);
-        RequestBody body = RequestBody.Companion.create(params.toString(), JSON);
-        Request request = new Request.Builder()
-                .url(API_URL)
-                .post(body)
-                .build();
-
-        try (Response response = client.newCall(request).execute()) {
-            if (response.isSuccessful()) {
-                String responseBody = response.body().string();
-                JsonNode resultNode = objectMapper.readTree(responseBody);
-                JsonNode result = resultNode.get(&quot;result&quot;);
-                String base64Image = result.get(&quot;image&quot;).asText();
-                JsonNode categories = result.get(&quot;categories&quot;);
-
-                byte[] imageBytes = Base64.getDecoder().decode(base64Image);
-                try (FileOutputStream fos = new FileOutputStream(outputImagePath)) {
-                    fos.write(imageBytes);
-                }
-                System.out.println(&quot;Output image saved at &quot; + outputImagePath);
-                System.out.println(&quot;\nCategories: &quot; + categories.toString());
-            } else {
-                System.err.println(&quot;Request failed with code: &quot; + response.code());
-            }
-        }
-    }
-}
-</code></pre></details>
-
-<details><summary>Go</summary>
-
-<pre><code class="language-go">package main
-
-import (
-    &quot;bytes&quot;
-    &quot;encoding/base64&quot;
-    &quot;encoding/json&quot;
-    &quot;fmt&quot;
-    &quot;io/ioutil&quot;
-    &quot;net/http&quot;
-)
-
-func main() {
-    API_URL := &quot;http://localhost:8080/image-classification&quot;
-    imagePath := &quot;./demo.jpg&quot;
-    outputImagePath := &quot;./out.jpg&quot;
-
-    imageBytes, err := ioutil.ReadFile(imagePath)
-    if err != nil {
-        fmt.Println(&quot;Error reading image file:&quot;, err)
-        return
-    }
-    imageData := base64.StdEncoding.EncodeToString(imageBytes)
-
-    payload := map[string]string{&quot;image&quot;: imageData}
-    payloadBytes, err := json.Marshal(payload)
-    if err != nil {
-        fmt.Println(&quot;Error marshaling payload:&quot;, err)
-        return
-    }
-
-    client := &amp;http.Client{}
-    req, err := http.NewRequest(&quot;POST&quot;, API_URL, bytes.NewBuffer(payloadBytes))
-    if err != nil {
-        fmt.Println(&quot;Error creating request:&quot;, err)
-        return
-    }
-
-    res, err := client.Do(req)
-    if err != nil {
-        fmt.Println(&quot;Error sending request:&quot;, err)
-        return
-    }
-    defer res.Body.Close()
-
-    body, err := ioutil.ReadAll(res.Body)
-    if err != nil {
-        fmt.Println(&quot;Error reading response body:&quot;, err)
-        return
-    }
-    type Response struct {
-        Result struct {
-            Image      string   `json:&quot;image&quot;`
-            Categories []map[string]interface{} `json:&quot;categories&quot;`
-        } `json:&quot;result&quot;`
-    }
-    var respData Response
-    err = json.Unmarshal([]byte(string(body)), &amp;respData)
-    if err != nil {
-        fmt.Println(&quot;Error unmarshaling response body:&quot;, err)
-        return
-    }
-
-    outputImageData, err := base64.StdEncoding.DecodeString(respData.Result.Image)
-    if err != nil {
-        fmt.Println(&quot;Error decoding base64 image data:&quot;, err)
-        return
-    }
-    err = ioutil.WriteFile(outputImagePath, outputImageData, 0644)
-    if err != nil {
-        fmt.Println(&quot;Error writing image to file:&quot;, err)
-        return
-    }
-    fmt.Printf(&quot;Image saved at %s.jpg\n&quot;, outputImagePath)
-    fmt.Println(&quot;\nCategories:&quot;)
-    for _, category := range respData.Result.Categories {
-        fmt.Println(category)
-    }
-}
-</code></pre></details>
-
-<details><summary>C#</summary>
-
-<pre><code class="language-csharp">using System;
-using System.IO;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json.Linq;
-
-class Program
-{
-    static readonly string API_URL = &quot;http://localhost:8080/image-classification&quot;;
-    static readonly string imagePath = &quot;./demo.jpg&quot;;
-    static readonly string outputImagePath = &quot;./out.jpg&quot;;
-
-    static async Task Main(string[] args)
-    {
-        var httpClient = new HttpClient();
-
-        byte[] imageBytes = File.ReadAllBytes(imagePath);
-        string image_data = Convert.ToBase64String(imageBytes);
-
-        var payload = new JObject{ { &quot;image&quot;, image_data } };
-        var content = new StringContent(payload.ToString(), Encoding.UTF8, &quot;application/json&quot;);
-
-        HttpResponseMessage response = await httpClient.PostAsync(API_URL, content);
-        response.EnsureSuccessStatusCode();
-
-        string responseBody = await response.Content.ReadAsStringAsync();
-        JObject jsonResponse = JObject.Parse(responseBody);
-
-        string base64Image = jsonResponse[&quot;result&quot;][&quot;image&quot;].ToString();
-        byte[] outputImageBytes = Convert.FromBase64String(base64Image);
-
-        File.WriteAllBytes(outputImagePath, outputImageBytes);
-        Console.WriteLine($&quot;Output image saved at {outputImagePath}&quot;);
-        Console.WriteLine(&quot;\nCategories:&quot;);
-        Console.WriteLine(jsonResponse[&quot;result&quot;][&quot;categories&quot;].ToString());
-    }
-}
-</code></pre></details>
-
-<details><summary>Node.js</summary>
-
-<pre><code class="language-js">const axios = require('axios');
-const fs = require('fs');
-
-const API_URL = 'http://localhost:8080/image-classification'
-const imagePath = './demo.jpg'
-const outputImagePath = &quot;./out.jpg&quot;;
-
-let config = {
-   method: 'POST',
-   maxBodyLength: Infinity,
-   url: API_URL,
-   data: JSON.stringify({
-    'image': encodeImageToBase64(imagePath)
-  })
-};
-
-function encodeImageToBase64(filePath) {
-  const bitmap = fs.readFileSync(filePath);
-  return Buffer.from(bitmap).toString('base64');
-}
-
-axios.request(config)
-.then((response) =&gt; {
-    const result = response.data[&quot;result&quot;];
-    const imageBuffer = Buffer.from(result[&quot;image&quot;], 'base64');
-    fs.writeFile(outputImagePath, imageBuffer, (err) =&gt; {
-      if (err) throw err;
-      console.log(`Output image saved at ${outputImagePath}`);
-    });
-    console.log(&quot;\nCategories:&quot;);
-    console.log(result[&quot;categories&quot;]);
-})
-.catch((error) =&gt; {
-  console.log(error);
-});
-</code></pre></details>
-<details><summary>PHP</summary>
-
-<pre><code class="language-php">&lt;?php
-
-$API_URL = &quot;http://localhost:8080/image-classification&quot;;
-$image_path = &quot;./demo.jpg&quot;;
-$output_image_path = &quot;./out.jpg&quot;;
-
-$image_data = base64_encode(file_get_contents($image_path));
-$payload = array(&quot;image&quot; =&gt; $image_data);
-
-$ch = curl_init($API_URL);
-curl_setopt($ch, CURLOPT_POST, true);
-curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-$response = curl_exec($ch);
-curl_close($ch);
-
-$result = json_decode($response, true)[&quot;result&quot;];
-file_put_contents($output_image_path, base64_decode($result[&quot;image&quot;]));
-echo &quot;Output image saved at &quot; . $output_image_path . &quot;\n&quot;;
-echo &quot;\nCategories:\n&quot;;
-print_r($result[&quot;categories&quot;]);
-?&gt;
-</code></pre></details>
-
 </details>
 <br/>
 

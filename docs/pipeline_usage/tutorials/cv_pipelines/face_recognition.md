@@ -391,9 +391,10 @@ data_root             # 数据集根目录，目录名称可以改变
 
 <details><summary>API参考</summary>
 
-<p>对于服务提供的所有操作：</p>
+<p>对于服务提供的主要操作：</p>
 <ul>
-<li>响应体以及POST请求的请求体均为JSON数据（JSON对象）。</li>
+<li>HTTP请求方法为POST。</li>
+<li>请求体和响应体均为JSON数据（JSON对象）。</li>
 <li>当请求处理成功时，响应状态码为<code>200</code>，响应体的属性如下：</li>
 </ul>
 <table>
@@ -442,7 +443,7 @@ data_root             # 数据集根目录，目录名称可以改变
 </tr>
 </tbody>
 </table>
-<p>服务提供的操作如下：</p>
+<p>服务提供的主要操作如下：</p>
 <ul>
 <li><b><code>infer</code></b></li>
 </ul>

@@ -24,6 +24,7 @@ from ...base import BasePipeline
 from ...formula_recognition import FormulaRecognitionPipeline
 from ...layout_parsing import LayoutParsingPipeline
 from ...ocr import OCRPipeline
+from ...pp_shitu_v2 import ShiTuV2Pipeline
 from ...ppchatocrv3 import PPChatOCRPipeline
 from ...seal_recognition import SealOCRPipeline
 from ...single_model_pipeline import (
@@ -58,6 +59,7 @@ from .pedestrian_attribute_recognition import (
 from .vehicle_attribute_recognition import (
     create_pipeline_app as create_vehicle_attribute_recognition_app,
 )
+from .pp_shitu_v2 import create_pipeline_app as create_pp_shitu_v2_app
 from .ppchatocrv3 import create_pipeline_app as create_ppchatocrv3_app
 from .seal_recognition import create_pipeline_app as create_seal_recognition_app
 from .semantic_segmentation import (
@@ -180,6 +182,12 @@ def create_pipeline_app(
                 "Expected `pipeline` to be an instance of `VehicleAttributeRecPipeline`."
             )
         return create_vehicle_attribute_recognition_app(pipeline, app_config)
+    elif pipeline_name == "PP-ShiTuV2":
+        if not isinstance(pipeline, ShiTuV2Pipeline):
+            raise TypeError(
+                "Expected `pipeline` to be an instance of `ShiTuV2Pipeline`."
+            )
+        return create_pp_shitu_v2_app(pipeline, app_config)
     else:
         if BasePipeline.get(pipeline_name):
             raise ValueError(

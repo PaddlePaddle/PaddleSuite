@@ -89,8 +89,8 @@ def create_pipeline_app(pipeline: SealOCRPipeline, app_config: AppConfig) -> Fas
                 ):
                     texts.append(Text(poly=poly, text=text, score=score))
                 seal_impressions.append(SealImpression(texts=texts))
-            layout_image_base64 = serving_utils.image_to_base64(
-                result["layout_result"].img
+            layout_image_base64 = serving_utils.base64_encode(
+                serving_utils.image_to_bytes(result["layout_result"].img)
             )
 
             # TODO: OCR image

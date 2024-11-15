@@ -16,7 +16,6 @@ import asyncio
 import os
 from typing import Awaitable, Final, List, Literal, Optional, Tuple, Union
 
-import cv2
 import numpy as np
 from fastapi import FastAPI, HTTPException
 from numpy.typing import ArrayLike
@@ -26,7 +25,7 @@ from typing_extensions import Annotated, TypeAlias, assert_never
 from .....utils import logging
 from .... import results
 from ...ppchatocrv3 import PPChatOCRPipeline
-from .. import file_storage
+from ..storage import SupportsGetURL, Storage, create_storage
 from .. import utils as serving_utils
 from ..app import AppConfig, create_app
 from ..models import Response, ResultResponse
@@ -169,16 +168,17 @@ def _postprocess_image(
     img: ArrayLike,
     request_id: str,
     filename: str,
-    file_storage_config: file_storage.FileStorageConfig,
+    file_storage: Optional[Storage],
 ) -> str:
     key = f"{request_id}/{filename}"
     ext = os.path.splitext(filename)[1]
     img = np.asarray(img)
-    _, encoded_img = cv2.imencode(ext, img)
-    encoded_img = encoded_img.tobytes()
-    return file_storage.postprocess_file(
-        encoded_img, config=file_storage_config, key=key
-    )
+    img_bytes = serving_utils.image_array_to_bytes(img, ext=ext)
+    if file_storage is not None:
+        file_storage.set(key, img_bytes)
+        if isinstance(file_storage, SupportsGetURL):
+            return file_storage.get_url(key)
+    return serving_utils.base64_encode(img_bytes)
 
 
 def create_pipeline_app(pipeline: PPChatOCRPipeline, app_config: AppConfig) -> FastAPI:
@@ -186,12 +186,10 @@ def create_pipeline_app(pipeline: PPChatOCRPipeline, app_config: AppConfig) -> F
         pipeline=pipeline, app_config=app_config, app_aiohttp_session=True
     )
 
-    if "file_storage_config" in ctx.extra:
-        ctx.extra["file_storage_config"] = file_storage.parse_file_storage_config(
-            ctx.extra["file_storage_config"]
-        )
+    if ctx.config.extra and "file_storage" in ctx.config.extra:
+        ctx.extra["file_storage"] = create_storage(ctx.config.extra["file_storage"])
     else:
-        ctx.extra["file_storage_config"] = file_storage.InMemoryStorageConfig()
+        ctx.extra["file_storage"] = None
     ctx.extra.setdefault("max_img_size", _DEFAULT_MAX_IMG_SIZE)
     ctx.extra.setdefault("max_num_imgs", _DEFAULT_MAX_NUM_IMGS)
 
@@ -259,7 +257,7 @@ def create_pipeline_app(pipeline: PPChatOCRPipeline, app_config: AppConfig) -> F
                     img,
                     request_id=request_id,
                     filename=f"input_image_{i}.jpg",
-                    file_storage_config=ctx.extra["file_storage_config"],
+                    file_storage=ctx.extra["file_storage"],
                 )
                 pp_img_futures.append(future)
                 future = serving_utils.call_async(
@@ -267,7 +265,7 @@ def create_pipeline_app(pipeline: PPChatOCRPipeline, app_config: AppConfig) -> F
                     item["ocr_result"].img,
                     request_id=request_id,
                     filename=f"ocr_image_{i}.jpg",
-                    file_storage_config=ctx.extra["file_storage_config"],
+                    file_storage=ctx.extra["file_storage"],
                 )
                 pp_img_futures.append(future)
                 future = serving_utils.call_async(
@@ -275,7 +273,7 @@ def create_pipeline_app(pipeline: PPChatOCRPipeline, app_config: AppConfig) -> F
                     item["layout_result"].img,
                     request_id=request_id,
                     filename=f"layout_image_{i}.jpg",
-                    file_storage_config=ctx.extra["file_storage_config"],
+                    file_storage=ctx.extra["file_storage"],
                 )
                 pp_img_futures.append(future)
                 texts: List[Text] = []
