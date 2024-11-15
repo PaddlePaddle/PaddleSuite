@@ -106,8 +106,12 @@ class SealOCRPipeline(BasePipeline):
 
     def predict(self, inputs, **kwargs):
         self.set_predictor(**kwargs)
-        img_info_list = list(self.img_reader(inputs))[0]
-        img_list = [img_info["img"] for img_info in img_info_list]
+        img_info_list = list(self.img_reader(inputs))
+        img_list = [
+            img_info["img"] 
+            for img_info_sublist in img_info_list 
+            for img_info in img_info_sublist 
+        ]
         for page_id, layout_pred in enumerate(self.layout_predictor(img_list)):
             single_img_res = {
                 "input_path": "",
