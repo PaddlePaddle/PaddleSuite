@@ -68,16 +68,16 @@ class Benchmark:
                 for name, sub_cmp in cmp.sub_cmps.items():
                     times = sub_cmp.timer.logs
                     counts = len(times)
-                    avg = np.mean(times)
-                    total = np.sum(times)
+                    avg = np.mean(times) * 1000
+                    total = np.sum(times) * 1000
                     detail.append((name, total, counts, avg))
                     summary["inference"] += total
                 op_tag = "postprocess"
             else:
                 times = cmp.timer.logs
                 counts = len(times)
-                avg = np.mean(times)
-                total = np.sum(times)
+                avg = np.mean(times) * 1000
+                total = np.sum(times) * 1000
                 detail.append((name, total, counts, avg))
                 summary[op_tag] += total
 
@@ -126,7 +126,7 @@ class Benchmark:
         table = PrettyTable(detail_head)
         table.add_rows(
             [
-                (name, f"{total * 1000:.8f}", cnts, f"{avg * 1000:.8f}")
+                (name, f"{total:.8f}", cnts, f"{avg:.8f}")
                 for name, total, cnts, avg in detail
             ]
         )
@@ -141,7 +141,7 @@ class Benchmark:
         table = PrettyTable(summary_head)
         table.add_rows(
             [
-                (name, f"{total * 1000:.8f}", cnts, f"{avg * 1000:.8f}")
+                (name, f"{total:.8f}", cnts, f"{avg:.8f}")
                 for name, total, cnts, avg in summary
             ]
         )
