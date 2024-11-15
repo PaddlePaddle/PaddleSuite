@@ -31,7 +31,7 @@ PaddleX 3.0 是基于飞桨框架构建的低代码开发工具，它集成了�
 | <img src="https://github.com/PaddlePaddle/PaddleX/assets/142379845/e3d97f4e-ab46-411c-8155-494c61492b0a" height="126px" width="180px"> | <img src="https://github.com/PaddlePaddle/PaddleX/assets/142379845/6e897bf6-35fe-45e6-a040-e9a1a20cfdf2" height="126px" width="180px"> | <img src="https://github.com/PaddlePaddle/PaddleX/assets/142379845/c54c66cc-da4f-4631-877b-43b0fbb192a6" height="126px" width="180px"> | <img src="https://github.com/PaddlePaddle/PaddleX/assets/142379845/0ce925b2-3776-4dde-8ce0-5156d5a2476e" height="126px" width="180px"> |
 
 ## 🌟 特性
-  🎨 **模型丰富一键调用**：将覆盖文本图像智能分析、OCR、目标检测、时序预测等多个关键领域的 **200+ 飞桨模型**整合为 **19 条模型产线**，通过极简的 Python API 一键调用，快速体验模型效果。同时支持 **20+ 单功能模块**，方便开发者进行模型组合使用。
+  🎨 **模型丰富一键调用**：将覆盖文本图像智能分析、OCR、目标检测、时序预测等多个关键领域的 **200+ 飞桨模型**整合为 **20 条模型产线**，通过极简的 Python API 一键调用，快速体验模型效果。同时支持 **20+ 单功能模块**，方便开发者进行模型组合使用。
 
   🚀 **提高效率降低门槛**：实现基于统一命令和图形界面的模型**全流程开发**，打造大小模型结合、大模型半监督学习和多模型融合的[**8 条特色模型产线**](https://aistudio.baidu.com/intro/paddlex)，大幅度降低迭代模型的成本。
 
@@ -41,10 +41,10 @@ PaddleX 3.0 是基于飞桨框架构建的低代码开发工具，它集成了�
 
 ## 📣 近期更新
 
-🔥🔥 《PaddleX三大部署能力详解与实战》，高性能推理、服务化部署、端侧部署全面升级。高性能推理深度优化模型推理与处理性能，大幅减少模型推理耗时；服务化部署提供7种语言调用示例，提升系统灵活性、扩展性和可维护性；端侧部署升级支持 ARM CPU 与 Mali/Adreno GPU 部署，模型更轻量级、耗费资源更少、执行速度更快。**11月7日（周四）19：00**直播为您深度解析 PaddleX 3.0 Beta1 在部署方面的功能、优势与技巧。 [报名链接](https://www.wjx.top/vm/rpPVnwS.aspx?udsid=524776)。
->[❗ 更多宝藏课程](https://aistudio.baidu.com/education/group/info/32160)
+🔥🔥 **2024.11.15**，PaddleX 3.0 Beta2 开源版正式发布，全面适配 PaddlePaddle 3.0b2 版本。**新增通用图像识别、人脸识别、车辆属性识别和行人属性识别产线，同时新增 42 个模型开发全流程适配昇腾 910B，并全面支持[GitHub 站点文档](https://paddlepaddle.github.io/PaddleX/latest/index.html)。**
 
 🔥🔥 **2024.9.30**，PaddleX 3.0 Beta1 开源版正式发布，提供 **200+ 模型** 通过极简的 Python API 一键调用；实现基于统一命令的模型全流程开发，并开源 **PP-ChatOCRv3** 特色模型产线基础能力；支持 **100+ 模型高性能推理和服务化部署**（持续迭代中），**4条模型产线8个重点视觉模型端侧部署**；**100+ 模型开发全流程适配昇腾 910B**，**39+ 模型开发全流程适配昆仑芯和寒武纪**。
+
 
 🔥 **2024.6.27**，PaddleX 3.0 Beta 开源版正式发布，支持以低代码的方式在本地端使用多种主流硬件进行产线和模型开发。
 
