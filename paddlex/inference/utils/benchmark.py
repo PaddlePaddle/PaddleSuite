@@ -38,7 +38,7 @@ class Benchmark:
         self._reset()
 
     def warmup_stop(self, warmup_num):
-        self._warmup_elapse = time.time() - self._warmup_start
+        self._warmup_elapse = (time.time() - self._warmup_start) * 1000
         self._warmup_num = warmup_num
         self._reset()
 
@@ -103,18 +103,25 @@ class Benchmark:
             ("End2End", self._e2e_elapse, e2e_num, self._e2e_elapse / e2e_num),
         ]
         if self._warmup_elapse:
-            summary.append(
-                (
-                    "WarmUp",
-                    self._warmup_elapse,
-                    self._warmup_num,
-                    self._warmup_elapse / self._warmup_num,
-                )
+            warmup_elapse, warmup_num, warmup_avg = (
+                self._warmup_elapse,
+                self._warmup_num,
+                self._warmup_elapse / self._warmup_num,
             )
+        else:
+            warmup_elapse, warmup_num, warmup_avg = 0, 0, 0
+        summary.append(
+            (
+                "WarmUp",
+                warmup_elapse,
+                warmup_num,
+                warmup_avg,
+            )
+        )
         return detail, summary
 
     def collect(self, e2e_num):
-        self._e2e_elapse = time.time() - self._e2e_tic
+        self._e2e_elapse = (time.time() - self._e2e_tic) * 1000
         detail, summary = self.gather(e2e_num)
 
         detail_head = [
