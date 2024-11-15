@@ -21,6 +21,8 @@ class FaceRecPipeline(ShiTuV2Pipeline):
     entities = "face_recognition"
 
     def get_rec_result(self, det_res, indexer):
+        if len(det_res["boxes"]) == 0:
+            return {"label": [], "score": []}
         subs_of_img = list(self._crop_by_boxes(det_res))
         img_list = [img["img"] for img in subs_of_img]
         all_rec_res = list(self.rec_model(img_list))
