@@ -132,8 +132,14 @@ def create_pipeline_app(pipeline: ShiTuV2Pipeline, app_config: AppConfig) -> Fas
             ]
             labels = [pair.label for pair in request.imageLabelPairs]
 
+            # TODO: Support specifying `index_type` and `metric_type` in the
+            # request
             index_data = await pipeline.call(
-                pipeline.pipeline.build_index, images, labels
+                pipeline.pipeline.build_index,
+                images,
+                labels,
+                index_type="Flat",
+                metric_type="IP",
             )
 
             index_storage = ctx.extra["index_storage"]

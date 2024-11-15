@@ -775,6 +775,7 @@ base_image_label_pairs = [
 image_label_pairs_to_add = [
     {&quot;image&quot;: &quot;./demo3.jpg&quot;, &quot;label&quot;: &quot;小狗&quot;},
 ]
+ids_to_remove = [1]
 infer_image_path = &quot;./demo4.jpg&quot;
 output_image_path = &quot;./out.jpg&quot;
 
@@ -807,6 +808,15 @@ if resp_index_add.status_code != 200:
     sys.exit(1)
 result_index_add = resp_index_add.json()[&quot;result&quot;]
 print(f&quot;Number of images indexed: {len(result_index_add['idMap'])}&quot;)
+
+payload = {&quot;ids&quot;: ids_to_remove, &quot;indexKey&quot;: result_index_build[&quot;indexKey&quot;]}
+resp_index_remove = requests.post(f&quot;{API_BASE_URL}/shitu-index-remove&quot;, json=payload)
+if resp_index_remove.status_code != 200:
+    print(f&quot;Request to shitu-index-remove failed with status code {resp_index_remove}.&quot;)
+    pprint.pp(resp_index_remove.json())
+    sys.exit(1)
+result_index_remove = resp_index_remove.json()[&quot;result&quot;]
+print(f&quot;Number of images indexed: {len(result_index_remove['idMap'])}&quot;)
 
 with open(infer_image_path, &quot;rb&quot;) as file:
     image_bytes = file.read()
