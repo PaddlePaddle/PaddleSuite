@@ -11,8 +11,6 @@ Small object detection is a specialized technique for identifying tiny objects w
 
 <b>The small object detection pipeline includes a small object detection module. If you prioritize model accuracy, choose a model with higher accuracy. If you prioritize inference speed, select a model with faster inference. If you prioritize model storage size, opt for a model with a smaller storage size.</b>
 
-<details><summary> 👉Model List Details</summary>
-
 <table>
 <thead>
 <tr>
@@ -47,7 +45,7 @@ Small object detection is a specialized technique for identifying tiny objects w
 </tr>
 </tbody>
 </table>
-<p><b>Note: The above accuracy metrics are based on the </b><a href="https://github.com/VisDrone/VisDrone-Dataset">VisDrone-DET</a><b> validation set mAP(0.5:0.95). All GPU inference times are based on an NVIDIA Tesla T4 machine with FP32 precision. CPU inference speeds are based on an Intel(R) Xeon(R) Gold 5117 CPU @ 2.00GHz with 8 threads and FP32 precision.</b></p></details>
+<p><b>Note: The above accuracy metrics are based on the </b><a href="https://github.com/VisDrone/VisDrone-Dataset">VisDrone-DET</a><b> validation set mAP(0.5:0.95). All GPU inference times are based on an NVIDIA Tesla T4 machine with FP32 precision. CPU inference speeds are based on an Intel(R) Xeon(R) Gold 5117 CPU @ 2.00GHz with 8 threads and FP32 precision.</b></p>
 
 ## 2. Quick Start
 PaddleX supports experiencing the small object detection pipeline's effects through command line or Python locally.

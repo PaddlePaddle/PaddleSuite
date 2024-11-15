@@ -13,8 +13,6 @@ The General OCR Pipeline is designed to solve text recognition tasks, extracting
 
 <b>The General OCR Pipeline comprises a text detection module and a text recognition module</b>, each containing several models. The specific models to use can be selected based on the benchmark data provided below. <b>If you prioritize model accuracy, choose models with higher accuracy. If you prioritize inference speed, choose models with faster inference. If you prioritize model size, choose models with smaller storage requirements.</b>
 
-<details><summary> 👉Model List Details</summary>
-
 <p><b>Text detection module:</b></p>
 <table>
 <thead>
@@ -114,7 +112,7 @@ The General OCR Pipeline is designed to solve text recognition tasks, extracting
 </tr>
 </table>
 
-<p><b>Note: The evaluation set for the above accuracy metrics is the <a href="https://aistudio.baidu.com/competition/detail/1131/0/introduction">OCR End-to-End Recognition Task of the PaddleOCR Algorithm Model Challenge - Track 1</a> B-rank. GPU inference time for all models is based on an NVIDIA Tesla T4 machine with FP32 precision. CPU inference speed is based on an Intel(R) Xeon(R) Gold 5117 CPU @ 2.00GHz with 8 threads and FP32 precision.</b></p></details>
+<p><b>Note: The evaluation set for the above accuracy metrics is the <a href="https://aistudio.baidu.com/competition/detail/1131/0/introduction">OCR End-to-End Recognition Task of the PaddleOCR Algorithm Model Challenge - Track 1</a> B-rank. GPU inference time for all models is based on an NVIDIA Tesla T4 machine with FP32 precision. CPU inference speed is based on an Intel(R) Xeon(R) Gold 5117 CPU @ 2.00GHz with 8 threads and FP32 precision.</b></p>
 
 ## 2. Quick Start
 PaddleX provides pre-trained models for the OCR Pipeline, allowing you to quickly experience its effects. You can try the General OCR Pipeline online or locally using command line or Python.

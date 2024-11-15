@@ -9,8 +9,36 @@ Semantic segmentation is a computer vision technique that aims to assign each pi
 
 <img src="https://raw.githubusercontent.com/cuicheng01/PaddleX_doc_images/main/images/pipelines/semantic_segmentation/01.png">
 
-<details><summary> 👉 Model List Details</summary>
+<table>
+<thead>
+<tr>
+<th>Model Name</th><th>Model Download Link</th>
+<th>mIoU (%)</th>
+<th>GPU Inference Time (ms)</th>
+<th>CPU Inference Time (ms)</th>
+<th>Model Size (M)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>OCRNet_HRNet-W48</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/OCRNet_HRNet-W48_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/OCRNet_HRNet-W48_pretrained.pdparams">Trained Model</a></td>
+<td>82.15</td>
+<td>78.9976</td>
+<td>2226.95</td>
+<td>249.8 M</td>
+</tr>
+<tr>
+<td>PP-LiteSeg-T</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-LiteSeg-T_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-LiteSeg-T_pretrained.pdparams">Trained Model</a></td>
+<td>73.10</td>
+<td>7.6827</td>
+<td>138.683</td>
+<td>28.5 M</td>
+</tr>
+</tbody>
+</table>
+> ❗ The above list features the <b>2 core models</b> that the image classification module primarily supports. In total, this module supports <b>18 models</b>. The complete list of models is as follows:
 
+<details><summary> 👉Model List Details</summary>
 <table>
 <thead>
 <tr>
@@ -129,7 +157,7 @@ Semantic segmentation is a computer vision technique that aims to assign each pi
 <th>Model Name</th><th>Model Download Link</th>
 <th>mIoU (%)</th>
 <th>GPU Inference Time (ms)</th>
-<th>CPU Inference Time (ms)</th>
+<th>CPU Inference Time</th>
 <th>Model Size (M)</th>
 </tr>
 </thead>
