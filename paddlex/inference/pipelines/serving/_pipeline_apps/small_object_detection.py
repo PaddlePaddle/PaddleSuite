@@ -49,7 +49,9 @@ def create_pipeline_app(pipeline: SmallObjDet, app_config: AppConfig) -> FastAPI
     )
 
     @app.post(
-        "/object-detection", operation_id="infer", responses={422: {"model": Response}}
+        "/small-object-detection",
+        operation_id="infer",
+        responses={422: {"model": Response}},
     )
     async def _infer(request: InferRequest) -> ResultResponse[InferResult]:
         pipeline = ctx.pipeline
