@@ -12,8 +12,6 @@ comments: true
 
 <b>通用</b><b>时序分类</b><b>产线中包含了</b><b>时序分类</b><b>模块</b>。
 
-<details><summary> 👉模型列表详情</summary>
-
 <table>
 <thead>
 <tr>
@@ -30,7 +28,7 @@ comments: true
 </tr>
 </tbody>
 </table>
-<p><b>注：以上精度指标测量自 <a href="https://paddlets.bj.bcebos.com/classification/UWaveGestureLibrary_TEST.csv">UWaveGestureLibrary</a> 数据集。以上所有模型 GPU 推理耗时基于 NVIDIA Tesla T4 机器，精度类型为 FP32， CPU 推理速度基于 Intel(R) Xeon(R) Gold 5117 CPU @ 2.00GHz，线程数为8，精度类型为 FP32。</b></p></details>
+<p><b>注：以上精度指标测量自 <a href="https://paddlets.bj.bcebos.com/classification/UWaveGestureLibrary_TEST.csv">UWaveGestureLibrary</a> 数据集。以上所有模型 GPU 推理耗时基于 NVIDIA Tesla T4 机器，精度类型为 FP32， CPU 推理速度基于 Intel(R) Xeon(R) Gold 5117 CPU @ 2.00GHz，线程数为8，精度类型为 FP32。</b></p>
 
 ## 2. 快速开始
 PaddleX 所提供的预训练的模型产线均可以快速体验效果，你可以在线体验通用时序分类产线的效果，也可以在本地使用命令行或 Python 体验通用时序分类产线的效果。

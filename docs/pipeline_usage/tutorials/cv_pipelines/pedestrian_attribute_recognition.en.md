@@ -11,7 +11,6 @@ Pedestrian attribute recognition is a key function in computer vision systems, u
 
 <b>The pedestrian attribute recognition pipeline includes a pedestrian detection module and a pedestrian attribute recognition module</b>, with several models in each module. Which models to use specifically can be selected based on the benchmark data below. <b>If you prioritize model accuracy, choose models with higher accuracy; if you prioritize inference speed, choose models with faster inference; if you prioritize model storage size, choose models with smaller storage</b>.
 
-<details><summary> 👉Model List Details</summary>
 
 <p><b>Pedestrian Detection Module</b>:</p>
 <table>
@@ -67,7 +66,7 @@ Pedestrian attribute recognition is a key function in computer vision systems, u
 </tr>
 </tbody>
 </table>
-<p><b>Note: The above accuracy metrics are mA on PaddleX's internally built dataset. GPU inference times are based on an NVIDIA Tesla T4 machine with FP32 precision. CPU inference speeds are based on an Intel(R) Xeon(R) Gold 5117 CPU @ 2.00GHz with 8 threads and FP32 precision.</b></p></details>
+<p><b>Note: The above accuracy metrics are mA on PaddleX's internally built dataset. GPU inference times are based on an NVIDIA Tesla T4 machine with FP32 precision. CPU inference speeds are based on an Intel(R) Xeon(R) Gold 5117 CPU @ 2.00GHz with 8 threads and FP32 precision.</b></p>
 
 ## 2. Quick Start
 The pre-trained model pipelines provided by PaddleX can quickly demonstrate their effectiveness. You can experience the pedestrian attribute recognition pipeline online or locally using command line or Python.

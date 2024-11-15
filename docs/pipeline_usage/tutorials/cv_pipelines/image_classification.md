@@ -11,14 +11,87 @@ comments: true
 
 <b>通用图像分类产线中包含了图像分类模块，如您更考虑模型精度，请选择精度较高的模型，如您更考虑模型推理速度，请选择推理速度较快的模型，如您更考虑模型存储大小，请选择存储大小较小的模型</b>。
 
-<details><summary> 👉模型列表详情</summary>
-
 <table>
 <tr>
 <th>模型</th><th>模型下载链接</th>
 <th>Top1 Acc(%)</th>
 <th>GPU推理耗时 (ms)</th>
-<th>CPU推理耗时（ms）</th>
+<th>CPU推理耗时 (ms)</th>
+<th>模型存储大小 (M)</th>
+</tr>
+<tr>
+<td>CLIP_vit_base_patch16_224</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/CLIP_vit_base_patch16_224_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/CLIP_vit_base_patch16_224_pretrained.pdparams">训练模型</a></td>
+<td>85.36</td>
+<td>13.1957</td>
+<td>285.493</td>
+<td>306.5 M</td>
+</tr>
+<tr>
+<td>MobileNetV3_small_x1_0</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/MobileNetV3_small_x1_0_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/MobileNetV3_small_x1_0_pretrained.pdparams">训练模型</a></td>
+<td>68.2</td>
+<td>6.00993</td>
+<td>12.9598</td>
+<td>10.5 M</td>
+</tr>
+<tr>
+<td>PP-HGNet_small</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-HGNet_small_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-HGNet_small_pretrained.pdparams">训练模型</a></td>
+<td>81.51</td>
+<td>5.50661</td>
+<td>119.041</td>
+<td>86.5 M</td>
+</tr>
+<tr>
+<td>PP-HGNetV2-B0</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-HGNetV2-B0_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-HGNetV2-B0_pretrained.pdparams">训练模型</a></td>
+<td>77.77</td>
+<td>6.53694</td>
+<td>23.352</td>
+<td>21.4 M</td>
+</tr>
+<tr>
+<td>PP-HGNetV2-B4</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-HGNetV2-B4_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-HGNetV2-B4_pretrained.pdparams">训练模型</a></td>
+<td>83.57</td>
+<td>9.66407</td>
+<td>54.2462</td>
+<td>70.4 M</td>
+</tr>
+<tr>
+<td>PP-HGNetV2-B6</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-HGNetV2-B6_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-HGNetV2-B6_pretrained.pdparams">训练模型</a></td>
+<td>86.30</td>
+<td>21.226</td>
+<td>255.279</td>
+<td>268.4 M</td>
+</tr>
+<tr>
+<td>PP-LCNet_x1_0</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-LCNet_x1_0_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-LCNet_x1_0_pretrained.pdparams">训练模型</a></td>
+<td>71.32</td>
+<td>3.84845</td>
+<td>9.23735</td>
+<td>10.5 M</td>
+</tr>
+<tr>
+<td>ResNet50</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/ResNet50_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/ResNet50_pretrained.pdparams">训练模型</a></td>
+<td>76.5</td>
+<td>9.62383</td>
+<td>64.8135</td>
+<td>90.8 M</td>
+</tr>
+<tr>
+<td>SwinTransformer_tiny_patch4_window7_224</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/SwinTransformer_tiny_patch4_window7_224_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/SwinTransformer_tiny_patch4_window7_224_pretrained.pdparams">训练模型</a></td>
+<td>81.10</td>
+<td>8.54846</td>
+<td>156.306</td>
+<td>100.1 M</td>
+</tr>
+</table>
+
+> ❗ 以上列出的是图像分类模块重点支持的<b>9个核心模型</b>，该模块总共支持<b>80个模型</b>，完整的模型列表如下：
+<details><summary> 👉模型列表详情</summary>
+<table>
+<tr>
+<th>模型</th><th>模型下载链接</th>
+<th>Top1 Acc(%)</th>
+<th>GPU推理耗时 (ms)</th>
+<th>CPU推理耗时 (ms)</th>
 <th>模型存储大小 (M)</th>
 <th>介绍</th>
 </tr>
@@ -428,7 +501,6 @@ comments: true
 <td>32.1 M</td>
 </tr>
 <tr>
-<tr>
 <td>PP-LCNetV2_base</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-LCNetV2_base_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-LCNetV2_base_pretrained.pdparams">训练模型</a></td>
 <td>77.05</td>
 <td>5.23428</td>
@@ -450,7 +522,6 @@ comments: true
 <td>13.0273</td>
 <td>14.6 M</td>
 </tr>
-<tr>
 <tr>
 <td>ResNet18_vd</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/ResNet18_vd_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/ResNet18_vd_pretrained.pdparams">训练模型</a></td>
 <td>72.3</td>
@@ -530,7 +601,6 @@ comments: true
 <td>266.0 M</td>
 </tr>
 <tr>
-<tr>
 <td>StarNet-S1</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/StarNet-S1_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/StarNet-S1_pretrained.pdparams">训练模型</a></td>
 <td>73.6</td>
 <td>9.895</td>
@@ -559,7 +629,6 @@ comments: true
 <td>43.2497</td>
 <td>28.9 M</td>
 </tr>
-<tr>
 <tr>
 <td>SwinTransformer_base_patch4_window7_224</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/SwinTransformer_base_patch4_window7_224_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/SwinTransformer_base_patch4_window7_224_pretrained.pdparams">训练模型</a></td>
 <td>83.37</td>
@@ -603,8 +672,7 @@ comments: true
 <td>156.306</td>
 <td>100.1 M</td>
 </tr>
-<tr>
-</tr></tr></tr></tr></tr></table>
+</table>
 
 <p><b>注：以上精度指标为 <a href="https://www.image-net.org/index.php">ImageNet-1k</a> 验证集 Top1 Acc。所有模型 GPU 推理耗时基于 NVIDIA Tesla T4 机器，精度类型为 FP32， CPU 推理速度基于 Intel(R) Xeon(R) Gold 5117 CPU @ 2.00GHz，线程数为8，精度类型为 FP32。</b></p></details>
 

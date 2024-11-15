@@ -11,8 +11,6 @@ Image multi-label classification is a technique that assigns multiple relevant c
 
 <b>The General Image Multi-Label Classification Pipeline includes a module for image multi-label classification. If you prioritize model accuracy, choose a model with higher accuracy. If you prioritize inference speed, choose a model with faster inference. If you prioritize model storage size, choose a model with a smaller storage size.</b>
 
-<details><summary> 👉Model List Details</summary>
-
 <table>
 <thead>
 <tr>
@@ -54,7 +52,7 @@ Image multi-label classification is a technique that assigns multiple relevant c
 </tr>
 </tbody>
 </table>
-<p><b>Note: The above accuracy metrics are mAP for the multi-label classification task on </b><a href="https://cocodataset.org/#home">COCO2017</a><b>. The GPU inference time for all models is based on an NVIDIA Tesla T4 machine with FP32 precision. The CPU inference speed is based on an Intel(R) Xeon(R) Gold 5117 CPU @ 2.00GHz with 8 threads and FP32 precision.</b></p></details>
+<p><b>Note: The above accuracy metrics are mAP for the multi-label classification task on </b><a href="https://cocodataset.org/#home">COCO2017</a><b>. The GPU inference time for all models is based on an NVIDIA Tesla T4 machine with FP32 precision. The CPU inference speed is based on an Intel(R) Xeon(R) Gold 5117 CPU @ 2.00GHz with 8 threads and FP32 precision.</b></p>
 
 ## 2. Quick Start
 PaddleX supports experiencing the effects of the General Image Multi-Label Classification Pipeline locally using command line or Python.

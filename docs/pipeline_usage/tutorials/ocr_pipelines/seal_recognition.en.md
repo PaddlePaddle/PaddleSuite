@@ -13,7 +13,6 @@ The <b>Seal Recognition</b> pipeline includes a layout area analysis module, a s
 
 <b>If you prioritize model accuracy, please choose a model with higher accuracy. If you prioritize inference speed, please choose a model with faster inference. If you prioritize model storage size, please choose a model with a smaller storage footprint.</b>
 
-<details><summary> 👉 Detailed Model List </summary>
 
 <p><b>Layout Analysis Module Models:</b></p>
 <table>
@@ -147,7 +146,7 @@ The <b>Seal Recognition</b> pipeline includes a layout area analysis module, a s
 </tr>
 </tbody>
 </table>
-<p><b>Note: The evaluation set for the above accuracy indicators is a self-built Chinese dataset from PaddleOCR, covering various scenarios such as street scenes, web images, documents, and handwriting. The text recognition subset includes 11,000 images. The GPU inference time for all models above is based on an NVIDIA Tesla T4 machine with a precision type of FP32. The CPU inference speed is based on an Intel(R) Xeon(R) Gold 5117 CPU @ 2.00GHz with 8 threads, and the precision type is also FP32.</b></p></details>
+<p><b>Note: The evaluation set for the above accuracy indicators is a self-built Chinese dataset from PaddleOCR, covering various scenarios such as street scenes, web images, documents, and handwriting. The text recognition subset includes 11,000 images. The GPU inference time for all models above is based on an NVIDIA Tesla T4 machine with a precision type of FP32. The CPU inference speed is based on an Intel(R) Xeon(R) Gold 5117 CPU @ 2.00GHz with 8 threads, and the precision type is also FP32.</b></p>
 
 ## 2.  Quick Start
 The pre trained model production line provided by PaddleX can quickly experience the effect. You can experience the effect of the seal recognition production line online, or use the command line or Python locally to experience the effect of the seal recognition production line.

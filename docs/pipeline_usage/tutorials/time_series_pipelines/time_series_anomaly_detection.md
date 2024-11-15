@@ -13,9 +13,6 @@ comments: true
 <b>通用</b><b>时序异常检测</b><b>产线中包含了</b><b>时序异常检测</b><b>模块，如您更考虑模型精度，请选择精度较高的模型，如您更考虑模型推理速度，请选择推理速度较快的模型，如您更考虑模型存储大小，请选择存储大小较小的模型</b>。
 
 
-
-<details><summary> 👉模型列表详情</summary>
-
 <table>
 <thead>
 <tr>
@@ -64,7 +61,7 @@ comments: true
 </tr>
 </tbody>
 </table>
-<p><b>注：以上精度指标测量自 </b><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/data/ts_anomaly_examples.tar">PSM</a><b> 数据集。以上所有模型 GPU 推理耗时基于 NVIDIA Tesla T4 机器，精度类型为 FP32， CPU 推理速度基于 Intel(R) Xeon(R) Gold 5117 CPU @ 2.00GHz，线程数为8，精度类型为 FP32。</b></p></details>
+<p><b>注：以上精度指标测量自 </b><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/data/ts_anomaly_examples.tar">PSM</a><b> 数据集。以上所有模型 GPU 推理耗时基于 NVIDIA Tesla T4 机器，精度类型为 FP32， CPU 推理速度基于 Intel(R) Xeon(R) Gold 5117 CPU @ 2.00GHz，线程数为8，精度类型为 FP32。</b></p>
 
 
 ## 2. 快速开始

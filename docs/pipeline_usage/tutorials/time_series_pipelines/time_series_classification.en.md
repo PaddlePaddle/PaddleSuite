@@ -11,8 +11,6 @@ Time series classification is a technique that categorizes time-series data into
 
 <b>The General Time Series Classification Pipeline includes a Time Series Classification module.</b>
 
-<details><summary> 👉Model List Details</summary>
-
 <table>
 <thead>
 <tr>
@@ -29,7 +27,7 @@ Time series classification is a technique that categorizes time-series data into
 </tr>
 </tbody>
 </table>
-<p><b>Note: The above accuracy metrics are measured on the <a href="https://paddlets.bj.bcebos.com/classification/UWaveGestureLibrary_TEST.csv">UWaveGestureLibrary</a> dataset. All model GPU inference times are based on an NVIDIA Tesla T4 machine with FP32 precision. CPU inference speeds are based on an Intel(R) Xeon(R) Gold 5117 CPU @ 2.00GHz with 8 threads and FP32 precision.</b></p></details>
+<p><b>Note: The above accuracy metrics are measured on the <a href="https://paddlets.bj.bcebos.com/classification/UWaveGestureLibrary_TEST.csv">UWaveGestureLibrary</a> dataset. All model GPU inference times are based on an NVIDIA Tesla T4 machine with FP32 precision. CPU inference speeds are based on an Intel(R) Xeon(R) Gold 5117 CPU @ 2.00GHz with 8 threads and FP32 precision.</b></p>
 
 ## 2. Quick Start
 PaddleX provides pre-trained model pipelines that can be quickly experienced. You can experience the effects of the General Time Series Classification Pipeline online or locally using command line or Python.

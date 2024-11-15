@@ -11,10 +11,6 @@ comments: true
 
 <b>通用图像多标签分类产线中包含了图像多标签分类模块，如您更考虑模型精度，请选择精度较高的模型，如您更考虑模型推理速度，请选择推理速度较快的模型，如您更考虑模型存储大小，请选择存储大小较小的模型</b>。
 
-
-
-<details><summary> 👉模型列表详情</summary>
-
 <table>
 <thead>
 <tr>
@@ -56,7 +52,7 @@ comments: true
 </tr>
 </tbody>
 </table>
-<p><b>注：以上精度指标为 </b><a href="https://cocodataset.org/#home">COCO2017</a><b> 的多标签分类任务mAP。以上所有模型 GPU 推理耗时基于 NVIDIA Tesla T4 机器，精度类型为 FP32， CPU 推理速度基于 Intel(R) Xeon(R) Gold 5117 CPU @ 2.00GHz，线程数为8，精度类型为 FP32。</b></p></details>
+<p><b>注：以上精度指标为 </b><a href="https://cocodataset.org/#home">COCO2017</a><b> 的多标签分类任务mAP。以上所有模型 GPU 推理耗时基于 NVIDIA Tesla T4 机器，精度类型为 FP32， CPU 推理速度基于 Intel(R) Xeon(R) Gold 5117 CPU @ 2.00GHz，线程数为8，精度类型为 FP32。</b></p>
 
 
 ## 2. 快速开始

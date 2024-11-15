@@ -11,8 +11,6 @@ Time series forecasting is a technique that utilizes historical data to predict 
 
 <b>The General Time Series Forecasting Pipeline includes a time series forecasting module. If you prioritize model accuracy, choose a model with higher accuracy. If you prioritize inference speed, select a model with faster inference. If you prioritize model storage size, choose a model with a smaller storage size.</b>
 
-<details><summary> 👉Model List Details</summary>
-
 <table>
 <thead>
 <tr>
@@ -67,8 +65,7 @@ Time series forecasting is a technique that utilizes historical data to predict 
 </tr>
 </tbody>
 </table>
-<p><b>Note: The above accuracy metrics are measured on <a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/data/Etth1.tar">ETTH1</a>. All model GPU inference times are based on an NVIDIA Tesla T4 machine with FP32 precision. CPU inference speeds are based on an Intel(R) Xeon(R) Gold 5117 CPU @ 2.00GHz with 8 threads and FP32 precision.</b></p></details>
-
+<p><b>Note: The above accuracy metrics are measured on <a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/data/Etth1.tar">ETTH1</a>. All model GPU inference times are based on an NVIDIA Tesla T4 machine with FP32 precision. CPU inference speeds are based on an Intel(R) Xeon(R) Gold 5117 CPU @ 2.00GHz with 8 threads and FP32 precision.</b></p>
 ## 2. Quick Start
 The pre-trained model pipelines provided by PaddleX allow for quick experience of their effects. You can experience the effects of the General Time Series Forecasting Pipeline online or locally using command line or Python.
 
