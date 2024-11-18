@@ -20,7 +20,7 @@ Train:
   epochs_iters: 20
   batch_size: 32
   learning_rate: 0.001
-  pretrain_weight_path: https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-ShiTuV2_rec_CLIP_vit_base_pretrained.pdparams
+  pretrain_weight_path: https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-ShiTuV2_rec_CLIP_vit_base_backbone_LAION400M_pretrained.pdparams # use CLIP_vit_base_patch16_224 pretrained
   warmup_steps: 5
   resume_path: null
   log_interval: 1

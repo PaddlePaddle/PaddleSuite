@@ -19,7 +19,7 @@ Train:
   num_classes: 1
   batch_size: 1
   learning_rate: 0.4
-  pretrain_weight_path: https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/STFPM_pretrained.pdparams
+  pretrain_weight_path: null
   warmup_steps: 100
   resume_path: null
   log_interval: 10

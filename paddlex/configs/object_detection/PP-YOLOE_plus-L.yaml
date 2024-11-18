@@ -19,7 +19,7 @@ Train:
   epochs_iters: 10
   batch_size: 8
   learning_rate: 0.0001
-  pretrain_weight_path: https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-YOLOE_plus-L_pretrained.pdparams
+  pretrain_weight_path: https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-YOLOE_plus-L_obj365_pretrained.pdparams # use object365 pretrained
   warmup_steps: 100
   resume_path: null
   log_interval: 10
