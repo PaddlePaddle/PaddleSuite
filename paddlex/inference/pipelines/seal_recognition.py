@@ -106,51 +106,53 @@ class SealOCRPipeline(BasePipeline):
 
     def predict(self, inputs, **kwargs):
         self.set_predictor(**kwargs)
-        img_info_list = list(self.img_reader(inputs))
-        img_list = [
-            img_info["img"] 
-            for img_info_sublist in img_info_list 
-            for img_info in img_info_sublist 
-        ]
-        for page_id, layout_pred in enumerate(self.layout_predictor(img_list)):
-            single_img_res = {
-                "input_path": "",
-                "layout_result": {},
-                "ocr_result": {},
-            }
-            # update layout result
-            single_img_res["input_path"] = layout_pred["input_path"]
-            single_img_res["layout_result"] = layout_pred
+        img_object_list = list(self.img_reader(inputs))
+        img_lists = [[] for _ in range(len(img_object_list))] 
+        filename_lists = [[] for _ in range(len(img_object_list))]
+        for img_info_list in img_object_list:
+            img_list = [img_info["img"] for img_info in img_info_list]
+            filename_list = [img_info["input_path"] for img_info in img_info_list]
+            img_lists.append(img_list)
+            filename_lists.append(filename_list)
+        for i, img_list in enumerate(img_lists):
+            for page_id, layout_pred in enumerate(self.layout_predictor(img_list)):
+                single_img_res = {
+                    "input_path": "",
+                    "layout_result": {},
+                    "ocr_result": {},
+                }
+                single_img_res["input_path"] = layout_pred["input_path"]
+                single_img_res["layout_result"] = layout_pred
 
-            seal_subs = []
-            if len(layout_pred["boxes"]) > 0:
-                subs_of_img = list(self._crop_by_boxes(layout_pred))
-                # get cropped images with label "seal"
-                for sub in subs_of_img:
-                    box = sub["box"]
-                    if sub["label"].lower() == "seal":
-                        seal_subs.append(sub)
-            all_seal_ocr_res = get_ocr_res(self.ocr_pipeline, seal_subs)
-            seal_res = {
-                "dt_polys": [],
-                "dt_scores": [],
-                "rec_text": [],
-                "rec_score": [],
-            }
-            for sub, seal_ocr_res in zip(seal_subs, all_seal_ocr_res):
-                if len(seal_ocr_res["dt_polys"]) > 0:
-                    box = sub["box"]
-                    ori_bbox_list = [
-                        dt + np.array(box[:2]).astype(np.int32)
-                        for dt in seal_ocr_res["dt_polys"]
-                    ]
-                    seal_res["dt_polys"].extend(ori_bbox_list)
-                    seal_res["dt_scores"].extend(seal_ocr_res["dt_scores"])
-                    seal_res["rec_text"].extend(seal_ocr_res["rec_text"])
-                    seal_res["rec_score"].extend(seal_ocr_res["rec_score"])
-            seal_res["input_path"] = single_img_res["input_path"]
-            single_img_res["src_file_name"] = inputs
-            single_img_res["ocr_result"] = OCRResult(seal_res)
-            single_img_res["page_id"] = page_id
+                seal_subs = []
+                if len(layout_pred["boxes"]) > 0:
+                    subs_of_img = list(self._crop_by_boxes(layout_pred))
+                    for sub in subs_of_img:
+                        box = sub["box"]
+                        if sub["label"].lower() == "seal":
+                            seal_subs.append(sub)
+                all_seal_ocr_res = get_ocr_res(self.ocr_pipeline, seal_subs)
+                seal_res = {
+                    "dt_polys": [],
+                    "dt_scores": [],
+                    "rec_text": [],
+                    "rec_score": [],
+                }
+                for sub, seal_ocr_res in zip(seal_subs, all_seal_ocr_res):
+                    if len(seal_ocr_res["dt_polys"]) > 0:
+                        box = sub["box"]
+                        ori_bbox_list = [
+                            dt + np.array(box[:2]).astype(np.int32)
+                            for dt in seal_ocr_res["dt_polys"]
+                        ]
+                        seal_res["dt_polys"].extend(ori_bbox_list)
+                        seal_res["dt_scores"].extend(seal_ocr_res["dt_scores"])
+                        seal_res["rec_text"].extend(seal_ocr_res["rec_text"])
+                        seal_res["rec_score"].extend(seal_ocr_res["rec_score"])
+                seal_res["input_path"] = str(single_img_res["input_path"])
+                single_img_res["src_file_name"] = filename_lists[i][page_id]
+                single_img_res["ocr_result"] = OCRResult(seal_res)
+                single_img_res["page_id"] = page_id
 
-            yield SealOCRResult(single_img_res)
+                yield SealOCRResult(single_img_res)
+
