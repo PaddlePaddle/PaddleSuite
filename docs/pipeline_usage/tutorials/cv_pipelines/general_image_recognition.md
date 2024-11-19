@@ -114,7 +114,7 @@ from paddlex import create_pipeline
 
 pipeline = create_pipeline(pipeline="PP-ShiTuV2")
 
-index_data = pipeline.build_index(data_root="drink_dataset_v2.0/", label_path="drink_dataset_v2.0/gallery.txt")
+index_data = pipeline.build_index(gallery_imgs="drink_dataset_v2.0/", gallery_label="drink_dataset_v2.0/gallery.txt")
 index_data.save("drink_index")
 
 output = pipeline.predict("./drink_dataset_v2.0/test_images/", index=index_data)
@@ -176,13 +176,13 @@ for res in output:
 </thead>
 <tbody>
 <tr>
-<td><code>data_root</code></td>
+<td><code>gallery_imgs</code></td>
 <td>数据集的根目录，数据组织方式参考<a href="#2.3-构建索引库的数据组织方式">2.3节 构建索引库的数据组织方式</a></td>
 <td><code>str</code></td>
 <td>无</td>
 </tr>
 <tr>
-<td><code>label_path</code></td>
+<td><code>gallery_label</code></td>
 <td>数据标注文件路径，数据组织方式参考<a href="#2.3-构建索引库的数据组织方式">2.3节 构建索引库的数据组织方式</a></td>
 <td><code>str</code></td>
 <td>无</td>
