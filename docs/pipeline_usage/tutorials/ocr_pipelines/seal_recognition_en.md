@@ -1,7 +1,7 @@
 [简体中文](seal_recognition.md) | English
 
 # Seal Recognition Pipeline Tutorial
- 
+
 ## 1. Introduction to the Seal Recognition Pipeline
 Seal recognition is a technology that automatically extracts and recognizes seal content from documents or images. The recognition of seal is part of document processing and has various applications in many scenarios, such as contract comparison, inventory access approval, and invoice reimbursement approval.
 
@@ -707,6 +707,7 @@ $payload = array("image" => $image_data);
 $ch = curl_init($API_URL);
 curl_setopt($ch, CURLOPT_POST, true);
 curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
+curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 $response = curl_exec($ch);
 curl_close($ch);
