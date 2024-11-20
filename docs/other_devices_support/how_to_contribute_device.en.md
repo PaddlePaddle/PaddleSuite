@@ -46,15 +46,15 @@ When creating a Predictor, it will judge whether the device is already supported
 
 ### 2.1.5 Updating the Multi-Devices User Guide
 
-Please update the PaddleX multi-devices user guide and add the newly supported device information to the documentation. Both Chinese and English versions need to be updated. The Chinese version is [PaddleX Multi-Devices Usage Guide](https://github.com/PaddlePaddle/PaddleX/blob/develop/docs/other_devices_support/multi_devices_use_guide.md), and the English version is [PaddleX Multi-Devices Usage Guide](https://github.com/PaddlePaddle/PaddleX/blob/develop/docs/other_devices_support/multi_devices_use_guide.en.md).
+Please update the PaddleX multi-devices user guide and add the newly supported device information to the documentation. Both Chinese and English versions need to be updated. The Chinese version is [PaddleX多硬件使用指南](https://github.com/PaddlePaddle/PaddleX/blob/develop/docs/other_devices_support/multi_devices_use_guide.md), and the English version is [PaddleX Multi-Devices Usage Guide](https://github.com/PaddlePaddle/PaddleX/blob/develop/docs/other_devices_support/multi_devices_use_guide.en.md).
 
 ### 2.1.6 Updating the Installation Tutorial
 
-Please provide device-related installation tutorials in both Chinese and English. The Chinese version can refer to [Ascend NPU PaddlePaddle Installation Tutorial](https://github.com/PaddlePaddle/PaddleX/blob/develop/docs/other_devices_support/paddlepaddle_install_NPU.md), and the English version can refer to [Ascend NPU PaddlePaddle Installation Tutorial](https://github.com/PaddlePaddle/PaddleX/blob/develop/docs/other_devices_support/paddlepaddle_install_NPU.en.md).
+Please provide device-related installation tutorials in both Chinese and English. The Chinese version can refer to [昇腾 NPU 飞桨安装教程](https://github.com/PaddlePaddle/PaddleX/blob/develop/docs/other_devices_support/paddlepaddle_install_NPU.md), and the English version can refer to [Ascend NPU PaddlePaddle Installation Tutorial](https://github.com/PaddlePaddle/PaddleX/blob/develop/docs/other_devices_support/paddlepaddle_install_NPU.en.md).
 
 ### 2.1.7 Updating the Model List
 
-Please provide a list of models supported by the device in both Chinese and English. The Chinese version can refer to [PaddleX Model List (Huawei Ascend NPU)](https://github.com/PaddlePaddle/PaddleX/blob/develop/docs/support_list/model_list_npu.md), and the English version can refer to [PaddleX Model List (Huawei Ascend NPU)](https://github.com/PaddlePaddle/PaddleX/blob/develop/docs/support_list/model_list_npu.en.md).
+Please provide a list of models supported by the device in both Chinese and English. The Chinese version can refer to [PaddleX模型列表（昇腾 NPU）](https://github.com/PaddlePaddle/PaddleX/blob/develop/docs/support_list/model_list_npu.md), and the English version can refer to [PaddleX Model List (Huawei Ascend NPU)](https://github.com/PaddlePaddle/PaddleX/blob/develop/docs/support_list/model_list_npu.en.md).
 
 ## 2.2 Training Support
 
