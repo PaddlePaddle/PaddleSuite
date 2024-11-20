@@ -2,7 +2,7 @@
 comments: true
 ---
 
-# PaddleX Multi-Hardware Usage Guide
+# PaddleX Multi-Devices Usage Guide
 
 This document focuses on the usage guide of PaddleX for Huawei Ascend NPU, Cambricon MLU, Kunlun XPU, and Hygon DCU hardware platforms.
 
