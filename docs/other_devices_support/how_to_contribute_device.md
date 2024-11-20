@@ -30,19 +30,19 @@
 
 ### 2.1.1 版本支持（可忽略）
 
-如果相关硬件对于飞桨版本有特定要求，可以在初始化时根据设备信息和版本信息进行判断，相关代码位于 [PaddleX初始化](https://github.com/PaddlePaddle/PaddleX/blob/develop/paddlex/__init__.py#L50-L66)
+如果相关硬件对于飞桨版本有特定要求，可以在初始化时根据设备信息和版本信息进行判断，相关代码位于 [PaddleX初始化](https://github.com/PaddlePaddle/PaddleX/blob/develop/paddlex/__init__.py)中的 `_check_paddle_version`
 
 ### 2.1.2 设置环境变量（可忽略）
 
-如果相关硬件在使用时，需要设定特殊的环境变量，可以修改设备环境设置代码，相关代码位于 [PaddleX环境变量设置](https://github.com/PaddlePaddle/PaddleX/blob/develop/paddlex/utils/device.py#L73-L103)
+如果相关硬件在使用时，需要设定特殊的环境变量，可以修改设备环境设置代码，相关代码位于 [PaddleX环境变量设置](https://github.com/PaddlePaddle/PaddleX/blob/develop/paddlex/utils/device.py)中的 `set_env_for_device`
 
 ### 2.1.3 创建Predictor
 
-PaddleX的推理能力基于飞桨Paddle Inference Predictor提供，创建Predictor时需要根据设备信息选择不同的硬件并创建pass，相关代码位于[PaddleX Predictor创建](https://github.com/PaddlePaddle/PaddleX/blob/develop/paddlex/inference/components/paddle_predictor/predictor.py#L104-L212)
+PaddleX的推理能力基于飞桨Paddle Inference Predictor提供，创建Predictor时需要根据设备信息选择不同的硬件并创建pass，相关代码位于[PaddleX Predictor创建](https://github.com/PaddlePaddle/PaddleX/blob/develop/paddlex/inference/components/paddle_predictor/predictor.py)的 `_create`
 
 ### 2.1.4 更新硬件支持列表
 
-创建Predictor时会判断设备是否已支持，相关代码位于[PaddleX Predictor Option](https://github.com/PaddlePaddle/PaddleX/blob/develop/paddlex/inference/utils/pp_option.py#L34)
+创建Predictor时会判断设备是否已支持，相关代码位于[PaddleX Predictor Option](https://github.com/PaddlePaddle/PaddleX/blob/develop/paddlex/inference/utils/pp_option.py)中的 `SUPPORT_DEVICE`
 
 ### 2.1.4 更新多硬件说明指南
 
