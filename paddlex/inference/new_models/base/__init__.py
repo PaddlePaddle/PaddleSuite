@@ -12,11 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from ..utils.flags import NEW_PREDICTOR
-
-if NEW_PREDICTOR:
-    from .new_models import create_predictor
-else:
-    from .models import create_predictor
-from .pipelines import create_pipeline
-from .utils.pp_option import PaddlePredictorOption
+from .component import BaseComponent
+from .transformer import BaseTransformer
+from .predictor import BasePredictor, BasicPredictor
+from .result import BaseResult, CVResult
+from .batch_sampler import BaseBatchSampler, BatchData

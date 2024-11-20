@@ -57,7 +57,12 @@ class Benchmark:
 
     def gather(self, e2e_num):
         # lazy import for avoiding circular import
-        from ..components.paddle_predictor import BasePaddlePredictor
+        from ...utils.flags import NEW_PREDICTOR
+
+        if NEW_PREDICTOR:
+            from ..new_models.common.paddle_predictor import BasePaddlePredictor
+        else:
+            from ..models.common_components.paddle_predictor import BasePaddlePredictor
 
         detail = []
         summary = {"preprocess": 0, "inference": 0, "postprocess": 0}
@@ -158,13 +163,11 @@ class Benchmark:
             save_dir = Path(INFER_BENCHMARK_OUTPUT)
             save_dir.mkdir(parents=True, exist_ok=True)
             csv_data = [detail_head, *detail]
-            # csv_data.extend(detail)
             with open(Path(save_dir) / "detail.csv", "w", newline="") as file:
                 writer = csv.writer(file)
                 writer.writerows(csv_data)
 
             csv_data = [summary_head, *summary]
-            # csv_data.extend(summary)
             with open(Path(save_dir) / "summary.csv", "w", newline="") as file:
                 writer = csv.writer(file)
                 writer.writerows(csv_data)

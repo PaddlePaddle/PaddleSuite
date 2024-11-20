@@ -12,11 +12,23 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from ..utils.flags import NEW_PREDICTOR
+from abc import abstractmethod
 
-if NEW_PREDICTOR:
-    from .new_models import create_predictor
-else:
-    from .models import create_predictor
-from .pipelines import create_pipeline
-from .utils.pp_option import PaddlePredictorOption
+from ....utils import logging
+from .component import BaseComponent
+
+
+class BaseTransformer(BaseComponent):
+
+    def __call__(self, batch_data):
+        logging.debug(f"Call apply() func...")
+        kwargs = {k: batch_data.get_by_key(v) for k, v in self.inputs}
+        output = self.apply(**kwargs)
+        if not output:
+            return batch_data
+        batch_data.update_by_key({f"{self.name}.{key}": output[key] for key in output})
+        return batch_data
+
+    @abstractmethod
+    def apply(self, input):
+        raise NotImplementedError

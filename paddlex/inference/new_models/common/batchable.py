@@ -12,11 +12,23 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from ..utils.flags import NEW_PREDICTOR
+import functools
 
-if NEW_PREDICTOR:
-    from .new_models import create_predictor
-else:
-    from .models import create_predictor
-from .pipelines import create_pipeline
-from .utils.pp_option import PaddlePredictorOption
+
+def batchable(func):
+    @functools.wraps(func)
+    def wrap(self, **batch_kwargs):
+        outputs = {}
+        keys = list(batch_kwargs.keys())
+        single_kwargs = [
+            dict(zip(keys, values)) for values in zip(*batch_kwargs.values())
+        ]
+        for kwargs in single_kwargs:
+            single_output = func(self, **kwargs)
+            for k, v in single_output.items():
+                if k not in outputs:
+                    outputs[k] = []
+                outputs[k].append(v)
+        return outputs
+
+    return wrap
