@@ -2,7 +2,7 @@
 
 The prosperity of the PaddlePaddle ecosystem is inseparable from the contributions of developers and users. We warmly welcome you to provide more hardware compatibility for PaddleX and greatly appreciate your feedback.
 
-Currently, PaddleX supports NVIDIA GPUs, XPU, Ascend NPU, Hygon DCU, and MLU. If the hardware you wish to support is not within the current scope, you can contribute by following the methods below.
+Currently, PaddleX supports Intel/Apple M series CPU, NVIDIA GPUs, XPU, Ascend NPU, Hygon DCU, and MLU. If the hardware you wish to support is not within the current scope, you can contribute by following the methods below.
 
 ## 1.1 Integration Device into PaddlePaddle Backend
 
