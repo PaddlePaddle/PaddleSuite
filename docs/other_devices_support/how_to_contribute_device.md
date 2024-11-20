@@ -20,7 +20,7 @@
 
 4. https://github.com/PaddlePaddle/PaddleOCR/tree/develop
 
-5. https://github.com/PaddlePaddle/PaddleTS/tree/develop
+5. https://github.com/PaddlePaddle/PaddleTS/tree/main
 
 # 2. 更新PaddleX
 

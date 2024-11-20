@@ -20,7 +20,7 @@ Since PaddleX is based on the PaddlePaddle model library, after the hardware com
 
 4. [PaddleOCR](https://github.com/PaddlePaddle/PaddleOCR/tree/develop)
 
-5. [PaddleTS](https://github.com/PaddlePaddle/PaddleTS/tree/develop)
+5. [PaddleTS](https://github.com/PaddlePaddle/PaddleTS/tree/main)
 
 # 2. Updating PaddleX
 

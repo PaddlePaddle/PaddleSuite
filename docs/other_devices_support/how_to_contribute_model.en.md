@@ -24,7 +24,7 @@ If the model you are adapting involves modifications to the model networking cod
 
 4. [PaddleOCR](https://github.com/PaddlePaddle/PaddleOCR/tree/develop)
 
-5. [PaddleTS](https://github.com/PaddlePaddle/PaddleTS/tree/develop)
+5. [PaddleTS](https://github.com/PaddlePaddle/PaddleTS/tree/main)
 
 # 2. Submitting an Issue for Explanation
 
