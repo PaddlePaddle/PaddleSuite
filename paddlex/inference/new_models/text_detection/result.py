@@ -12,14 +12,23 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from ..utils import flags
-from ..utils.flags import NEW_PREDICTOR, USE_NEW_INFERENCE
-if USE_NEW_INFERENCE:
-    from .pipelines_new import create_pipeline
-else:
-    from .pipelines import create_pipeline
-if NEW_PREDICTOR:
-    from .new_models import create_predictor
-else:
-    from .models import create_predictor
-from .utils.pp_option import PaddlePredictorOption
+import numpy as np
+import cv2
+
+from ..base import CVResult
+
+
+class TextDetResult(CVResult):
+    INPUT_KEYS = ["input_img", "input_path", "polys", "scores"]
+
+    def __init__(self, data):
+        super().__init__(data)
+
+    def _to_img(self):
+        """draw rectangle"""
+        boxes = self["polys"]
+        image = self._input_img
+        for box in boxes:
+            box = np.reshape(np.array(box).astype(int), [-1, 1, 2]).astype(np.int64)
+            cv2.polylines(image, [box], True, (0, 0, 255), 2)
+        return image[:, :, ::-1]
