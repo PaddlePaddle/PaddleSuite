@@ -12,15 +12,15 @@
 
 由于PaddleX基于飞桨模型库实现。当硬件完成飞桨后端接入后，按照硬件已经支持的模型情况，选择相应的套件去提交代码，确保相关套件适配了对应硬件，参考各套件贡献指南：
 
-1. https://github.com/PaddlePaddle/PaddleClas/tree/develop
+1. [PaddleClas](https://github.com/PaddlePaddle/PaddleClas/tree/develop)
 
-2. https://github.com/PaddlePaddle/PaddleDetection/tree/develop
+2. [PaddleDetection](https://github.com/PaddlePaddle/PaddleDetection/tree/develop)
 
-3. https://github.com/PaddlePaddle/PaddleSeg/tree/develop
+3. [PaddleSeg](https://github.com/PaddlePaddle/PaddleSeg/tree/develop)
 
-4. https://github.com/PaddlePaddle/PaddleOCR/tree/develop
+4. [PaddleOCR](https://github.com/PaddlePaddle/PaddleOCR/tree/develop)
 
-5. https://github.com/PaddlePaddle/PaddleTS/tree/main
+5. [PaddleTS](https://github.com/PaddlePaddle/PaddleTS/tree/main)
 
 # 2. 更新PaddleX
 
