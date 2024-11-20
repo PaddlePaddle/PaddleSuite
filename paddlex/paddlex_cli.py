@@ -16,7 +16,8 @@ import os
 import argparse
 import subprocess
 import sys
-import tempfile
+
+from importlib_resources import files, as_file
 
 from . import create_pipeline
 from .inference.pipelines import create_pipeline_from_config, load_pipeline_config
@@ -26,24 +27,9 @@ from .utils.interactive_get_pipeline import interactive_get_pipeline
 
 
 def _install_serving_deps():
-    SERVING_DEPS = [
-        "aiohttp>=3.9",
-        "bce-python-sdk>=0.8",
-        "fastapi>=0.110",
-        "pydantic>=2",
-        "starlette>=0.36",
-        "typing_extensions>=4.11",
-        "uvicorn>=0.16",
-        "yarl>=1.9",
-    ]
-    with tempfile.TemporaryDirectory() as td:
-        req_file = os.path.join(td, "requirements.txt")
-        with open(req_file, "w", encoding="utf-8") as f:
-            for dep in SERVING_DEPS:
-                f.write(dep + "\n")
-            f.flush()
+    with as_file(files("paddlex").joinpath("serving_requirements.txt")) as req_file:
         return subprocess.check_call(
-            [sys.executable, "-m", "pip", "install", "-r", req_file]
+            [sys.executable, "-m", "pip", "install", "-r", str(req_file)]
         )
 
 
