@@ -8,9 +8,9 @@ Currently, PaddleX supports Intel/Apple M series CPU, NVIDIA GPUs, XPU, Ascend N
 
 The PaddlePaddle deep learning framework provides multiple integration solutions, including operator development and mapping, subgraph and whole graph integration, deep learning compiler backend integration, and open neural network format conversion. Device vendors can flexibly choose based on their chip architecture design and software stack maturity. For specific details, please refer to [PaddlePaddle Custom Device Integration Solutions](https://www.paddlepaddle.org.cn/documentation/docs/en/develop/dev_guides/custom_device_docs/index_en.html).
 
-## 1.2 Support for Various Kits
+## 1.2 Support for PaddleCV devkits
 
-Since PaddleX is based on the PaddlePaddle model library, after the device completes the integration into the PaddlePaddle backend, select the corresponding kit to submit code based on the models already supported by the device to ensure that the relevant kits are adapted to the corresponding device. Refer to the contribution guides for each kit:
+Since PaddleX is based on the PaddlePaddle model library, after the device completes the integration into the PaddlePaddle backend, select the corresponding devkit to submit code based on the models already supported by the device to ensure that the relevant devkits are adapted to the corresponding device. Refer to the contribution guides for each devkit:
 
 1. [PaddleClas](https://github.com/PaddlePaddle/PaddleClas/tree/develop)
 
@@ -24,7 +24,7 @@ Since PaddleX is based on the PaddlePaddle model library, after the device compl
 
 # 2. Updating PaddleX
 
-After completing the device integration into PaddlePaddle and the various kits, you need to update the device recognition-related code and documentation in PaddleX.
+After completing the device integration into PaddlePaddle and the PaddleCV devkits, you need to update the device recognition-related code and documentation in PaddleX.
 
 ## 2.1 Inference Support
 
@@ -72,7 +72,7 @@ The relevant PR needs to provide information on reproducing model accuracy, incl
 
   * PaddleCustomDevice version (if any)
 
-  * The branch of PaddleX or the corresponding kit
+  * The branch of PaddleX or the corresponding devkit
 
 * The machine environment used to validate model accuracy, including but not limited to:
 
