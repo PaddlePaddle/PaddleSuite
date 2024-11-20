@@ -58,6 +58,6 @@
 
 * [飞桨硬件支持](https://www.paddlepaddle.org.cn/documentation/docs/zh/develop/hardware_support/index_cn.html)
 
-* [PaddleX多硬件使用指南](../base/devices_use_guidance.md)
+* [PaddleX多硬件使用指南](./multi_devices_use_guide.md)
 
 * [PaddleCustomDevice仓库](https://github.com/PaddlePaddle/PaddleCustomDevice)
