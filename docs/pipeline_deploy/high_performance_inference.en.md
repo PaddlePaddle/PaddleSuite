@@ -183,7 +183,7 @@ PaddleX combines model information and runtime environment information to provid
   </tr>
 
   <tr>
-    <td rowspan="2">General OCR</td>
+    <td rowspan="2">OCR</td>
     <td>Text Detection</td>
     <td>✅</td>
   </tr>
@@ -194,7 +194,7 @@ PaddleX combines model information and runtime environment information to provid
   </tr>
 
   <tr>
-    <td rowspan="7">Document Scene Information Extraction v3</td>
+    <td rowspan="7">PP-ChatOCRv3</td>
     <td>Table Recognition</td>
     <td>✅</td>
   </tr>
@@ -230,7 +230,7 @@ PaddleX combines model information and runtime environment information to provid
   </tr>
 
   <tr>
-    <td rowspan="4">General Table Recognition</td>
+    <td rowspan="4">Table Recognition</td>
     <td>Layout Detection</td>
     <td>✅</td>
   </tr>
@@ -251,25 +251,25 @@ PaddleX combines model information and runtime environment information to provid
   </tr>
 
   <tr>
-    <td>General Object Detection</td>
+    <td>Object Detection</td>
     <td>Object Detection</td>
     <td>FasterRCNN-Swin-Tiny-FPN ❌<br>CenterNet-DLA-34 ❌ <br>CenterNet-ResNet50 ❌</td>
   </tr>
 
   <tr>
-    <td>General Instance Segmentation</td>
+    <td>Instance Segmentation</td>
     <td>Instance Segmentation</td>
     <td>Mask-RT-DETR-S ❌</td>
   </tr>
 
   <tr>
-    <td>General Image Classification</td>
+    <td>Image Classification</td>
     <td>Image Classification</td>
     <td>✅</td>
   </tr>
 
   <tr>
-    <td>General Semantic Segmentation</td>
+    <td>Semantic Segmentation</td>
     <td>Semantic Segmentation</td>
     <td>✅</td>
   </tr>
@@ -299,8 +299,8 @@ PaddleX combines model information and runtime environment information to provid
   </tr>
 
   <tr>
-    <td>Image Multi-Label Classification</td>
-    <td>Image Multi-Label Classification</td>
+    <td>Multi-Label Image Classification</td>
+    <td>Multi-Label Image  Classification</td>
     <td>✅</td>
   </tr>
 
@@ -311,7 +311,7 @@ PaddleX combines model information and runtime environment information to provid
   </tr>
 
   <tr>
-    <td rowspan="8">General Layout Parsing</td>
+    <td rowspan="8">Layout Parsing</td>
     <td>Table Structure Recognition</td>
     <td>✅</td>
   </tr>
@@ -363,7 +363,7 @@ PaddleX combines model information and runtime environment information to provid
   </tr>
 
   <tr>
-    <td rowspan="3">Seal Text Recognition</td>
+    <td rowspan="3">Seal Recognition</td>
     <td>Layout Region Analysis</td>
     <td>✅</td>
   </tr>
@@ -379,7 +379,7 @@ PaddleX combines model information and runtime environment information to provid
   </tr>
 
   <tr>
-    <td rowspan="2">General Image Recognition</td>
+    <td rowspan="2">Image Recognition</td>
     <td>Subject Detection</td>
     <td>✅</td>
   </tr>
