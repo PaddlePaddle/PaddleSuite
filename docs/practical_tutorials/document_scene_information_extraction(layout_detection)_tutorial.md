@@ -114,6 +114,14 @@ PaddleX 提供了 4 个端到端的版面区域定位模型，具体可参考 [�
 <td>基于PicoDet-1x在PubLayNet数据集训练的高效率版面区域定位模型，可定位包含文字、标题、表格、图片以及列表这5类区域</td>
 </tr>
 <tr>
+<td>PicoDet_layout_1x_table</td>
+<td>95.7</td>
+<td>12.623</td>
+<td>90.8934</td>
+<td>7.4 M</td>
+<td>基于PicoDet-1x在自建数据集训练的高效率版面区域定位模型，可定位包含表格1个类别</td>
+</tr>
+<tr>
 <td>PicoDet-S_layout_3cls</td>
 <td>87.1</td>
 <td>13.5</td>
