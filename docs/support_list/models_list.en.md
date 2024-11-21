@@ -682,7 +682,7 @@ PaddleX incorporates multiple pipelines, each containing several modules, and ea
 <td>-</td>
 <td>-</td>
 <td>325.6 M</td>
-<td><a href="https://github.com/PaddlePaddle/PaddleX/blob/develop/paddlex/configs/multilabel_classification/CLIP_vit_base_patch16_448_ML.yaml">CLIP_vit_base_patch16_448_ML.yaml</a></td>
+<td><a href="https://github.com/PaddlePaddle/PaddleX/blob/develop/paddlex/configs/image_multilabel_classification/CLIP_vit_base_patch16_448_ML.yaml">CLIP_vit_base_patch16_448_ML.yaml</a></td>
 <td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/CLIP_vit_base_patch16_448_ML_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/CLIP_vit_base_patch16_448_ML_pretrained.pdparams">Trained Model</a></td></tr>
 <tr>
 <td>PP-HGNetV2-B0_ML</td>
@@ -690,7 +690,7 @@ PaddleX incorporates multiple pipelines, each containing several modules, and ea
 <td>-</td>
 <td>-</td>
 <td>39.6 M</td>
-<td><a href="../../paddlex/configs/multilabel_classification/PP-HGNetV2-B0_ML.yaml">PP-HGNetV2-B0_ML.yaml</a></td>
+<td><a href="../../paddlex/configs/image_multilabel_classification/PP-HGNetV2-B0_ML.yaml">PP-HGNetV2-B0_ML.yaml</a></td>
 <td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-HGNetV2-B0_ML_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-HGNetV2-B0_ML_pretrained.pdparams">Trained Model</a></td></tr>
 <tr>
 <td>PP-HGNetV2-B4_ML</td>
@@ -698,7 +698,7 @@ PaddleX incorporates multiple pipelines, each containing several modules, and ea
 <td>-</td>
 <td>-</td>
 <td>88.5 M</td>
-<td><a href="../../paddlex/configs/multilabel_classification/PP-HGNetV2-B4_ML.yaml">PP-HGNetV2-B4_ML.yaml</a></td>
+<td><a href="../../paddlex/configs/image_multilabel_classification/PP-HGNetV2-B4_ML.yaml">PP-HGNetV2-B4_ML.yaml</a></td>
 <td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-HGNetV2-B4_ML_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-HGNetV2-B4_ML_pretrained.pdparams">Trained Model</a></td></tr>
 <tr>
 <td>PP-HGNetV2-B6_ML</td>
@@ -706,7 +706,7 @@ PaddleX incorporates multiple pipelines, each containing several modules, and ea
 <td>-</td>
 <td>-</td>
 <td>286.5 M</td>
-<td><a href="../../paddlex/configs/multilabel_classification/PP-HGNetV2-B6_ML.yaml">PP-HGNetV2-B6_ML.yaml</a></td>
+<td><a href="../../paddlex/configs/image_multilabel_classification/PP-HGNetV2-B6_ML.yaml">PP-HGNetV2-B6_ML.yaml</a></td>
 <td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-HGNetV2-B6_ML_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-HGNetV2-B6_ML_pretrained.pdparams">Trained Model</a></td></tr>
 <tr>
 <td>PP-LCNet_x1_0_ML</td>
@@ -714,7 +714,7 @@ PaddleX incorporates multiple pipelines, each containing several modules, and ea
 <td>-</td>
 <td>-</td>
 <td>29.4 M</td>
-<td><a href="../../paddlex/configs/multilabel_classification/PP-LCNet_x1_0_ML.yaml">PP-LCNet_x1_0_ML.yaml</a></td>
+<td><a href="../../paddlex/configs/image_multilabel_classification/PP-LCNet_x1_0_ML.yaml">PP-LCNet_x1_0_ML.yaml</a></td>
 <td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-LCNet_x1_0_ML_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-LCNet_x1_0_ML_pretrained.pdparams">Trained Model</a></td></tr>
 <tr>
 <td>ResNet50_ML</td>
@@ -722,7 +722,7 @@ PaddleX incorporates multiple pipelines, each containing several modules, and ea
 <td>-</td>
 <td>-</td>
 <td>108.9 M</td>
-<td><a href="https://github.com/PaddlePaddle/PaddleX/blob/develop/paddlex/configs/multilabel_classification/ResNet50_ML.yaml">ResNet50_ML.yaml</a></td>
+<td><a href="https://github.com/PaddlePaddle/PaddleX/blob/develop/paddlex/configs/image_multilabel_classification/ResNet50_ML.yaml">ResNet50_ML.yaml</a></td>
 <td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/ResNet50_ML_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/ResNet50_ML_pretrained.pdparams">Trained Model</a></td></tr>
 </tbody>
 </table>
