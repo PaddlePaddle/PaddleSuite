@@ -44,15 +44,15 @@ PaddleX的推理能力基于飞桨Paddle Inference Predictor提供，创建Predi
 
 创建Predictor时会判断设备是否已支持，相关代码位于[PaddleX Predictor Option](https://github.com/PaddlePaddle/PaddleX/blob/develop/paddlex/inference/utils/pp_option.py)中的 `SUPPORT_DEVICE`
 
-### 2.1.4 更新多硬件说明指南
+### 2.1.5 更新多硬件说明指南
 
 请更新PaddleX多硬件说明指南，将新支持的硬件信息更新到文档中，需要同时更新中英文版本，中文版本 [PaddleX多硬件使用指南](https://github.com/PaddlePaddle/PaddleX/blob/develop/docs/other_devices_support/multi_devices_use_guide.md) ，英文版本 [PaddleX Multi-Hardware Usage Guide](https://github.com/PaddlePaddle/PaddleX/blob/develop/docs/other_devices_support/multi_devices_use_guide.en.md)
 
-### 2.1.5 更新安装教程
+### 2.1.6 更新安装教程
 
 请提供硬件相关的安装教程，需要提供中英文版本，中文版本参考 [昇腾 NPU 飞桨安装教程](https://github.com/PaddlePaddle/PaddleX/blob/develop/docs/other_devices_support/paddlepaddle_install_NPU.md) ，英文版本参考 [Ascend NPU PaddlePaddle Installation Tutorial](https://github.com/PaddlePaddle/PaddleX/blob/develop/docs/other_devices_support/paddlepaddle_install_NPU.en.md)
 
-### 2.1.6 更新模型列表
+### 2.1.7 更新模型列表
 
 请提供硬件支持的模型列表，需要提供中英文版本，中文版本参考 [PaddleX模型列表（昇腾 NPU）](https://github.com/PaddlePaddle/PaddleX/blob/develop/docs/support_list/model_list_npu.md) ，英文版本参考 [PaddleX Model List (Huawei Ascend NPU)](https://github.com/PaddlePaddle/PaddleX/blob/develop/docs/support_list/model_list_npu.en.md)
 
