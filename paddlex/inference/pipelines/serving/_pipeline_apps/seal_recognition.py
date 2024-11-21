@@ -44,13 +44,10 @@ class Text(BaseModel):
     score: float
 
 
-class SealImpression(BaseModel):
-    texts: List[Text]
-
-
 class InferResult(BaseModel):
-    sealImpressions: List[SealImpression]
+    texts: List[Text]
     layoutImage: str
+    ocrImage: str
 
 
 def create_pipeline_app(pipeline: SealOCRPipeline, app_config: AppConfig) -> FastAPI:
@@ -81,27 +78,28 @@ def create_pipeline_app(pipeline: SealOCRPipeline, app_config: AppConfig) -> Fas
 
             result = (await pipeline.infer(image))[0]
 
-            seal_impressions: List[SealImpression] = []
-            for item in result["ocr_result"]:
-                texts: List[Text] = []
-                for poly, text, score in zip(
-                    item["dt_polys"], item["rec_text"], item["rec_score"]
-                ):
-                    texts.append(Text(poly=poly, text=text, score=score))
-                seal_impressions.append(SealImpression(texts=texts))
+            texts: List[Text] = []
+            for poly, text, score in zip(
+                result["ocr_result"]["dt_polys"],
+                result["ocr_result"]["rec_text"],
+                result["ocr_result"]["rec_score"],
+            ):
+                texts.append(Text(poly=poly, text=text, score=score))
             layout_image_base64 = serving_utils.base64_encode(
                 serving_utils.image_to_bytes(result["layout_result"].img)
             )
-
-            # TODO: OCR image
+            ocr_image_base64 = serving_utils.base64_encode(
+                serving_utils.image_to_bytes(result["ocr_result"].img)
+            )
 
             return ResultResponse(
                 logId=serving_utils.generate_log_id(),
                 errorCode=0,
                 errorMsg="Success",
                 result=InferResult(
-                    sealImpressions=seal_impressions,
+                    texts=texts,
                     layoutImage=layout_image_base64,
+                    ocrImage=ocr_image_base64,
                 ),
             )
 
