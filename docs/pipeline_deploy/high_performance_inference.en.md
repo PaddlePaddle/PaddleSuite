@@ -178,147 +178,248 @@ PaddleX combines model information and runtime environment information to provid
 <table>
   <tr>
     <th>Pipeline</th>
-    <th>Pipeline Module</th>
-    <th>Specific Models</th>
-  </tr>
-  <tr>
-    <td>General Image Classification</td>
-    <td>Image Classification</td>
-    <td>ResNet18<br/>ResNet34<details>
-    <summary><b>more</b></summary>ResNet50<br/>ResNet101<br/>ResNet152<br/>ResNet18_vd<br/>ResNet34_vd<br/>ResNet50_vd<br/>ResNet101_vd<br/>ResNet152_vd<br/>ResNet200_vd<br/>PP-LCNet_x0_25<br/>PP-LCNet_x0_35<br/>PP-LCNet_x0_5<br/>PP-LCNet_x0_75<br/>PP-LCNet_x1_0<br/>PP-LCNet_x1_5<br/>PP-LCNet_x2_0<br/>PP-LCNet_x2_5<br/>PP-LCNetV2_small<br/>PP-LCNetV2_base<br/>PP-LCNetV2_large<br/>MobileNetV3_large_x0_35<br/>MobileNetV3_large_x0_5<br/>MobileNetV3_large_x0_75<br/>MobileNetV3_large_x1_0<br/>MobileNetV3_large_x1_25<br/>MobileNetV3_small_x0_35<br/>MobileNetV3_small_x0_5<br/>MobileNetV3_small_x0_75<br/>MobileNetV3_small_x1_0<br/>MobileNetV3_small_x1_25<br/>ConvNeXt_tiny<br/>ConvNeXt_small<br/>ConvNeXt_base_224<br/>ConvNeXt_base_384<br/>ConvNeXt_large_224<br/>ConvNeXt_large_384<br/>MobileNetV1_x0_25<br/>MobileNetV1_x0_5<br/>MobileNetV1_x0_75<br/>MobileNetV1_x1_0<br/>MobileNetV2_x0_25<br/>MobileNetV2_x0_5<br/>MobileNetV2_x1_0<br/>MobileNetV2_x1_5<br/>MobileNetV2_x2_0<br/>SwinTransformer_tiny_patch4_window7_224<br/>SwinTransformer_small_patch4_window7_224<br/>SwinTransformer_base_patch4_window7_224<br/>SwinTransformer_base_patch4_window12_384<br/>SwinTransformer_large_patch4_window7_224<br/>SwinTransformer_large_patch4_window12_384<br/>PP-HGNet_small<br/>PP-HGNet_tiny<br/>PP-HGNet_base<br/>PP-HGNetV2-B0<br/>PP-HGNetV2-B1<br/>PP-HGNetV2-B2<br/>PP-HGNetV2-B3<br/>PP-HGNetV2-B4<br/>PP-HGNetV2-B5<br/>PP-HGNetV2-B6<br/>CLIP_vit_base_patch16_224<br/>CLIP_vit_large_patch14_224</details></td>
-  </tr>
-
-  <tr>
-    <td>General Object Detection</td>
-    <td>Object Detection</td>
-    <td>PP-YOLOE_plus-S<br/>PP-YOLOE_plus-M<details>
-        <summary><b>more</b></summary>PP-YOLOE_plus-L<br/>PP-YOLOE_plus-X<br/>YOLOX-N<br/>YOLOX-T<br/>YOLOX-S<br/>YOLOX-M<br/>YOLOX-L<br/>YOLOX-X<br/>YOLOv3-DarkNet53<br/>YOLOv3-ResNet50_vd_DCN<br/>YOLOv3-MobileNetV3<br/>RT-DETR-R18<br/>RT-DETR-R50<br/>RT-DETR-L<br/>RT-DETR-H<br/>RT-DETR-X<br/>PicoDet-S<br/>PicoDet-L</details></td>
-  </tr>
-
-  <tr>
-    <td>General Semantic Segmentation</td>
-    <td>Semantic Segmentation</td>
-    <td>Deeplabv3-R50<br/>Deeplabv3-R101<details>
-    <summary><b>more</b></summary>Deeplabv3_Plus-R50<br/>Deeplabv3_Plus-R101<br/>PP-LiteSeg-T<br/>OCRNet_HRNet-W48<br/>OCRNet_HRNet-W18<br/>SeaFormer_tiny<br/>SeaFormer_small<br/>SeaFormer_base<br/>SeaFormer_large<br/>SegFormer-B0<br/>SegFormer-B1<br/>SegFormer-B2<br/>SegFormer-B3<br/>SegFormer-B4<br/>SegFormer-B5</details></td>
-  </tr>
-
-  <tr>
-    <td>General Instance Segmentation</td>
-    <td>Instance Segmentation</td>
-    <td>Mask-RT-DETR-L<br/>Mask-RT-DETR-H</td>
-  </tr>
-
-  <tr>
-    <td rowspan="3">Seal Text Recognition</td>
-    <td>Layout Analysis</td>
-    <td>PicoDet-S_layout_3cls<br/>PicoDet-S_layout_17cls<details>
-    <summary><b>more</b></summary>PicoDet-L_layout_3cls<br/>PicoDet-L_layout_17cls<br/>RT-DETR-H_layout_3cls<br/>RT-DETR-H_layout_17cls</details></td>
-  </tr>
-
-  <tr>
-    <td>Seal Text Detection</td>
-    <td>PP-OCRv4_server_seal_det<br/>PP-OCRv4_mobile_seal_det</td>
-  </tr>
-
-  <tr>
-    <td>Text Recognition</td>
-    <td>PP-OCRv4_mobile_rec<br/>PP-OCRv4_server_rec</td>
+    <th>Module</th>
+    <th>Model Support List</th>
   </tr>
 
   <tr>
     <td rowspan="2">General OCR</td>
     <td>Text Detection</td>
-    <td>PP-OCRv4_server_det<br/>PP-OCRv4_mobile_det</td>
+    <td>✅</td>
   </tr>
 
   <tr>
     <td>Text Recognition</td>
-    <td>PP-OCRv4_server_rec<br/>PP-OCRv4_mobile_rec<br/>ch_RepSVTR_rec<br/>ch_SVTRv2_rec</td>
+    <td>✅</td>
   </tr>
 
   <tr>
-    <td rowspan="5">General Table Recognition</td>
+    <td rowspan="7">Document Scene Information Extraction v3</td>
+    <td>Table Recognition</td>
+    <td>✅</td>
+  </tr>
+
+  <tr>
     <td>Layout Detection</td>
-    <td>PicoDet_layout_1x</td>
-  </tr>
-
-  <tr>
-    <td rowspan="2">Table Recognition</td>
-    <td>SLANet</td>
-  </tr>
-
-  <tr>
-    <td>SLANet_plus</td>
+    <td>✅</td>
   </tr>
 
   <tr>
     <td>Text Detection</td>
-    <td>PP-OCRv4_server_det<br/>PP-OCRv4_mobile_det</td>
+    <td>✅</td>
   </tr>
 
   <tr>
     <td>Text Recognition</td>
-    <td>PP-OCRv4_server_rec<br/>PP-OCRv4_mobile_rec<br/>ch_RepSVTR_rec<br/>ch_SVTRv2_rec</td>
+    <td>✅</td>
   </tr>
 
   <tr>
-    <td rowspan="15">Document Scene Information Extraction v3</td>
-    <td rowspan="2">Table Recognition</td>
-    <td>SLANet</td>
+    <td>Seal Text Detection</td>
+    <td>✅</td>
   </tr>
 
   <tr>
-    <td>SLANet_plus</td>
-  </tr>
-
-  <tr>
-    <td>Layout Detection</td>
-    <td>PicoDet_layout_1x</td>
-  </tr>
-
-  <tr>
-    <td rowspan="2">Text Detection</td>
-    <td>PP-OCRv4_server_det</td>
-  </tr>
-
-  <tr>
-    <td>PP-OCRv4_mobile_det</td>
-  </tr>
-
-  <tr>
-    <td rowspan="4">Text Recognition</td>
-    <td>PP-OCRv4_server_rec</td>
-  </tr>
-
-  <tr>
-    <td>PP-OCRv4_mobile_rec</td>
-  </tr>
-
-  <tr>
-    <td>ch_RepSVTR_rec</td>
-  </tr>
-
-  <tr>
-    <td>ch_SVTRv2_rec</td>
-  </tr>
-
-  <tr>
-    <td rowspan="2">Seal Text Detection</td>
-    <td>PP-OCRv4_server_seal_det</td>
-  </tr>
-
-  <tr>
-    <td>PP-OCRv4_mobile_seal_det</td>
-  </tr>
-
-  <tr>
-    <td>Text Image Rectification</td>
-    <td>UVDoc</td>
+    <td>Text Image Unwarping</td>
+    <td>✅</td>
   </tr>
 
   <tr>
     <td>Document Image Orientation Classification</td>
-    <td>PP-LCNet_x1_0_doc_ori</td>
+    <td>✅</td>
+  </tr>
+
+  <tr>
+    <td rowspan="4">General Table Recognition</td>
+    <td>Layout Detection</td>
+    <td>✅</td>
+  </tr>
+
+  <tr>
+    <td>Table Recognition</td>
+    <td>✅</td>
+  </tr>
+
+  <tr>
+    <td>Text Detection</td>
+    <td>✅</td>
+  </tr>
+
+  <tr>
+    <td>Text Recognition</td>
+    <td>✅</td>
+  </tr>
+
+  <tr>
+    <td>General Object Detection</td>
+    <td>Object Detection</td>
+    <td>FasterRCNN-Swin-Tiny-FPN ❌<br>CenterNet-DLA-34 ❌ <br>CenterNet-ResNet50 ❌</td>
+  </tr>
+
+  <tr>
+    <td>General Instance Segmentation</td>
+    <td>Instance Segmentation</td>
+    <td>Mask-RT-DETR-S ❌</td>
+  </tr>
+
+  <tr>
+    <td>General Image Classification</td>
+    <td>Image Classification</td>
+    <td>✅</td>
+  </tr>
+
+  <tr>
+    <td>General Semantic Segmentation</td>
+    <td>Semantic Segmentation</td>
+    <td>✅</td>
+  </tr>
+
+  <tr>
+    <td>Time Series Forecasting</td>
+    <td>Time Series Forecasting</td>
+    <td>❌</td>
+  </tr>
+
+  <tr>
+    <td>Time Series Anomaly Detection</td>
+    <td>Time Series Anomaly Forecasting</td>
+    <td>❌</td>
+  </tr>
+
+  <tr>
+    <td>Time Series Classification</td>
+    <td>Time Series Classification</td>
+    <td>❌</td>
+  </tr>
+
+  <tr>
+    <td>Small Object Detection</td>
+    <td>Small Object Detection</td>
+    <td>✅</td>
+  </tr>
+
+  <tr>
+    <td>Image Multi-Label Classification</td>
+    <td>Image Multi-Label Classification</td>
+    <td>✅</td>
+  </tr>
+
+  <tr>
+    <td>Image Anomaly Detection</td>
+    <td>Unsupervised Anomaly Detection</td>
+    <td>✅</td>
+  </tr>
+
+  <tr>
+    <td rowspan="8">General Layout Parsing</td>
+    <td>Table Structure Recognition</td>
+    <td>✅</td>
+  </tr>
+
+  <tr>
+    <td>Layout Region Analysis</td>
+    <td>✅</td>
+  </tr>
+
+  <tr>
+    <td>Text Detection</td>
+    <td>✅</td>
+  </tr>
+
+  <tr>
+    <td>Text Recognition</td>
+    <td>✅</td>
+  </tr>
+
+  <tr>
+    <td>Formula Recognition</td>
+    <td>❌</td>
+  </tr>
+
+  <tr>
+    <td>Seal Text Detection</td>
+    <td>✅</td>
+  </tr>
+
+  <tr>
+    <td>Text Image Unwarping</td>
+    <td>✅</td>
+  </tr>
+
+  <tr>
+    <td>Document Image Orientation Classification</td>
+    <td>✅</td>
+  </tr>
+
+  <tr>
+    <td rowspan="2">Formula Recognition</td>
+    <td>Layout Detection</td>
+    <td>❌</td>
+  </tr>
+
+  <tr>
+    <td>Formula Recognition</td>
+    <td>❌</td>
+  </tr>
+
+  <tr>
+    <td rowspan="3">Seal Text Recognition</td>
+    <td>Layout Region Analysis</td>
+    <td>✅</td>
+  </tr>
+
+  <tr>
+    <td>Seal Text Detection</td>
+    <td>✅</td>
+  </tr>
+
+  <tr>
+    <td>Text Recognition</td>
+    <td>✅</td>
+  </tr>
+
+  <tr>
+    <td rowspan="2">General Image Recognition</td>
+    <td>Subject Detection</td>
+    <td>✅</td>
+  </tr>
+
+  <tr>
+    <td>Image Feature</td>
+    <td>✅</td>
+  </tr>
+
+  <tr>
+    <td rowspan="2">Pedestrian Attribute Recognition</td>
+    <td>Pedestrian Detection</td>
+    <td>❌</td>
+  </tr>
+
+  <tr>
+    <td>Pedestrian Attribute Recognition</td>
+    <td>❌</td>
+  </tr>
+
+  <tr>
+    <td rowspan="2">Vehicle Attribute Recognition</td>
+    <td>Vehicle Detection</td>
+    <td>❌</td>
+  </tr>
+
+  <tr>
+    <td>Vehicle Attribute Recognition</td>
+    <td>❌</td>
+  </tr>
+
+  <tr>
+    <td rowspan="2">Face Recognition</td>
+    <td>Face Detection</td>
+    <td>✅</td>
+  </tr>
+
+  <tr>
+    <td>Face Feature</td>
+    <td>✅</td>
   </tr>
 
 </table>
