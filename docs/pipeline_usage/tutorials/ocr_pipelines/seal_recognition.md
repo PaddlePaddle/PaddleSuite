@@ -566,31 +566,19 @@ for res in output:
 </thead>
 <tbody>
 <tr>
-<td><code>sealImpressions</code></td>
+<td><code>texts</code></td>
 <td><code>array</code></td>
-<td>印章文本识别结果。</td>
+<td>文本位置、内容和得分。</td>
 </tr>
 <tr>
 <td><code>layoutImage</code></td>
 <td><code>string</code></td>
 <td>版面区域检测结果图。图像为JPEG格式，使用Base64编码。</td>
 </tr>
-</tbody>
-</table>
-<p><code>sealImpressions</code>中的每个元素为一个<code>object</code>，具有如下属性：</p>
-<table>
-<thead>
 <tr>
-<th>名称</th>
-<th>类型</th>
-<th>含义</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>texts</code></td>
-<td><code>array</code></td>
-<td>文本位置、内容和得分。</td>
+<td><code>ocrImage</code></td>
+<td><code>string</code></td>
+<td>OCR结果图。图像为JPEG格式，使用Base64编码。</td>
 </tr>
 </tbody>
 </table>
@@ -633,6 +621,7 @@ import requests
 
 API_URL = &quot;http://localhost:8080/seal-recognition&quot; # 服务URL
 image_path = &quot;./demo.jpg&quot;
+ocr_image_path = &quot;./ocr.jpg&quot;
 layout_image_path = &quot;./layout.jpg&quot;
 
 # 对本地图像进行Base64编码
@@ -648,11 +637,14 @@ response = requests.post(API_URL, json=payload)
 # 处理接口返回数据
 assert response.status_code == 200
 result = response.json()[&quot;result&quot;]
+with open(ocr_image_path, &quot;wb&quot;) as file:
+    file.write(base64.b64decode(result[&quot;ocrImage&quot;]))
+print(f&quot;Output image saved at {ocr_image_path}&quot;)
 with open(layout_image_path, &quot;wb&quot;) as file:
     file.write(base64.b64decode(result[&quot;layoutImage&quot;]))
 print(f&quot;Output image saved at {layout_image_path}&quot;)
-print(&quot;\nDetected seal impressions:&quot;)
-print(result[&quot;sealImpressions&quot;])
+print(&quot;\nDetected texts:&quot;)
+print(result[&quot;texts&quot;])
 </code></pre></details>
 
 <details><summary>C++</summary>
@@ -665,6 +657,7 @@ print(result[&quot;sealImpressions&quot;])
 int main() {
     httplib::Client client(&quot;localhost:8080&quot;);
     const std::string imagePath = &quot;./demo.jpg&quot;;
+    const std::string ocrImagePath = &quot;./ocr.jpg&quot;;
     const std::string layoutImagePath = &quot;./layout.jpg&quot;;
 
     httplib::Headers headers = {
@@ -695,6 +688,18 @@ int main() {
         nlohmann::json jsonResponse = nlohmann::json::parse(response-&gt;body);
         auto result = jsonResponse[&quot;result&quot;];
 
+        encodedImage = result[&quot;ocrImage&quot;];
+        std::string decoded_string = base64::from_base64(encodedImage);
+        std::vector&lt;unsigned char&gt; decodedOcrImage(decoded_string.begin(), decoded_string.end());
+        std::ofstream outputOcrFile(ocrImagePath, std::ios::binary | std::ios::out);
+        if (outputOcrFile.is_open()) {
+            outputOcrFile.write(reinterpret_cast&lt;char*&gt;(decodedOcrImage.data()), decodedOcrImage.size());
+            outputOcrFile.close();
+            std::cout &lt;&lt; &quot;Output image saved at &quot; &lt;&lt; ocrImagePath &lt;&lt; std::endl;
+        } else {
+            std::cerr &lt;&lt; &quot;Unable to open file for writing: &quot; &lt;&lt; ocrImagePath &lt;&lt; std::endl;
+        }
+
         encodedImage = result[&quot;layoutImage&quot;];
         decodedString = base64::from_base64(encodedImage);
         std::vector&lt;unsigned char&gt; decodedLayoutImage(decodedString.begin(), decodedString.end());
@@ -707,10 +712,10 @@ int main() {
             std::cerr &lt;&lt; &quot;Unable to open file for writing: &quot; &lt;&lt; layoutImagePath &lt;&lt; std::endl;
         }
 
-        auto impressions = result[&quot;sealImpressions&quot;];
-        std::cout &lt;&lt; &quot;\nDetected seal impressions:&quot; &lt;&lt; std::endl;
-        for (const auto&amp; impression : impressions) {
-            std::cout &lt;&lt; impression &lt;&lt; std::endl;
+        auto texts = result[&quot;texts&quot;];
+        std::cout &lt;&lt; &quot;\nDetected texts:&quot; &lt;&lt; std::endl;
+        for (const auto&amp; text : texts) {
+            std::cout &lt;&lt; text &lt;&lt; std::endl;
         }
     } else {
         std::cout &lt;&lt; &quot;Failed to send HTTP request.&quot; &lt;&lt; std::endl;
@@ -737,6 +742,7 @@ public class Main {
     public static void main(String[] args) throws IOException {
         String API_URL = &quot;http://localhost:8080/seal-recognition&quot;; // 服务URL
         String imagePath = &quot;./demo.jpg&quot;; // 本地图像
+        String ocrImagePath = &quot;./ocr.jpg&quot;;
         String layoutImagePath = &quot;./layout.jpg&quot;;
 
         // 对本地图像进行Base64编码
@@ -763,8 +769,15 @@ public class Main {
                 String responseBody = response.body().string();
                 JsonNode resultNode = objectMapper.readTree(responseBody);
                 JsonNode result = resultNode.get(&quot;result&quot;);
+                String ocrBase64Image = result.get(&quot;ocrImage&quot;).asText();
                 String layoutBase64Image = result.get(&quot;layoutImage&quot;).asText();
-                JsonNode impressions = result.get(&quot;sealImpressions&quot;);
+                JsonNode texts = result.get(&quot;texts&quot;);
+
+                byte[] imageBytes = Base64.getDecoder().decode(ocrBase64Image);
+                try (FileOutputStream fos = new FileOutputStream(ocrImagePath)) {
+                    fos.write(imageBytes);
+                }
+                System.out.println(&quot;Output image saved at &quot; + ocrBase64Image);
 
                 imageBytes = Base64.getDecoder().decode(layoutBase64Image);
                 try (FileOutputStream fos = new FileOutputStream(layoutImagePath)) {
@@ -772,7 +785,7 @@ public class Main {
                 }
                 System.out.println(&quot;Output image saved at &quot; + layoutImagePath);
 
-                System.out.println(&quot;\nDetected seal impressions: &quot; + impressions.toString());
+                System.out.println(&quot;\nDetected texts: &quot; + texts.toString());
             } else {
                 System.err.println(&quot;Request failed with code: &quot; + response.code());
             }
@@ -797,6 +810,7 @@ import (
 func main() {
     API_URL := &quot;http://localhost:8080/seal-recognition&quot;
     imagePath := &quot;./demo.jpg&quot;
+    ocrImagePath := &quot;./ocr.jpg&quot;
     layoutImagePath := &quot;./layout.jpg&quot;
 
     // 对本地图像进行Base64编码
@@ -837,8 +851,9 @@ func main() {
     }
     type Response struct {
         Result struct {
+            OcrImage      string   `json:&quot;ocrImage&quot;`
             LayoutImage      string   `json:&quot;layoutImage&quot;`
-            Impressions []map[string]interface{} `json:&quot;sealImpressions&quot;`
+            Texts []map[string]interface{} `json:&quot;texts&quot;`
         } `json:&quot;result&quot;`
     }
     var respData Response
@@ -847,6 +862,18 @@ func main() {
         fmt.Println(&quot;Error unmarshaling response body:&quot;, err)
         return
     }
+
+    ocrImageData, err := base64.StdEncoding.DecodeString(respData.Result.OcrImage)
+    if err != nil {
+        fmt.Println(&quot;Error decoding base64 image data:&quot;, err)
+        return
+    }
+    err = ioutil.WriteFile(ocrImagePath, ocrImageData, 0644)
+    if err != nil {
+        fmt.Println(&quot;Error writing image to file:&quot;, err)
+        return
+    }
+    fmt.Printf(&quot;Image saved at %s.jpg\n&quot;, ocrImagePath)
 
     layoutImageData, err := base64.StdEncoding.DecodeString(respData.Result.LayoutImage)
     if err != nil {
@@ -860,9 +887,9 @@ func main() {
     }
     fmt.Printf(&quot;Image saved at %s.jpg\n&quot;, layoutImagePath)
 
-    fmt.Println(&quot;\nDetected seal impressions:&quot;)
-    for _, impression := range respData.Result.Impressions {
-        fmt.Println(impression)
+    fmt.Println(&quot;\nDetected texts:&quot;)
+    for _, text := range respData.Result.Texts {
+        fmt.Println(text)
     }
 }
 </code></pre></details>
@@ -881,6 +908,7 @@ class Program
 {
     static readonly string API_URL = &quot;http://localhost:8080/seal-recognition&quot;;
     static readonly string imagePath = &quot;./demo.jpg&quot;;
+    static readonly string ocrImagePath = &quot;./ocr.jpg&quot;;
     static readonly string layoutImagePath = &quot;./layout.jpg&quot;;
 
     static async Task Main(string[] args)
@@ -902,13 +930,18 @@ class Program
         string responseBody = await response.Content.ReadAsStringAsync();
         JObject jsonResponse = JObject.Parse(responseBody);
 
+        string ocrBase64Image = jsonResponse[&quot;result&quot;][&quot;ocrImage&quot;].ToString();
+        byte[] ocrImageBytes = Convert.FromBase64String(ocrBase64Image);
+        File.WriteAllBytes(ocrImagePath, ocrImageBytes);
+        Console.WriteLine($&quot;Output image saved at {ocrImagePath}&quot;);
+
         string layoutBase64Image = jsonResponse[&quot;result&quot;][&quot;layoutImage&quot;].ToString();
         byte[] layoutImageBytes = Convert.FromBase64String(layoutBase64Image);
         File.WriteAllBytes(layoutImagePath, layoutImageBytes);
         Console.WriteLine($&quot;Output image saved at {layoutImagePath}&quot;);
 
-        Console.WriteLine(&quot;\nDetected seal impressions:&quot;);
-        Console.WriteLine(jsonResponse[&quot;result&quot;][&quot;sealImpressions&quot;].ToString());
+        Console.WriteLine(&quot;\nDetected texts:&quot;);
+        Console.WriteLine(jsonResponse[&quot;result&quot;][&quot;texts&quot;].ToString());
     }
 }
 </code></pre></details>
@@ -920,6 +953,7 @@ const fs = require('fs');
 
 const API_URL = 'http://localhost:8080/seal-recognition'
 const imagePath = './demo.jpg'
+const ocrImagePath = &quot;./ocr.jpg&quot;;
 const layoutImagePath = &quot;./layout.jpg&quot;;
 
 let config = {
@@ -943,14 +977,20 @@ axios.request(config)
     // 处理接口返回数据
     const result = response.data[&quot;result&quot;];
 
+    const imageBuffer = Buffer.from(result[&quot;ocrImage&quot;], 'base64');
+    fs.writeFile(ocrImagePath, imageBuffer, (err) =&gt; {
+      if (err) throw err;
+      console.log(`Output image saved at ${ocrImagePath}`);
+    });
+
     imageBuffer = Buffer.from(result[&quot;layoutImage&quot;], 'base64');
     fs.writeFile(layoutImagePath, imageBuffer, (err) =&gt; {
       if (err) throw err;
       console.log(`Output image saved at ${layoutImagePath}`);
     });
 
-    console.log(&quot;\nDetected seal impressions:&quot;);
-    console.log(result[&quot;sealImpressions&quot;]);
+    console.log(&quot;\nDetected texts:&quot;);
+    console.log(result[&quot;texts&quot;]);
 })
 .catch((error) =&gt; {
   console.log(error);
@@ -963,6 +1003,7 @@ axios.request(config)
 
 $API_URL = &quot;http://localhost:8080/seal-recognition&quot;; // 服务URL
 $image_path = &quot;./demo.jpg&quot;;
+$ocr_image_path = &quot;./ocr.jpg&quot;;
 $layout_image_path = &quot;./layout.jpg&quot;;
 
 // 对本地图像进行Base64编码
@@ -980,12 +1021,14 @@ curl_close($ch);
 
 // 处理接口返回数据
 $result = json_decode($response, true)[&quot;result&quot;];
+file_put_contents($ocr_image_path, base64_decode($result[&quot;ocrImage&quot;]));
+echo &quot;Output image saved at &quot; . $ocr_image_path . &quot;\n&quot;;
 
 file_put_contents($layout_image_path, base64_decode($result[&quot;layoutImage&quot;]));
 echo &quot;Output image saved at &quot; . $layout_image_path . &quot;\n&quot;;
 
-echo &quot;\nDetected seal impressions:\n&quot;;
-print_r($result[&quot;sealImpressions&quot;]);
+echo &quot;\nDetected texts:\n&quot;;
+print_r($result[&quot;texts&quot;]);
 
 ?&gt;
 </code></pre></details>

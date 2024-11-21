@@ -45,7 +45,8 @@ class Formula(BaseModel):
 
 class InferResult(BaseModel):
     formulas: List[Formula]
-    image: str
+    layoutImage: str
+    ocrImage: Optional[str] = None
 
 
 def create_pipeline_app(
@@ -59,6 +60,7 @@ def create_pipeline_app(
         "/formula-recognition",
         operation_id="infer",
         responses={422: {"model": Response}},
+        response_model_exclude_none=True,
     )
     async def _infer(request: InferRequest) -> ResultResponse[InferResult]:
         pipeline = ctx.pipeline
@@ -88,9 +90,16 @@ def create_pipeline_app(
                         latex=latex,
                     )
                 )
-            output_image_base64 = serving_utils.base64_encode(
-                serving_utils.image_to_bytes(result.img)
+            layout_image_base64 = serving_utils.base64_encode(
+                serving_utils.image_to_bytes(result["layout_result"].img)
             )
+            ocr_image = result["formula_result"].img
+            if ocr_image is not None:
+                ocr_image_base64 = serving_utils.base64_encode(
+                    serving_utils.image_to_bytes(ocr_image)
+                )
+            else:
+                ocr_image_base64 = None
 
             return ResultResponse(
                 logId=serving_utils.generate_log_id(),
@@ -98,7 +107,8 @@ def create_pipeline_app(
                 errorMsg="Success",
                 result=InferResult(
                     formulas=formulas,
-                    image=output_image_base64,
+                    layoutImage=layout_image_base64,
+                    ocrImage=ocr_image_base64,
                 ),
             )
 
