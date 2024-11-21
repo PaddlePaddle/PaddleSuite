@@ -16,15 +16,15 @@
 
 如果您适配的模型在相关硬件上涉及到模型组网代码的修改，请先提交代码到对应的套件中，参考各套件贡献指南：
 
-1. https://github.com/PaddlePaddle/PaddleClas/tree/develop
+1. [PaddleClas](https://github.com/PaddlePaddle/PaddleClas/tree/develop)
 
-2. https://github.com/PaddlePaddle/PaddleDetection/tree/develop
+2. [PaddleDetection](https://github.com/PaddlePaddle/PaddleDetection/tree/develop)
 
-3. https://github.com/PaddlePaddle/PaddleSeg/tree/develop
+3. [PaddleSeg](https://github.com/PaddlePaddle/PaddleSeg/tree/develop)
 
-4. https://github.com/PaddlePaddle/PaddleOCR/tree/develop
+4. [PaddleOCR](https://github.com/PaddlePaddle/PaddleOCR/tree/develop)
 
-5. https://github.com/PaddlePaddle/PaddleTS/tree/main
+5. [PaddleTS](https://github.com/PaddlePaddle/PaddleTS/tree/main)
 
 # 2. 提交说明issue
 
