@@ -747,7 +747,7 @@ PaddleX 内置了多条产线，每条产线都包含了若干模块，每个模
 <td>3.84845</td>
 <td>9.23735</td>
 <td>6.7 M</td>
-<td><a href="../../paddlex/configs/pedestrian_attribute/PP-LCNet_x1_0_pedestrian_attribute.yaml">PP-LCNet_x1_0_pedestrian_attribute.yaml</a></td>
+<td><a href="../../paddlex/configs/pedestrian_attribute_recognition/PP-LCNet_x1_0_pedestrian_attribute.yaml">PP-LCNet_x1_0_pedestrian_attribute.yaml</a></td>
 <td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-LCNet_x1_0_pedestrian_attribute_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-LCNet_x1_0_pedestrian_attribute_pretrained.pdparams">训练模型</a></td></tr>
 </tbody>
 </table>
