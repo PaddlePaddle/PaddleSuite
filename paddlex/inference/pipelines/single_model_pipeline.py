@@ -74,3 +74,7 @@ class SmallObjDet(_SingleModelPipeline):
 
 class AnomalyDetection(_SingleModelPipeline):
     entities = "anomaly_detection"
+
+
+class VideoClassification(_SingleModelPipeline):
+    entities = "video_classification"

@@ -12,6 +12,5 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .image import *
-from .ts import *
-from .video import *
+
+from .video_cls import VideoClsModel, VideoClsRunner, register

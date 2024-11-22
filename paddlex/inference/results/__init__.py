@@ -29,3 +29,4 @@ from .chat_ocr import *
 from .shitu import ShiTuResult
 from .face_rec import FaceRecResult
 from .attribute_rec import AttributeRecResult
+from .video_clas import TopkVideoResult

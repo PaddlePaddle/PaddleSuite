@@ -2158,4 +2158,51 @@ PaddleX incorporates multiple pipelines, each containing several modules, and ea
 </table>
 <b>Note: The above accuracy metrics are measured on the [UWaveGestureLibrary](https://paddlets.bj.bcebos.com/classification/UWaveGestureLibrary_TEST.csv) dataset.</b>
 
+
+## [Video Classification Module](../module_usage/tutorials/video_modules/video_classification.md)
+
+
+<table>
+<thead>
+<tr>
+<th>Model Name</th>
+<th>Top1 Acc(%)</th>
+<th>GPU Inference Time (ms)</th>
+<th>CPU Inference Time (ms)</th>
+<th>Model Size</th>
+<th>YAML File</th>
+<th>Model Download Link</th></tr>
+</thead>
+<tbody>
+<tr>
+<td>PPTSM_ResNet50_k400_8frames_uniform</td>
+<td>74.36</td>
+<td>-</td>
+<td>-</td>
+<td>93.4 M</td>
+<td><a href="../../paddlex/configs/video_classification/PPTSM_ResNet50_k400_8frames_uniform.yaml">PPTSM_ResNet50_k400_8frames_uniform.yaml</a></td>
+<td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PPTSM_ResNet50_k400_8frames_uniform_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PPTSM_ResNet50_k400_8frames_uniform_pretrained.pdparams">Trained Model</a></td></tr>
+<tr>
+<td>PPTSMv2_LCNet_k400_8frames_uniform</td>
+<td>71.71</td>
+<td>-</td>
+<td>-</td>
+<td>22.5 M</td>
+<td><a href="../../paddlex/configs/video_classification/PPTSMv2_LCNet_k400_8frames_uniform.yaml">PPTSMv2_LCNet_k400_8frames_uniform.yaml</a></td>
+<td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PPTSMv2_LCNet_k400_8frames_uniform_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PPTSMv2_LCNet_k400_8frames_uniform_pretrained.pdparams">Trained Model</a></td></tr>
+
+<tr>
+<td>PPTSMv2_LCNet_k400_16frames_uniform</td>
+<td>73.11</td>
+<td>-</td>
+<td>-</td>
+<td>22.5 M</td>
+<td><a href="../../paddlex/configs/video_classification/PPTSMv2_LCNet_k400_16frames_uniform.yaml">PPTSMv2_LCNet_k400_16frames_uniform.yaml</a></td>
+<td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PPTSMv2_LCNet_k400_16frames_uniform_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PPTSMv2_LCNet_k400_16frames_uniform_pretrained.pdparams">Trained Model</a></td></tr>
+
+</tbody>
+</table>
+<b>Note: The above accuracy metrics refer to Top-1 Accuracy on the <a href="https://github.com/PaddlePaddle/PaddleVideo/blob/develop/docs/zh-CN/dataset/k400.md">K400</a> validation set. </b>
+
+
 &gt;<b>Note: All GPU inference times for the above models are based on an NVIDIA Tesla T4 machine with FP32 precision. CPU inference speeds are based on an Intel(R) Xeon(R) Gold 5117 CPU @ 2.00GHz with 8 threads and FP32 precision.</b>

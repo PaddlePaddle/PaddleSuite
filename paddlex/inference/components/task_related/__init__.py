@@ -31,3 +31,4 @@ from .det import DetPostProcess, CropByBoxes, DetPad, WarpAffine
 from .instance_seg import InstanceSegPostProcess
 from .warp import DocTrPostProcess
 from .seg import Map_to_mask
+from .videoclas import VideoClasTopk
