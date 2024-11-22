@@ -9,10 +9,10 @@ comments: true
 PaddleX 3.0 Beta2 全面适配 PaddlePaddle 3.0b2 版本。**新增通用图像识别、人脸识别、车辆属性识别和行人属性识别产线，同时新增 42 个模型开发全流程适配昇腾 910B，并全面支持[GitHub 站点文档](https://paddlepaddle.github.io/PaddleX/latest/index.html)。** 具体新增能力如下：
 
 - 新增产线：
-  - 新增通用图像识别产线，提供更强的特征提取模型，支持用户自定义图像数据库识别未知类别，相比当前开放域目标检测，可以自定义识别的总类更多。支持高性能推理和服务化部署；
-  - 新增人脸识别产线，支持对人脸数据库的增加和删除，支持高性能推理和服务化部署；
-  - 新增车辆属性识别产线，支持对图像中的车辆进行检测和属性的识别，当前支持的属性有颜色和车型。支持高性能推理和服务化部署；
-  - 新增行人属性识别产线，支持对图像中的行人进行检测和属性的识别，当前支持的属性有年龄、性别、穿着等。支持高性能推理和服务化部署。
+  - 新增[通用图像识别产线](https://github.com/PaddlePaddle/PaddleX/blob/release/3.0-beta2/docs/pipeline_usage/tutorials/cv_pipelines/general_image_recognition.md)，提供更强的特征提取模型，支持用户自定义图像数据库识别未知类别，相比当前开放域目标检测，可以自定义识别的总类更多。支持高性能推理和服务化部署；
+  - 新增[人脸识别产线](https://github.com/PaddlePaddle/PaddleX/blob/release/3.0-beta2/docs/pipeline_usage/tutorials/cv_pipelines/face_recognition.md)，支持对人脸数据库的增加和删除，支持高性能推理和服务化部署；
+  - 新增[车辆属性识别产线](https://github.com/PaddlePaddle/PaddleX/blob/release/3.0-beta2/docs/pipeline_usage/tutorials/cv_pipelines/vehicle_attribute_recognition.md)，支持对图像中的车辆进行检测和属性的识别，当前支持的属性有颜色和车型。支持高性能推理和服务化部署；
+  - 新增[行人属性识别线](https://github.com/PaddlePaddle/PaddleX/blob/release/3.0-beta2/docs/pipeline_usage/tutorials/cv_pipelines/pedestrian_attribute_recognition.md)，支持对图像中的行人进行检测和属性的识别，当前支持的属性有年龄、性别、穿着等。支持高性能推理和服务化部署。
 
 - 新增能力：
   - 支持[GitHub 站点文档](https://paddlepaddle.github.io/PaddleX/latest/index.html)，支持用户搜索相关内容和对文档内容的评论；
