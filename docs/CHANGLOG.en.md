@@ -5,6 +5,36 @@ comments: true
 # Version Update Information
 
 ## Latest Version Information
+### PaddleX v3.0.0beta2 (11.15/2024)
+
+PaddleX 3.0 Beta2 is fully compatible with the PaddlePaddle 3.0b2 version. **This update introduces new pipelines for general image recognition, face recognition, vehicle attribute recognition, and pedestrian attribute recognition. We have also developed 42 new models to fully support the Ascend 910B, with extensive documentation available on [GitHub Pages](https://paddlepaddle.github.io/PaddleX/latest/en/index.html).** Here’s a detailed look at the new features and improvements:
+
+- **New Pipelines:**
+  - **General Image Recognition:** Introducing a powerful pipeline with enhanced feature extraction models. This allows for user-defined image database recognition of unknown categories, providing more customizable recognition options compared to existing open-domain object detection. Supports high-performance inference and service deployment.
+  - **Face Recognition:** This new pipeline enables the addition and removal of entries in the face database, with robust support for high-performance inference and service deployment.
+  - **Vehicle Attribute Recognition:** Detect and recognize vehicle attributes such as color and model in images. Supports high-performance inference and service deployment.
+  - **Pedestrian Attribute Recognition:** Detect and recognize pedestrian attributes such as age, gender, and clothing in images. Supports high-performance inference and service deployment.
+
+- **New Capabilities:**
+  - **Documentation Support:** Comprehensive [GitHub Pages documentation](https://paddlepaddle.github.io/PaddleX/latest/en/index.html) is available, featuring search functionality and user commentary.
+  - **Benchmarking:** Print model inference benchmark information with related [documentation](https://github.com/PaddlePaddle/PaddleX/blob/release/3.0-beta2/docs/module_usage/instructions/benchmark.md).
+  - **Model Development:** We have introduced 42 new model development processes specifically adapted for Ascend 910B. Check out the [model list](https://github.com/PaddlePaddle/PaddleX/blob/release/3.0-beta2/docs/support_list/model_list_npu.en.md).
+
+- **Optimizations:**
+  - **Formula Recognition:** Now supports PDF input and visualization of results.
+  - **Seal Recognition:** Supports PDF format input.
+  - **Layout Parsing:** Improved the naming convention for saved images.
+  - **Pretrained Models:** Unified management of pretrained models, integrated into the default configuration file.
+  - **Model Saving:** Upgraded format to ensure high-performance inference.
+  - **Parameter Tuning:** Optimized default parameters for certain models to enable higher accuracy training.
+
+- **Bug Fixes:**
+  - Addressed inaccuracies and inappropriate expressions in documentation, and fixed some invalid URLs.
+  - Resolved issues with the PP-LCNet_x1_0_doc_ori inference model.
+  - Fixed bugs related to high-performance inference and service deployment.
+  - Corrected training configuration issues in SLANet and SLANet_plus that led to low accuracy.
+
+
 ### PaddleX v3.0.0beta1 (9.30/2024)
 PaddleX 3.0 Beta1 offers over 200 models accessible through a streamlined Python API for one-click deployment; realizes full-process model development based on unified commands, and opens source the foundational capabilities of the PP-ChatOCRv3 special model pipeline; supports high-performance inference and service-oriented deployment for over 100 models, as well as edge deployment for 7 key vision models; and fully adapts the development process of over 70 models to Huawei Ascend 910B, and over 15 models to XPU and MLU.
 
