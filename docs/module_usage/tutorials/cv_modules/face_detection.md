@@ -15,7 +15,7 @@ comments: true
 <th>模型</th><th>模型下载链接</th>
 <th style="text-align: center;">AP (%)<br/>Easy/Medium/Hard</th>
 <th>GPU推理耗时 (ms)</th>
-<th>CPU推理耗时</th>
+<th>CPU推理耗时 (ms)</th>
 <th>模型存储大小 (M)</th>
 <th>介绍</th>
 </tr>
@@ -24,38 +24,39 @@ comments: true
 <tr>
 <td>BlazeFace</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/BlazeFace_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/BlazeFace_pretrained.pdparams">训练模型</a></td>
 <td style="text-align: center;">77.7/73.4/49.5</td>
-<td></td>
-<td></td>
+<td>49.9</td>
+<td>68.2</td>
 <td>0.447</td>
 <td>轻量高效的人脸检测模型</td>
 </tr>
 <tr>
 <td>BlazeFace-FPN-SSH</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/BlazeFace-FPN-SSH_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/BlazeFace-FPN-SSH_pretrained.pdparams">训练模型</a></td>
 <td style="text-align: center;">83.2/80.5/60.5</td>
-<td></td>
-<td></td>
+<td>52.4</td>
+<td>73.2</td>
 <td>0.606</td>
 <td>BlazeFace的改进模型，增加FPN和SSH结构</td>
 </tr>
 <tr>
 <td>PicoDet_LCNet_x2_5_face</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PicoDet_LCNet_x2_5_face_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PicoDet_LCNet_x2_5_face_pretrained.pdparams">训练模型</a></td>
 <td style="text-align: center;">93.7/90.7/68.1</td>
-<td></td>
-<td></td>
+<td>33.7</td>
+<td>185.1</td>
 <td>28.9</td>
 <td>基于PicoDet_LCNet_x2_5的人脸检测模型</td>
 </tr>
 <tr>
 <td>PP-YOLOE_plus-S_face</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-YOLOE_plus-S_face_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-YOLOE_plus-S_face_pretrained.pdparams">训练模型</a></td>
 <td style="text-align: center;">93.9/91.8/79.8</td>
-<td></td>
-<td></td>
+<td>25.8</td>
+<td>159.9</td>
 <td>26.5</td>
 <td>基于PP-YOLOE_plus-S的人脸检测模型</td>
 </tr>
 </tbody>
 </table>
-注：以上精度指标是在WIDER-FACE验证集上，以640*640作为输入尺寸评估得到的。所有模型 GPU 推理耗时基于 NVIDIA Tesla T4 机器，精度类型为 FP32， CPU 推理速度基于 Intel(R) Xeon(R) Gold 5117 CPU @ 2.00GHz，线程数为8，精度类型为 FP32。
+<p>注：以上精度指标是在WIDER-FACE验证集上，以640
+*640作为输入尺寸评估得到的。所有模型 GPU 推理耗时基于 NVIDIA V100 机器，精度类型为 FP32， CPU 推理速度基于 Intel(R) Xeon(R) Gold 6271C CPU @ 2.60GHz，精度类型为 FP32。</p>
 
 </details>
 

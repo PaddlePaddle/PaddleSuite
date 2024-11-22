@@ -18,7 +18,7 @@ Face feature models typically take standardized face images processed through de
 <th>Output Feature Dimension</th>
 <th>Acc (%)<br/>AgeDB-30/CFP-FP/LFW</th>
 <th>GPU Inference Time (ms)</th>
-<th>CPU Inference Time</th>
+<th>CPU Inference Time (ms)</th>
 <th>Model Size (M)</th>
 <th>Description</th>
 </tr>
@@ -28,8 +28,8 @@ Face feature models typically take standardized face images processed through de
 <td>MobileFaceNet</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/MobileFaceNet_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/MobileFaceNet_pretrained.pdparams">Trained Model</a></td>
 <td>128</td>
 <td>96.28/96.71/99.58</td>
-<td></td>
-<td></td>
+<td>5.7</td>
+<td>101.6</td>
 <td>4.1</td>
 <td>Face feature model trained on MobileFaceNet with MS1Mv3 dataset</td>
 </tr>
@@ -37,8 +37,8 @@ Face feature models typically take standardized face images processed through de
 <td>ResNet50_face</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/ResNet50_face_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/ResNet50_face_pretrained.pdparams">Trained Model</a></td>
 <td>512</td>
 <td>98.12/98.56/99.77</td>
-<td></td>
-<td></td>
+<td>8.7</td>
+<td>200.7</td>
 <td>87.2</td>
 <td>Face feature model trained on ResNet50 with MS1Mv3 dataset</td>
 </tr>
