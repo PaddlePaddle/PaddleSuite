@@ -227,10 +227,10 @@ indicating that no pretrained model to be used."
             shared_memeory (bool): whether or not to use shared memory
         """
         assert isinstance(shared_memeory, bool), "shared_memeory should be a bool"
-        _cfg = [
-            f"DataLoader.Train.loader.use_shared_memory={shared_memeory}",
-            f"DataLoader.Eval.loader.use_shared_memory={shared_memeory}",
-        ]
+        _cfg = {
+            "DataLoader.Train.loader.use_shared_memory": shared_memeory,
+            "DataLoader.Eval.loader.use_shared_memory": shared_memeory,
+        }
         self.update(_cfg)
 
     def update_shuffle(self, shuffle: bool):
@@ -544,4 +544,4 @@ indicating that no pretrained model to be used."
         Returns:
             str: the directory to save output
         """
-        return self["Global"]["output_dir"]
+        return self["output_dir"]
