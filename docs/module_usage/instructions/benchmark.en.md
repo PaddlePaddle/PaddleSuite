@@ -1,14 +1,14 @@
-# 模型推理 Benchmark
+# Model Inference Benchmark
 
-PaddleX 支持统计模型推理耗时，需通过环境变量进行设置，具体如下：
+PaddleX support to benchmark model inference. Just set the related flags:
 
-* `PADDLE_PDX_INFER_BENCHMARK`：设置为 `True` 时则开启 Benchmark，默认为 `False`；
-* `PADDLE_PDX_INFER_BENCHMARK_WARMUP`：设置 warm up，在开始测试前，使用随机数据循环迭代 n 次，默认为 `0`；
-* `PADDLE_PDX_INFER_BENCHMARK_DATA_SIZE`： 设置随机数据的尺寸，默认为 `224`；
-* `PADDLE_PDX_INFER_BENCHMARK_ITER`：使用随机数据进行 Benchmark 测试的循环次数，仅当输入数据为 `None` 时，将使用随机数据进行测试，默认为 `10`；
-* `PADDLE_PDX_INFER_BENCHMARK_OUTPUT`：用于设置保存的目录，如 `./benchmark`，默认为 `None`，表示不保存 Benchmark 指标；
+* `PADDLE_PDX_INFER_BENCHMARK`: `True` means enable benchmark. `False` by default;
+* `PADDLE_PDX_INFER_BENCHMARK_WARMUP`: Number of warmup. Using random data to infer before testing benchmark if `input` is set to `None`. `0` by default;
+* `PADDLE_PDX_INFER_BENCHMARK_DATA_SIZE`: The size of randomly generated data. Valid only when `input` is set to `None`. `224` by default;
+* `PADDLE_PDX_INFER_BENCHMARK_ITER`: Number of benchmark testing using random data. Valid only when `input` is set to `None`. `10` by default;
+* `PADDLE_PDX_INFER_BENCHMARK_OUTPUT`: The directory to save benchmark result. `None` by default, that means not save.
 
-使用示例如下：
+The example is as follows：
 
 ```bash
 PADDLE_PDX_INFER_BENCHMARK=True \
@@ -24,7 +24,7 @@ python main.py \
     -o Predict.input=None
 ```
 
-在开启 Benchmark 后，将自动打印 benchmark 指标：
+The benchmark infomation would be print:
 
 ```
 +----------------+-----------------+-----------------+------------------------+
@@ -50,7 +50,11 @@ python main.py \
 +-------------+-----------------+---------------------+----------------------------+
 ```
 
-在 Benchmark 结果中，会统计该模型全部组件（`Component`）的总耗时（`Total Time`，单位为“毫秒”）、**调用次数**（`Number of Calls`）、**调用**平均执行耗时（`Avg Time Per Call`，单位“毫秒”），以及按预热（`WarmUp`）、预处理（`PreProcess`）、模型推理（`Inference`）、后处理（`PostProcess`）和端到端（`End2End`）进行划分的耗时统计，包括每个阶段的总耗时（`Total Time`，单位为“毫秒”）、**样本数**（`Number of Instances`）和**单样本**平均执行耗时（`Avg Time Per Instance`，单位“毫秒”），同时，上述指标会保存到到本地： `./benchmark/detail.csv` 和 `./benchmark/summary.csv`：
+The first table show the benchmark infomation by each component(`Component`), include `Total Time` (unit is "ms"), `Number of Calls` and `Avg Time Per Call`  (unit is "ms"). `Avg Time Per Call` is `Total Time` devide by `Number of Calls`. It should be noted that the `Number of Calls` is the number of times the component has been called.
+
+And the second table show the benchmark infomation by different stages: `WarmUp`, `PreProcess`, `Inference`, `PostProcess` and `End2End`. Different from the first table, `Number of Instances` is the number of instances (samples), not the number of calls.
+
+Meanwhile, the benchmark infomation would be saved to local files (`detail.csv` and `summary.csv`) if you set `PADDLE_PDX_INFER_BENCHMARK_OUTPUT`:
 
 ```csv
 Component,Total Time (ms),Number of Calls,Avg Time Per Call (ms)
