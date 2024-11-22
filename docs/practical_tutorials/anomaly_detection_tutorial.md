@@ -1,4 +1,6 @@
-简体中文 | [English](anomaly_detection_tutorial_en.md)
+---
+comments: true
+---
 
 # PaddleX 3.0 图像异常检测产线———食品外观质检教程
 
@@ -36,7 +38,7 @@ PaddleX 提供了 1 个端到端的高精度异常检测模型，具体可参考
 
 |模型名称|Avg（%）|GPU推理耗时（ms）|CPU推理耗时（ms）|模型存储大小|yaml 文件|
 |-|-|-|-|-|-|
-|STFPM|96.2|-|-|21.5 M|[STFPM.yaml](../../paddlex/configs/anomaly_detection/STFPM.yaml)|
+|STFPM|96.2|-|-|21.5 M|[STFPM.yaml](../../paddlex/configs/image_anomaly_detection/STFPM.yaml)|
 
 **注：以上精度指标为 **[MVTec AD](https://www.mvtec.com/company/research/datasets/mvtec-ad)** 验证集 平均异常分数。**
 
@@ -58,7 +60,7 @@ tar -xf ./dataset/anomaly_detection_hazelnut.tar -C ./dataset/
 在对数据集校验时，只需一行命令：
 
 ```bash
-python main.py -c paddlex/configs/anomaly_detection/STFPM.yaml \
+python main.py -c paddlex/configs/image_anomaly_detection/STFPM.yaml \
     -o Global.mode=check_dataset \
     -o Global.dataset_dir=./dataset/anomaly_detection_hazelnut
 ```
@@ -146,7 +148,7 @@ python main.py -c paddlex/configs/anomaly_detection/STFPM.yaml \
 在训练之前，请确保您已经对数据集进行了校验。完成 PaddleX 模型的训练，只需如下一条命令：
 
 ```bash
-python main.py -c paddlex/configs/anomaly_detection/STFPM.yaml \
+python main.py -c paddlex/configs/image_anomaly_detection/STFPM.yaml \
     -o Global.mode=train \
     -o Global.dataset_dir=./dataset/anomaly_detection_hazelnut \
     -o Train.epochs_iters=4000
@@ -184,7 +186,7 @@ PaddleX 中每个模型都提供了模型开发的配置文件，用于设置相
 在完成模型训练后，可以对指定的模型权重文件在验证集上进行评估，验证模型精度。使用 PaddleX 进行模型评估，只需一行命令：
 
 ```bash
-python main.py -c paddlex/configs/anomaly_detection/STFPM.yaml \
+python main.py -c paddlex/configs/image_anomaly_detection/STFPM.yaml \
     -o Global.mode=evaluate \
     -o Global.dataset_dir=./dataset/anomaly_detection_hazelnut
 ```
@@ -230,7 +232,7 @@ python main.py -c paddlex/configs/anomaly_detection/STFPM.yaml \
 将产线中的模型替换为微调后的模型进行测试，如：
 
 ```bash
-python main.py -c paddlex/configs/anomaly_detection/STFPM.yaml \
+python main.py -c paddlex/configs/image_anomaly_detection/STFPM.yaml \
     -o Global.mode=predict \
     -o Predict.model_dir="output/best_model/inference" \
     -o Predict.input="https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/uad_hazelnut.png"

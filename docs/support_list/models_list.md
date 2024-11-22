@@ -772,7 +772,7 @@ PaddleX 内置了多条产线，每条产线都包含了若干模块，每个模
 <td>3.84845</td>
 <td>9.23735</td>
 <td>6.7 M</td>
-<td><a href="../../paddlex/configs/vehicle_attribute/PP-LCNet_x1_0_vehicle_attribute.yaml">PP-LCNet_x1_0_vehicle_attribute.yaml</a></td>
+<td><a href="../../paddlex/configs/vehicle_attribute_recognition/PP-LCNet_x1_0_vehicle_attribute.yaml">PP-LCNet_x1_0_vehicle_attribute.yaml</a></td>
 <td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-LCNet_x1_0_vehicle_attribute_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-LCNet_x1_0_vehicle_attribute_pretrained.pdparams">训练模型</a></td></tr>
 </tbody>
 </table>
@@ -797,7 +797,7 @@ PaddleX 内置了多条产线，每条产线都包含了若干模块，每个模
 <td>5.23428</td>
 <td>19.6005</td>
 <td>16.3 M</td>
-<td><a href="../../paddlex/configs/general_recognition/PP-ShiTuV2_rec.yaml">PP-ShiTuV2_rec.yaml</a></td>
+<td><a href="../../paddlex/configs/image_feature/PP-ShiTuV2_rec.yaml">PP-ShiTuV2_rec.yaml</a></td>
 <td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-ShiTuV2_rec_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-ShiTuV2_rec_pretrained.pdparams">训练模型</a></td></tr>
 <tr>
 <td>PP-ShiTuV2_rec_CLIP_vit_base</td>
@@ -805,7 +805,7 @@ PaddleX 内置了多条产线，每条产线都包含了若干模块，每个模
 <td>13.1957</td>
 <td>285.493</td>
 <td>306.6 M</td>
-<td><a href="../../paddlex/configs/general_recognition/PP-ShiTuV2_rec_CLIP_vit_base.yaml">PP-ShiTuV2_rec_CLIP_vit_base.yaml</a></td>
+<td><a href="../../paddlex/configs/image_feature/PP-ShiTuV2_rec_CLIP_vit_base.yaml">PP-ShiTuV2_rec_CLIP_vit_base.yaml</a></td>
 <td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-ShiTuV2_rec_CLIP_vit_base_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-ShiTuV2_rec_CLIP_vit_base_pretrained.pdparams">训练模型</a></td></tr>
 <tr>
 <td>PP-ShiTuV2_rec_CLIP_vit_large</td>
@@ -813,7 +813,7 @@ PaddleX 内置了多条产线，每条产线都包含了若干模块，每个模
 <td>51.1284</td>
 <td>1131.28</td>
 <td>1.05 G</td>
-<td><a href="../../paddlex/configs/general_recognition/PP-ShiTuV2_rec_CLIP_vit_large.yaml">PP-ShiTuV2_rec_CLIP_vit_large.yaml</a></td>
+<td><a href="../../paddlex/configs/image_feature/PP-ShiTuV2_rec_CLIP_vit_large.yaml">PP-ShiTuV2_rec_CLIP_vit_large.yaml</a></td>
 <td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-ShiTuV2_rec_CLIP_vit_large_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-ShiTuV2_rec_CLIP_vit_large_pretrained.pdparams">训练模型</a></td></tr>
 </tbody>
 </table>
@@ -1759,7 +1759,7 @@ PaddleX 内置了多条产线，每条产线都包含了若干模块，每个模
 <td>10.5878</td>
 <td>131.813</td>
 <td>4.7M</td>
-<td><a href="../../paddlex/configs/text_detection_seal/PP-OCRv4_mobile_seal_det.yaml">PP-OCRv4_mobile_seal_det.yaml</a></td>
+<td><a href="../../paddlex/configs/seal_text_detection/PP-OCRv4_mobile_seal_det.yaml">PP-OCRv4_mobile_seal_det.yaml</a></td>
 <td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-OCRv4_mobile_seal_det_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-OCRv4_mobile_seal_det_pretrained.pdparams">训练模型</a></td></tr>
 <tr>
 <td>PP-OCRv4_server_seal_det</td>
@@ -1767,7 +1767,7 @@ PaddleX 内置了多条产线，每条产线都包含了若干模块，每个模
 <td>84.341</td>
 <td>2425.06</td>
 <td>108.3 M</td>
-<td><a href="../../paddlex/configs/text_detection_seal/PP-OCRv4_server_seal_det.yaml">PP-OCRv4_server_seal_det.yaml</a></td>
+<td><a href="../../paddlex/configs/seal_text_detection/PP-OCRv4_server_seal_det.yaml">PP-OCRv4_server_seal_det.yaml</a></td>
 <td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-OCRv4_server_seal_det_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-OCRv4_server_seal_det_pretrained.pdparams">训练模型</a></td></tr>
 </tbody>
 </table>
@@ -1958,7 +1958,7 @@ PaddleX 内置了多条产线，每条产线都包含了若干模块，每个模
 <td>13.036</td>
 <td>91.2634</td>
 <td>7.4 M</td>
-<td><a href="https://github.com/PaddlePaddle/PaddleX/blob/develop/paddlex/configs/structure_analysis/PicoDet_layout_1x.yaml">PicoDet_layout_1x.yaml</a></td>
+<td><a href="https://github.com/PaddlePaddle/PaddleX/blob/develop/paddlex/configs/layout_detection/PicoDet_layout_1x.yaml">PicoDet_layout_1x.yaml</a></td>
 <td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PicoDet_layout_1x_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PicoDet_layout_1x_pretrained.pdparams">训练模型</a></td></tr>
 <tr>
 <td>PicoDet-S_layout_3cls</td>
@@ -1966,7 +1966,7 @@ PaddleX 内置了多条产线，每条产线都包含了若干模块，每个模
 <td>13.521</td>
 <td>45.7633</td>
 <td>4.8 M</td>
-<td><a href="../../paddlex/configs/structure_analysis/PicoDet-S_layout_3cls.yaml">PicoDet-S_layout_3cls.yaml</a></td>
+<td><a href="../../paddlex/configs/layout_detection/PicoDet-S_layout_3cls.yaml">PicoDet-S_layout_3cls.yaml</a></td>
 <td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PicoDet-S_layout_3cls_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PicoDet-S_layout_3cls_pretrained.pdparams">训练模型</a></td></tr>
 <tr>
 <td>PicoDet-S_layout_17cls</td>
@@ -1974,7 +1974,7 @@ PaddleX 内置了多条产线，每条产线都包含了若干模块，每个模
 <td>13.5632</td>
 <td>46.2059</td>
 <td>4.8 M</td>
-<td><a href="../../paddlex/configs/structure_analysis/PicoDet-S_layout_17cls.yaml">PicoDet-S_layout_17cls.yaml</a></td>
+<td><a href="../../paddlex/configs/layout_detection/PicoDet-S_layout_17cls.yaml">PicoDet-S_layout_17cls.yaml</a></td>
 <td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PicoDet-S_layout_17cls_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PicoDet-S_layout_17cls_pretrained.pdparams">训练模型</a></td></tr>
 <tr>
 <td>PicoDet-L_layout_3cls</td>
@@ -1982,7 +1982,7 @@ PaddleX 内置了多条产线，每条产线都包含了若干模块，每个模
 <td>15.7425</td>
 <td>159.771</td>
 <td>22.6 M</td>
-<td><a href="../../paddlex/configs/structure_analysis/PicoDet-L_layout_3cls.yaml">PicoDet-L_layout_3cls.yaml</a></td>
+<td><a href="../../paddlex/configs/layout_detection/PicoDet-L_layout_3cls.yaml">PicoDet-L_layout_3cls.yaml</a></td>
 <td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PicoDet-L_layout_3cls_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PicoDet-L_layout_3cls_pretrained.pdparams">训练模型</a></td></tr>
 <tr>
 <td>PicoDet-L_layout_17cls</td>
@@ -1990,7 +1990,7 @@ PaddleX 内置了多条产线，每条产线都包含了若干模块，每个模
 <td>17.1901</td>
 <td>160.262</td>
 <td>22.6 M</td>
-<td><a href="../../paddlex/configs/structure_analysis/PicoDet-L_layout_17cls.yaml">PicoDet-L_layout_17cls.yaml</a></td>
+<td><a href="../../paddlex/configs/layout_detection/PicoDet-L_layout_17cls.yaml">PicoDet-L_layout_17cls.yaml</a></td>
 <td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PicoDet-L_layout_17cls_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PicoDet-L_layout_17cls_pretrained.pdparams">训练模型</a></td></tr>
 <tr>
 <td>RT-DETR-H_layout_3cls</td>
@@ -1998,7 +1998,7 @@ PaddleX 内置了多条产线，每条产线都包含了若干模块，每个模
 <td>114.644</td>
 <td>3832.62</td>
 <td>470.1 M</td>
-<td><a href="../../paddlex/configs/structure_analysis/RT-DETR-H_layout_3cls.yaml">RT-DETR-H_layout_3cls.yaml</a></td>
+<td><a href="../../paddlex/configs/layout_detection/RT-DETR-H_layout_3cls.yaml">RT-DETR-H_layout_3cls.yaml</a></td>
 <td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/RT-DETR-H_layout_3cls_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/RT-DETR-H_layout_3cls_pretrained.pdparams">训练模型</a></td></tr>
 <tr>
 <td>RT-DETR-H_layout_17cls</td>
@@ -2006,7 +2006,7 @@ PaddleX 内置了多条产线，每条产线都包含了若干模块，每个模
 <td>115.126</td>
 <td>3827.25</td>
 <td>470.2 M</td>
-<td><a href="../../paddlex/configs/structure_analysis/RT-DETR-H_layout_17cls.yaml">RT-DETR-H_layout_17cls.yaml</a></td>
+<td><a href="../../paddlex/configs/layout_detection/RT-DETR-H_layout_17cls.yaml">RT-DETR-H_layout_17cls.yaml</a></td>
 <td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/RT-DETR-H_layout_17cls_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/RT-DETR-H_layout_17cls_pretrained.pdparams">训练模型</a></td></tr>
 </tbody>
 </table>

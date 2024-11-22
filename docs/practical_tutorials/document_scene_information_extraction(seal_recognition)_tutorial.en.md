@@ -109,7 +109,7 @@ PaddleX provides 2 end-to-end seal text detection models, which can be reference
 <td>10.5878</td>
 <td>131.813</td>
 <td>4.7M</td>
-<td><a href="../../paddlex/configs/text_detection_seal/PP-OCRv4_mobile_seal_det.yaml">PP-OCRv4_mobile_seal_det.yaml</a></td>
+<td><a href="../../paddlex/configs/seal_text_detection/PP-OCRv4_mobile_seal_det.yaml">PP-OCRv4_mobile_seal_det.yaml</a></td>
 </tr>
 <tr>
 <td>PP-OCRv4_server_seal_det</td>
@@ -117,7 +117,7 @@ PaddleX provides 2 end-to-end seal text detection models, which can be reference
 <td>84.341</td>
 <td>2425.06</td>
 <td>108.3 M</td>
-<td><a href="../../paddlex/configs/text_detection_seal/PP-OCRv4_server_seal_det.yaml">PP-OCRv4_server_seal_det.yaml</a></td>
+<td><a href="../../paddlex/configs/seal_text_detection/PP-OCRv4_server_seal_det.yaml">PP-OCRv4_server_seal_det.yaml</a></td>
 </tr>
 </tbody>
 </table>
@@ -141,7 +141,7 @@ tar -xf ./dataset/practical_seal.tar -C ./dataset/
 To verify the dataset, simply run the following command:
 
 ```bash
-python main.py -c paddlex/configs/text_detection_seal/PP-OCRv4_server_seal_det.yaml \
+python main.py -c paddlex/configs/seal_text_detection/PP-OCRv4_server_seal_det.yaml \
     -o Global.mode=check_dataset \
     -o Global.dataset_dir=./dataset/practical_seal/
 ```
@@ -228,7 +228,7 @@ When splitting data, the original annotation files will be renamed as `xxx.bak` 
 Before training, please ensure that you have validated the dataset. To complete PaddleX model training, simply use the following command:
 
 ```bash
-python main.py -c paddlex/configs/text_detection_seal/PP-OCRv4_server_seal_det.yaml \
+python main.py -c paddlex/configs/seal_text_detection/PP-OCRv4_server_seal_det.yaml \
     -o Global.mode=train \
     -o Global.dataset_dir=./dataset/practical_seal \
     -o Train.epochs_iters=30 \
@@ -269,7 +269,7 @@ After completing model training, all outputs are saved in the specified output d
 After completing model training, you can evaluate the specified model weight file on the validation set to verify the model accuracy. To evaluate a model using PaddleX, simply use the following command:
 
 ```bash
-python main.py -c paddlex/configs/text_detection_seal/PP-OCRv4_server_seal_det.yaml \
+python main.py -c paddlex/configs/seal_text_detection/PP-OCRv4_server_seal_det.yaml \
     -o Global.mode=evaluate \
     -o Global.dataset_dir=./dataset/practical_seal
 ```
@@ -355,7 +355,7 @@ When selecting a training environment, it is important to consider the relations
 For reference, the command to execute training with different parameter adjustments can be:
 
 ```bash
-python main.py -c paddlex/configs/text_detection_seal/PP-OCRv4_server_seal_det.yaml \
+python main.py -c paddlex/configs/seal_text_detection/PP-OCRv4_server_seal_det.yaml \
     -o Global.mode=train \
     -o Global.dataset_dir=./dataset/practical_seal \
     -o Train.learning_rate=0.0001 \

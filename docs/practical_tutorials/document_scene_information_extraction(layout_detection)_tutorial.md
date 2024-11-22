@@ -183,7 +183,7 @@ tar -xf ./dataset/paperlayout.tar -C ./dataset/
 在对数据集校验时，只需一行命令：
 
 ```bash
-python main.py -c paddlex/configs/structure_analysis/RT-DETR-H_layout_3cls.yaml \
+python main.py -c paddlex/configs/layout_detection/RT-DETR-H_layout_3cls.yaml \
     -o Global.mode=check_dataset \
     -o Global.dataset_dir=./dataset/paperlayout/
 ```
@@ -270,7 +270,7 @@ python main.py -c paddlex/configs/structure_analysis/RT-DETR-H_layout_3cls.yaml 
 在训练之前，请确保您已经对数据集进行了校验。完成 PaddleX 模型的训练，只需如下一条命令：
 
 ```bash
-python main.py -c paddlex/configs/structure_analysis/RT-DETR-H_layout_3cls.yaml \
+python main.py -c paddlex/configs/layout_detection/RT-DETR-H_layout_3cls.yaml \
     -o Global.mode=train \
     -o Global.dataset_dir=./dataset/paperlayout \
     -o Train.num_classes=4
@@ -309,7 +309,7 @@ PaddleX 中每个模型都提供了模型开发的配置文件，用于设置相
 在完成模型训练后，可以对指定的模型权重文件在验证集上进行评估，验证模型精度。使用 PaddleX 进行模型评估，只需一行命令：
 
 ```bash
-python main.py -c paddlex/configs/structure_analysis/RT-DETR-H_layout_3cls.yaml \
+python main.py -c paddlex/configs/layout_detection/RT-DETR-H_layout_3cls.yaml \
     -o Global.mode=evaluate \
     -o Global.dataset_dir=./dataset/paperlayout
 ```
@@ -404,7 +404,7 @@ python main.py -c paddlex/configs/structure_analysis/RT-DETR-H_layout_3cls.yaml 
 调整不同参数执行训练的命令可以参考：
 
 ```bash
-python main.py -c paddlex/configs/structure_analysis/RT-DETR-H_layout_3cls.yaml \
+python main.py -c paddlex/configs/layout_detection/RT-DETR-H_layout_3cls.yaml \
     -o Global.mode=train \
     -o Global.dataset_dir=./dataset/paperlayout \
     -o Train.num_classes=4 \
@@ -418,7 +418,7 @@ python main.py -c paddlex/configs/structure_analysis/RT-DETR-H_layout_3cls.yaml 
 可以将微调后的单模型进行测试，使用 [测试文件](https://paddle-model-ecology.bj.bcebos.com/paddlex/PaddleX3.0/doc_images/practical_tutorial/PP-ChatOCRv3_doc_layout/test.jpg)，进行预测：
 
 ```bash
-python main.py -c paddlex/configs/structure_analysis/RT-DETR-H_layout_3cls.yaml \
+python main.py -c paddlex/configs/layout_detection/RT-DETR-H_layout_3cls.yaml \
     -o Global.mode=predict \
     -o Predict.model_dir="output/best_model/inference" \
     -o Predict.input="https://paddle-model-ecology.bj.bcebos.com/paddlex/PaddleX3.0/doc_images/practical_tutorial/PP-ChatOCRv3_doc_layout/test.jpg"
