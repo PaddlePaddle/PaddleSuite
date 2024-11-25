@@ -38,37 +38,37 @@ The face recognition pipeline is an end-to-end system dedicated to solving face 
 <tr>
 <td>BlazeFace-FPN-SSH</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/BlazeFace-FPN-SSH_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/BlazeFace-FPN-SSH_pretrained.pdparams">Trained Model</a></td>
 <td>83.2/80.5/60.5</td>
-<td></td>
-<td></td>
+<td>52.4</td>
+<td>73.2</td>
 <td>0.606</td>
 <td>Improved BlazeFace with FPN and SSH structures</td>
 </tr>
 <tr>
 <td>PicoDet_LCNet_x2_5_face</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PicoDet_LCNet_x2_5_face_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PicoDet_LCNet_x2_5_face_pretrained.pdparams">Trained Model</a></td>
 <td>93.7/90.7/68.1</td>
-<td></td>
-<td></td>
+<td>33.7</td>
+<td>185.1</td>
 <td>28.9</td>
 <td>Face detection model based on PicoDet_LCNet_x2_5</td>
 </tr>
 <tr>
 <td>PP-YOLOE_plus-S_face</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-YOLOE_plus-S_face_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-YOLOE_plus-S_face_pretrained.pdparams">Trained Model</a></td>
 <td>93.9/91.8/79.8</td>
-<td></td>
-<td></td>
+<td>25.8</td>
+<td>159.9</td>
 <td>26.5</td>
 <td>Face detection model based on PP-YOLOE_plus-S</td>
 </tr>
 </tbody>
 </table>
-<p>Note: The above accuracy metrics are evaluated on the WIDER-FACE validation set with an input size of 640x640. All GPU inference times are based on an NVIDIA Tesla T4 machine with FP32 precision. CPU inference speeds are based on an Intel(R) Xeon(R) Gold 5117 CPU @ 2.00GHz with 8 threads and FP32 precision.</p>
+<p>Note: The above accuracy metrics are evaluated on the WIDER-FACE validation set with an input size of 640x640. All GPU inference times are based on an NVIDIA V100 machine with FP32 precision. CPU inference speeds are based on an Intel(R) Xeon(R) Gold 6271C CPU @ 2.60GHz and FP32 precision.</p>
 <p><b>Face Recognition Module</b>:</p>
 <table>
 <thead>
 <tr>
 <th>Model</th><th>Model Download Link</th>
 <th>Output Feature Dimension</th>
-<th>AP (%)<br/>AgeDB-30/CFP-FP/LFW</th>
+<th>Acc (%)<br/>AgeDB-30/CFP-FP/LFW</th>
 <th>GPU Inference Time (ms)</th>
 <th>CPU Inference Time</th>
 <th>Model Size (M)</th>
@@ -80,8 +80,8 @@ The face recognition pipeline is an end-to-end system dedicated to solving face 
 <td>MobileFaceNet</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/MobileFaceNet_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/MobileFaceNet_pretrained.pdparams">Trained Model</a></td>
 <td>128</td>
 <td>96.28/96.71/99.58</td>
-<td></td>
-<td></td>
+<td>5.7</td>
+<td>101.6</td>
 <td>4.1</td>
 <td>Face recognition model trained on MS1Mv3 based on MobileFaceNet</td>
 </tr>
@@ -89,8 +89,8 @@ The face recognition pipeline is an end-to-end system dedicated to solving face 
 <td>ResNet50_face</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/ResNet50_face_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/ResNet50_face_pretrained.pdparams">Trained Model</a></td>
 <td>512</td>
 <td>98.12/98.56/99.77</td>
-<td></td>
-<td></td>
+<td>8.7</td>
+<td>200.7</td>
 <td>87.2</td>
 <td>Face recognition model trained on MS1Mv3 based on ResNet50</td>
 </tr>
@@ -128,9 +128,10 @@ from paddlex import create_pipeline
 
 pipeline = create_pipeline(pipeline="face_recognition")
 
-pipeline.build_index(data_root="face_demo_gallery", index_dir="face_gallery_index")
+index_data = pipeline.build_index(gallery_imgs="face_demo_gallery", gallery_label="face_demo_gallery/gallery.txt")
+index_data.save("face_index")
 
-output = pipeline.predict("friends1.jpg")
+output = pipeline.predict("friends1.jpg", index=index_data)
 for res in output:
     res.print()
     res.save_to_img("./output/")
@@ -183,19 +184,41 @@ In the above Python script, the following steps are executed:
 </thead>
 <tbody>
 <tr>
-<td><code>data_root</code></td>
-<td>The root directory of the dataset, with data organization referring to <a href="#2.3-Data-Organization-for-Building-a-Feature-Library">Section 2.3: Data Organization for Building a Feature Library</a></td>
-<td><code>str</code></td>
+<td><code>gallery_imgs</code></td>
+<td>Base library images to be added, supported formats: 1. <code>str</code> type representing the root directory of images, with data organization consistent with the method used when constructing the index library, refer to <a href="#2.3-Data-Organization-for-Building-a-Feature-Library">Section 2.3: Data Organization for Building a Feature Library</a>; 2. <code>[numpy.ndarray, numpy.ndarray, ..]</code> type base library image data.</td>
+<td><code>str</code>|<code>list</code></td>
 <td>None</td>
 </tr>
 <tr>
-<td><code>index_dir</code></td>
-<td>The save path for the feature library. After successfully calling the <code>build_index</code> method, two files will be generated in this path:<br/> <code>"id_map.pkl"</code> saves the mapping relationship between image IDs and image feature labels;<br/> <code>"vector.index"</code> stores the feature vectors of each image.</td>
+<td><code>gallery_label</code></td>
+<td>Annotation information for base library images, supported formats: 1. <code>str</code> type representing the path to the annotation file, with data organization consistent with the method used when constructing the feature library, refer to <a href="#2.3-Data-Organization-for-Building-a-Feature-Library">Section 2.3: Data Organization for Building a Feature Library</a>; 2. <code>[str, str, ..]</code> type representing the annotations of base library images.</td>
 <td><code>str</code></td>
 <td>None</td>
 </tr>
 </tbody>
 </table>
+
+The feature library object `index` supports the `save` method, which is used to save the feature library to disk:
+
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+<th>Type</th>
+<th>Default Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>save_path</code></td>
+<td>The directory to save the feature library file, e.g., <code>drink_index</code>.</td>
+<td><code>str</code></td>
+<td>None</td>
+</tr>
+</tbody>
+</table>
+
 (3) Call the `predict` method of the face recognition pipeline object for inference prediction: The `predict` method parameter is `x`, used to input data to be predicted, supporting multiple input methods, as shown in the following examples:
 
 <table>
@@ -216,7 +239,7 @@ In the above Python script, the following steps are executed:
 </tr>
 <tr>
 <td><code>str</code></td>
-<td>Supports passing in the URL of the data file to be predicted, such as the network URL of an image file: <a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/general_ocr_001.png">Example</a>.</td>
+<td>Supports passing in the URL of the data file to be predicted, such as the network URL of an image file: <a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/friends1.jpg">Example</a>.</td>
 </tr>
 <tr>
 <td><code>str</code></td>
@@ -268,8 +291,8 @@ For example, if your configuration file is saved at `./my_path/face_recognition.
 
 ```python
 from paddlex import create_pipeline
-pipeline = create_pipeline(pipeline="./my_path/face_recognition.yaml")
-pipeline.build_index(data_root="face_demo_gallery", index_dir="face_gallery_index")
+pipeline = create_pipeline(pipeline="./my_path/face_recognition.yaml", index="face_index")
+
 output = pipeline.predict("friends1.jpg")
 for res in output:
     res.print()
@@ -278,16 +301,17 @@ for res in output:
 
 #### 2.2.3 Adding and Deleting Operations in the Face Feature Library
 
-If you wish to add more face images to the feature library, you can call the `add_index` method; to delete face image features, you can call the `delete_index` method.
+If you wish to add more face images to the feature library, you can call the `append_index` method; to delete face image features, you can call the `remove_index` method.
 
 ```python
 from paddlex import create_pipeline
 
 pipeline = create_pipeline(pipeline="face_recognition")
 
-pipeline.add_index(data_root="add_gallery", index_dir="face_gallery_index")
-
-pipeline.delete_index(data_root="delete_gallery", index_dir="face_gallery_index")
+index_data = pipeline.build_index(gallery_imgs="face_demo_gallery", gallery_label="face_demo_gallery/gallery.txt", index_type="IVF", metric_type="IP")
+index_data = pipeline.append_index(gallery_imgs="face_demo_gallery", gallery_label="face_demo_gallery/gallery.txt", index=index_data)
+index_data = pipeline.remove_index(remove_ids="face_demo_gallery/remove_ids.txt", index=index_data)
+index_data.save("face_index")
 ```
 
 The `add_index` method parameters are described as follows:
@@ -303,45 +327,44 @@ The `add_index` method parameters are described as follows:
 </thead>
 <tbody>
 <tr>
-<td><code>data_root</code></td>
-<td>The root directory of the dataset to be added. The data organization method is the same as when building the feature library. Refer to <a href="###2.3-Data-Organization-for-Feature-Library-Construction">Section 2.3 Data Organization for Feature Library Construction</a>.</td>
-<td><code>str</code></td>
+<td><code>gallery_imgs</code></td>
+<td>Base library images to be added, supported formats: 1. <code>str</code> type representing the root directory of images, with data organization consistent with the method used when constructing the index library, refer to <a href="#2.3-Data-Organization-for-Building-a-Feature-Library">Section 2.3: Data Organization for Building a Feature Library</a>; 2. <code>[numpy.ndarray, numpy.ndarray, ..]</code> type base library image data.</td>
+<td><code>str</code>|<code>list</code></td>
 <td>None</td>
 </tr>
 <tr>
-<td><code>index_dir</code></td>
-<td>The save path of the feature library to which features are added. After successfully calling the <code>add_index</code> method, the face image features in <code>data_root</code> will be added to the face feature library originally saved at <code>index_dir</code>.</td>
-<td><code>str</code></td>
+<td><code>gallery_label</code></td>
+<td>Annotation information for base library images, supported formats: 1. <code>str</code> type representing the path to the annotation file, with data organization consistent with the method used when constructing the feature library, refer to <a href="#2.3-Data-Organization-for-Building-a-Feature-Library">Section 2.3: Data Organization for Building a Feature Library</a>; 2. <code>[str, str, ..]</code> type representing the annotations of base library images.</td>
+<td><code>str</code>|<code>list</code></td>
 <td>None</td>
+</tr>
+<tr>
+<td><code>remove_ids</code></td>
+<td>Index numbers to be removed, supported formats: 1. <code>str</code> type representing the path of a txt file, with content being the IDs of indexes to be removed, one "id" per line; 2. <code>[int, int, ..]</code> type representing the index numbers to be removed. Only effective in <code>remove_index</code>.</td>
+<td><code>str</code>|<code>list</code></td>
+<td>None</td>
+</tr>
+<tr>
+<td><code>index</code></td>
+<td>Feature library, supported formats: 1. The path to the directory containing the feature library files (<code>vector.index</code> and <code>index_info.yaml</code>); 2. <code>IndexData</code> type feature library object, only effective in <code>append_index</code> and <code>remove_index</code>, representing the feature library to be modified.</td>
+<td><code>str</code>|<code>IndexData</code></td>
+<td>None</td>
+</tr>
+<tr>
+<td><code>index_type</code></td>
+<td>Supports <code>HNSW32</code>, <code>IVF</code>, <code>Flat</code>. Among them, <code>HNSW32</code> offers fast retrieval speed and high accuracy, but does not support the <code>remove_index()</code> operation; <code>IVF</code> offers fast retrieval speed but relatively lower accuracy, supporting both <code>append_index()</code> and <code>remove_index()</code> operations; <code>Flat</code> offers lower retrieval speed but higher accuracy, supporting both <code>append_index()</code> and <code>remove_index()</code> operations.</td>
+<td><code>str</code></td>
+<td><code>HNSW32</code></td>
+</tr>
+<tr>
+<td><code>metric_type</code></td>
+<td>Supports: <code>IP</code>, Inner Product; <code>L2</code>, Euclidean Distance.</td>
+<td><code>str</code></td>
+<td><code>IP</code></td>
 </tr>
 </tbody>
 </table>
-The `delete_index` method parameters are described as follows:
 
-<table>
-<thead>
-<tr>
-<th>Parameter</th>
-<th>Description</th>
-<th>Type</th>
-<th>Default</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>data_root</code></td>
-<td>The root directory of the dataset to be deleted. The data organization method is the same as when building the feature library. Refer to <a href="#2.3-Data-Organization-for-Feature-Library-Construction">Section 2.3 Data Organization for Feature Library Construction</a>.</td>
-<td><code>str</code></td>
-<td>None</td>
-</tr>
-<tr>
-<td><code>index_dir</code></td>
-<td>The save path of the feature library from which features are deleted. After successfully calling the <code>delete_index</code> method, the face image features in <code>data_root</code> will be deleted from the face feature library originally saved at <code>index_dir</code>.</td>
-<td><code>str</code></td>
-<td>None</td>
-</tr>
-</tbody>
-</table>
 ### 2.3 Data Organization for Feature Library Construction
 
 The face recognition pipeline example in PaddleX requires a pre-constructed feature library for face feature retrieval. If you wish to build a face feature library with private data, you need to organize the data as follows:
@@ -354,7 +377,10 @@ data_root             # Root directory of the dataset, the directory name can be
 │   │   ├── xxx.jpg   # Image, nested directories are supported
 │   │       ...
 │   ├── ID1           # Identity ID name, preferably meaningful, such as a person's name
-│   │   ...
+│   │   ├── xxx.jpg   # Image, nested directories are supported
+│   │   ├── xxx.jpg   # Image, nested directories are supported
+│   │       ...
+│       ...
 └── gallery.txt       # Annotation file for the feature library dataset, the file name cannot be changed. Each line gives the path of the face image to be retrieved and the image feature label, separated by a space. Example content: images/Chandler/Chandler00037.jpg Chandler
 ```
 
@@ -373,73 +399,217 @@ Below are the API reference and multi-language service invocation examples:
 
 <details><summary>API Reference</summary>
 
-<p>For main operations provided by the service:</p>
-<ul>
-<li>The HTTP request method is POST.</li>
-<li>The request body and the response body are both JSON data (JSON objects).</li>
-<li>When the request is successfully processed, the response status code is <code>200</code>, and the attributes of the response body are as follows:</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Meaning</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>errorCode</code></td>
-<td><code>integer</code></td>
-<td>Error code. Fixed to <code>0</code>.</td>
-</tr>
-<tr>
-<td><code>errorMsg</code></td>
-<td><code>string</code></td>
-<td>Error description. Fixed to <code>"Success"</code>.</td>
-</tr>
-</tbody>
-</table>
-<p>The response body may also have a <code>result</code> attribute of type <code>object</code>, which stores the operation result information.</p>
-<ul>
-<li>When the request is not successfully processed, the attributes of the response body are as follows:</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Meaning</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>errorCode</code></td>
-<td><code>integer</code></td>
-<td>Error code. Same as the response status code.</td>
-</tr>
-<tr>
-<td><code>errorMsg</code></td>
-<td><code>string</code></td>
-<td>Error description.</td>
-</tr>
-</tbody>
-</table>
 <p>The main operations provided by the service are as follows:</p>
+<ul>
+<li><b><code>buildIndex</code></b></li>
+</ul>
+<p>Build feature vector index.</p>
+<p><code>POST /face-recognition-index-build</code></p>
+<ul>
+<li>The properties of the request body are as follows:</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Required</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>imageLabelPairs</code></td>
+<td><code>array</code></td>
+<td>Image-label pairs used to build the index.</td>
+<td>Yes</td>
+</tr>
+</tbody>
+</table>
+<p>Each element in <code>imageLabelPairs</code> is an <code>object</code> with the following properties:</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>image</code></td>
+<td><code>string</code></td>
+<td>The URL of the image file accessible to the service or the Base64 encoded content of the image file.</td>
+</tr>
+<tr>
+<td><code>label</code></td>
+<td><code>string</code></td>
+<td>Label.</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>When the request is successfully processed, the <code>result</code> in the response body has the following properties:</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>indexKey</code></td>
+<td><code>string</code></td>
+<td>The key corresponding to the index, used to identify the established index. Can be used as input for other operations.</td>
+</tr>
+<tr>
+<td><code>idMap</code></td>
+<td><code>object</code></td>
+<td>Mapping from vector ID to label.</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><b><code>addImagesToIndex</code></b></li>
+</ul>
+<p>Add images (corresponding feature vectors) to the index.</p>
+<p><code>POST /face-recognition-index-add</code></p>
+<ul>
+<li>The properties of the request body are as follows:</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Required</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>imageLabelPairs</code></td>
+<td><code>array</code></td>
+<td>Image-label pairs used to build the index.</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td><code>indexKey</code></td>
+<td><code>string</code></td>
+<td>The key corresponding to the index. Provided by the <code>buildIndex</code> operation.</td>
+<td>Yes</td>
+</tr>
+</tbody>
+</table>
+<p>Each element in <code>imageLabelPairs</code> is an <code>object</code> with the following properties:</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>image</code></td>
+<td><code>string</code></td>
+<td>The URL of the image file accessible to the service or the Base64 encoded content of the image file.</td>
+</tr>
+<tr>
+<td><code>label</code></td>
+<td><code>string</code></td>
+<td>Label.</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>When the request is successfully processed, the <code>result</code> in the response body has the following properties:</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>idMap</code></td>
+<td><code>object</code></td>
+<td>Mapping from vector ID to label.</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><b><code>removeImagesFromIndex</code></b></li>
+</ul>
+<p>Remove images (corresponding feature vectors) from the index.</p>
+<p><code>POST /face-recognition-index-remove</code></p>
+<ul>
+<li>The properties of the request body are as follows:</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Required</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ids</code></td>
+<td><code>array</code></td>
+<td>IDs of vectors to be removed from the index.</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td><code>indexKey</code></td>
+<td><code>string</code></td>
+<td>The key corresponding to the index. Provided by the <code>buildIndex</code> operation.</td>
+<td>Yes</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>When the request is successfully processed, the <code>result</code> in the response body has the following properties:</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>idMap</code></td>
+<td><code>object</code></td>
+<td>Mapping from vector ID to label.</td>
+</tr>
+</tbody>
+</table>
 <ul>
 <li><b><code>infer</code></b></li>
 </ul>
-<p>Obtain OCR results for an image.</p>
-<p><code>POST /ocr</code></p>
+<p>Perform image recognition.</p>
+<p><code>POST /face-recognition-infer</code></p>
 <ul>
-<li>The attributes of the request body are as follows:</li>
+<li>The properties of the request body are as follows:</li>
 </ul>
 <table>
 <thead>
 <tr>
 <th>Name</th>
 <th>Type</th>
-<th>Meaning</th>
+<th>Description</th>
 <th>Required</th>
 </tr>
 </thead>
@@ -447,357 +617,173 @@ Below are the API reference and multi-language service invocation examples:
 <tr>
 <td><code>image</code></td>
 <td><code>string</code></td>
-<td>The URL of an accessible image file or the Base64 encoded result of the image file content.</td>
+<td>The URL of the image file accessible to the service or the Base64 encoded content of the image file.</td>
 <td>Yes</td>
 </tr>
 <tr>
-<td><code>inferenceParams</code></td>
-<td><code>object</code></td>
-<td>Inference parameters.</td>
+<td><code>indexKey</code></td>
+<td><code>string</code></td>
+<td>The key corresponding to the index. Provided by the <code>buildIndex</code> operation.</td>
 <td>No</td>
 </tr>
 </tbody>
 </table>
-<p>The attributes of```markdown</p>
-<details>
-<summary>Python</summary>
+<ul>
+<li>When the request is successfully processed, the <code>result</code> in the response body has the following properties:</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>faces</code></td>
+<td><code>array</code></td>
+<td>Information about detected faces.</td>
+</tr>
+<tr>
+<td><code>image</code></td>
+<td><code>string</code></td>
+<td>Recognition result image. The image is in JPEG format and encoded using Base64.</td>
+</tr>
+</tbody>
+</table>
+<p>Each element in <code>faces</code> is an <code>object</code> with the following properties:</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>bbox</code></td>
+<td><code>array</code></td>
+<td>Face target position. The elements in the array are the x-coordinate of the top-left corner, the y-coordinate of the top-left corner, the x-coordinate of the bottom-right corner, and the y-coordinate of the bottom-right corner, in order.</td>
+</tr>
+<tr>
+<td><code>recResults</code></td>
+<td><code>array</code></td>
+<td>Recognition results.</td>
+</tr>
+<tr>
+<td><code>score</code></td>
+<td><code>number</code></td>
+<td>Detection score.</td>
+</tr>
+</tbody>
+</table>
+<p>Each element in <code>recResults</code> is an <code>object</code> with the following properties:</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>label</code></td>
+<td><code>string</code></td>
+<td>Label.</td>
+</tr>
+<tr>
+<td><code>score</code></td>
+<td><code>number</code></td>
+<td>Recognition score.</td>
+</tr>
+</tbody>
+</table>
+</details>
 
+<details><summary>Multilingual Service Invocation Examples</summary>
 
 <pre><code class="language-python">import base64
+import pprint
+import sys
+
 import requests
 
-API_URL = &quot;http://localhost:8080/ocr&quot; # Service URL
-image_path = &quot;./demo.jpg&quot;
+API_BASE_URL = &quot;http://0.0.0.0:8080&quot;
+
+base_image_label_pairs = [
+    {&quot;image&quot;: &quot;./demo0.jpg&quot;, &quot;label&quot;: &quot;ID0&quot;},
+    {&quot;image&quot;: &quot;./demo1.jpg&quot;, &quot;label&quot;: &quot;ID1&quot;},
+    {&quot;image&quot;: &quot;./demo2.jpg&quot;, &quot;label&quot;: &quot;ID2&quot;},
+]
+image_label_pairs_to_add = [
+    {&quot;image&quot;: &quot;./demo3.jpg&quot;, &quot;label&quot;: &quot;ID2&quot;},
+]
+ids_to_remove = [1]
+infer_image_path = &quot;./demo4.jpg&quot;
 output_image_path = &quot;./out.jpg&quot;
 
-# Encode the local image to Base64
-with open(image_path, &quot;rb&quot;) as file:
+for pair in base_image_label_pairs:
+    with open(pair[&quot;image&quot;], &quot;rb&quot;) as file:
+        image_bytes = file.read()
+        image_data = base64.b64encode(image_bytes).decode(&quot;ascii&quot;)
+    pair[&quot;image&quot;] = image_data
+
+payload = {&quot;imageLabelPairs&quot;: base_image_label_pairs}
+resp_index_build = requests.post(f&quot;{API_BASE_URL}/face-recognition-index-build&quot;, json=payload)
+if resp_index_build.status_code != 200:
+    print(f&quot;Request to face-recognition-index-build failed with status code {resp_index_build}.&quot;)
+    pprint.pp(resp_index_build.json())
+    sys.exit(1)
+result_index_build = resp_index_build.json()[&quot;result&quot;]
+print(f&quot;Number of images indexed: {len(result_index_build['idMap'])}&quot;)
+
+for pair in image_label_pairs_to_add:
+    with open(pair[&quot;image&quot;], &quot;rb&quot;) as file:
+        image_bytes = file.read()
+        image_data = base64.b64encode(image_bytes).decode(&quot;ascii&quot;)
+    pair[&quot;image&quot;] = image_data
+
+payload = {&quot;imageLabelPairs&quot;: image_label_pairs_to_add, &quot;indexKey&quot;: result_index_build[&quot;indexKey&quot;]}
+resp_index_add = requests.post(f&quot;{API_BASE_URL}/face-recognition-index-add&quot;, json=payload)
+if resp_index_add.status_code != 200:
+    print(f&quot;Request to face-recognition-index-add failed with status code {resp_index_add}.&quot;)
+    pprint.pp(resp_index_add.json())
+    sys.exit(1)
+result_index_add = resp_index_add.json()[&quot;result&quot;]
+print(f&quot;Number of images indexed: {len(result_index_add['idMap'])}&quot;)
+
+payload = {&quot;ids&quot;: ids_to_remove, &quot;indexKey&quot;: result_index_build[&quot;indexKey&quot;]}
+resp_index_remove = requests.post(f&quot;{API_BASE_URL}/face-recognition-index-remove&quot;, json=payload)
+if resp_index_remove.status_code != 200:
+    print(f&quot;Request to face-recognition-index-remove failed with status code {resp_index_remove}.&quot;)
+    pprint.pp(resp_index_remove.json())
+    sys.exit(1)
+result_index_remove = resp_index_remove.json()[&quot;result&quot;]
+print(f&quot;Number of images indexed: {len(result_index_remove['idMap'])}&quot;)
+
+with open(infer_image_path, &quot;rb&quot;) as file:
     image_bytes = file.read()
     image_data = base64.b64encode(image_bytes).decode(&quot;ascii&quot;)
 
-payload = {&quot;image&quot;: image_data}  # Base64 encoded file content or image URL
+payload = {&quot;image&quot;: image_data, &quot;indexKey&quot;: result_index_build[&quot;indexKey&quot;]}
+resp_infer = requests.post(f&quot;{API_BASE_URL}/face-recognition-infer&quot;, json=payload)
+if resp_infer.status_code != 200:
+    print(f&quot;Request to face-recogntion-infer failed with status code {resp_infer}.&quot;)
+    pprint.pp(resp_infer.json())
+    sys.exit(1)
+result_infer = resp_infer.json()[&quot;result&quot;]
 
-# Call the API
-response = requests.post(API_URL, json=payload)
-
-# Process the response data
-assert response.status_code == 200
-result = response.json()[&quot;result&quot;]
 with open(output_image_path, &quot;wb&quot;) as file:
-    file.write(base64.b64decode(result[&quot;image&quot;]))
+    file.write(base64.b64decode(result_infer[&quot;image&quot;]))
 print(f&quot;Output image saved at {output_image_path}&quot;)
-print(&quot;\nDetected texts:&quot;)
-print(result[&quot;texts&quot;])
-</code></pre></details>
-
-<details><summary>C++</summary>
-
-<pre><code class="language-cpp">#include &lt;iostream&gt;
-#include &quot;cpp-httplib/httplib.h&quot; // https://github.com/Huiyicc/cpp-httplib
-#include &quot;nlohmann/json.hpp&quot; // https://github.com/nlohmann/json
-#include &quot;base64.hpp&quot; // https://github.com/tobiaslocker/base64
-
-int main() {
-    httplib::Client client(&quot;localhost:8080&quot;);
-    const std::string imagePath = &quot;./demo.jpg&quot;;
-    const std::string outputImagePath = &quot;./out.jpg&quot;;
-
-    httplib::Headers headers = {
-        {&quot;Content-Type&quot;, &quot;application/json&quot;}
-    };
-
-    // Encode the local image to Base64
-    std::ifstream file(imagePath, std::ios::binary | std::ios::ate);
-    std::streamsize size = file.tellg();
-    file.seekg(0, std::ios::beg);
-
-    std::vector&lt;char&gt; buffer(size);
-    if (!file.read(buffer.data(), size)) {
-        std::cerr &lt;&lt; &quot;Error reading file.&quot; &lt;&lt; std::endl;
-        return 1;
-    }
-    std::string bufferStr(reinterpret_cast&lt;const char*&gt;(buffer.data()), buffer.size());
-    std::string encodedImage = base64::to_base64(bufferStr);
-
-    nlohmann::json jsonObj;
-    jsonObj[&quot;image&quot;] = encodedImage;
-    std::string body = jsonObj.dump();
-
-    // Call the API
-    auto response = client.Post(&quot;/ocr&quot;, headers, body, &quot;application/json&quot;);
-    // Process the response data
-    if (response &amp;&amp; response-&gt;status == 200) {
-        nlohmann::json jsonResponse = nlohmann::json::parse(response-&gt;body);
-        auto result = jsonResponse[&quot;result&quot;];
-
-        encodedImage = result[&quot;image&quot;];
-        std::string decodedString = base64::from_base64(encodedImage);
-        std::vector&lt;unsigned char&gt; decodedImage(decodedString.begin(), decodedString.end());
-        std::ofstream outputImage(outputImagePath, std::ios::binary | std::ios::out);
-        if (outputImage.is_open()) {
-            outputImage.write(reinterpret_cast&lt;char*&gt;(decodedImage.data()), decodedImage.size());
-            outputImage.close();
-            std::cout &lt;&lt; &quot;Output image saved at &quot; &lt;&lt; outputImagePath &lt;&lt; std::endl;
-        } else {
-            std::cerr &lt;&lt; &quot;Unable to open file for writing: &quot; &lt;&lt; outputImagePath &lt;&lt; std::endl;
-        }
-
-        auto texts = result[&quot;texts&quot;];
-        std::cout &lt;&lt; &quot;\nDetected texts:&quot; &lt;&lt; std::endl;
-        for (const auto&amp; text : texts) {
-            std::cout &lt;&lt; text &lt;&lt; std::endl;
-        }
-    } else {
-        std::cout &lt;&lt; &quot;Failed to send HTTP request.&quot; &lt;&lt; std::endl;
-        return 1;
-    }
-
-    return 0;
-}
-
-</code></pre></details>
-``````markdown
-# Tutorial on Artificial Intelligence and Computer Vision
-
-This tutorial, intended for numerous developers, covers the basics and applications of AI and Computer Vision.
-
-<details><summary>Java</summary>
-
-<pre><code class="language-java">import okhttp3.*;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.Base64;
-
-public class Main {
-    public static void main(String[] args) throws IOException {
-        String API_URL = &quot;http://localhost:8080/ocr&quot;; // Service URL
-        String imagePath = &quot;./demo.jpg&quot;; // Local image path
-        String outputImagePath = &quot;./out.jpg&quot;; // Output image path
-
-        // Encode the local image to Base64
-        File file = new File(imagePath);
-        byte[] fileContent = java.nio.file.Files.readAllBytes(file.toPath());
-        String imageData = Base64.getEncoder().encodeToString(fileContent);
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        ObjectNode params = objectMapper.createObjectNode();
-        params.put(&quot;image&quot;, imageData); // Base64-encoded file content or image URL
-
-        // Create an OkHttpClient instance
-        OkHttpClient client = new OkHttpClient();
-        MediaType JSON = MediaType.get(&quot;application/json; charset=utf-8&quot;);
-        RequestBody body = RequestBody.create(params.toString(), JSON);
-        Request request = new Request.Builder()
-                .url(API_URL)
-                .post(body)
-                .build();
-
-        // Call the API and process the response
-        try (Response response = client.newCall(request).execute()) {
-            if (response.isSuccessful()) {
-                String responseBody = response.body().string();
-                JsonNode resultNode = objectMapper.readTree(responseBody);
-                JsonNode result = resultNode.get(&quot;result&quot;);
-                String base64Image = result.get(&quot;image&quot;).asText();
-                JsonNode texts = result.get(&quot;texts&quot;);
-
-                byte[] imageBytes = Base64.getDecoder().decode(base64Image);
-                try (FileOutputStream fos = new FileOutputStream(outputImagePath)) {
-                    fos.write(imageBytes);
-                }
-                System.out.println(&quot;Output image saved at &quot; + outputImagePath);
-                System.out.println(&quot;\nDetected texts: &quot; + texts.toString());
-            } else {
-                System.err.println(&quot;Request failed with code: &quot; + response.code());
-            }
-        }
-    }
-}
-</code></pre></details>
-
-<details><summary>Go</summary>
-
-<pre><code class="language-go">package main
-
-import (
-    &quot;bytes&quot;
-    &quot;encoding/base64&quot;
-    &quot;encoding/json&quot;
-    &quot;fmt&quot;
-    &quot;io/ioutil&quot;
-    &quot;net/http&quot;
-)
-
-func main() {
-    API_URL := &quot;http://localhost:8080/ocr&quot;
-    imagePath := &quot;./demo.jpg&quot;
-    outputImagePath := &quot;./out.jpg&quot;
-
-    // Encode the local image to Base64
-    imageBytes, err := ioutil.ReadFile(imagePath)
-    if err != nil {
-        fmt.Println(&quot;Error reading image file:&quot;, err)
-        return
-    }
-    imageData := base64.StdEncoding.EncodeToString(imageBytes)
-
-    payload := map[string]string{&quot;image&quot;: imageData} // Base64-encoded file content or image URL
-    payloadBytes, err := json.Marshal(payload)
-    if err != nil {
-        fmt.Println(&quot;Error marshaling payload:&quot;, err)
-        return
-    }
-
-    // Call the API
-    client := &amp;http.Client{}
-    req, err := http.NewRequest(&quot;POST&quot;, API_URL, bytes.NewBuffer(payloadBytes))
-    if err != nil {
-        fmt.Println(&quot;Error creating request:&quot;, err)
-        return
-    }
-
-    res, err := client.Do(req)
-    if err != nil {
-        fmt.Println(&quot;Error sending request:&quot;, err)
-        return
-    }
-    defer res.Body.Close()
-
-    // Process the response
-    body, err := ioutil.ReadAll(res.Body)
-    if err != nil {
-        fmt.Println(&quot;Error reading response body:&quot;, err)
-        return
-    }```markdown
-# An English Tutorial on Artificial Intelligence and Computer Vision
-
-This tutorial document is intended for numerous developers and covers content related to artificial intelligence and computer vision.
-
-&lt;details&gt;
-&lt;summary&gt;C#&lt;/summary&gt;
-
-```csharp
-using System;
-using System.IO;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json.Linq;
-
-class Program
-{
-static readonly string API_URL = &quot;http://localhost:8080/ocr&quot;;
-static readonly string imagePath = &quot;./demo.jpg&quot;;
-static readonly string outputImagePath = &quot;./out.jpg&quot;;
-
-static async Task Main(string[] args)
-{
-var httpClient = new HttpClient();
-
-// Encode the local image to Base64
-byte[] imageBytes = File.ReadAllBytes(imagePath);
-string image_data = Convert.ToBase64String(imageBytes);
-
-var payload = new JObject{ { &quot;image&quot;, image_data } }; // Base64 encoded file content or image URL
-var content = new StringContent(payload.ToString(), Encoding.UTF8, &quot;application/json&quot;);
-
-// Call the API
-HttpResponseMessage response = await httpClient.PostAsync(API_URL, content);
-response.EnsureSuccessStatusCode();
-
-// Process the API response
-string responseBody = await response.Content.ReadAsStringAsync();
-JObject jsonResponse = JObject.Parse(responseBody);
-
-string base64Image = jsonResponse[&quot;result&quot;][&quot;image&quot;].ToString();
-byte[] outputImageBytes = Convert.FromBase64String(base64Image);
-
-File.WriteAllBytes(outputImagePath, outputImageBytes);
-Console.WriteLine($&quot;Output image saved at {outputImagePath}&quot;);
-Console.WriteLine(&quot;\nDetected texts:&quot;);
-Console.WriteLine(jsonResponse[&quot;result&quot;][&quot;texts&quot;].ToString());
-}
-}
-</code></pre></details>
-
-<details><summary>Node.js</summary>
-
-<pre><code class="language-js">const axios = require('axios');
-const fs = require('fs');
-
-const API_URL = 'http://localhost:8080/ocr';
-const imagePath = './demo.jpg';
-const outputImagePath = &quot;./out.jpg&quot;;
-
-let config = {
-   method: 'POST',
-   maxBodyLength: Infinity,
-   url: API_URL,
-   data: JSON.stringify({
-    'image': encodeImageToBase64(imagePath)  // Base64 encoded file content or image URL
-  })
-};
-
-// Encode the local image to Base64
-function encodeImageToBase64(filePath) {
-  const bitmap = fs.readFileSync(filePath);
-  return Buffer.from(bitmap).toString('base64');
-}
-
-// Call the API
-axios.request(config)
-.then((response) =&gt; {
-    // Process the API response
-    const result = response.data[&quot;result&quot;];
-    const imageBuffer = Buffer.from(result[&quot;image&quot;], 'base64');
-    fs.writeFile(outputImagePath, imageBuffer, (err) =&gt; {
-      if (err) throw err;
-      console.log(`Output image saved at ${outputImagePath}`);
-    });
-    console.log(&quot;\nDetected texts:&quot;);
-    console.log(result[&quot;texts&quot;]);
-})
-.catch((error) =&gt; {
-  console.log(error);
-});
-</code></pre></details>
-
-<details>
-<summary>PHP</summary>
-
-```php
-<?php
-
-$API_URL = "http://localhost:8080/ocr"; // Service URL
-$image_path = "./demo.jpg";
-$output_image_path = "./out.jpg";
-
-// Encode the local image to Base64
-$image_data = base64_encode(file_get_contents($image_path));
-$payload = array("image" => $image_data); // Base64 encoded file content or image URL
-
-// Call the API
-$ch = curl_init($API_URL);
-curl_setopt($ch, CURLOPT_POST, true);
-curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
-curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-$response = curl_exec($ch);
-curl_close($ch);
-
-// Process the API response
-$result = json_decode($response, true)["result"];
-file_put_contents($output
-```
-
-<details>
-<details>
+print(&quot;\nDetected faces:&quot;)
+pprint.pp(result_infer[&quot;faces&quot;])
+</code></pre>
+</details>
+</details>
 <br/>
 
 📱 <b>Edge Deployment</b>: Edge deployment is a method where computing and data processing functions are placed on the user's device itself, allowing the device to process data directly without relying on remote servers. PaddleX supports deploying models on edge devices such as Android. For detailed edge deployment procedures, please refer to the [PaddleX Edge Deployment Guide](../../../pipeline_deploy/edge_deploy.en.md).
