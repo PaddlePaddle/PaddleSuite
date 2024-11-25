@@ -56,6 +56,7 @@ class DetConfig(BaseConfig, PPDetConfigMixin):
         train_anno_path: str = "annotations/instance_train.json",
         val_anno_path: str = "annotations/instance_val.json",
         test_anno_path: str = "annotations/instance_val.json",
+        metric: str = "COCO",
     ):
         """update dataset settings
 
@@ -70,6 +71,7 @@ class DetConfig(BaseConfig, PPDetConfigMixin):
                 Defaults to "annotations/instance_val.json".
             test_anno_path (str, optional): the test annotations file that relative to `dataset_path`.
                 Defaults to "annotations/instance_val.json".
+            metric (str, optional): Evaluation metric. Defaults to "COCO".
 
         Raises:
             ValueError: the `dataset_type` error.
@@ -87,10 +89,10 @@ class DetConfig(BaseConfig, PPDetConfigMixin):
                 val_anno_path,
                 test_anno_path,
             )
-            self.set_val("metric", "COCO")
         else:
             raise ValueError(f"{repr(dataset_type)} is not supported.")
         self.update(ds_cfg)
+        self.set_val("metric", metric)
 
     def _make_dataset_config(
         self,

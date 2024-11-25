@@ -70,4 +70,5 @@ MODELS = [
     "BlazeFace",
     "BlazeFace-FPN-SSH",
     "PP-YOLOE_plus-S_face",
+    "PP-YOLOE-R_L",
 ]
