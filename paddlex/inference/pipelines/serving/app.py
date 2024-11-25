@@ -22,6 +22,7 @@ from typing import (
     Dict,
     Generic,
     List,
+    Mapping,
     Optional,
     Tuple,
     TypeVar,
@@ -108,7 +109,7 @@ class AppContext(Generic[_PipelineT]):
         self._aiohttp_session = val
 
 
-def create_app_config(pipeline_config: Dict[str, Any], **kwargs: Any) -> AppConfig:
+def create_app_config(pipeline_config: Mapping[str, Any], **kwargs: Any) -> AppConfig:
     app_config = pipeline_config.get(SERVING_CONFIG_KEY, {})
     app_config.update(kwargs)
     return AppConfig.model_validate(app_config)
