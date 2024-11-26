@@ -188,67 +188,84 @@ Pipeline:
 <tbody>
 <tr>
 <td>文档场景信息抽取v3</td>
-<td><a href="./tutorials/information_extraction_pipelines/document_scene_information_extraction.md">文档场景信息抽取v3产线使用教程</a></td>
+<td><a href="https://paddlepaddle.github.io/PaddleX/latest/pipeline_usage/tutorials/information_extraction_pipelines/document_scene_information_extraction.html">文档场景信息抽取v3产线使用教程</a></td>
 </tr>
 <tr>
 <td>通用图像分类</td>
-<td><a href="./tutorials/cv_pipelines/image_classification.md">通用图像分类产线使用教程</a></td>
+<td><a href="https://paddlepaddle.github.io/PaddleX/latest/pipeline_usage/tutorials/cv_pipelines/image_classification.html">通用图像分类产线使用教程</a></td>
 </tr>
 <tr>
 <td>通用目标检测</td>
-<td><a href="./tutorials/cv_pipelines/object_detection.md">通用目标检测产线使用教程</a></td>
+<td><a href="https://paddlepaddle.github.io/PaddleX/latest/pipeline_usage/tutorials/cv_pipelines/object_detection.html">通用目标检测产线使用教程</a></td>
 </tr>
 <tr>
 <td>通用实例分割</td>
-<td><a href="./tutorials/cv_pipelines/instance_segmentation.md">通用实例分割产线使用教程</a></td>
+<td><a href="https://paddlepaddle.github.io/PaddleX/latest/pipeline_usage/tutorials/cv_pipelines/instance_segmentation.html">通用实例分割产线使用教程</a></td>
 </tr>
 <tr>
 <td>通用语义分割</td>
-<td><a href="./tutorials/cv_pipelines/semantic_segmentation.md">通用语义分割产线使用教程</a></td>
+<td><a href="https://paddlepaddle.github.io/PaddleX/latest/pipeline_usage/tutorials/cv_pipelines/semantic_segmentation.html">通用语义分割产线使用教程</a></td>
 </tr>
 <tr>
 <td>通用图像多标签分类</td>
-<td><a href="./tutorials/cv_pipelines/image_multi_label_classification.md">通用图像多标签分类产线使用教程</a></td>
+<td><a href="https://paddlepaddle.github.io/PaddleX/latest/pipeline_usage/tutorials/cv_pipelines/image_multi_label_classification.html">通用图像多标签分类产线使用教程</a></td>
+</tr>
+<tr>
+<td>通用图像识别</td>
+<td><a href="https://paddlepaddle.github.io/PaddleX/latest/pipeline_usage/tutorials/cv_pipelines/general_image_recognition.html">通用图像识别产线使用教程</a></td>
+</tr>
+<tr>
+<td>行人属性识别</td>
+<td><a href="https://paddlepaddle.github.io/PaddleX/latest/pipeline_usage/tutorials/cv_pipelines/pedestrian_attribute_recognition.html">行人属性识别产线使用教程</a></td>
+</tr>
+<tr>
+<td>车辆属性识别</td>
+<td><a href="https://paddlepaddle.github.io/PaddleX/latest/pipeline_usage/tutorials/cv_pipelines/vehicle_attribute_recognition.html">车辆属性识别产线使用教程</a></td>
+</tr>
+<tr>
+<td>人脸识别</td>
+<td><a href="https://paddlepaddle.github.io/PaddleX/latest/pipeline_usage/tutorials/cv_pipelines/face_recognition.html">人脸识别产线使用教程</a></td>
 </tr>
 <tr>
 <td>小目标检测</td>
-<td><a href="./tutorials/cv_pipelines/small_object_detection.md">小目标检测产线使用教程</a></td>
+<td><a href="https://paddlepaddle.github.io/PaddleX/latest/pipeline_usage/tutorials/cv_pipelines/small_object_detection.html">小目标检测产线使用教程</a></td>
 </tr>
 <tr>
 <td>图像异常检测</td>
-<td><a href="./tutorials/cv_pipelines/image_anomaly_detection.md">图像异常检测产线使用教程</a></td>
+<td><a href="https://paddlepaddle.github.io/PaddleX/latest/pipeline_usage/tutorials/cv_pipelines/image_anomaly_detection.html">图像异常检测产线使用教程</a></td>
 </tr>
 <tr>
 <td>通用OCR</td>
-<td><a href="./tutorials/ocr_pipelines/OCR.md">通用OCR产线使用教程</a></td>
+<td><a href="https://paddlepaddle.github.io/PaddleX/latest/pipeline_usage/tutorials/ocr_pipelines/OCR.html">通用OCR产线使用教程</a></td>
 </tr>
 <tr>
 <td>通用表格识别</td>
-<td><a href="./tutorials/ocr_pipelines/table_recognition.md">通用表格识别产线使用教程</a></td>
+<td><a href="https://paddlepaddle.github.io/PaddleX/latest/pipeline_usage/tutorials/ocr_pipelines/table_recognition.html">通用表格识别产线使用教程</a></td>
 </tr>
 <tr>
 <td>通用版面解析</td>
-<td><a href="./tutorials/ocr_pipelines/layout_parsing.md">通用版面解析产线使用教程</a></td>
+<td><a href="https://paddlepaddle.github.io/PaddleX/latest/pipeline_usage/tutorials/ocr_pipelines/layout_parsing.html">通用版面解析产线使用教程</a></td>
 </tr>
 <tr>
 <td>公式识别</td>
-<td><a href="./tutorials/ocr_pipelines/formula_recognition.md">公式识别产线使用教程</a></td>
+<td><a href="https://paddlepaddle.github.io/PaddleX/latest/pipeline_usage/tutorials/ocr_pipelines/formula_recognition.html">公式识别产线使用教程</a></td>
 </tr>
 <tr>
 <td>印章文本识别</td>
-<td><a href="./tutorials/ocr_pipelines/seal_recognition.md">印章文本识别产线使用教程</a></td>
+<td><a href="https://paddlepaddle.github.io/PaddleX/latest/pipeline_usage/tutorials/ocr_pipelines/seal_recognition.html">印章文本识别产线使用教程</a></td>
 </tr>
 <tr>
 <td>时序预测</td>
-<td><a href="./tutorials/time_series_pipelines/time_series_forecasting.md">通用时序预测产线使用教程</a></td>
+<td><a href="https://paddlepaddle.github.io/PaddleX/latest/pipeline_usage/tutorials/time_series_pipelines/time_series_forecasting.html">通用时序预测产线使用教程</a></td>
 </tr>
 <tr>
 <td>时序异常检测</td>
-<td><a href="./tutorials/time_series_pipelines/time_series_anomaly_detection.md">通用时序异常检测产线使用教程</a></td>
+<td><a href="https://paddlepaddle.github.io/PaddleX/latest/pipeline_usage/tutorials/time_series_pipelines/time_series_anomaly_detection.html">通用时序异常检测产线使用教程</a></td>
 </tr>
 <tr>
 <td>时序分类</td>
-<td><a href="./tutorials/time_series_pipelines/time_series_classification.md">通用时序分类产线使用教程</a></td>
+<td><a href="https://paddlepaddle.github.io/PaddleX/latest/pipeline_usage/tutorials/time_series_pipelines/time_series_classification.html">通用时序分类产线使用教程</a></td>
 </tr>
 </tbody>
 </table>
+

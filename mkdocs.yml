@@ -212,7 +212,7 @@ plugins:
             FAQ: FAQ
             近期更新: Recently Update
       repository: PaddlePaddle/PaddleX #仓库名称
-      branch: release/3.0-beta1 #仓库分支
+      branch: release/3.0-beta2 #仓库分支
   - git-revision-date-localized: #显示更新时间
       enable_creation_date: true
 
@@ -291,7 +291,6 @@ markdown_extensions:
 # 页面结构
 nav:
   - Home: index.md
-  - 快速开始: quick_start.md
   - 安装:
        - 安装PaddlePaddle: installation/paddlepaddle_install.md
        - 安装PaddleX: installation/installation.md
