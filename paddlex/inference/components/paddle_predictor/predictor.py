@@ -154,6 +154,26 @@ class BasePaddlePredictor(BaseComponent):
             pass
         elif self.option.device == "mlu":
             config.enable_custom_device("mlu")
+        elif self.option.device == "gcu":
+            assert paddle.device.is_compiled_with_custom_device("gcu"), (
+                "Args device cannot be set as gcu while your paddle "
+                "is not compiled with gcu!"
+            )
+            config.enable_custom_device("gcu")
+            from paddle_custom_device.gcu import passes as gcu_passes
+
+            gcu_passes.setUp()
+            name = "PaddleX_" + self.option.model_name
+            if hasattr(config, "enable_new_ir") and self.option.enable_new_ir:
+                config.enable_new_ir(True)
+                config.enable_new_executor(True)
+                kPirGcuPasses = gcu_passes.inference_passes(use_pir=True, name=name)
+                config.enable_custom_passes(kPirGcuPasses, True)
+            else:
+                config.enable_new_ir(False)
+                config.enable_new_executor(False)
+                pass_builder = config.pass_builder()
+                gcu_passes.append_passes_for_legacy_ir(pass_builder, name)
         else:
             assert self.option.device == "cpu"
             config.disable_gpu()

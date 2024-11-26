@@ -170,6 +170,7 @@ plugins:
             寒武纪 MLU 飞桨安装教程: Cambricon MLU PaddlePaddle Installation Guide
             昇腾 NPU 飞桨安装教程: Ascend NPU PaddlePaddle Installation Guide
             昆仑 XPU 飞桨安装教程: Kunlun XPU PaddlePaddle Installation Guide
+            燧原 GCU 飞桨安装教程: Enflame GCU PaddlePaddle Installation Guide
             数据标注教程: Data Annotation Tutorials
             计算机视觉: Computer Vision
             图像分类任务模块: Image Classification Task
@@ -197,6 +198,7 @@ plugins:
             PaddleX模型列表(MLU): PaddleX Model List (MLU)
             PaddleX模型列表(NPU): PaddleX Model List (NPU)
             PaddleX模型列表(XPU): PaddleX Model List (XPU)
+            PaddleX模型列表(GCU): PaddleX Model List (GCU)
             产业实践教程&范例: Practical Tutorials & Examples
             论文文献信息抽取教程: Document Scene Information Extraction Tutorial
             垃圾分类教程: Garbage Classification Tutorial
@@ -371,6 +373,7 @@ nav:
          - 寒武纪 MLU 飞桨安装教程: other_devices_support/paddlepaddle_install_MLU.md
          - 昇腾 NPU 飞桨安装教程: other_devices_support/paddlepaddle_install_NPU.md
          - 昆仑 XPU 飞桨安装教程: other_devices_support/paddlepaddle_install_XPU.md
+         - 燧原 GCU 飞桨安装教程: other_devices_support/paddlepaddle_install_GCU.md
   - 数据标注教程:
        - 计算机视觉:
          - 图像分类任务模块: data_annotations/cv_modules/image_classification.md
@@ -398,6 +401,7 @@ nav:
        - PaddleX模型列表(MLU): support_list/model_list_mlu.md
        - PaddleX模型列表(NPU): support_list/model_list_npu.md
        - PaddleX模型列表(XPU): support_list/model_list_xpu.md
+       - PaddleX模型列表(GCU): support_list/model_list_gcu.md
   - 产业实践教程&范例:
        - 论文文献信息抽取教程: practical_tutorials/document_scene_information_extraction(layout_detection)_tutorial.md
        - 垃圾分类教程: practical_tutorials/image_classification_garbage_tutorial.md
