@@ -18,6 +18,8 @@ comments: true
 
 海光 DCU：[海光 DCU 飞桨安装教程](./paddlepaddle_install_DCU.md)
 
+燧原 GCU：[燧原 GCU 飞桨安装教程](./paddlepaddle_install_GCU.md)
+
 ### 1.2 PaddleX安装
 欢迎您使用飞桨低代码开发工具PaddleX，在我们正式开始本地安装之前，请先明确您的开发需求，并根据您的需求选择合适的安装模式。
 
@@ -161,4 +163,4 @@ paddlex --install --platform gitee.com
 All packages are installed.
 ```
 ## 2、使用
-基于昇腾 NPU、寒武纪 MLU、昆仑 XPU、海光DCU 硬件平台的 PaddleX 模型产线开发工具使用方法与 GPU 相同，只需根据所属硬件平台，修改配置设备的参数，详细的使用教程可以查阅[PaddleX产线开发工具本地使用教程](../pipeline_usage/pipeline_develop_guide.md)
+基于昇腾 NPU、寒武纪 MLU、昆仑 XPU、海光DCU、燧原 GCU 硬件平台的 PaddleX 模型产线开发工具使用方法与 GPU 相同，只需根据所属硬件平台，修改配置设备的参数，详细的使用教程可以查阅[PaddleX产线开发工具本地使用教程](../pipeline_usage/pipeline_develop_guide.md)
