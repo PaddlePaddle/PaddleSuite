@@ -186,7 +186,7 @@ tar -xf ./dataset/paperlayout.tar -C ./dataset/
 To verify the dataset, simply run the following command:
 
 ```bash
-python main.py -c paddlex/configs/layout_detection/RT-DETR-H_layout_3cls.yaml \
+python main.py -c paddlex/configs/structure_analysis/RT-DETR-H_layout_3cls.yaml \
     -o Global.mode=check_dataset \
     -o Global.dataset_dir=./dataset/paperlayout/
 ```
@@ -274,7 +274,7 @@ When splitting data, the original annotation files will be renamed as `xxx.bak` 
 Before training, please ensure that you have validated the dataset. To complete PaddleX model training, simply use the following command:
 
 ```bash
-python main.py -c paddlex/configs/layout_detection/RT-DETR-H_layout_3cls.yaml \
+python main.py -c paddlex/configs/structure_analysis/RT-DETR-H_layout_3cls.yaml \
     -o Global.mode=train \
     -o Global.dataset_dir=./dataset/paperlayout \
     -o Train.num_classes=4
@@ -313,7 +313,7 @@ After completing model training, all outputs are saved in the specified output d
 After completing model training, you can evaluate the specified model weight file on the validation set to verify the model accuracy. To evaluate a model using PaddleX, simply use the following command:
 
 ```bash
-python main.py -c paddlex/configs/layout_detection/RT-DETR-H_layout_3cls.yaml \
+python main.py -c paddlex/configs/structure_analysis/RT-DETR-H_layout_3cls.yaml \
     -o Global.mode=evaluate \
     -o Global.dataset_dir=./dataset/paperlayout
 ```
@@ -409,7 +409,7 @@ When selecting a training environment, it is important to consider the relations
 For reference, the command to execute training with different parameter adjustments can be:
 
 ```bash
-python main.py -c paddlex/configs/layout_detection/RT-DETR-H_layout_3cls.yaml \
+python main.py -c paddlex/configs/structure_analysis/RT-DETR-H_layout_3cls.yaml \
     -o Global.mode=train \
     -o Global.dataset_dir=./dataset/paperlayout \
     -o Train.num_classes=4 \
@@ -423,7 +423,7 @@ python main.py -c paddlex/configs/layout_detection/RT-DETR-H_layout_3cls.yaml \
 You can test the fine-tuned single model using [test file](https://paddle-model-ecology.bj.bcebos.com/paddlex/PaddleX3.0/doc_images/practical_tutorial/PP-ChatOCRv3_doc_layout/test.jpg)
 
 ```bash
-python main.py -c paddlex/configs/layout_detection/RT-DETR-H_layout_3cls.yaml \
+python main.py -c paddlex/configs/structure_analysis/RT-DETR-H_layout_3cls.yaml \
     -o Global.mode=predict \
     -o Predict.model_dir="output/best_model/inference" \
     -o Predict.input="https://paddle-model-ecology.bj.bcebos.com/paddlex/PaddleX3.0/doc_images/practical_tutorial/PP-ChatOCRv3_doc_layout/test.jpg"
