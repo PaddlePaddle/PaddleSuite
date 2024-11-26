@@ -51,7 +51,7 @@ for res in output:
 如果你追求更高精度的现有模型，可以使用 PaddleX 的二次开发能力，开发更好的旋转目标检测模型。在使用 PaddleX 开发旋转目标检测模型之前，请务必安装 PaddleX的旋转目标检测相关模型训练插件，安装过程可以参考 [PaddleX本地安装教程](../../../installation/installation.md)
 
 ### 4.1 数据准备
-在进行模型训练前，需要准备相应任务模块的数据集。PaddleX 针对每一个模块提供了数据校验功能，<b>只有通过数据校验的数据才可以进行模型训练</b>。此外，PaddleX 为每一个模块都提供了 Demo 数据集，您可以基于官方提供的 Demo 数据完成后续的开发。若您希望用私有数据集进行后续的模型训练，可以参考[PaddleX旋转目标检测任务模块数据标注教程](https://github.com/PaddlePaddle/PaddleDetection/blob/release/2.8/configs/rotate/README.md#%E8%87%AA%E5%AE%9A%E4%B9%89%E6%95%B0%E6%8D%AE%E9%9B%86:~:text=%E5%A2%9E%E5%B9%BF%E8%BF%9B%E8%A1%8C%E8%AE%AD%E7%BB%83%E3%80%82-,%E6%95%B0%E6%8D%AE%E5%87%86%E5%A4%87,-DOTA%E6%95%B0%E6%8D%AE%E5%87%86%E5%A4%87)。
+在进行模型训练前，需要准备相应任务模块的数据集。PaddleX 针对每一个模块提供了数据校验功能，<b>只有通过数据校验的数据才可以进行模型训练</b>。此外，PaddleX 为每一个模块都提供了 Demo 数据集，您可以基于官方提供的 Demo 数据完成后续的开发。若您希望用私有数据集进行后续的模型训练，可以参考[PaddleX目标检测任务模块数据标注教程](../../../data_annotations/cv_modules/object_detection.md)。
 
 #### 4.1.1 Demo 数据下载
 您可以参考下面的命令将 Demo 数据集下载到指定文件夹：
@@ -76,7 +76,7 @@ tar -xf ./dataset/rdet_dota_examples.tar -C ./dataset/
 一行命令即可完成数据校验：
 
 ```bash
-python main.py -c paddlex/configs/object_detection/PP-YOLOE-R_L.yaml \
+python main.py -c paddlex/configs/rotated_object_detection/PP-YOLOE-R_L.yaml \
     -o Global.mode=check_dataset \
     -o Global.dataset_dir=./dataset/DOTA-sampled200_crop1024_data
 ```
@@ -143,7 +143,7 @@ python main.py -c paddlex/configs/object_detection/PP-YOLOE-R_L.yaml \
 
 <p><b>（1）数据集格式转换</b></p>
 
-旋转目标检测赞不支持数据格式转换，只支持标准[DOTA的COCO数据格](https://github.com/PaddlePaddle/PaddleDetection/blob/develop/configs/rotate/README.md#%E6%95%B0%E6%8D%AE%E5%87%86%E5%A4%87:~:text=1.0%201.5%20%5C%0A%20%20%20%20%2D%2Dimage_only-,%E8%87%AA%E5%AE%9A%E4%B9%89%E6%95%B0%E6%8D%AE%E9%9B%86,-%E6%97%8B%E8%BD%AC%E6%A1%86%E4%BD%BF%E7%94%A8)
+旋转目标检测赞不支持数据格式转换，只支持标准DOTA的COCO数据格式。
 
 <p><b>（2）数据集划分</b></p>
 <p>数据集划分的参数可以通过修改配置文件中 <code>CheckDataset</code> 下的字段进行设置，配置文件中部分参数的示例说明如下：</p>
@@ -165,13 +165,13 @@ CheckDataset:
   ......
 </code></pre>
 <p>随后执行命令：</p>
-<pre><code class="language-bash">python main.py -c paddlex/configs/object_detection/PP-YOLOE-R_L.yaml \
+<pre><code class="language-bash">python main.py -c paddlex/configs/rotated_object_detection/PP-YOLOE-R_L.yaml \
     -o Global.mode=check_dataset \
     -o Global.dataset_dir=./dataset/DOTA-sampled200_crop1024_data
 </code></pre>
 <p>数据划分执行之后，原有标注文件会被在原路径下重命名为 <code>xxx.bak</code>。</p>
 <p>以上参数同样支持通过追加命令行参数的方式进行设置：</p>
-<pre><code class="language-bash">python main.py -c paddlex/configs/object_detection/PP-YOLOE-R_L.yaml \
+<pre><code class="language-bash">python main.py -c paddlex/configs/rotated_object_detection/PP-YOLOE-R_L.yaml \
     -o Global.mode=check_dataset \
     -o Global.dataset_dir=./dataset/DOTA-sampled200_crop1024_data \
     -o CheckDataset.split.enable=True \
@@ -183,7 +183,7 @@ CheckDataset:
 一条命令即可完成模型的训练，以此处旋转目标检测模型 `PP-YOLOE-R_L` 的训练为例：
 
 ```bash
-python main.py -c paddlex/configs/object_detection/PP-YOLOE-R_L.yaml \
+python main.py -c paddlex/configs/rotated_object_detection/PP-YOLOE-R_L.yaml \
     -o Global.mode=train \
     -o Global.dataset_dir=./dataset/DOTA-sampled200_crop1024_data
 ```
@@ -214,7 +214,7 @@ python main.py -c paddlex/configs/object_detection/PP-YOLOE-R_L.yaml \
 在完成模型训练后，可以对指定的模型权重文件在验证集上进行评估，验证模型精度。使用 PaddleX 进行模型评估，一条命令即可完成模型的评估：
 
 ```bash
-python main.py -c paddlex/configs/object_detection/PP-YOLOE-R_L.yaml \
+python main.py -c paddlex/configs/rotated_object_detection/PP-YOLOE-R_L.yaml \
     -o Global.mode=evaluate \
     -o Global.dataset_dir=./dataset/DOTA-sampled200_crop1024_data
 ```
@@ -237,7 +237,7 @@ python main.py -c paddlex/configs/object_detection/PP-YOLOE-R_L.yaml \
 
 * 通过命令行的方式进行推理预测，只需如下一条命令。运行以下代码前，请您下载[示例图片](https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/rotated_object_detection_001.png)到本地。
 ```bash
-python main.py -c paddlex/configs/object_detection/PP-YOLOE-R_L.yaml  \
+python main.py -c paddlex/configs/rotated_object_detection/PP-YOLOE-R_L.yaml  \
     -o Global.mode=predict \
     -o Predict.model_dir="./output/best_model/inference" \
     -o Predict.input="rotated_object_detection_001.png"
