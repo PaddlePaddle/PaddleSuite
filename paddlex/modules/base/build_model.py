@@ -22,7 +22,7 @@ def build_model(model_name: str, config_path: str = None) -> tuple:
 
     Args:
         model_name (str): model name
-        device (str): device, such as gpu, cpu, npu, xpu, mlu
+        device (str): device, such as gpu, cpu, npu, xpu, mlu, gcu
         config_path (str, optional): path to the PaddleX config yaml file.
             Defaults to None, i.e. using the default config file.
 
