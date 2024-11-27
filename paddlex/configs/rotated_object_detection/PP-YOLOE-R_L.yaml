@@ -1,7 +1,7 @@
 Global:
   model: PP-YOLOE-R_L
   mode: check_dataset # check_dataset/train/evaluate/predict
-  dataset_dir: "dataset/DOTA-sampled200_crop1024_data"
+  dataset_dir: "dataset/rdet_dota_examples"
   device: gpu:0,1,2,3
   output: "output"
 
@@ -16,8 +16,8 @@ CheckDataset:
 
 Train:
   num_classes: 15
-  epochs_iters: 36
-  batch_size: 6
+  epochs_iters: 10
+  batch_size: 1
   learning_rate: 0.128
   pretrain_weight_path: https://paddledet.bj.bcebos.com/models/pretrained/CSPResNetb_l_pretrained.pdparams
   warmup_steps: 100
