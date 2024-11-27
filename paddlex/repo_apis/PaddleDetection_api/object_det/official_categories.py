@@ -25,6 +25,9 @@ official_categories = {
         {"name": "Table", "id": 3},
         {"name": "Figure", "id": 4},
     ],
+    "PicoDet_layout_1x_table": [
+        {"name": "Table", "id": 0},
+    ],
     "PicoDet-S_layout_3cls": [
         {"name": "image", "id": 0},
         {"name": "table", "id": 1},

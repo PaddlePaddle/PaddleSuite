@@ -5,6 +5,35 @@ comments: true
 # 版本更新信息
 
 ## 最新版本信息
+### PaddleX v3.0.0beta2(11.15/2024)
+PaddleX 3.0 Beta2 全面适配 PaddlePaddle 3.0b2 版本。**新增通用图像识别、人脸识别、车辆属性识别和行人属性识别产线，同时新增 42 个模型开发全流程适配昇腾 910B，并全面支持[GitHub 站点文档](https://paddlepaddle.github.io/PaddleX/latest/index.html)。** 具体新增能力如下：
+
+- 新增产线：
+  - 新增[通用图像识别产线](https://github.com/PaddlePaddle/PaddleX/blob/release/3.0-beta2/docs/pipeline_usage/tutorials/cv_pipelines/general_image_recognition.md)，提供更强的特征提取模型，支持用户自定义图像数据库识别未知类别，相比当前开放域目标检测，可以自定义识别的总类更多。支持高性能推理和服务化部署；
+  - 新增[人脸识别产线](https://github.com/PaddlePaddle/PaddleX/blob/release/3.0-beta2/docs/pipeline_usage/tutorials/cv_pipelines/face_recognition.md)，支持对人脸数据库的增加和删除，支持高性能推理和服务化部署；
+  - 新增[车辆属性识别产线](https://github.com/PaddlePaddle/PaddleX/blob/release/3.0-beta2/docs/pipeline_usage/tutorials/cv_pipelines/vehicle_attribute_recognition.md)，支持对图像中的车辆进行检测和属性的识别，当前支持的属性有颜色和车型。支持高性能推理和服务化部署；
+  - 新增[行人属性识别线](https://github.com/PaddlePaddle/PaddleX/blob/release/3.0-beta2/docs/pipeline_usage/tutorials/cv_pipelines/pedestrian_attribute_recognition.md)，支持对图像中的行人进行检测和属性的识别，当前支持的属性有年龄、性别、穿着等。支持高性能推理和服务化部署。
+
+- 新增能力：
+  - 支持[GitHub 站点文档](https://paddlepaddle.github.io/PaddleX/latest/index.html)，支持用户搜索相关内容和对文档内容的评论；
+  - 支持打印模型的推理benchmark信息，相关[文档](https://github.com/PaddlePaddle/PaddleX/blob/release/3.0-beta2/docs/module_usage/instructions/benchmark.md)；
+  - 新增 42 个模型开发全流程适配昇腾 910B，[模型列表](https://github.com/PaddlePaddle/PaddleX/blob/release/3.0-beta2/docs/support_list/model_list_npu.md)。
+
+- 优化点：
+  - 公式识别产线，支持 PDF 格式输入，支持公式识别结果的可视化；
+  - 印章文本识别产线，支持 PDF 格式的输入；
+  - 通用版面解析产线，优化保存图片的名称；
+  - 预训练统一管理，将当前支持的模型的预训练统一管理，并内置到默认配置文件中；
+  - 升级模型保存的格式，为高性能推理提供保障；
+  - 优化部分模型的默认参数，为训练更高精度的模型提供保障。
+
+- BugFix：
+  - 修复部分文档表述错误或者不当的内容，修复部分 URL 失效的问题；
+  - 修复文档方向分类推理模型的bug；
+  - 修复部分高性能推理和服务化部署的bug；
+  - 修复 SLANet、SLANet_plus 训练精度为 0 的bug。
+
+
 ### PaddleX v3.0.0beta1(9.30/2024)
 PaddleX 3.0 Beta1 提供 200+ 模型通过极简的 Python API 一键调用；实现基于统一命令的模型全流程开发，并开源 PP-ChatOCRv3 特色模型产线基础能力；支持 100+ 模型高性能推理和服务化部署，7 类重点视觉模型端侧部署；70+ 模型开发全流程适配昇腾 910B，15+ 模型开发全流程适配昆仑芯和寒武纪。
 
