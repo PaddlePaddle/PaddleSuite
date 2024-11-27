@@ -73,7 +73,7 @@ def create_pipeline_app(pipeline: AnomalyDetection, app_config: AppConfig) -> Fa
                 ),
             )
 
-        except Exception as e:
+        except Exception:
             logging.exception("Unexpected exception")
             raise HTTPException(status_code=500, detail="Internal server error")
 

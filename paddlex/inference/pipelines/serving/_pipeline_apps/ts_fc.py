@@ -61,7 +61,7 @@ def create_pipeline_app(pipeline: TSFc, app_config: AppConfig) -> FastAPI:
                 result=InferResult(csv=output_csv),
             )
 
-        except Exception as e:
+        except Exception:
             logging.exception("Unexpected exception")
             raise HTTPException(status_code=500, detail="Internal server error")
 

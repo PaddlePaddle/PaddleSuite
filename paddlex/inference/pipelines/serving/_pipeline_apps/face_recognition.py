@@ -156,7 +156,7 @@ def create_pipeline_app(pipeline: FaceRecPipeline, app_config: AppConfig) -> Fas
                 result=BuildIndexResult(indexKey=index_key, idMap=index_data.id_map),
             )
 
-        except Exception as e:
+        except Exception:
             logging.exception("Unexpected exception")
             raise HTTPException(status_code=500, detail="Internal server error")
 
@@ -206,7 +206,7 @@ def create_pipeline_app(pipeline: FaceRecPipeline, app_config: AppConfig) -> Fas
                 result=AddImagesToIndexResult(idMap=index_data.id_map),
             )
 
-        except Exception as e:
+        except Exception:
             logging.exception("Unexpected exception")
             raise HTTPException(status_code=500, detail="Internal server error")
 
@@ -247,7 +247,7 @@ def create_pipeline_app(pipeline: FaceRecPipeline, app_config: AppConfig) -> Fas
                 result=RemoveImagesFromIndexResult(idMap=index_data.id_map),
             )
 
-        except Exception as e:
+        except Exception:
             logging.exception("Unexpected exception")
             raise HTTPException(status_code=500, detail="Internal server error")
 
@@ -310,7 +310,7 @@ def create_pipeline_app(pipeline: FaceRecPipeline, app_config: AppConfig) -> Fas
                 result=InferResult(faces=faces, image=output_image_base64),
             )
 
-        except Exception as e:
+        except Exception:
             logging.exception("Unexpected exception")
             raise HTTPException(status_code=500, detail="Internal server error")
 

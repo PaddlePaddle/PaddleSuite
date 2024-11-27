@@ -120,7 +120,7 @@ def create_pipeline_app(
             if serving_utils.is_url(request.file):
                 try:
                     file_type = serving_utils.infer_file_type(request.file)
-                except Exception as e:
+                except Exception:
                     logging.exception("Failed to infer the file type")
                     raise HTTPException(
                         status_code=422,
@@ -202,7 +202,7 @@ def create_pipeline_app(
                 ),
             )
 
-        except Exception as e:
+        except Exception:
             logging.exception("Unexpected exception")
             raise HTTPException(status_code=500, detail="Internal server error")
 

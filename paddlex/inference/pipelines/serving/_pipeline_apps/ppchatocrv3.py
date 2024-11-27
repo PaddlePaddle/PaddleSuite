@@ -214,7 +214,7 @@ def create_pipeline_app(pipeline: PPChatOCRPipeline, app_config: AppConfig) -> F
             if serving_utils.is_url(request.file):
                 try:
                     file_type = serving_utils.infer_file_type(request.file)
-                except Exception as e:
+                except Exception:
                     logging.exception("Failed to infer the file type")
                     raise HTTPException(
                         status_code=422,
@@ -311,7 +311,7 @@ def create_pipeline_app(pipeline: PPChatOCRPipeline, app_config: AppConfig) -> F
                 ),
             )
 
-        except Exception as e:
+        except Exception:
             logging.exception("Unexpected exception")
             raise HTTPException(status_code=500, detail="Internal server error")
 
@@ -347,7 +347,7 @@ def create_pipeline_app(pipeline: PPChatOCRPipeline, app_config: AppConfig) -> F
                 result=BuildVectorStoreResult(vectorStore=result["vector"]),
             )
 
-        except Exception as e:
+        except Exception:
             logging.exception("Unexpected exception")
             raise HTTPException(status_code=500, detail="Internal server error")
 
@@ -382,7 +382,7 @@ def create_pipeline_app(pipeline: PPChatOCRPipeline, app_config: AppConfig) -> F
                 result=RetrieveKnowledgeResult(retrievalResult=result["retrieval"]),
             )
 
-        except Exception as e:
+        except Exception:
             logging.exception("Unexpected exception")
             raise HTTPException(status_code=500, detail="Internal server error")
 
@@ -442,7 +442,7 @@ def create_pipeline_app(pipeline: PPChatOCRPipeline, app_config: AppConfig) -> F
                 result=chat_result,
             )
 
-        except Exception as e:
+        except Exception:
             logging.exception("Unexpected exception")
             raise HTTPException(status_code=500, detail="Internal server error")
 

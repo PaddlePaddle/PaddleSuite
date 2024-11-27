@@ -83,7 +83,7 @@ def create_pipeline_app(pipeline: ObjectDetection, app_config: AppConfig) -> Fas
                 result=InferResult(detectedObjects=objects, image=output_image_base64),
             )
 
-        except Exception as e:
+        except Exception:
             logging.exception("Unexpected exception")
             raise HTTPException(status_code=500, detail="Internal server error")
 

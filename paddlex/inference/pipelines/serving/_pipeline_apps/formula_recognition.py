@@ -112,7 +112,7 @@ def create_pipeline_app(
                 ),
             )
 
-        except Exception as e:
+        except Exception:
             logging.exception("Unexpected exception")
             raise HTTPException(status_code=500, detail="Internal server error")
 

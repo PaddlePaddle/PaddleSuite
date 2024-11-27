@@ -61,7 +61,7 @@ def create_pipeline_app(pipeline: TSCls, app_config: AppConfig) -> FastAPI:
                 result=InferResult(label=label, score=score),
             )
 
-        except Exception as e:
+        except Exception:
             logging.exception("Unexpected exception")
             raise HTTPException(status_code=500, detail="Internal server error")
 

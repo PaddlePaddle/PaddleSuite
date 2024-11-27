@@ -83,7 +83,7 @@ def create_pipeline_app(
                 result=InferResult(categories=categories, image=output_image_base64),
             )
 
-        except Exception as e:
+        except Exception:
             logging.exception("Unexpected exception")
             raise HTTPException(status_code=500, detail="Internal server error")
 

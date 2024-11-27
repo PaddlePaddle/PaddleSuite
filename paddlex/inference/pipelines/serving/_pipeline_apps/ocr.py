@@ -91,7 +91,7 @@ def create_pipeline_app(pipeline: OCRPipeline, app_config: AppConfig) -> FastAPI
                 result=InferResult(texts=texts, image=output_image_base64),
             )
 
-        except Exception as e:
+        except Exception:
             logging.exception("Unexpected exception")
             raise HTTPException(status_code=500, detail="Internal server error")
 
