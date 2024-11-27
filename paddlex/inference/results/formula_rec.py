@@ -164,8 +164,6 @@ class FormulaVisualResult(BaseResult):
             save_path = Path(save_path).stem
 
         formula_save_path = f"{save_path}_formula.jpg"
-        self["input_path"] = formula_save_path
-        self["layout_result"]["input_path"] = formula_save_path
         if not str(save_path).endswith(".json"):
             save_path = "{}.json".format(save_path)
         super().save_to_json(save_path)

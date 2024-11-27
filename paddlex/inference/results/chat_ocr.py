@@ -65,10 +65,6 @@ class VisualResult(BaseResult):
         layout_save_path = f"{save_path}_layout.jpg"
         ocr_save_path = f"{save_path}_ocr.jpg"
         table_save_path = f"{save_path}_table"
-        self["input_path"] = layout_save_path
-        self["layout_result"]["input_path"] = layout_save_path
-        self["layout_parsing_result"]["input_path"] = layout_save_path
-        self["ocr_result"]["input_path"] = ocr_save_path
         table_result_num = len(self["table_result"])
         for idx in range(table_result_num):
             self["table_result"][idx]["input_path"] = "{}_{:04d}".format(
