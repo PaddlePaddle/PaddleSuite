@@ -157,7 +157,7 @@ def create_pipeline_app(pipeline: FaceRecPipeline, app_config: AppConfig) -> Fas
             )
 
         except Exception as e:
-            logging.exception(e)
+            logging.exception("Unexpected exception")
             raise HTTPException(status_code=500, detail="Internal server error")
 
     @app.post(
@@ -207,7 +207,7 @@ def create_pipeline_app(pipeline: FaceRecPipeline, app_config: AppConfig) -> Fas
             )
 
         except Exception as e:
-            logging.exception(e)
+            logging.exception("Unexpected exception")
             raise HTTPException(status_code=500, detail="Internal server error")
 
     @app.post(
@@ -248,7 +248,7 @@ def create_pipeline_app(pipeline: FaceRecPipeline, app_config: AppConfig) -> Fas
             )
 
         except Exception as e:
-            logging.exception(e)
+            logging.exception("Unexpected exception")
             raise HTTPException(status_code=500, detail="Internal server error")
 
     @app.post(
@@ -311,7 +311,7 @@ def create_pipeline_app(pipeline: FaceRecPipeline, app_config: AppConfig) -> Fas
             )
 
         except Exception as e:
-            logging.exception(e)
+            logging.exception("Unexpected exception")
             raise HTTPException(status_code=500, detail="Internal server error")
 
     return app
