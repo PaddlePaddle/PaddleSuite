@@ -91,12 +91,16 @@ def create_pipeline_app(
         pipeline=pipeline, app_config=app_config, app_aiohttp_session=True
     )
 
-    if ctx.config.extra and "file_storage" in ctx.config.extra:
-        ctx.extra["file_storage"] = create_storage(ctx.config.extra["file_storage"])
-    else:
-        ctx.extra["file_storage"] = None
+    ctx.extra["file_storage"] = None
     ctx.extra["max_img_size"] = _DEFAULT_MAX_IMG_SIZE
     ctx.extra["max_num_imgs"] = _DEFAULT_MAX_NUM_IMGS
+    if ctx.config.extra:
+        if "file_storage" in ctx.config.extra:
+            ctx.extra["file_storage"] = create_storage(ctx.config.extra["file_storage"])
+        if "max_img_size" in ctx.config.extra:
+            ctx.extra["max_img_size"] = ctx.config.extra["max_img_size"]
+        if "max_num_imgs" in ctx.config.extra:
+            ctx.extra["max_num_imgs"] = ctx.config.extra["max_num_imgs"]
 
     @app.post(
         "/layout-parsing",
