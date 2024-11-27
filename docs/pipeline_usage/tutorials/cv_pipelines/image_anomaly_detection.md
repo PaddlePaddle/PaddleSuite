@@ -65,8 +65,8 @@ paddlex --pipeline anomaly_detection --input uad_grid.png --device gpu:0
 
 运行后，得到的结果为：
 
-```
-{'input_path': 'uad_grid.png'}
+```bash
+{'input_path': 'uad_grid.png', 'pred': '...'}
 ```
 <img src="https://raw.githubusercontent.com/cuicheng01/PaddleX_doc_images/main/images/pipelines/image_anomaly_detection/02.png">
 

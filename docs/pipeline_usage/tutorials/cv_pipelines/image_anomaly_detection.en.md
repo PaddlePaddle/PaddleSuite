@@ -64,8 +64,8 @@ When executing the above command, the default image anomaly detection pipeline c
 
 After running, the result is:
 
-```
-{'input_path': 'uad_grid.png'}
+```bash
+{'input_path': 'uad_grid.png', 'pred': '...'}
 ```
 <img src="https://raw.githubusercontent.com/cuicheng01/PaddleX_doc_images/main/images/pipelines/image_anomaly_detection/02.png">
 
