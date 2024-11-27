@@ -239,9 +239,7 @@ When executing the above command, the default semantic segmentation pipeline con
 
 After running, the result is:
 
-```bash
-{'input_path': 'general_object_detection_002.png'}
-```
+{'input_path': 'makassaridn-road_demo.png', 'pred': '...'}
 
 <img src="https://raw.githubusercontent.com/cuicheng01/PaddleX_doc_images/main/images/pipelines/semantic_segmentation/03.png">
 
