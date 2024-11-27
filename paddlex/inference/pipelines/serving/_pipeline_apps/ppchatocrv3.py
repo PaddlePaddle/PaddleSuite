@@ -190,8 +190,8 @@ def create_pipeline_app(pipeline: PPChatOCRPipeline, app_config: AppConfig) -> F
         ctx.extra["file_storage"] = create_storage(ctx.config.extra["file_storage"])
     else:
         ctx.extra["file_storage"] = None
-    ctx.extra.setdefault("max_img_size", _DEFAULT_MAX_IMG_SIZE)
-    ctx.extra.setdefault("max_num_imgs", _DEFAULT_MAX_NUM_IMGS)
+    ctx.extra["max_img_size"] = _DEFAULT_MAX_IMG_SIZE
+    ctx.extra["max_num_imgs"] = _DEFAULT_MAX_NUM_IMGS
 
     @app.post(
         "/chatocr-vision",
