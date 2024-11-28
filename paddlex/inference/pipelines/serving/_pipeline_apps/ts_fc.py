@@ -54,7 +54,7 @@ def create_pipeline_app(pipeline: TSFc, app_config: AppConfig) -> FastAPI:
                 serving_utils.data_frame_to_bytes(result["forecast"])
             )
 
-            return ResultResponse(
+            return ResultResponse[InferResult](
                 logId=serving_utils.generate_log_id(),
                 errorCode=0,
                 errorMsg="Success",

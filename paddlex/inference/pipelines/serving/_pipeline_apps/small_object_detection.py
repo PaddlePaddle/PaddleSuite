@@ -78,7 +78,7 @@ def create_pipeline_app(pipeline: SmallObjDet, app_config: AppConfig) -> FastAPI
                 serving_utils.image_to_bytes(result.img)
             )
 
-            return ResultResponse(
+            return ResultResponse[InferResult](
                 logId=serving_utils.generate_log_id(),
                 errorCode=0,
                 errorMsg="Success",

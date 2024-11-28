@@ -54,7 +54,7 @@ def create_pipeline_app(pipeline: TSCls, app_config: AppConfig) -> FastAPI:
             label = str(result["classification"].at[0, "classid"])
             score = float(result["classification"].at[0, "score"])
 
-            return ResultResponse(
+            return ResultResponse[InferResult](
                 logId=serving_utils.generate_log_id(),
                 errorCode=0,
                 errorMsg="Success",

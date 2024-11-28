@@ -193,7 +193,7 @@ def create_pipeline_app(
                     LayoutParsingResult(layoutElements=layout_elements)
                 )
 
-            return ResultResponse(
+            return ResultResponse[InferResult](
                 logId=serving_utils.generate_log_id(),
                 errorCode=0,
                 errorMsg="Success",

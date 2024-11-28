@@ -149,7 +149,7 @@ def create_pipeline_app(pipeline: FaceRecPipeline, app_config: AppConfig) -> Fas
                 index_storage.set, index_key, index_data_bytes
             )
 
-            return ResultResponse(
+            return ResultResponse[BuildIndexResult](
                 logId=serving_utils.generate_log_id(),
                 errorCode=0,
                 errorMsg="Success",
@@ -199,7 +199,7 @@ def create_pipeline_app(pipeline: FaceRecPipeline, app_config: AppConfig) -> Fas
                 index_storage.set, request.indexKey, index_data_bytes
             )
 
-            return ResultResponse(
+            return ResultResponse[AddImagesToIndexResult](
                 logId=serving_utils.generate_log_id(),
                 errorCode=0,
                 errorMsg="Success",
@@ -240,7 +240,7 @@ def create_pipeline_app(pipeline: FaceRecPipeline, app_config: AppConfig) -> Fas
                 index_storage.set, request.indexKey, index_data_bytes
             )
 
-            return ResultResponse(
+            return ResultResponse[RemoveImagesFromIndexResult](
                 logId=serving_utils.generate_log_id(),
                 errorCode=0,
                 errorMsg="Success",
@@ -303,7 +303,7 @@ def create_pipeline_app(pipeline: FaceRecPipeline, app_config: AppConfig) -> Fas
                 serving_utils.image_to_bytes(result.img)
             )
 
-            return ResultResponse(
+            return ResultResponse[InferResult](
                 logId=serving_utils.generate_log_id(),
                 errorCode=0,
                 errorMsg="Success",

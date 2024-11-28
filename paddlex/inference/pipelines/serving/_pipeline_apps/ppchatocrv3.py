@@ -301,7 +301,7 @@ def create_pipeline_app(pipeline: PPChatOCRPipeline, app_config: AppConfig) -> F
                 )
                 vision_results.append(vision_result)
 
-            return ResultResponse(
+            return ResultResponse[AnalyzeImagesResult](
                 logId=serving_utils.generate_log_id(),
                 errorCode=0,
                 errorMsg="Success",
@@ -340,7 +340,7 @@ def create_pipeline_app(pipeline: PPChatOCRPipeline, app_config: AppConfig) -> F
                 pipeline.pipeline.build_vector, **kwargs
             )
 
-            return ResultResponse(
+            return ResultResponse[BuildVectorStoreResult](
                 logId=serving_utils.generate_log_id(),
                 errorCode=0,
                 errorMsg="Success",
@@ -375,7 +375,7 @@ def create_pipeline_app(pipeline: PPChatOCRPipeline, app_config: AppConfig) -> F
                 pipeline.pipeline.retrieval, **kwargs
             )
 
-            return ResultResponse(
+            return ResultResponse[RetrieveKnowledgeResult](
                 logId=serving_utils.generate_log_id(),
                 errorCode=0,
                 errorMsg="Success",
@@ -435,7 +435,7 @@ def create_pipeline_app(pipeline: PPChatOCRPipeline, app_config: AppConfig) -> F
                 prompts=prompts,
             )
 
-            return ResultResponse(
+            return ResultResponse[ChatResult](
                 logId=serving_utils.generate_log_id(),
                 errorCode=0,
                 errorMsg="Success",

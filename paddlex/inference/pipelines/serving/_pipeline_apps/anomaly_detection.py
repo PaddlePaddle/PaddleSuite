@@ -64,7 +64,7 @@ def create_pipeline_app(pipeline: AnomalyDetection, app_config: AppConfig) -> Fa
                 serving_utils.image_to_bytes(result.img.convert("RGB"))
             )
 
-            return ResultResponse(
+            return ResultResponse[InferResult](
                 logId=serving_utils.generate_log_id(),
                 errorCode=0,
                 errorMsg="Success",

@@ -101,7 +101,7 @@ def create_pipeline_app(
             else:
                 ocr_image_base64 = None
 
-            return ResultResponse(
+            return ResultResponse[InferResult](
                 logId=serving_utils.generate_log_id(),
                 errorCode=0,
                 errorMsg="Success",
