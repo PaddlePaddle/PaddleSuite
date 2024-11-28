@@ -17,6 +17,7 @@ from .....utils.subclass_register import AutoRegisterABCMetaClass
 
 import inspect
 
+
 class BaseChat(ABC, metaclass=AutoRegisterABCMetaClass):
     """Base Chat"""
 
@@ -28,4 +29,5 @@ class BaseChat(ABC, metaclass=AutoRegisterABCMetaClass):
     @abstractmethod
     def generate_chat_results(self):
         raise NotImplementedError(
-            "The method `generate_chat_results` has not been implemented yet.")
+            "The method `generate_chat_results` has not been implemented yet."
+        )

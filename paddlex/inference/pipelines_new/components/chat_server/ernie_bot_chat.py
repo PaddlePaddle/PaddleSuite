@@ -16,6 +16,7 @@ from .....utils import logging
 from .base import BaseChat
 import erniebot
 
+
 class ErnieBotChat(BaseChat):
     """Ernie Bot Chat"""
 
@@ -32,11 +33,11 @@ class ErnieBotChat(BaseChat):
 
     def __init__(self, config):
         super().__init__()
-        model_name = config.get('model_name', None)
-        api_type = config.get('api_type', None)
-        ak = config.get('ak', None)
-        sk = config.get('sk', None)
-        access_token = config.get('access_token', None)
+        model_name = config.get("model_name", None)
+        api_type = config.get("api_type", None)
+        ak = config.get("ak", None)
+        sk = config.get("sk", None)
+        access_token = config.get("access_token", None)
 
         if model_name not in self.entities:
             raise ValueError(f"model_name must be in {self.entities} of ErnieBotChat.")
@@ -46,13 +47,13 @@ class ErnieBotChat(BaseChat):
 
         if api_type == "aistudio" and access_token is None:
             raise ValueError("access_token cannot be empty when api_type is aistudio.")
-            
+
         if api_type == "qianfan" and (ak is None or sk is None):
-            raise ValueError("ak and sk cannot be empty when api_type is qianfan.")            
+            raise ValueError("ak and sk cannot be empty when api_type is qianfan.")
 
         self.model_name = model_name
         self.config = config
-        
+
     def generate_chat_results(self, prompt, temperature=0.001, max_retries=1):
         """
         args:
@@ -60,14 +61,14 @@ class ErnieBotChat(BaseChat):
         """
         try:
             cur_config = {
-                "api_type": self.config['api_type'],
-                "max_retries": max_retries
+                "api_type": self.config["api_type"],
+                "max_retries": max_retries,
             }
-            if self.config['api_type'] == "aistudio":
-                cur_config['access_token'] = self.config['access_token']
-            elif self.config['api_type'] == "qianfan":
-                cur_config['ak'] = self.config['ak']
-                cur_config['sk'] = self.config['sk']
+            if self.config["api_type"] == "aistudio":
+                cur_config["access_token"] = self.config["access_token"]
+            elif self.config["api_type"] == "qianfan":
+                cur_config["ak"] = self.config["ak"]
+                cur_config["sk"] = self.config["sk"]
             chat_completion = erniebot.ChatCompletion.create(
                 _config_=cur_config,
                 model=self.model_name,
@@ -78,18 +79,13 @@ class ErnieBotChat(BaseChat):
             return llm_result
         except Exception as e:
             if len(e.args) < 1:
-                self.ERROR_MASSAGE = (
-                    "暂无权限访问ErnieBot服务，请检查访问令牌。"
-                )
+                self.ERROR_MASSAGE = "暂无权限访问ErnieBot服务，请检查访问令牌。"
             elif (
                 e.args[-1]
                 == "暂无权限使用，请在 AI Studio 正确获取访问令牌(access token)使用"
             ):
-                self.ERROR_MASSAGE = (
-                    "暂无权限访问ErnieBot服务，请检查访问令牌。"
-                )
+                self.ERROR_MASSAGE = "暂无权限访问ErnieBot服务，请检查访问令牌。"
             else:
                 logging.error(e)
                 self.ERROR_MASSAGE = "大模型调用失败"
-        return None 
-        
+        return None

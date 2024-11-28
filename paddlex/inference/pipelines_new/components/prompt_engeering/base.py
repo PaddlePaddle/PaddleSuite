@@ -17,6 +17,7 @@ from .....utils.subclass_register import AutoRegisterABCMetaClass
 
 import inspect
 
+
 class BaseGeneratePrompt(ABC, metaclass=AutoRegisterABCMetaClass):
     """Base Chat"""
 
@@ -28,4 +29,5 @@ class BaseGeneratePrompt(ABC, metaclass=AutoRegisterABCMetaClass):
     @abstractmethod
     def generate_prompt(self):
         raise NotImplementedError(
-            "The method `generate_prompt` has not been implemented yet.")
+            "The method `generate_prompt` has not been implemented yet."
+        )

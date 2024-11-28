@@ -21,6 +21,7 @@ from .seal_det_warp import AutoRectifier
 from shapely.geometry import Polygon
 from numpy.linalg import norm
 
+
 class CropByPolys(BaseComponent):
     """Crop Image by Polys"""
 

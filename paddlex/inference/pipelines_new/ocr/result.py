@@ -22,6 +22,7 @@ from PIL import Image, ImageDraw, ImageFont
 from ....utils.fonts import PINGFANG_FONT_FILE_PATH
 from ..components import CVResult
 
+
 class OCRResult(CVResult):
     def save_to_img(self, save_path, *args, **kwargs):
         if not str(save_path).lower().endswith((".jpg", ".png")):
@@ -61,7 +62,7 @@ class OCRResult(CVResult):
         boxes = self["dt_polys"]
         txts = self["rec_text"]
         scores = self["rec_score"]
-        image = self['input_img']
+        image = self["input_img"]
         h, w = image.shape[0:2]
         image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         img_left = Image.fromarray(image_rgb)

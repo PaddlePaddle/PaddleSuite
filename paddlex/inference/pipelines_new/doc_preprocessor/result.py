@@ -22,6 +22,7 @@ from PIL import Image, ImageDraw, ImageFont
 from ....utils.fonts import PINGFANG_FONT_FILE_PATH, create_font
 from ..components import CVResult
 
+
 class DocPreprocessorResult(CVResult):
 
     def save_to_img(self, save_path, *args, **kwargs):

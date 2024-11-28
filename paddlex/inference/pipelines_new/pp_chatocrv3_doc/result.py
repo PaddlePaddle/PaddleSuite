@@ -22,10 +22,12 @@ from PIL import Image, ImageDraw, ImageFont
 from ....utils.fonts import PINGFANG_FONT_FILE_PATH
 from ..components import BaseResult
 
+
 class VisualInfoResult(BaseResult):
     """VisualInfoResult"""
-    
+
     pass
+
 
 # class VectorResult(BaseResult, Base64Mixin):
 #     """VisualInfoResult"""

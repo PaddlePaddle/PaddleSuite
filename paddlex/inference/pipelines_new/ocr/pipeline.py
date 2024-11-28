@@ -20,33 +20,38 @@ from .result import OCRResult
 ########## [TODO]后续需要更新路径
 from ...components.transforms import ReadImage
 
+
 class OCRPipeline(BasePipeline):
     """OCR Pipeline"""
 
     entities = "OCR"
-    def __init__(self,
-        config,        
+
+    def __init__(
+        self,
+        config,
         device=None,
-        pp_option=None, 
+        pp_option=None,
         use_hpip: bool = False,
-        hpi_params: Optional[Dict[str, Any]] = None):
-        super().__init__(device=device, pp_option=pp_option, 
-            use_hpip=use_hpip, hpi_params=hpi_params)
-        
-        text_det_model_config = config['SubModules']["TextDetection"]
+        hpi_params: Optional[Dict[str, Any]] = None,
+    ):
+        super().__init__(
+            device=device, pp_option=pp_option, use_hpip=use_hpip, hpi_params=hpi_params
+        )
+
+        text_det_model_config = config["SubModules"]["TextDetection"]
         self.text_det_model = self.create_model(text_det_model_config)
 
-        text_rec_model_config = config['SubModules']["TextRecognition"]
+        text_rec_model_config = config["SubModules"]["TextRecognition"]
         self.text_rec_model = self.create_model(text_rec_model_config)
 
-        self.text_type = config['text_type']
+        self.text_type = config["text_type"]
 
         self._sort_quad_boxes = SortQuadBoxes()
 
         if self.text_type == "common":
-            self._crop_by_polys = CropByPolys(det_box_type = "quad")
+            self._crop_by_polys = CropByPolys(det_box_type="quad")
         elif self.text_type == "seal":
-            self._crop_by_polys = CropByPolys(det_box_type = "poly")
+            self._crop_by_polys = CropByPolys(det_box_type="poly")
         else:
             raise ValueError("Unsupported text type {}".format(self.text_type))
 
@@ -60,7 +65,7 @@ class OCRPipeline(BasePipeline):
         img_id = 1
         for input in input_list:
             if isinstance(input, str):
-                image_array = next(self.img_reader(input))[0]['img']
+                image_array = next(self.img_reader(input))[0]["img"]
             else:
                 image_array = input
 
@@ -68,16 +73,20 @@ class OCRPipeline(BasePipeline):
 
             det_res = next(self.text_det_model(image_array))
 
-            dt_polys = det_res['dt_polys']
-            dt_scores = det_res['dt_scores']
+            dt_polys = det_res["dt_polys"]
+            dt_scores = det_res["dt_scores"]
 
             ########## [TODO]需要确认检测模块和识别模块过滤阈值等情况
 
             if self.text_type == "common":
                 dt_polys = self._sort_quad_boxes(dt_polys)
-                
-            single_img_res = {'input_img':image_array, 'dt_polys':dt_polys, \
-                "img_id":img_id, "text_type":self.text_type}
+
+            single_img_res = {
+                "input_img": image_array,
+                "dt_polys": dt_polys,
+                "img_id": img_id,
+                "text_type": self.text_type,
+            }
             img_id += 1
             single_img_res["rec_text"] = []
             single_img_res["rec_score"] = []
@@ -86,7 +95,7 @@ class OCRPipeline(BasePipeline):
 
                 ########## [TODO]updata in future
                 for sub_img in all_subs_of_img:
-                    sub_img['input'] = sub_img['img']
+                    sub_img["input"] = sub_img["img"]
                 ##########
 
                 for rec_res in self.text_rec_model(all_subs_of_img):

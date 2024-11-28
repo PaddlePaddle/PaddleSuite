@@ -21,6 +21,7 @@ from ....utils.func_register import FuncRegister
 from ...utils.io import ImageReader, ImageWriter
 from .utils.mixin import JsonMixin, ImgMixin, StrMixin
 
+
 class BaseComponent(ABC, metaclass=AutoRegisterABCMetaClass):
     """Base Component"""
 
@@ -32,7 +33,8 @@ class BaseComponent(ABC, metaclass=AutoRegisterABCMetaClass):
     @abstractmethod
     def __call__(self):
         raise NotImplementedError(
-            "The component method `__call__` has not been implemented yet.")
+            "The component method `__call__` has not been implemented yet."
+        )
 
 
 class BaseResult(dict, StrMixin, JsonMixin):
@@ -50,10 +52,10 @@ class BaseResult(dict, StrMixin, JsonMixin):
             else:
                 func()
 
+
 class CVResult(BaseResult, ImgMixin):
     def __init__(self, data):
         super().__init__(data)
         ImgMixin.__init__(self, "pillow")
         self._img_reader = ImageReader(backend="pillow")
         self._img_writer = ImageWriter(backend="pillow")
-

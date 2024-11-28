@@ -16,6 +16,7 @@ from .utils import convert_points_to_boxes, get_sub_regions_ocr_res
 import numpy as np
 from .result import TableRecognitionResult
 
+
 def get_ori_image_coordinate(x, y, box_list):
     """
     get the original coordinate from Cropped image to Original image.
@@ -35,19 +36,24 @@ def get_ori_image_coordinate(x, y, box_list):
     ori_box_list = offset + box_list
     return ori_box_list
 
-def convert_table_structure_pred_bbox(table_structure_pred, 
-    crop_start_point, img_shape):
 
-    cell_points_list = table_structure_pred['bbox']
-    ori_cell_points_list = get_ori_image_coordinate(crop_start_point[0], 
-        crop_start_point[1], cell_points_list)
+def convert_table_structure_pred_bbox(
+    table_structure_pred, crop_start_point, img_shape
+):
+
+    cell_points_list = table_structure_pred["bbox"]
+    ori_cell_points_list = get_ori_image_coordinate(
+        crop_start_point[0], crop_start_point[1], cell_points_list
+    )
     ori_cell_points_list = np.reshape(ori_cell_points_list, (-1, 4, 2))
     cell_box_list = convert_points_to_boxes(ori_cell_points_list)
     img_height, img_width = img_shape
-    cell_box_list = np.clip(cell_box_list, 0, 
-        [img_width, img_height, img_width, img_height])
-    table_structure_pred['cell_box_list'] = cell_box_list
-    return 
+    cell_box_list = np.clip(
+        cell_box_list, 0, [img_width, img_height, img_width, img_height]
+    )
+    table_structure_pred["cell_box_list"] = cell_box_list
+    return
+
 
 def distance(box_1, box_2):
     """
@@ -66,6 +72,7 @@ def distance(box_1, box_2):
     dis_2 = abs(x3 - x1) + abs(y3 - y1)
     dis_3 = abs(x4 - x2) + abs(y4 - y2)
     return dis + min(dis_2, dis_3)
+
 
 def compute_iou(rec1, rec2):
     """
@@ -96,6 +103,7 @@ def compute_iou(rec1, rec2):
         intersect = (right_line - left_line) * (bottom_line - top_line)
         return (intersect / (sum_area - intersect)) * 1.0
 
+
 def match_table_and_ocr(cell_box_list, ocr_dt_boxes):
     """
     match table and ocr
@@ -112,17 +120,18 @@ def match_table_and_ocr(cell_box_list, ocr_dt_boxes):
         ocr_box = ocr_box.astype(np.float32)
         distances = []
         for j, table_box in enumerate(cell_box_list):
-            distances.append((distance(table_box, ocr_box), 
-                1.0 - compute_iou(table_box, ocr_box)))  # compute iou and l1 distance
+            distances.append(
+                (distance(table_box, ocr_box), 1.0 - compute_iou(table_box, ocr_box))
+            )  # compute iou and l1 distance
         sorted_distances = distances.copy()
         # select det box by iou and l1 distance
-        sorted_distances = sorted(
-            sorted_distances, key=lambda item: (item[1], item[0]))
+        sorted_distances = sorted(sorted_distances, key=lambda item: (item[1], item[0]))
         if distances.index(sorted_distances[0]) not in matched.keys():
             matched[distances.index(sorted_distances[0])] = [i]
         else:
             matched[distances.index(sorted_distances[0])].append(i)
     return matched
+
 
 def get_html_result(matched_index, ocr_contents, pred_structures):
     pred_html = []
@@ -155,10 +164,7 @@ def get_html_result(matched_index, ocr_contents, pred_structures):
                             content = content[:-4]
                         if len(content) == 0:
                             continue
-                        if (
-                            i != len(matched_index[td_index]) - 1
-                            and " " != content[-1]
-                        ):
+                        if i != len(matched_index[td_index]) - 1 and " " != content[-1]:
                             content += " "
                     pred_html.extend(content)
                 if b_with:
@@ -175,18 +181,18 @@ def get_html_result(matched_index, ocr_contents, pred_structures):
     html += "".join(end_structure)
     return html
 
-def get_table_recognition_res(crop_img_info, table_structure_pred, overall_ocr_res):
-    '''get_table_recognition_res'''
 
-    table_box = np.array([crop_img_info['box']])
+def get_table_recognition_res(crop_img_info, table_structure_pred, overall_ocr_res):
+    """get_table_recognition_res"""
+
+    table_box = np.array([crop_img_info["box"]])
     table_ocr_pred = get_sub_regions_ocr_res(overall_ocr_res, table_box)
 
     crop_start_point = [table_box[0][0], table_box[0][1]]
-    img_shape = overall_ocr_res['input_img'].shape[0:2]
+    img_shape = overall_ocr_res["input_img"].shape[0:2]
 
-    convert_table_structure_pred_bbox(table_structure_pred, 
-        crop_start_point, img_shape)
-    
+    convert_table_structure_pred_bbox(table_structure_pred, crop_start_point, img_shape)
+
     structures = table_structure_pred["structure"]
     cell_box_list = table_structure_pred["cell_box_list"]
     ocr_dt_boxes = table_ocr_pred["dt_boxes"]
@@ -195,9 +201,9 @@ def get_table_recognition_res(crop_img_info, table_structure_pred, overall_ocr_r
     matched_index = match_table_and_ocr(cell_box_list, ocr_dt_boxes)
     pred_html = get_html_result(matched_index, ocr_text_res, structures)
 
-    single_img_res = {"cell_box_list":cell_box_list, 
-        "table_ocr_pred":table_ocr_pred,
-        "pred_html":pred_html}
+    single_img_res = {
+        "cell_box_list": cell_box_list,
+        "table_ocr_pred": table_ocr_pred,
+        "pred_html": pred_html,
+    }
     return TableRecognitionResult(single_img_res)
-
-

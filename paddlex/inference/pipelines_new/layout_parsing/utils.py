@@ -12,13 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-__all__ = [
-    "convert_points_to_boxes",
-    "get_sub_regions_ocr_res"
-]
+__all__ = ["convert_points_to_boxes", "get_sub_regions_ocr_res"]
 
 import numpy as np
 import copy
+
 
 def convert_points_to_boxes(dt_polys):
     if len(dt_polys) > 0:
@@ -34,8 +32,9 @@ def convert_points_to_boxes(dt_polys):
         dt_boxes = np.array([])
     return dt_boxes
 
+
 def get_overlap_boxes_idx(src_boxes, ref_boxes):
-    '''get overlap boxes idx''' 
+    """get overlap boxes idx"""
     match_idx_list = []
     src_boxes_num = len(src_boxes)
     if src_boxes_num > 0 and len(ref_boxes) > 0:
@@ -48,8 +47,9 @@ def get_overlap_boxes_idx(src_boxes, ref_boxes):
             pub_w = x2 - x1
             pub_h = y2 - y1
             match_idx = np.where((pub_w > 3) & (pub_h > 3))[0]
-            match_idx_list.extend(match_idx)                                   
+            match_idx_list.extend(match_idx)
     return match_idx_list
+
 
 def get_sub_regions_ocr_res(overall_ocr_res, object_boxes, flag_within=True):
     """
@@ -58,14 +58,14 @@ def get_sub_regions_ocr_res(overall_ocr_res, object_boxes, flag_within=True):
     """
 
     sub_regions_ocr_res = copy.deepcopy(overall_ocr_res)
-    sub_regions_ocr_res['input_img'] = overall_ocr_res['input_img']
-    sub_regions_ocr_res['img_id'] = -1
-    sub_regions_ocr_res['dt_polys'] = []
-    sub_regions_ocr_res['rec_text'] = []
-    sub_regions_ocr_res['rec_score'] = []
-    sub_regions_ocr_res['dt_boxes'] = []
+    sub_regions_ocr_res["input_img"] = overall_ocr_res["input_img"]
+    sub_regions_ocr_res["img_id"] = -1
+    sub_regions_ocr_res["dt_polys"] = []
+    sub_regions_ocr_res["rec_text"] = []
+    sub_regions_ocr_res["rec_score"] = []
+    sub_regions_ocr_res["dt_boxes"] = []
 
-    overall_text_boxes = overall_ocr_res['dt_boxes']
+    overall_text_boxes = overall_ocr_res["dt_boxes"]
     match_idx_list = get_overlap_boxes_idx(overall_text_boxes, object_boxes)
     match_idx_list = list(set(match_idx_list))
     for box_no in range(len(overall_text_boxes)):
@@ -80,8 +80,10 @@ def get_sub_regions_ocr_res(overall_ocr_res, object_boxes, flag_within=True):
             else:
                 flag_match = False
         if flag_match:
-            sub_regions_ocr_res['dt_polys'].append(overall_ocr_res['dt_polys'][box_no])
-            sub_regions_ocr_res['rec_text'].append(overall_ocr_res['rec_text'][box_no])
-            sub_regions_ocr_res['rec_score'].append(overall_ocr_res['rec_score'][box_no])
-            sub_regions_ocr_res['dt_boxes'].append(overall_ocr_res['dt_boxes'][box_no])
+            sub_regions_ocr_res["dt_polys"].append(overall_ocr_res["dt_polys"][box_no])
+            sub_regions_ocr_res["rec_text"].append(overall_ocr_res["rec_text"][box_no])
+            sub_regions_ocr_res["rec_score"].append(
+                overall_ocr_res["rec_score"][box_no]
+            )
+            sub_regions_ocr_res["dt_boxes"].append(overall_ocr_res["dt_boxes"][box_no])
     return sub_regions_ocr_res

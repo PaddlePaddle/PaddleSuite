@@ -14,4 +14,3 @@
 
 from .sort_boxes import SortQuadBoxes
 from .crop_image_regions import CropByPolys, CropByBoxes
-

@@ -25,6 +25,7 @@ from erniebot_agent.extensions.langchain.embeddings import ErnieEmbeddings
 
 import time
 
+
 class ErnieBotRetriever(BaseRetriever):
     """Ernie Bot Retriever"""
 
@@ -38,17 +39,17 @@ class ErnieBotRetriever(BaseRetriever):
         "ernie-speed-128k",
         "ernie-char-8k",
     ]
-    
+
     def __init__(self, config):
 
         super().__init__()
 
-        model_name = config.get('model_name', None)
-        api_type = config.get('api_type', None)
-        ak = config.get('ak', None)
-        sk = config.get('sk', None)
-        access_token = config.get('access_token', None)
-        
+        model_name = config.get("model_name", None)
+        api_type = config.get("api_type", None)
+        ak = config.get("ak", None)
+        sk = config.get("sk", None)
+        access_token = config.get("access_token", None)
+
         if model_name not in self.entities:
             raise ValueError(f"model_name must be in {self.entities} of ErnieBotChat.")
 
@@ -57,17 +58,20 @@ class ErnieBotRetriever(BaseRetriever):
 
         if api_type == "aistudio" and access_token is None:
             raise ValueError("access_token cannot be empty when api_type is aistudio.")
-            
+
         if api_type == "qianfan" and (ak is None or sk is None):
-            raise ValueError("ak and sk cannot be empty when api_type is qianfan.")            
+            raise ValueError("ak and sk cannot be empty when api_type is qianfan.")
 
         self.model_name = model_name
         self.config = config
-        
-    def generate_vector_database(self, text_list, 
+
+    def generate_vector_database(
+        self,
+        text_list,
         block_size=300,
         separators=["\t", "\n", "。", "\n\n", ""],
-        sleep_time=0.5):
+        sleep_time=0.5,
+    ):
         """
         args:
         return:
@@ -112,7 +116,7 @@ class ErnieBotRetriever(BaseRetriever):
     def encode_vector_store_to_bytes(self, vectorstore):
         vectorstore = self.encode_vector_store(vectorstore.serialize_to_bytes())
         return vectorstore
-    
+
     def decode_vector_store_from_bytes(self, vectorstore):
         if not self.is_vector_store(vectorstore):
             raise ValueError("The retrieved vectorstore is not for PaddleX.")
@@ -127,10 +131,10 @@ class ErnieBotRetriever(BaseRetriever):
             embeddings = QianfanEmbeddingsEndpoint(qianfan_ak=ak, qianfan_sk=sk)
         else:
             raise ValueError(f"Unsupported api_type: {api_type}")
-        vectorstore = vectorstores.FAISS.deserialize_from_bytes(
-            self.decode_vector_store(vector), embeddings
+        vector = vectorstores.FAISS.deserialize_from_bytes(
+            self.decode_vector_store(vectorstore), embeddings
         )
-        return vectorstore
+        return vector
 
     def similarity_retrieval(self, query_text_list, vectorstore, sleep_time=0.5):
         # 根据提问匹配上下文
@@ -145,4 +149,3 @@ class ErnieBotRetriever(BaseRetriever):
         C = list(set(C))
         all_C = " ".join(C)
         return all_C
-        

@@ -15,10 +15,12 @@
 from ..base import BaseComponent
 import numpy as np
 
+
 class SortQuadBoxes(BaseComponent):
     """SortQuadBoxes Component"""
 
     entities = "SortQuadBoxes"
+
     def __init__(self):
         super().__init__()
 

@@ -45,13 +45,17 @@ from .doc_preprocessor import DocPreprocessorPipeline
 from .layout_parsing import LayoutParsingPipeline
 from .pp_chatocrv3_doc import PP_ChatOCRv3_doc_Pipeline
 
+
 def get_pipeline_path(pipeline_name):
     pipeline_path = (
-        Path(__file__).parent.parent.parent / "configs/pipelines" / f"{pipeline_name}.yaml"
+        Path(__file__).parent.parent.parent
+        / "configs/pipelines"
+        / f"{pipeline_name}.yaml"
     ).resolve()
     if not Path(pipeline_path).exists():
         return None
     return pipeline_path
+
 
 def load_pipeline_config(pipeline_name: str) -> Dict[str, Any]:
     if not Path(pipeline_name).exists():
@@ -64,6 +68,7 @@ def load_pipeline_config(pipeline_name: str) -> Dict[str, Any]:
         pipeline_path = pipeline_name
     config = parse_config(pipeline_path)
     return config
+
 
 def create_pipeline(
     pipeline: str,
@@ -90,6 +95,6 @@ def create_pipeline(
         device=device,
         pp_option=pp_option,
         use_hpip=use_hpip,
-        hpi_params=hpi_params)
+        hpi_params=hpi_params,
+    )
     return pipeline
-    

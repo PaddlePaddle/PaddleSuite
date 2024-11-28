@@ -18,6 +18,7 @@ from .....utils.subclass_register import AutoRegisterABCMetaClass
 import inspect
 import base64
 
+
 class BaseRetriever(ABC, metaclass=AutoRegisterABCMetaClass):
     """Base Retriever"""
 
@@ -31,12 +32,14 @@ class BaseRetriever(ABC, metaclass=AutoRegisterABCMetaClass):
     @abstractmethod
     def generate_vector_database(self):
         raise NotImplementedError(
-            "The method `generate_vector_database` has not been implemented yet.")
+            "The method `generate_vector_database` has not been implemented yet."
+        )
 
     @abstractmethod
     def similarity_retrieval(self):
         raise NotImplementedError(
-            "The method `similarity_retrieval` has not been implemented yet.")
+            "The method `similarity_retrieval` has not been implemented yet."
+        )
 
     def is_vector_store(self, s):
         return s.startswith(self.VECTOR_STORE_PREFIX)
@@ -47,4 +50,4 @@ class BaseRetriever(ABC, metaclass=AutoRegisterABCMetaClass):
         )
 
     def decode_vector_store(self, vector_store_str):
-        return base64.b64decode(vector_store_str[len(self.VECTOR_STORE_PREFIX):])
+        return base64.b64decode(vector_store_str[len(self.VECTOR_STORE_PREFIX) :])

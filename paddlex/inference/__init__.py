@@ -14,6 +14,7 @@
 
 from .models import create_predictor
 from ..utils import flags
+
 if flags.USE_NEW_INFERENCE:
     from .pipelines_new import create_pipeline
 else:
