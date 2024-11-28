@@ -19,6 +19,9 @@ Train:
   epochs_iters: 25
   batch_size: 64
   learning_rate: 0.004
+  feature_dim: 512
+  arcmargin_m: 0.5
+  arcmargin_s: 64
   pretrain_weight_path: https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/ResNet50_face_pretrained.pdparams
   warmup_steps: 1
   resume_path: null

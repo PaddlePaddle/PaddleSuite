@@ -36,11 +36,15 @@ class FaceRecTrainer(ClsTrainer):
 
         self.update_dataset_cfg()
         if self.train_config.num_classes is not None:
-            self.pdx_config.update_num_classes(self.train_config.num_classes)
+            self.update_num_classes(self.train_config.num_classes)
         if self.train_config.pretrain_weight_path != "":
             self.pdx_config.update_pretrained_weights(
                 self.train_config.pretrain_weight_path
             )
+        
+        self.update_arcmargin_cfg(self.train_config.arcmargin_m, 
+                                  self.train_config.arcmargin_s,
+                                  self.train_config.feature_dim)
 
         label_dict_path = Path(self.global_config.dataset_dir).joinpath("label.txt")
         if label_dict_path.exists():
@@ -73,3 +77,21 @@ class FaceRecTrainer(ClsTrainer):
             f"DataLoader.Eval.dataset.pair_label_path={val_list_path}",
         ]
         self.pdx_config.update(ds_cfg)
+    
+    def update_arcmargin_cfg(self, m, s, dim):
+        mg_cfg = [
+            f"Arch.Head.margin={m}",
+            f"Arch.Head.scale={s}",
+        ]
+        if self.pdx_config.model_name == 'MobileFaceNet':
+            mg_cfg.append(f"Arch.Backbone.num_features={dim}")
+        elif self.pdx_config.model_name == 'ResNet50_face':
+            mg_cfg.append(f"Arch.Backbone.class_num={dim}")
+        mg_cfg.append(f"Arch.Head.embedding_size={dim}")
+
+        self.pdx_config.update(mg_cfg)
+
+    def update_num_classes(self, num_classes):
+        nc_cfg = [f"Arch.Head.class_num={num_classes}"]
+        self.pdx_config.update(nc_cfg)
+ 

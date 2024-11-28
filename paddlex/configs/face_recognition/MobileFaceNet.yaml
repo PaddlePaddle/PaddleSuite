@@ -18,7 +18,10 @@ Train:
   num_classes: 995
   epochs_iters: 25
   batch_size: 128
-  learning_rate: 0.002
+  learning_rate: 0.004
+  feature_dim: 128
+  arcmargin_m: 0.5
+  arcmargin_s: 64
   pretrain_weight_path: https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/MobileFaceNet_pretrained.pdparams
   warmup_steps: 1
   resume_path: null
