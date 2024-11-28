@@ -12,10 +12,33 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .models import create_predictor
-from ..utils import flags
-if flags.USE_NEW_INFERENCE:
-    from .pipelines_new import create_pipeline
-else:
-    from .pipelines import create_pipeline
-from .utils.pp_option import PaddlePredictorOption
+import math
+import random
+import numpy as np
+import cv2
+import PIL
+from PIL import Image, ImageDraw, ImageFont
+
+from ....utils.fonts import PINGFANG_FONT_FILE_PATH
+from ..components import BaseResult
+
+class VisualInfoResult(BaseResult):
+    """VisualInfoResult"""
+    
+    pass
+
+# class VectorResult(BaseResult, Base64Mixin):
+#     """VisualInfoResult"""
+
+#     def _to_base64(self):
+#         return self["vector"]
+
+
+# class RetrievalResult(BaseResult):
+#     """VisualInfoResult"""
+
+#     pass
+
+
+# class ChatResult(BaseResult):
+#     """VisualInfoResult"""

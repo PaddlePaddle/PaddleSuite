@@ -15,10 +15,25 @@
 
 from pathlib import Path
 
+import PIL
+from PIL import ImageFont
 
 def get_pingfang_file_path():
     """get pingfang font file path"""
     return (Path(__file__).parent / "PingFang-SC-Regular.ttf").resolve().as_posix()
 
+def create_font(txt, sz, font_path):
+    """create font"""
+    font_size = int(sz[1] * 0.8)
+    font = ImageFont.truetype(font_path, font_size, encoding="utf-8")
+    if int(PIL.__version__.split(".")[0]) < 10:
+        length = font.getsize(txt)[0]
+    else:
+        length = font.getlength(txt)
+
+    if length > sz[0]:
+        font_size = int(font_size * sz[0] / length)
+        font = ImageFont.truetype(font_path, font_size, encoding="utf-8")
+    return font
 
 PINGFANG_FONT_FILE_PATH = get_pingfang_file_path()

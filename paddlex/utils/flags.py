@@ -26,6 +26,7 @@ __all__ = [
     "INFER_BENCHMARK_OUTPUT",
     "INFER_BENCHMARK_DATA_SIZE",
     "FLAGS_json_format_model",
+    "USE_NEW_INFERENCE",
 ]
 
 
@@ -46,6 +47,7 @@ DRY_RUN = get_flag_from_env_var("PADDLE_PDX_DRY_RUN", False)
 CHECK_OPTS = get_flag_from_env_var("PADDLE_PDX_CHECK_OPTS", False)
 EAGER_INITIALIZATION = get_flag_from_env_var("PADDLE_PDX_EAGER_INIT", True)
 FLAGS_json_format_model = get_flag_from_env_var("FLAGS_json_format_model", None)
+USE_NEW_INFERENCE = get_flag_from_env_var("USE_NEW_INFERENCE", False)
 
 # Inference Benchmark
 INFER_BENCHMARK = get_flag_from_env_var("PADDLE_PDX_INFER_BENCHMARK", None)

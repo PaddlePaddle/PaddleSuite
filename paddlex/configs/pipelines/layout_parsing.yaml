@@ -1,0 +1,56 @@
+
+pipeline_name: layout_parsing
+input: https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/demo_paper.png
+use_doc_preprocessor: True
+use_common_ocr: True
+use_seal_recognition: True
+use_table_recognition: True
+
+SubModules:
+  LayoutDetection:
+    model_name: RT-DETR-H_layout_3cls
+    model_dir: null
+    batch_size: 1
+  TableStructurePredictor:
+    model_name: SLANet_plus
+    model_dir: null
+    batch_size: 1
+
+SubPipelines:
+  DocPreprocessor:
+    pipeline_name: doc_preprocessor
+    use_doc_orientation_classify: True
+    use_doc_unwarping: True
+    SubModules:
+      DocOrientationClassify:
+        model_name: PP-LCNet_x1_0_doc_ori
+        model_dir: null
+        batch_size: 1
+      DocUnwarping:
+        model_name: UVDoc
+        model_dir: null
+        batch_size: 1
+  CommonOCR:
+    pipeline_name: OCR
+    text_type: common
+    SubModules:
+      TextDetection:
+        model_name: PP-OCRv4_server_det
+        model_dir: null
+        batch_size: 1    
+      TextRecognition:
+        model_name: PP-OCRv4_server_rec
+        model_dir: null
+        batch_size: 1
+  SealOCR:
+    pipeline_name: OCR
+    text_type: seal
+    SubModules:
+      TextDetection:
+        model_name: PP-OCRv4_server_seal_det
+        model_dir: null
+        batch_size: 1    
+      TextRecognition:
+        model_name: PP-OCRv4_server_rec
+        model_dir: null
+        batch_size: 1

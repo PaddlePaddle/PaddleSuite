@@ -1,0 +1,109 @@
+
+pipeline_name: PP-ChatOCRv3-doc
+input: https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/demo_paper.png
+
+use_vector_retrieval: True
+
+SubModules:
+  LLM_Chat:
+    model_name: ernie-3.5
+    api_type: qianfan
+    # ak: "api_key" # Set this to a real API key
+    # sk: "secret_key"  # Set this to a real secret key
+    ak: 4iiqB0QfvXTAENgzUwNeDjQ7
+    sk: sHQCw4l5A6jnzbHMa0ZvDi05GT9Qz8tZ
+
+  LLM_Retriever:
+    model_name: ernie-3.5
+    api_type: qianfan
+    # ak: "api_key" # Set this to a real API key
+    # sk: "secret_key"  # Set this to a real secret key
+    ak: 4iiqB0QfvXTAENgzUwNeDjQ7
+    sk: sHQCw4l5A6jnzbHMa0ZvDi05GT9Qz8tZ
+
+  PromptEngneering:
+    KIE_CommonText:
+      task_type: text_kie_prompt
+      task_description: '你现在的任务是从OCR文字识别的结果中提取关键词列表中每一项对应的关键信息。
+          OCR的文字识别结果使用```符号包围，包含所识别出来的文字，顺序在原始图片中从左至右、从上至下。
+          我指定的关键词列表使用[]符号包围。请注意OCR的文字识别结果可能存在长句子换行被切断、不合理的分词、
+          文字被错误合并等问题，你需要结合上下文语义进行综合判断，以抽取准确的关键信息。'
+      output_format: '在返回结果时使用JSON格式，包含多个key-value对，key值为我指定的关键词，value值为所抽取的结果。
+          如果认为OCR识别结果中没有关键词key对应的value，则将value赋值为"未知"。请只输出json格式的结果，
+          并做json格式校验后返回，不要包含其它多余文字！'
+      rules_str:
+      few_shot_demo_text_content:
+      few_shot_demo_key_value_list:
+          
+    KIE_Table:
+      task_type: table_kie_prompt
+      task_description: '你现在的任务是从输入的html格式的表格内容中提取关键词列表中每一项对应的关键信息,
+          表格内容用```符号包围，我指定的关键词列表使用[]符号包围。你需要结合上下文语义进行综合判断，以抽取准确的关键信息。
+          在返回结果时使用JSON格式，包含多个key-value对，key值为我指定的关键词，value值为所抽取的结果。
+          如果认为输入的表格内容中没有关键词key对应的value值，则将value赋值为"未知"。
+          请只输出json格式的结果，并做json格式校验后返回，不要包含其它多余文字！'
+      output_format: '在返回结果时使用JSON格式，包含多个key-value对，key值为我指定的关键词，value值为所抽取的结果。
+          如果认为表格识别结果中没有关键词key对应的value，则将value赋值为"未知"。请只输出json格式的结果，
+          并做json格式校验后返回，不要包含其它多余文字！'
+      rules_str:
+      few_shot_demo_text_content:
+      few_shot_demo_key_value_list:
+
+SubPipelines:
+  LayoutParser:
+    pipeline_name: layout_parsing
+    use_doc_preprocessor: True
+    use_common_ocr: True
+    use_seal_recognition: True
+    use_table_recognition: True
+
+    SubModules:
+      LayoutDetection:
+        model_name: RT-DETR-H_layout_3cls
+        model_dir: null
+        batch_size: 1
+      TableStructurePredictor:
+        model_name: SLANet_plus
+        model_dir: null
+        batch_size: 1
+
+    SubPipelines:
+      DocPreprocessor:
+        pipeline_name: doc_preprocessor
+        use_doc_orientation_classify: True
+        use_doc_unwarping: True
+        SubModules:
+          DocOrientationClassify:
+            model_name: PP-LCNet_x1_0_doc_ori
+            model_dir: null
+            batch_size: 1
+          DocUnwarping:
+            model_name: UVDoc
+            model_dir: null
+            batch_size: 1
+
+      CommonOCR:
+        pipeline_name: OCR
+        text_type: common
+        SubModules:
+          TextDetection:
+            model_name: PP-OCRv4_server_det
+            model_dir: null
+            batch_size: 1    
+          TextRecognition:
+            model_name: PP-OCRv4_server_rec
+            model_dir: null
+            batch_size: 1
+
+      SealOCR:
+        pipeline_name: OCR
+        text_type: seal
+        SubModules:
+          TextDetection:
+            model_name: PP-OCRv4_server_seal_det
+            model_dir: null
+            batch_size: 1    
+          TextRecognition:
+            model_name: PP-OCRv4_server_rec
+            model_dir: null
+            batch_size: 1  

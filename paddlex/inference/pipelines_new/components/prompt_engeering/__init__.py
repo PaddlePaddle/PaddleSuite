@@ -12,10 +12,4 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .models import create_predictor
-from ..utils import flags
-if flags.USE_NEW_INFERENCE:
-    from .pipelines_new import create_pipeline
-else:
-    from .pipelines import create_pipeline
-from .utils.pp_option import PaddlePredictorOption
+from .generate_kie_prompt import GenerateKIEPrompt
