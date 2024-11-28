@@ -38,7 +38,7 @@ from starlette.exceptions import HTTPException
 from typing_extensions import Final, ParamSpec
 
 from ..base import BasePipeline
-from .models import Response
+from .models import NoResultResponse
 from .utils import call_async, generate_log_id
 
 SERVING_CONFIG_KEY: Final[str] = "Serving"
@@ -135,15 +135,17 @@ def create_app(
     app.state.context = ctx
 
     @app.get("/health", operation_id="checkHealth")
-    async def _check_health() -> Response:
-        return Response(logId=generate_log_id(), errorCode=0, errorMsg="Healthy")
+    async def _check_health() -> NoResultResponse:
+        return NoResultResponse(
+            logId=generate_log_id(), errorCode=0, errorMsg="Healthy"
+        )
 
     @app.exception_handler(RequestValidationError)
     async def _validation_exception_handler(
         request: fastapi.Request, exc: RequestValidationError
     ) -> JSONResponse:
         json_compatible_data = jsonable_encoder(
-            Response(
+            NoResultResponse(
                 logId=generate_log_id(),
                 errorCode=422,
                 errorMsg=json.dumps(exc.errors()),
@@ -156,7 +158,7 @@ def create_app(
         request: fastapi.Request, exc: HTTPException
     ) -> JSONResponse:
         json_compatible_data = jsonable_encoder(
-            Response(
+            NoResultResponse(
                 logId=generate_log_id(), errorCode=exc.status_code, errorMsg=exc.detail
             )
         )

@@ -26,7 +26,7 @@ from ...layout_parsing import LayoutParsingPipeline
 from ..storage import SupportsGetURL, Storage, create_storage
 from .. import utils as serving_utils
 from ..app import AppConfig, create_app
-from ..models import Response, ResultResponse
+from ..models import NoResultResponse, ResultResponse
 
 _DEFAULT_MAX_IMG_SIZE: Final[Tuple[int, int]] = (2000, 2000)
 _DEFAULT_MAX_NUM_IMGS: Final[int] = 10
@@ -105,7 +105,7 @@ def create_pipeline_app(
     @app.post(
         "/layout-parsing",
         operation_id="infer",
-        responses={422: {"model": Response}},
+        responses={422: {"model": NoResultResponse}},
         response_model_exclude_none=True,
     )
     async def _infer(
@@ -195,8 +195,6 @@ def create_pipeline_app(
 
             return ResultResponse[InferResult](
                 logId=serving_utils.generate_log_id(),
-                errorCode=0,
-                errorMsg="Success",
                 result=InferResult(
                     layoutParsingResults=layout_parsing_results,
                 ),

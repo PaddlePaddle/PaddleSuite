@@ -22,7 +22,7 @@ from .....utils import logging
 from ...ocr import OCRPipeline
 from .. import utils as serving_utils
 from ..app import AppConfig, create_app
-from ..models import Response, ResultResponse
+from ..models import NoResultResponse, ResultResponse
 
 
 class InferenceParams(BaseModel):
@@ -54,7 +54,9 @@ def create_pipeline_app(pipeline: OCRPipeline, app_config: AppConfig) -> FastAPI
         pipeline=pipeline, app_config=app_config, app_aiohttp_session=True
     )
 
-    @app.post("/ocr", operation_id="infer", responses={422: {"model": Response}})
+    @app.post(
+        "/ocr", operation_id="infer", responses={422: {"model": NoResultResponse}}
+    )
     async def _infer(request: InferRequest) -> ResultResponse[InferResult]:
         pipeline = ctx.pipeline
         aiohttp_session = ctx.aiohttp_session
@@ -86,8 +88,6 @@ def create_pipeline_app(pipeline: OCRPipeline, app_config: AppConfig) -> FastAPI
 
             return ResultResponse[InferResult](
                 logId=serving_utils.generate_log_id(),
-                errorCode=0,
-                errorMsg="Success",
                 result=InferResult(texts=texts, image=output_image_base64),
             )
 

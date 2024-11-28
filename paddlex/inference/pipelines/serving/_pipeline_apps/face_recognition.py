@@ -27,7 +27,7 @@ from ...face_recognition import FaceRecPipeline
 from ..storage import create_storage
 from .. import utils as serving_utils
 from ..app import AppConfig, create_app
-from ..models import Response, ResultResponse
+from ..models import NoResultResponse, ResultResponse
 
 
 class ImageLabelPair(BaseModel):
@@ -110,7 +110,7 @@ def create_pipeline_app(pipeline: FaceRecPipeline, app_config: AppConfig) -> Fas
     @app.post(
         "/face-recognition-index-build",
         operation_id="buildIndex",
-        responses={422: {"model": Response}},
+        responses={422: {"model": NoResultResponse}},
     )
     async def _build_index(
         request: BuildIndexRequest,
@@ -151,8 +151,6 @@ def create_pipeline_app(pipeline: FaceRecPipeline, app_config: AppConfig) -> Fas
 
             return ResultResponse[BuildIndexResult](
                 logId=serving_utils.generate_log_id(),
-                errorCode=0,
-                errorMsg="Success",
                 result=BuildIndexResult(indexKey=index_key, idMap=index_data.id_map),
             )
 
@@ -163,7 +161,7 @@ def create_pipeline_app(pipeline: FaceRecPipeline, app_config: AppConfig) -> Fas
     @app.post(
         "/face-recognition-index-add",
         operation_id="buildIndex",
-        responses={422: {"model": Response}},
+        responses={422: {"model": NoResultResponse}},
     )
     async def _add_images_to_index(
         request: AddImagesToIndexRequest,
@@ -201,8 +199,6 @@ def create_pipeline_app(pipeline: FaceRecPipeline, app_config: AppConfig) -> Fas
 
             return ResultResponse[AddImagesToIndexResult](
                 logId=serving_utils.generate_log_id(),
-                errorCode=0,
-                errorMsg="Success",
                 result=AddImagesToIndexResult(idMap=index_data.id_map),
             )
 
@@ -213,7 +209,7 @@ def create_pipeline_app(pipeline: FaceRecPipeline, app_config: AppConfig) -> Fas
     @app.post(
         "/face-recognition-index-remove",
         operation_id="buildIndex",
-        responses={422: {"model": Response}},
+        responses={422: {"model": NoResultResponse}},
     )
     async def _remove_images_from_index(
         request: RemoveImagesFromIndexRequest,
@@ -242,8 +238,6 @@ def create_pipeline_app(pipeline: FaceRecPipeline, app_config: AppConfig) -> Fas
 
             return ResultResponse[RemoveImagesFromIndexResult](
                 logId=serving_utils.generate_log_id(),
-                errorCode=0,
-                errorMsg="Success",
                 result=RemoveImagesFromIndexResult(idMap=index_data.id_map),
             )
 
@@ -254,7 +248,7 @@ def create_pipeline_app(pipeline: FaceRecPipeline, app_config: AppConfig) -> Fas
     @app.post(
         "/face-recognition-infer",
         operation_id="infer",
-        responses={422: {"model": Response}},
+        responses={422: {"model": NoResultResponse}},
     )
     async def _infer(request: InferRequest) -> ResultResponse[InferResult]:
         pipeline = ctx.pipeline
@@ -305,8 +299,6 @@ def create_pipeline_app(pipeline: FaceRecPipeline, app_config: AppConfig) -> Fas
 
             return ResultResponse[InferResult](
                 logId=serving_utils.generate_log_id(),
-                errorCode=0,
-                errorMsg="Success",
                 result=InferResult(faces=faces, image=output_image_base64),
             )
 

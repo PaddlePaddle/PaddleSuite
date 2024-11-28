@@ -12,12 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Generic, TypeVar
+from typing import Generic, TypeVar, Union, Literal
 
 from pydantic import BaseModel
 
 
-class Response(BaseModel):
+class NoResultResponse(BaseModel):
     logId: str
     errorCode: int
     errorMsg: str
@@ -26,5 +26,11 @@ class Response(BaseModel):
 ResultT = TypeVar("ResultT", bound=BaseModel)
 
 
-class ResultResponse(Response, Generic[ResultT]):
+class ResultResponse(BaseModel, Generic[ResultT]):
+    logId: str
+    errorCode: Literal[0] = 0
+    errorMsg: Literal["Success"] = "Success"
     result: ResultT
+
+
+Response = Union[ResultResponse, NoResultResponse]

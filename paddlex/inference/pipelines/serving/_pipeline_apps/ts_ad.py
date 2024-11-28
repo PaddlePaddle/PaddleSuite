@@ -19,7 +19,7 @@ from .....utils import logging
 from ...single_model_pipeline import TSAd
 from .. import utils as serving_utils
 from ..app import AppConfig, create_app
-from ..models import Response, ResultResponse
+from ..models import NoResultResponse, ResultResponse
 
 
 class InferRequest(BaseModel):
@@ -38,7 +38,7 @@ def create_pipeline_app(pipeline: TSAd, app_config: AppConfig) -> FastAPI:
     @app.post(
         "/time-series-anomaly-detection",
         operation_id="infer",
-        responses={422: {"model": Response}},
+        responses={422: {"model": NoResultResponse}},
     )
     async def _infer(request: InferRequest) -> ResultResponse[InferResult]:
         pipeline = ctx.pipeline
@@ -56,8 +56,6 @@ def create_pipeline_app(pipeline: TSAd, app_config: AppConfig) -> FastAPI:
 
             return ResultResponse[InferResult](
                 logId=serving_utils.generate_log_id(),
-                errorCode=0,
-                errorMsg="Success",
                 result=InferResult(csv=output_csv),
             )
 

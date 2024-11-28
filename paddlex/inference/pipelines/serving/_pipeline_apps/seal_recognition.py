@@ -22,7 +22,7 @@ from .....utils import logging
 from ...seal_recognition import SealOCRPipeline
 from .. import utils as serving_utils
 from ..app import AppConfig, create_app
-from ..models import Response, ResultResponse
+from ..models import NoResultResponse, ResultResponse
 
 
 class InferenceParams(BaseModel):
@@ -56,7 +56,9 @@ def create_pipeline_app(pipeline: SealOCRPipeline, app_config: AppConfig) -> Fas
     )
 
     @app.post(
-        "/seal-recognition", operation_id="infer", responses={422: {"model": Response}}
+        "/seal-recognition",
+        operation_id="infer",
+        responses={422: {"model": NoResultResponse}},
     )
     async def _infer(request: InferRequest) -> ResultResponse[InferResult]:
         pipeline = ctx.pipeline
@@ -94,8 +96,6 @@ def create_pipeline_app(pipeline: SealOCRPipeline, app_config: AppConfig) -> Fas
 
             return ResultResponse[InferResult](
                 logId=serving_utils.generate_log_id(),
-                errorCode=0,
-                errorMsg="Success",
                 result=InferResult(
                     texts=texts,
                     layoutImage=layout_image_base64,

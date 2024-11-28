@@ -28,7 +28,7 @@ from ...ppchatocrv3 import PPChatOCRPipeline
 from ..storage import SupportsGetURL, Storage, create_storage
 from .. import utils as serving_utils
 from ..app import AppConfig, create_app
-from ..models import Response, ResultResponse
+from ..models import NoResultResponse, ResultResponse
 
 _DEFAULT_MAX_IMG_SIZE: Final[Tuple[int, int]] = (2000, 2000)
 _DEFAULT_MAX_NUM_IMGS: Final[int] = 10
@@ -200,7 +200,7 @@ def create_pipeline_app(pipeline: PPChatOCRPipeline, app_config: AppConfig) -> F
     @app.post(
         "/chatocr-vision",
         operation_id="analyzeImages",
-        responses={422: {"model": Response}},
+        responses={422: {"model": NoResultResponse}},
     )
     async def _analyze_images(
         request: AnalyzeImagesRequest,
@@ -303,8 +303,6 @@ def create_pipeline_app(pipeline: PPChatOCRPipeline, app_config: AppConfig) -> F
 
             return ResultResponse[AnalyzeImagesResult](
                 logId=serving_utils.generate_log_id(),
-                errorCode=0,
-                errorMsg="Success",
                 result=AnalyzeImagesResult(
                     visionResults=vision_results,
                     visionInfo=result[1],
@@ -318,7 +316,7 @@ def create_pipeline_app(pipeline: PPChatOCRPipeline, app_config: AppConfig) -> F
     @app.post(
         "/chatocr-vector",
         operation_id="buildVectorStore",
-        responses={422: {"model": Response}},
+        responses={422: {"model": NoResultResponse}},
     )
     async def _build_vector_store(
         request: BuildVectorStoreRequest,
@@ -342,8 +340,6 @@ def create_pipeline_app(pipeline: PPChatOCRPipeline, app_config: AppConfig) -> F
 
             return ResultResponse[BuildVectorStoreResult](
                 logId=serving_utils.generate_log_id(),
-                errorCode=0,
-                errorMsg="Success",
                 result=BuildVectorStoreResult(vectorStore=result["vector"]),
             )
 
@@ -354,7 +350,7 @@ def create_pipeline_app(pipeline: PPChatOCRPipeline, app_config: AppConfig) -> F
     @app.post(
         "/chatocr-retrieval",
         operation_id="retrieveKnowledge",
-        responses={422: {"model": Response}},
+        responses={422: {"model": NoResultResponse}},
     )
     async def _retrieve_knowledge(
         request: RetrieveKnowledgeRequest,
@@ -377,8 +373,6 @@ def create_pipeline_app(pipeline: PPChatOCRPipeline, app_config: AppConfig) -> F
 
             return ResultResponse[RetrieveKnowledgeResult](
                 logId=serving_utils.generate_log_id(),
-                errorCode=0,
-                errorMsg="Success",
                 result=RetrieveKnowledgeResult(retrievalResult=result["retrieval"]),
             )
 
@@ -389,7 +383,7 @@ def create_pipeline_app(pipeline: PPChatOCRPipeline, app_config: AppConfig) -> F
     @app.post(
         "/chatocr-chat",
         operation_id="chat",
-        responses={422: {"model": Response}},
+        responses={422: {"model": NoResultResponse}},
         response_model_exclude_none=True,
     )
     async def _chat(
@@ -437,8 +431,6 @@ def create_pipeline_app(pipeline: PPChatOCRPipeline, app_config: AppConfig) -> F
 
             return ResultResponse[ChatResult](
                 logId=serving_utils.generate_log_id(),
-                errorCode=0,
-                errorMsg="Success",
                 result=chat_result,
             )
 

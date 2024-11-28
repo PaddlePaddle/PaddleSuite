@@ -22,7 +22,7 @@ from .....utils import logging
 from ...formula_recognition import FormulaRecognitionPipeline
 from .. import utils as serving_utils
 from ..app import AppConfig, create_app
-from ..models import Response, ResultResponse
+from ..models import NoResultResponse, ResultResponse
 
 
 class InferenceParams(BaseModel):
@@ -59,7 +59,7 @@ def create_pipeline_app(
     @app.post(
         "/formula-recognition",
         operation_id="infer",
-        responses={422: {"model": Response}},
+        responses={422: {"model": NoResultResponse}},
         response_model_exclude_none=True,
     )
     async def _infer(request: InferRequest) -> ResultResponse[InferResult]:
@@ -103,8 +103,6 @@ def create_pipeline_app(
 
             return ResultResponse[InferResult](
                 logId=serving_utils.generate_log_id(),
-                errorCode=0,
-                errorMsg="Success",
                 result=InferResult(
                     formulas=formulas,
                     layoutImage=layout_image_base64,

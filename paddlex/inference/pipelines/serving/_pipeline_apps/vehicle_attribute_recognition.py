@@ -22,7 +22,7 @@ from .....utils import logging
 from ...attribute_recognition import VehicleAttributeRecPipeline
 from .. import utils as serving_utils
 from ..app import AppConfig, create_app
-from ..models import Response, ResultResponse
+from ..models import NoResultResponse, ResultResponse
 
 
 class InferRequest(BaseModel):
@@ -58,7 +58,7 @@ def create_pipeline_app(
     @app.post(
         "/vehicle-attribute-recognition",
         operation_id="infer",
-        responses={422: {"model": Response}},
+        responses={422: {"model": NoResultResponse}},
     )
     async def _infer(request: InferRequest) -> ResultResponse[InferResult]:
         pipeline = ctx.pipeline
@@ -90,8 +90,6 @@ def create_pipeline_app(
 
             return ResultResponse[InferResult](
                 logId=serving_utils.generate_log_id(),
-                errorCode=0,
-                errorMsg="Success",
                 result=InferResult(vehicles=vehicles, image=output_image_base64),
             )
 

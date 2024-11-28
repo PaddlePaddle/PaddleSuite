@@ -22,7 +22,7 @@ from .....utils import logging
 from ...table_recognition import TableRecPipeline
 from .. import utils as serving_utils
 from ..app import AppConfig, create_app
-from ..models import Response, ResultResponse
+from ..models import NoResultResponse, ResultResponse
 
 
 class InferenceParams(BaseModel):
@@ -55,7 +55,9 @@ def create_pipeline_app(pipeline: TableRecPipeline, app_config: AppConfig) -> Fa
     )
 
     @app.post(
-        "/table-recognition", operation_id="infer", responses={422: {"model": Response}}
+        "/table-recognition",
+        operation_id="infer",
+        responses={422: {"model": NoResultResponse}},
     )
     async def _infer(request: InferRequest) -> ResultResponse[InferResult]:
         pipeline = ctx.pipeline
@@ -94,8 +96,6 @@ def create_pipeline_app(pipeline: TableRecPipeline, app_config: AppConfig) -> Fa
 
             return ResultResponse[InferResult](
                 logId=serving_utils.generate_log_id(),
-                errorCode=0,
-                errorMsg="Success",
                 result=InferResult(
                     tables=tables,
                     layoutImage=layout_image_base64,
