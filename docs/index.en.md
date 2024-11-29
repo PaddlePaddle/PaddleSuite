@@ -148,13 +148,15 @@ You only need to specify three parameters:
     === "OCR"
 
         ```bash
-        paddlex --pipeline OCR --input https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/general_ocr_002.png --device gpu:0
+        paddlex --pipeline OCR --input https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/general_ocr_002.png --device gpu:0 --save_path output
         ```
+
+        * After running, the output results and visualized images will be saved in the `output` folder. You can also customize the save path by modifying the `--save_path` parameter.
 
         ??? question "What's the result"
             === "output"
                 ```bash
-                'input_path': '/root/.paddlex/predict_input/general_ocr_002.png',
+                {'input_path': '/root/.paddlex/predict_input/general_ocr_002.png',
                 'dt_polys': [array([[161,  27],
                     [353,  22],
                     [354,  69],
@@ -181,8 +183,10 @@ You only need to specify three parameters:
     === "Table Recognition"
 
         ```bash
-        paddlex --pipeline table_recognition --input https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/table_recognition.jpg --device gpu:0
+        paddlex --pipeline table_recognition --input https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/table_recognition.jpg --device gpu:0 --save_path output
         ```
+
+        * After running, the output results and visualized images will be saved in the `output` folder. You can also customize the save path by modifying the `--save_path` parameter.
 
         ??? question "What's the result"
             === "output"
@@ -253,8 +257,10 @@ You only need to specify three parameters:
     === "Layout Parsing"
 
         ```bash
-        paddlex --pipeline layout_parsing --input https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/demo_paper.png --device gpu:0
+        paddlex --pipeline layout_parsing --input https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/demo_paper.png --device gpu:0 --save_path output
         ```
+
+        * After running, the output results and visualized images will be saved in the `output` folder. You can also customize the save path by modifying the `--save_path` parameter.
 
         ??? question "What's the result"
             ```bash
@@ -284,8 +290,10 @@ You only need to specify three parameters:
     === "Formula Recognition"
 
         ```bash
-        paddlex --pipeline formula_recognition --input https://paddle-model-ecology.bj.bcebos.com/paddlex/demo_image/general_formula_recognition.png --device gpu:0
+        paddlex --pipeline formula_recognition --input https://paddle-model-ecology.bj.bcebos.com/paddlex/demo_image/general_formula_recognition.png --device gpu:0 --save_path output
         ```
+
+        * After running, the output results and visualized images will be saved in the `output` folder. You can also customize the save path by modifying the `--save_path` parameter.
 
         ??? question "What's the result"
             === "output"
@@ -315,13 +323,15 @@ You only need to specify three parameters:
     === "Seal Text Recognition"
 
         ```bash
-        paddlex --pipeline seal_recognition --input https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/seal_text_det.png --device gpu:0
+        paddlex --pipeline seal_recognition --input https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/seal_text_det.png --device gpu:0 --save_path output
         ```
+
+        * After running, the output results and visualized images will be saved in the `output` folder. You can also customize the save path by modifying the `--save_path` parameter.
 
         ??? question "What's the result"
             === "output"
                 ```bash
-                    {'input_path': PosixPath('/root/.paddlex/temp/tmpa8eqnpus.png'), 'layout_result': {'input_path': PosixPath('/root/.paddlex/temp/tmpa8eqnpus.png'), 'boxes': [{'cls_id': 2, 'label': 'seal', 'score': 0.9813321828842163, 'coordinate': [0, 5.1820183, 639.59314, 637.7533]}]}, 'ocr_result': {'dt_polys': [array([[166, 468],
+                {'input_path': PosixPath('/root/.paddlex/temp/tmpa8eqnpus.png'), 'layout_result': {'input_path': PosixPath('/root/.paddlex/temp/tmpa8eqnpus.png'), 'boxes': [{'cls_id': 2, 'label': 'seal', 'score': 0.9813321828842163, 'coordinate': [0, 5.1820183, 639.59314, 637.7533]}]}, 'ocr_result': {'dt_polys': [array([[166, 468],
                         [206, 503],
                     [249, 523],
                     [312, 535],
@@ -448,8 +458,8 @@ You only need to specify three parameters:
                     [151,  92],
                     [154,  91],
                     [315,  38],
-                    [320,  37]])], 'dt_scores': [0.99375725701319, 0.9871711582010613, 0.9937523531067023, 0.9911629231838204], 'rec_text': ['5263647368706', '吗繁物', '发票专天津君和缘商贸有限公司'], 'rec_score': [0.9933745265007019, 0.998288631439209, 0.9999362230300903, 0.9923253655433655], 'input_path': PosixPath('/Users/chenghong0temp/tmpa8eqnpus.png')}, 'src_file_name': 'https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/seal_text_det.png', 'page_id': 0}                
-                    ```
+                    [320,  37]])], 'dt_scores': [0.99375725701319, 0.9871711582010613, 0.9937523531067023, 0.9911629231838204], 'rec_text': ['5263647368706', '吗繁物', '发票专天津君和缘商贸有限公司'], 'rec_score': [0.9933745265007019, 0.998288631439209, 0.9999362230300903, 0.9923253655433655], 'input_path': PosixPath('/Users/chenghong0temp/tmpa8eqnpus.png')}, 'src_file_name': 'https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/seal_text_det.png', 'page_id': 0}
+                ```
 
             === "img"
 
@@ -461,8 +471,10 @@ You only need to specify three parameters:
     === "Image Classification"
 
         ```bash
-        paddlex --pipeline image_classification --input https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/general_image_classification_001.jpg --device gpu:0
+        paddlex --pipeline image_classification --input https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/general_image_classification_001.jpg --device gpu:0 --save_path output
         ```
+
+        * After running, the output results and visualized images will be saved in the `output` folder. You can also customize the save path by modifying the `--save_path` parameter.
 
         ??? question "What's the result"
             === "output"
@@ -477,8 +489,11 @@ You only need to specify three parameters:
     === "Object Detection"
 
         ```bash
-        paddlex --pipeline object_detection --input https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/general_object_detection_002.png --device gpu:0
+        paddlex --pipeline object_detection --input https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/general_object_detection_002.png --device gpu:0 --save_path output
         ```
+
+        * After running, the output results and visualized images will be saved in the `output` folder. You can also customize the save path by modifying the `--save_path` parameter.
+
         ??? question "What's the result"
             === "output"
                 ```bash
@@ -492,8 +507,10 @@ You only need to specify three parameters:
     === "Instance Segmentation"
 
         ```bash
-        paddlex --pipeline instance_segmentation --input https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/general_instance_segmentation_004.png --device gpu:0
+        paddlex --pipeline instance_segmentation --input https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/general_instance_segmentation_004.png --device gpu:0 --save_path output
         ```
+
+        * After running, the output results and visualized images will be saved in the `output` folder. You can also customize the save path by modifying the `--save_path` parameter.
 
         ??? question "What's the result"
             === "output"
@@ -508,8 +525,10 @@ You only need to specify three parameters:
     === "Semantic Segmentation"
 
         ```bash
-        paddlex --pipeline semantic_segmentation --input https://paddle-model-ecology.bj.bcebos.com/paddlex/PaddleX3.0/application/semantic_segmentation/makassaridn-road_demo.png --device gpu:0
+        paddlex --pipeline semantic_segmentation --input https://paddle-model-ecology.bj.bcebos.com/paddlex/PaddleX3.0/application/semantic_segmentation/makassaridn-road_demo.png --device gpu:0 --save_path output
         ```
+
+        * After running, the output results and visualized images will be saved in the `output` folder. You can also customize the save path by modifying the `--save_path` parameter.
 
         ??? question "What's the result"
             === "output"
@@ -524,8 +543,10 @@ You only need to specify three parameters:
     === "Image Multi-label Classification"
 
         ```bash
-        paddlex --pipeline multi_label_image_classification --input https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/general_image_classification_001.jpg --device gpu:0
+        paddlex --pipeline multi_label_image_classification --input https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/general_image_classification_001.jpg --device gpu:0 --save_path output
         ```
+
+        * After running, the output results and visualized images will be saved in the `output` folder. You can also customize the save path by modifying the `--save_path` parameter.
 
         ??? question "What's the result"
             === "output"
@@ -540,8 +561,10 @@ You only need to specify three parameters:
     === "Small Object Detection"
 
         ```bash
-        paddlex --pipeline small_object_detection --input https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/small_object_detection.jpg --device gpu:0
+        paddlex --pipeline small_object_detection --input https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/small_object_detection.jpg --device gpu:0 --save_path output
         ```
+
+        * After running, the output results and visualized images will be saved in the `output` folder. You can also customize the save path by modifying the `--save_path` parameter.
 
         ??? question "What's the result"
             === "output"
@@ -556,8 +579,10 @@ You only need to specify three parameters:
     === "Image Anomaly Detection"
 
         ```bash
-        paddlex --pipeline anomaly_detection --input https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/uad_grid.png --device gpu:0
+        paddlex --pipeline anomaly_detection --input https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/uad_grid.png --device gpu:0 --save_path output
         ```
+
+        * After running, the output results and visualized images will be saved in the `output` folder. You can also customize the save path by modifying the `--save_path` parameter.
 
         ??? question "What's the result"
             === "output"
@@ -574,8 +599,10 @@ You only need to specify three parameters:
     === "Time Series Forecasting"
 
         ```bash
-        paddlex --pipeline ts_fc --input https://paddle-model-ecology.bj.bcebos.com/paddlex/ts/demo_ts/ts_fc.csv --device gpu:0
+        paddlex --pipeline ts_fc --input https://paddle-model-ecology.bj.bcebos.com/paddlex/ts/demo_ts/ts_fc.csv --device gpu:0 --save_path output
         ```
+
+        * After running, the output results will be saved in the `output` folder. You can also customize the save path by modifying the `--save_path` parameter.
 
         ??? question "What's the result"
             ```bash
@@ -599,8 +626,10 @@ You only need to specify three parameters:
     === "Time Series Anomaly Detection"
 
         ```bash
-        paddlex --pipeline ts_ad --input https://paddle-model-ecology.bj.bcebos.com/paddlex/ts/demo_ts/ts_ad.csv --device gpu:0
+        paddlex --pipeline ts_ad --input https://paddle-model-ecology.bj.bcebos.com/paddlex/ts/demo_ts/ts_ad.csv --device gpu:0 --save_path output
         ```
+
+        * After running, the output results will be saved in the `output` folder. You can also customize the save path by modifying the `--save_path` parameter.
 
         ??? question "What's the result"
             ```bash
@@ -624,8 +653,10 @@ You only need to specify three parameters:
     === "Time Series Classification"
 
         ```bash
-        paddlex --pipeline ts_cls --input https://paddle-model-ecology.bj.bcebos.com/paddlex/ts/demo_ts/ts_cls.csv --device gpu:0
+        paddlex --pipeline ts_cls --input https://paddle-model-ecology.bj.bcebos.com/paddlex/ts/demo_ts/ts_cls.csv --device gpu:0 --save_path output
         ```
+
+        * After running, the output results will be saved in the `output` folder. You can also customize the save path by modifying the `--save_path` parameter.
 
         ??? question "What's the result"
             ```bash
@@ -924,4 +955,3 @@ The following steps were executed:
 ## 💬 Discussion
 
 We warmly welcome and encourage community members to raise questions, share ideas, and feedback in the [Discussions](https://github.com/PaddlePaddle/PaddleX/discussions) section. Whether you want to report a bug, discuss a feature request, seek help, or just want to keep up with the latest project news, this is a great platform.
-

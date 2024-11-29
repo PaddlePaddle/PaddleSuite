@@ -147,13 +147,15 @@ paddlex --pipeline [产线名称] --input [输入图片] --device [运行设备]
     === "通用OCR"
 
         ```bash
-        paddlex --pipeline OCR --input https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/general_ocr_002.png --device gpu:0
+        paddlex --pipeline OCR --input https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/general_ocr_002.png --device gpu:0 --save_path output
         ```
+
+        * 运行后，输出结果及可视化图片将被保存在 `output` 文件夹下。您也可以通过修改`--save_path`参数自定义保存路径。
 
         ??? question "查看运行结果"
             === "输出结果"
                 ```bash
-                'input_path': '/root/.paddlex/predict_input/general_ocr_002.png',
+                {'input_path': '/root/.paddlex/predict_input/general_ocr_002.png',
                 'dt_polys': [array([[161,  27],
                     [353,  22],
                     [354,  69],
@@ -180,8 +182,10 @@ paddlex --pipeline [产线名称] --input [输入图片] --device [运行设备]
     === "通用表格识别"
 
         ```bash
-        paddlex --pipeline table_recognition --input https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/table_recognition.jpg --device gpu:0
+        paddlex --pipeline table_recognition --input https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/table_recognition.jpg --device gpu:0 --save_path output
         ```
+
+        * 运行后，输出结果及可视化图片将被保存在 `output` 文件夹下。您也可以通过修改`--save_path`参数自定义保存路径。
 
         ??? question "查看运行结果"
             === "输出结果"
@@ -252,8 +256,10 @@ paddlex --pipeline [产线名称] --input [输入图片] --device [运行设备]
     === "通用版面解析"
 
         ```bash
-        paddlex --pipeline layout_parsing --input https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/demo_paper.png --device gpu:0
+        paddlex --pipeline layout_parsing --input https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/demo_paper.png --device gpu:0 --save_path output
         ```
+
+        * 运行后，输出结果及可视化图片将被保存在 `output` 文件夹下。您也可以通过修改`--save_path`参数自定义保存路径。
 
         ??? question "查看运行结果"
             ```bash
@@ -283,8 +289,10 @@ paddlex --pipeline [产线名称] --input [输入图片] --device [运行设备]
     === "公式识别"
 
         ```bash
-        paddlex --pipeline formula_recognition --input https://paddle-model-ecology.bj.bcebos.com/paddlex/demo_image/general_formula_recognition.png --device gpu:0
+        paddlex --pipeline formula_recognition --input https://paddle-model-ecology.bj.bcebos.com/paddlex/demo_image/general_formula_recognition.png --device gpu:0 --save_path output
         ```
+
+        * 运行后，输出结果及可视化图片将被保存在 `output` 文件夹下。您也可以通过修改`--save_path`参数自定义保存路径。
 
         ??? question "查看运行结果"
             === "输出结果"
@@ -314,14 +322,16 @@ paddlex --pipeline [产线名称] --input [输入图片] --device [运行设备]
     === "印章文本识别"
 
         ```bash
-        paddlex --pipeline seal_recognition --input https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/seal_text_det.png --device gpu:0
+        paddlex --pipeline seal_recognition --input https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/seal_text_det.png --device gpu:0 --save_path output
         ```
+
+        * 运行后，输出结果及可视化图片将被保存在 `output` 文件夹下。您也可以通过修改`--save_path`参数自定义保存路径。
 
         ??? question "查看运行结果"
             === "输出结果"
                 ```bash
-                    {'input_path': PosixPath('/root/.paddlex/temp/tmpa8eqnpus.png'), 'layout_result': {'input_path': PosixPath('/root/.paddlex/temp/tmpa8eqnpus.png'), 'boxes': [{'cls_id': 2, 'label': 'seal', 'score': 0.9813321828842163, 'coordinate': [0, 5.1820183, 639.59314, 637.7533]}]}, 'ocr_result': {'dt_polys': [array([[166, 468],
-                        [206, 503],
+                {'input_path': PosixPath('/root/.paddlex/temp/tmpa8eqnpus.png'), 'layout_result': {'input_path': PosixPath('/root/.paddlex/temp/tmpa8eqnpus.png'), 'boxes': [{'cls_id': 2, 'label': 'seal', 'score': 0.9813321828842163, 'coordinate': [0, 5.1820183, 639.59314, 637.7533]}]}, 'ocr_result': {'dt_polys': [array([[166, 468],
+                    [206, 503],
                     [249, 523],
                     [312, 535],
                     [364, 529],
@@ -447,8 +457,8 @@ paddlex --pipeline [产线名称] --input [输入图片] --device [运行设备]
                     [151,  92],
                     [154,  91],
                     [315,  38],
-                    [320,  37]])], 'dt_scores': [0.99375725701319, 0.9871711582010613, 0.9937523531067023, 0.9911629231838204], 'rec_text': ['5263647368706', '吗繁物', '发票专天津君和缘商贸有限公司'], 'rec_score': [0.9933745265007019, 0.998288631439209, 0.9999362230300903, 0.9923253655433655], 'input_path': PosixPath('/Users/chenghong0temp/tmpa8eqnpus.png')}, 'src_file_name': 'https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/seal_text_det.png', 'page_id': 0}                
-                    ```
+                    [320,  37]])], 'dt_scores': [0.99375725701319, 0.9871711582010613, 0.9937523531067023, 0.9911629231838204], 'rec_text': ['5263647368706', '吗繁物', '发票专天津君和缘商贸有限公司'], 'rec_score': [0.9933745265007019, 0.998288631439209, 0.9999362230300903, 0.9923253655433655], 'input_path': PosixPath('/Users/chenghong0temp/tmpa8eqnpus.png')}, 'src_file_name': 'https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/seal_text_det.png', 'page_id': 0}
+                ```
 
             === "可视化图片"
 
@@ -460,8 +470,10 @@ paddlex --pipeline [产线名称] --input [输入图片] --device [运行设备]
     === "通用图像分类"
 
         ```bash
-        paddlex --pipeline image_classification --input https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/general_image_classification_001.jpg --device gpu:0
+        paddlex --pipeline image_classification --input https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/general_image_classification_001.jpg --device gpu:0 --save_path output
         ```
+
+        * 运行后，输出结果及可视化图片将被保存在 `output` 文件夹下。您也可以通过修改`--save_path`参数自定义保存路径。
 
         ??? question "查看运行结果"
             === "输出结果"
@@ -476,8 +488,11 @@ paddlex --pipeline [产线名称] --input [输入图片] --device [运行设备]
     === "通用目标检测"
 
         ```bash
-        paddlex --pipeline object_detection --input https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/general_object_detection_002.png --device gpu:0
+        paddlex --pipeline object_detection --input https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/general_object_detection_002.png --device gpu:0 --save_path output
         ```
+
+        * 运行后，输出结果及可视化图片将被保存在 `output` 文件夹下。您也可以通过修改`--save_path`参数自定义保存路径。
+
         ??? question "查看运行结果"
             === "输出结果"
                 ```bash
@@ -491,8 +506,10 @@ paddlex --pipeline [产线名称] --input [输入图片] --device [运行设备]
     === "通用实例分割"
 
         ```bash
-        paddlex --pipeline instance_segmentation --input https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/general_instance_segmentation_004.png --device gpu:0
+        paddlex --pipeline instance_segmentation --input https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/general_instance_segmentation_004.png --device gpu:0 --save_path output
         ```
+
+        * 运行后，输出结果及可视化图片将被保存在 `output` 文件夹下。您也可以通过修改`--save_path`参数自定义保存路径。
 
         ??? question "查看运行结果"
             === "输出结果"
@@ -507,8 +524,10 @@ paddlex --pipeline [产线名称] --input [输入图片] --device [运行设备]
     === "通用语义分割"
 
         ```bash
-        paddlex --pipeline semantic_segmentation --input https://paddle-model-ecology.bj.bcebos.com/paddlex/PaddleX3.0/application/semantic_segmentation/makassaridn-road_demo.png --device gpu:0
+        paddlex --pipeline semantic_segmentation --input https://paddle-model-ecology.bj.bcebos.com/paddlex/PaddleX3.0/application/semantic_segmentation/makassaridn-road_demo.png --device gpu:0 --save_path output
         ```
+
+        * 运行后，输出结果及可视化图片将被保存在 `output` 文件夹下。您也可以通过修改`--save_path`参数自定义保存路径。
 
         ??? question "查看运行结果"
             === "输出结果"
@@ -523,8 +542,10 @@ paddlex --pipeline [产线名称] --input [输入图片] --device [运行设备]
     === "图像多标签分类"
 
         ```bash
-        paddlex --pipeline multi_label_image_classification --input https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/general_image_classification_001.jpg --device gpu:0
+        paddlex --pipeline multi_label_image_classification --input https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/general_image_classification_001.jpg --device gpu:0 --save_path output
         ```
+
+        * 运行后，输出结果及可视化图片将被保存在 `output` 文件夹下。您也可以通过修改`--save_path`参数自定义保存路径。
 
         ??? question "查看运行结果"
             === "输出结果"
@@ -539,8 +560,10 @@ paddlex --pipeline [产线名称] --input [输入图片] --device [运行设备]
     === "小目标检测"
 
         ```bash
-        paddlex --pipeline small_object_detection --input https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/small_object_detection.jpg --device gpu:0
+        paddlex --pipeline small_object_detection --input https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/small_object_detection.jpg --device gpu:0 --save_path output
         ```
+
+        * 运行后，输出结果及可视化图片将被保存在 `output` 文件夹下。您也可以通过修改`--save_path`参数自定义保存路径。
 
         ??? question "查看运行结果"
             === "输出结果"
@@ -555,8 +578,10 @@ paddlex --pipeline [产线名称] --input [输入图片] --device [运行设备]
     === "图像异常检测"
 
         ```bash
-        paddlex --pipeline anomaly_detection --input https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/uad_grid.png --device gpu:0
+        paddlex --pipeline anomaly_detection --input https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/uad_grid.png --device gpu:0 --save_path output
         ```
+
+        * 运行后，输出结果及可视化图片将被保存在 `output` 文件夹下。您也可以通过修改`--save_path`参数自定义保存路径。
 
         ??? question "查看运行结果"
             === "输出结果"
@@ -573,8 +598,10 @@ paddlex --pipeline [产线名称] --input [输入图片] --device [运行设备]
     === "时序预测"
 
         ```bash
-        paddlex --pipeline ts_fc --input https://paddle-model-ecology.bj.bcebos.com/paddlex/ts/demo_ts/ts_fc.csv --device gpu:0
+        paddlex --pipeline ts_fc --input https://paddle-model-ecology.bj.bcebos.com/paddlex/ts/demo_ts/ts_fc.csv --device gpu:0 --save_path output
         ```
+
+        * 运行后，输出结果将被保存在 `output` 文件夹下。您也可以通过修改`--save_path`参数自定义保存路径。
 
         ??? question "查看运行结果"
             ```bash
@@ -598,8 +625,10 @@ paddlex --pipeline [产线名称] --input [输入图片] --device [运行设备]
     === "时序异常检测"
 
         ```bash
-        paddlex --pipeline ts_ad --input https://paddle-model-ecology.bj.bcebos.com/paddlex/ts/demo_ts/ts_ad.csv --device gpu:0
+        paddlex --pipeline ts_ad --input https://paddle-model-ecology.bj.bcebos.com/paddlex/ts/demo_ts/ts_ad.csv --device gpu:0 --save_path output
         ```
+
+        * 运行后，输出结果将被保存在 `output` 文件夹下。您也可以通过修改`--save_path`参数自定义保存路径。
 
         ??? question "查看运行结果"
             ```bash
@@ -623,8 +652,10 @@ paddlex --pipeline [产线名称] --input [输入图片] --device [运行设备]
     === "时序分类"
 
         ```bash
-        paddlex --pipeline ts_cls --input https://paddle-model-ecology.bj.bcebos.com/paddlex/ts/demo_ts/ts_cls.csv --device gpu:0
+        paddlex --pipeline ts_cls --input https://paddle-model-ecology.bj.bcebos.com/paddlex/ts/demo_ts/ts_cls.csv --device gpu:0 --save_path output
         ```
+
+        * 运行后，输出结果将被保存在 `output` 文件夹下。您也可以通过修改`--save_path`参数自定义保存路径。
 
         ??? question "查看运行结果"
             ```bash
@@ -921,4 +952,3 @@ for res in output:
 ## 💬 Discussion
 
 我们非常欢迎并鼓励社区成员在 [Discussions](https://github.com/PaddlePaddle/PaddleX/discussions) 板块中提出问题、分享想法和反馈。无论您是想要报告一个 bug、讨论一个功能请求、寻求帮助还是仅仅想要了解项目的最新动态，这里都是一个绝佳的平台。
-
