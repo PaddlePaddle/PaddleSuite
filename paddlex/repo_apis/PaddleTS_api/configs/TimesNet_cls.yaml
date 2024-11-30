@@ -7,6 +7,9 @@ epoch: 30 # max_epochs
 training: True # 
 eval_metrics:  ['acc', ] 
 task: classification
+to_static_train: False
+use_amp: False
+amp_level: O2
 
 dataset: 
   name: TSCLSDataset
