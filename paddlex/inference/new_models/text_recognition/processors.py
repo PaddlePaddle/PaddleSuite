@@ -26,21 +26,28 @@ import tempfile
 from tokenizers import Tokenizer as TokenizerFast
 
 from ....utils import logging
-from ..base import BaseTransformer
-from ..common.batchable import batchable
+from ..base import BaseProcessor
+from ..base import BasePaddlePredictor
 
 
 __all__ = [
+    "ImagePredictor",
     "OCRReisizeNormImg",
     "CTCLabelDecode",
 ]
 
 
-class OCRReisizeNormImg(BaseTransformer):
-    """for ocr image resize and normalization"""
+class ImagePredictor(BasePaddlePredictor):
 
-    INPUT_KEYS = ["img", "img_size"]
-    OUTPUT_KEYS = ["img"]
+    def to_batch(self, imgs):
+        return [np.stack(imgs, axis=0).astype(dtype=np.float32, copy=False)]
+
+    def format_output(self, pred):
+        return pred[0]
+
+
+class OCRReisizeNormImg(BaseProcessor):
+    """for ocr image resize and normalization"""
 
     def __init__(self, rec_image_shape=[3, 48, 320]):
         super().__init__()
@@ -67,23 +74,22 @@ class OCRReisizeNormImg(BaseTransformer):
         padding_im[:, :, 0:resized_w] = resized_image
         return padding_im
 
-    @batchable
-    def apply(self, img, img_size):
+    def apply(self, imgs):
         """apply"""
+        return [self.resize(img) for img in imgs]
+
+    def resize(self, img):
         imgC, imgH, imgW = self.rec_image_shape
         max_wh_ratio = imgW / imgH
-        w, h = img_size[:2]
+        h, w = img.shape[:2]
         wh_ratio = w * 1.0 / h
         max_wh_ratio = max(max_wh_ratio, wh_ratio)
         img = self.resize_norm_img(img, max_wh_ratio)
-        return {"img": img}
+        return img
 
 
-class BaseRecLabelDecode(BaseTransformer):
+class BaseRecLabelDecode(BaseProcessor):
     """Convert between text-label and text-index"""
-
-    INPUT_KEYS = ["pred"]
-    OUTPUT_KEYS = ["text", "score"]
 
     def __init__(self, character_str=None, use_space_char=True):
         super().__init__()
@@ -162,14 +168,15 @@ class BaseRecLabelDecode(BaseTransformer):
         preds = np.array(pred)
         if isinstance(preds, tuple) or isinstance(preds, list):
             preds = preds[-1]
-        preds_idx = preds.argmax(axis=2)
-        preds_prob = preds.max(axis=2)
+        preds_idx = preds.argmax(axis=-1)
+        preds_prob = preds.max(axis=-1)
         text = self.decode(preds_idx, preds_prob, is_remove_duplicate=True)
-        output = {"text": [], "score": []}
+        texts = []
+        scores = []
         for t in text:
-            output["text"].append(t[0])
-            output["score"].append(t[1])
-        return output
+            texts.append(t[0])
+            scores.append(t[1])
+        return texts, scores
 
 
 class CTCLabelDecode(BaseRecLabelDecode):
@@ -180,15 +187,16 @@ class CTCLabelDecode(BaseRecLabelDecode):
 
     def apply(self, pred):
         """apply"""
-        preds = np.array(pred[0])
-        preds_idx = preds.argmax(axis=2)
-        preds_prob = preds.max(axis=2)
+        preds = np.array(pred)
+        preds_idx = preds.argmax(axis=-1)
+        preds_prob = preds.max(axis=-1)
         text = self.decode(preds_idx, preds_prob, is_remove_duplicate=True)
-        output = {"text": [], "score": []}
+        texts = []
+        scores = []
         for t in text:
-            output["text"].append(t[0])
-            output["score"].append(t[1])
-        return output
+            texts.append(t[0])
+            scores.append(t[1])
+        return texts, scores
 
     def add_special_char(self, character_list):
         """add_special_char"""

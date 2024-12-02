@@ -15,9 +15,8 @@
 from ....utils.func_register import FuncRegister
 from ....modules.text_recognition.model_list import MODELS
 from ..base import BasicPredictor
-from ..common.cv_components import *
-from ..common.paddle_predictor import ImagePredictor
-from .transformers import *
+from ..common.vision import *
+from .processors import *
 from .result import TextRecResult
 
 
@@ -28,13 +27,18 @@ class TextRecPredictor(BasicPredictor):
     _FUNC_MAP = {}
     register = FuncRegister(_FUNC_MAP)
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.pre_tfs, self.predictor, self.post_op = self._build()
+
     def _build_batch_sampler(self):
         return ImageBatchSampler()
 
     def _get_result_class(self):
         return TextRecResult
 
-    def _build_transformers(self):
+    def _build(self):
+        pre_tfs = {"ReadImage": ReadImage(format="RGB")}
         for cfg in self.config["PreProcess"]["transform_ops"]:
             tf_key = list(cfg.keys())[0]
             assert tf_key in self._FUNC_MAP
@@ -42,28 +46,28 @@ class TextRecPredictor(BasicPredictor):
             args = cfg.get(tf_key, {})
             op = func(self, **args) if args else func(self)
             if op:
-                self._add_transformer(op)
+                pre_tfs[op.name] = op
 
         predictor = ImagePredictor(
             model_dir=self.model_dir,
             model_prefix=self.MODEL_FILE_PREFIX,
             option=self.pp_option,
         )
-        self._add_transformer(predictor)
 
-        op = self.build_postprocess(**self.config["PostProcess"])
-        self._add_transformer(op)
+        post_op = self.build_postprocess(**self.config["PostProcess"])
+        return pre_tfs, predictor, post_op
 
-    def _set_dataflow(self):
-        self.ReadImage.inputs.img.fetch(self.batch_sampler.outputs.img)
-        self.OCRReisizeNormImg.inputs.img.fetch(self.ReadImage.outputs.img)
-        self.OCRReisizeNormImg.inputs.img_size.fetch(self.ReadImage.outputs.img_size)
-        self.ImagePredictor.inputs.img.fetch(self.OCRReisizeNormImg.outputs.img)
-        self.CTCLabelDecode.inputs.pred.fetch(self.ImagePredictor.outputs.pred)
-        self.result_packager.inputs.input_img.fetch(self.ReadImage.outputs.img)
-        self.result_packager.inputs.input_path.fetch(self.batch_sampler.outputs.img)
-        self.result_packager.inputs.text.fetch(self.CTCLabelDecode.outputs.text)
-        self.result_packager.inputs.score.fetch(self.CTCLabelDecode.outputs.score)
+    def process(self, batch_data):
+        batch_raw_imgs = self.pre_tfs["ReadImage"](imgs=batch_data)
+        batch_imgs = self.pre_tfs["OCRReisizeNormImg"](imgs=batch_raw_imgs)
+        batch_preds = self.predictor(imgs=batch_imgs)
+        texts, scores = self.post_op(batch_preds)
+        return {
+            "input_path": batch_data,
+            "input_img": batch_raw_imgs,
+            "texts": texts,
+            "scores": scores,
+        }
 
     @register("DecodeImage")
     def build_readimg(self, channel_first, img_mode):

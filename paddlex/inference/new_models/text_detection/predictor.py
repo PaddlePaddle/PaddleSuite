@@ -15,9 +15,8 @@
 from ....utils.func_register import FuncRegister
 from ....modules.text_detection.model_list import MODELS
 from ..base import BasicPredictor
-from ..common.cv_components import *
-from ..common.paddle_predictor import ImagePredictor
-from .transformers import *
+from ..common.vision import *
+from .processors import *
 from .result import TextDetResult
 
 
@@ -28,45 +27,49 @@ class TextDetPredictor(BasicPredictor):
     _FUNC_MAP = {}
     register = FuncRegister(_FUNC_MAP)
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.pre_tfs, self.predictor, self.post_op = self._build()
+
     def _build_batch_sampler(self):
         return ImageBatchSampler()
 
     def _get_result_class(self):
         return TextDetResult
 
-    def _build_transformers(self):
+    def _build(self):
+        pre_tfs = {"ReadImage": ReadImage(format="RGB")}
+
         for cfg in self.config["PreProcess"]["transform_ops"]:
             tf_key = list(cfg.keys())[0]
             func = self._FUNC_MAP[tf_key]
             args = cfg.get(tf_key, {})
             op = func(self, **args) if args else func(self)
             if op:
-                self._add_transformer(op)
+                pre_tfs[op.name] = op
 
         predictor = ImagePredictor(
             model_dir=self.model_dir,
             model_prefix=self.MODEL_FILE_PREFIX,
             option=self.pp_option,
         )
-        self._add_transformer(predictor)
 
-        op = self.build_postprocess(**self.config["PostProcess"])
-        self._add_transformer(op)
+        post_op = self.build_postprocess(**self.config["PostProcess"])
+        return pre_tfs, predictor, post_op
 
-    def _set_dataflow(self):
-        self.ReadImage.inputs.img.fetch(self.batch_sampler.outputs.img)
-        self.DetResizeForTest.inputs.img.fetch(self.ReadImage.outputs.img)
-        self.NormalizeImage.inputs.img.fetch(self.DetResizeForTest.outputs.img)
-        self.ToCHWImage.inputs.img.fetch(self.NormalizeImage.outputs.img)
-        self.ImagePredictor.inputs.img.fetch(self.ToCHWImage.outputs.img)
-        self.DBPostProcess.inputs.pred.fetch(self.ImagePredictor.outputs.pred)
-        self.DBPostProcess.inputs.img_shape.fetch(
-            self.DetResizeForTest.outputs.img_shape
-        )
-        self.result_packager.inputs.input_img.fetch(self.ReadImage.outputs.img)
-        self.result_packager.inputs.input_path.fetch(self.batch_sampler.outputs.img)
-        self.result_packager.inputs.polys.fetch(self.DBPostProcess.outputs.polys)
-        self.result_packager.inputs.scores.fetch(self.DBPostProcess.outputs.scores)
+    def process(self, batch_data):
+        batch_raw_imgs = self.pre_tfs["ReadImage"](imgs=batch_data)
+        batch_imgs, batch_shapes = self.pre_tfs["DetResizeForTest"](imgs=batch_raw_imgs)
+        batch_imgs = self.pre_tfs["NormalizeImage"](imgs=batch_imgs)
+        batch_imgs = self.pre_tfs["ToCHWImage"](imgs=batch_imgs)
+        batch_preds = self.predictor(imgs=batch_imgs)
+        polys, scores = self.post_op(batch_preds, batch_shapes)
+        return {
+            "input_path": batch_data,
+            "input_img": batch_raw_imgs,
+            "polys": polys,
+            "scores": scores,
+        }
 
     @register("DecodeImage")
     def build_readimg(self, channel_first, img_mode):

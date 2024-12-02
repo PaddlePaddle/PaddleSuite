@@ -14,15 +14,22 @@
 
 from abc import ABC, abstractmethod
 
-from ..component import BaseComponent
-from .batch_data import BatchData
+from ....utils.flags import (
+    INFER_BENCHMARK,
+    INFER_BENCHMARK_ITER,
+    INFER_BENCHMARK_DATA_SIZE,
+)
+from .component import BaseComponent
 
 
 class BaseBatchSampler(BaseComponent):
 
     def __init__(self, batch_size=1):
-        self._batch_size = batch_size
         super().__init__()
+        self._batch_size = batch_size
+        self._benchmark = INFER_BENCHMARK
+        self._benchmark_iter = INFER_BENCHMARK_ITER
+        self._benchmark_data_size = INFER_BENCHMARK_DATA_SIZE
 
     @property
     def batch_size(self):
@@ -33,16 +40,17 @@ class BaseBatchSampler(BaseComponent):
         assert bs > 0
         self._batch_size = bs
 
-    def __call__(self, *args, **kwargs):
-        for batch, num in self.apply(*args, **kwargs):
-            yield BatchData(
-                {f"{self.name}.{k}": batch[0] for k in self.OUTPUT_KEYS}, num
-            )
+    def __call__(self, input):
+        if input is None and self._benchmark:
+            for _ in range(self._benchmark_iter):
+                yield self._rand_batch(self._benchmark_data_size)
+        else:
+            yield from self.apply(input)
 
     @abstractmethod
     def apply(self, *args, **kwargs):
         raise NotImplementedError
 
-    # def set_outputs(self, outputs):
-    #     assert isinstance(outputs, dict)
-    #     self.outputs = outputs
+    @abstractmethod
+    def _rand_batch(self, data_size):
+        raise NotImplementedError

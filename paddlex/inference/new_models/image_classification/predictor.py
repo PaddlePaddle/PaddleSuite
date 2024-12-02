@@ -15,9 +15,8 @@
 from ....utils.func_register import FuncRegister
 from ....modules.image_classification.model_list import MODELS
 from ..base import BasicPredictor
-from ..common.cv_components import *
-from ..common.paddle_predictor import ImagePredictor
-from .transformers import *
+from ..common.vision import *
+from .processors import *
 from .result import TopkResult
 
 
@@ -28,49 +27,56 @@ class ClasPredictor(BasicPredictor):
     _FUNC_MAP = {}
     register = FuncRegister(_FUNC_MAP)
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.preprocessors, self.predictor, self.postprocessors = self._build()
+
     def _build_batch_sampler(self):
         return ImageBatchSampler()
 
     def _get_result_class(self):
         return TopkResult
 
-    def _build_transformers(self):
-        self._add_transformer(ReadImage(format="RGB"))
+    def _build(self):
+        preprocessors = {"ReadImage": ReadImage(format="RGB")}
         for cfg in self.config["PreProcess"]["transform_ops"]:
             tf_key = list(cfg.keys())[0]
             func = self._FUNC_MAP[tf_key]
             args = cfg.get(tf_key, {})
             op = func(self, **args) if args else func(self)
-            self._add_transformer(op)
+            preprocessors[op.name] = op
 
         predictor = ImagePredictor(
             model_dir=self.model_dir,
             model_prefix=self.MODEL_FILE_PREFIX,
             option=self.pp_option,
         )
-        self._add_transformer(predictor)
 
-        post_processes = self.config["PostProcess"]
-        for key in post_processes:
+        postprocessors = {}
+        for key in self.config["PostProcess"]:
             func = self._FUNC_MAP.get(key)
-            args = post_processes.get(key, {})
+            args = self.config["PostProcess"].get(key, {})
             op = func(self, **args) if args else func(self)
-            self._add_transformer(op)
+            postprocessors[op.name] = op
+        return preprocessors, predictor, postprocessors
 
-    def _set_dataflow(self):
-        self.ReadImage.inputs.img.fetch(self.batch_sampler.outputs.img)
-        self.Resize.inputs.img.fetch(self.ReadImage.outputs.img)
-        self.Crop.inputs.img.fetch(self.Resize.outputs.img)
-        self.Normalize.inputs.img.fetch(self.Crop.outputs.img)
-        self.ToCHWImage.inputs.img.fetch(self.Normalize.outputs.img)
-        self.ImagePredictor.inputs.img.fetch(self.ToCHWImage.outputs.img)
-        self.Topk.inputs.pred.fetch(self.ImagePredictor.outputs.pred)
-        self.result_packager.inputs.input_img.fetch(self.ReadImage.outputs.img)
-        self.result_packager.inputs.input_path.fetch(self.batch_sampler.outputs.img)
-        self.result_packager.inputs.class_ids.fetch(self.Topk.outputs.class_ids)
-        self.result_packager.inputs.scores.fetch(self.Topk.outputs.scores)
-        if self.Topk.class_id_map is not None:
-            self.result_packager.inputs.label_names.fetch(self.Topk.outputs.label_names)
+    def process(self, batch_data):
+        batch_raw_imgs = self.preprocessors["ReadImage"](imgs=batch_data)
+        batch_imgs = self.preprocessors["Resize"](imgs=batch_raw_imgs)
+        batch_imgs = self.preprocessors["Crop"](imgs=batch_imgs)
+        batch_imgs = self.preprocessors["Normalize"](imgs=batch_imgs)
+        batch_imgs = self.preprocessors["ToCHWImage"](imgs=batch_imgs)
+        batch_preds = self.predictor(imgs=batch_imgs)
+        batch_class_ids, batch_scores, batch_label_names = self.postprocessors["Topk"](
+            batch_preds
+        )
+        return {
+            "input_path": batch_data,
+            "input_img": batch_raw_imgs,
+            "class_ids": batch_class_ids,
+            "scores": batch_scores,
+            "label_names": batch_label_names,
+        }
 
     @register("ResizeImage")
     # TODO(gaotingquan): backend & interpolation

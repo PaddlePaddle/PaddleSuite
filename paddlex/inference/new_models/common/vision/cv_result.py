@@ -12,18 +12,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import inspect
+from ...base.result import BaseResult, StrMixin, JsonMixin, ImgMixin
+from ....utils.io import ImageWriter
 
 
-class BaseResult(dict):
+class CVResult(BaseResult, StrMixin, JsonMixin, ImgMixin):
+
+    INPUT_KEYS = ["input_img"]
+
     def __init__(self, data):
-        super().__init__(data)
-        self._save_funcs = []
+        assert set(CVResult.INPUT_KEYS) <= set(
+            self.INPUT_KEYS
+        ), f"`{CVResult.INPUT_KEYS}` is needed, but not found in `{self.INPUT_KEYS}`!"
+        self._input_img = data.pop("input_img", None)
+        self._img_writer = ImageWriter(backend="pillow")
 
-    def save_all(self, save_path):
-        for func in self._save_funcs:
-            signature = inspect.signature(func)
-            if "save_path" in signature.parameters:
-                func(save_path=save_path)
-            else:
-                func()
+        super().__init__(data)
+        StrMixin.__init__(self)
+        JsonMixin.__init__(self)
+        ImgMixin.__init__(self, "pillow")

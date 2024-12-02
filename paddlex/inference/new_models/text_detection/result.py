@@ -15,11 +15,10 @@
 import numpy as np
 import cv2
 
-from ..base import CVResult
+from ..common.vision import CVResult
 
 
 class TextDetResult(CVResult):
-    INPUT_KEYS = ["input_img", "input_path", "polys", "scores"]
 
     def __init__(self, data):
         super().__init__(data)

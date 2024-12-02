@@ -18,15 +18,13 @@ from abc import abstractmethod
 import lazy_paddle as paddle
 import numpy as np
 
-from .....utils.flags import FLAGS_json_format_model
-from .....utils import logging
-from ....utils.pp_option import PaddlePredictorOption
-from ...base import BaseTransformer
+from ....utils.flags import FLAGS_json_format_model
+from ....utils import logging
+from ...utils.pp_option import PaddlePredictorOption
+from .processor import BaseProcessor
 
 
-class Copy2GPU(BaseTransformer):
-    INPUT_KEYS = None
-    OUTPUT_KEYS = None
+class Copy2GPU(BaseProcessor):
 
     def __init__(self, input_handlers):
         super().__init__()
@@ -38,10 +36,7 @@ class Copy2GPU(BaseTransformer):
             self.input_handlers[idx].copy_from_cpu(x[idx])
 
 
-class Copy2CPU(BaseTransformer):
-
-    INPUT_KEYS = None
-    OUTPUT_KEYS = None
+class Copy2CPU(BaseProcessor):
 
     def __init__(self, output_handlers):
         super().__init__()
@@ -55,9 +50,7 @@ class Copy2CPU(BaseTransformer):
         return output
 
 
-class Infer(BaseTransformer):
-    INPUT_KEYS = None
-    OUTPUT_KEYS = None
+class Infer(BaseProcessor):
 
     def __init__(self, predictor):
         super().__init__()
@@ -67,7 +60,7 @@ class Infer(BaseTransformer):
         self.predictor.run()
 
 
-class BasePaddlePredictor(BaseTransformer):
+class BasePaddlePredictor(BaseProcessor):
     """Predictor based on Paddle Inference"""
 
     def __init__(self, model_dir, model_prefix, option):
@@ -225,7 +218,7 @@ class BasePaddlePredictor(BaseTransformer):
         return self.format_output(pred)
 
     @property
-    def sub_cmps(self):
+    def benchmark(self):
         return {
             "Copy2GPU": self.copy2gpu,
             "Infer": self.infer,
@@ -239,15 +232,3 @@ class BasePaddlePredictor(BaseTransformer):
     @abstractmethod
     def format_output(self, pred):
         raise NotImplementedError
-
-
-class ImagePredictor(BasePaddlePredictor):
-
-    INPUT_KEYS = ["img"]
-    OUTPUT_KEYS = ["pred"]
-
-    def to_batch(self, img):
-        return [np.stack(img, axis=0).astype(dtype=np.float32, copy=False)]
-
-    def format_output(self, pred):
-        return {"pred": pred}

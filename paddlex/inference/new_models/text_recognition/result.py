@@ -16,17 +16,16 @@ import PIL
 from PIL import Image, ImageDraw, ImageFont
 
 from ....utils.fonts import PINGFANG_FONT_FILE_PATH
-from ..base import CVResult
+from ..common.vision import CVResult
 
 
 class TextRecResult(CVResult):
-    INPUT_KEYS = ["input_img", "input_path", "text", "score"]
 
     def _to_img(self):
         """Draw label on image"""
         image = Image.fromarray(self._input_img)
-        rec_text = self["text"]
-        rec_score = self["score"]
+        rec_text = self["texts"]
+        rec_score = self["scores"]
         image = image.convert("RGB")
         image_width, image_height = image.size
         text = f"{rec_text} ({rec_score})"

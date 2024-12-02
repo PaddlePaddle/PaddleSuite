@@ -12,4 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .transformers import *
+from abc import abstractmethod
+
+from ....utils import logging
+from .component import BaseComponent
+
+
+class BaseProcessor(BaseComponent):
+
+    def __call__(self, *args, **kwargs):
+        return self.apply(*args, **kwargs)
+
+    @abstractmethod
+    def apply(self, input):
+        raise NotImplementedError

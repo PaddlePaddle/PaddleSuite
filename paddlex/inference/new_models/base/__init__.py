@@ -13,7 +13,8 @@
 # limitations under the License.
 
 from .component import BaseComponent
-from .transformer import BaseTransformer
+from .batch_sampler import BaseBatchSampler
+from .processor import BaseProcessor
+from .paddle_predictor import BasePaddlePredictor
+from .result import BaseResult
 from .predictor import BasePredictor, BasicPredictor
-from .result import BaseResult, CVResult
-from .batch_sampler import BaseBatchSampler, BatchData

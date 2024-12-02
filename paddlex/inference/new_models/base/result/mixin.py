@@ -82,7 +82,7 @@ class StrMixin:
 class JsonMixin:
     def __init__(self):
         self._json_writer = JsonWriter()
-        self._show_funcs.append(self.save_to_json)
+        self._save_funcs.append(self.save_to_json)
 
     def _to_json(self):
         def _format_data(obj):
@@ -124,7 +124,7 @@ class JsonMixin:
 class Base64Mixin:
     def __init__(self, *args, **kwargs):
         self._base64_writer = TextWriter(*args, **kwargs)
-        self._show_funcs.append(self.save_to_base64)
+        self._save_funcs.append(self.save_to_base64)
 
     @abstractmethod
     def _to_base64(self):
@@ -146,7 +146,7 @@ class Base64Mixin:
 class ImgMixin:
     def __init__(self, backend="pillow", *args, **kwargs):
         self._img_writer = ImageWriter(backend=backend, *args, **kwargs)
-        self._show_funcs.append(self.save_to_img)
+        self._save_funcs.append(self.save_to_img)
 
     @abstractmethod
     def _to_img(self):
@@ -170,7 +170,7 @@ class ImgMixin:
 class CSVMixin:
     def __init__(self, backend="pandas", *args, **kwargs):
         self._csv_writer = CSVWriter(backend=backend, *args, **kwargs)
-        self._show_funcs.append(self.save_to_csv)
+        self._save_funcs.append(self.save_to_csv)
 
     @abstractmethod
     def _to_csv(self):
@@ -187,7 +187,7 @@ class CSVMixin:
 class HtmlMixin:
     def __init__(self, *args, **kwargs):
         self._html_writer = HtmlWriter(*args, **kwargs)
-        self._show_funcs.append(self.save_to_html)
+        self._save_funcs.append(self.save_to_html)
 
     @property
     def html(self):
@@ -205,7 +205,7 @@ class HtmlMixin:
 class XlsxMixin:
     def __init__(self, *args, **kwargs):
         self._xlsx_writer = XlsxWriter(*args, **kwargs)
-        self._show_funcs.append(self.save_to_xlsx)
+        self._save_funcs.append(self.save_to_xlsx)
 
     def _to_xlsx(self):
         return self["html"]

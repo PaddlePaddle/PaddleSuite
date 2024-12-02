@@ -19,11 +19,10 @@ import numpy as np
 
 from ....utils.fonts import PINGFANG_FONT_FILE_PATH
 from ...utils.color_map import get_colormap
-from ..base import CVResult
+from ..common.vision import CVResult
 
 
 class TopkResult(CVResult):
-    INPUT_KEYS = ["input_img", "input_path", "class_ids", "scores", "label_names"]
 
     def _to_img(self):
         """Draw label on image"""

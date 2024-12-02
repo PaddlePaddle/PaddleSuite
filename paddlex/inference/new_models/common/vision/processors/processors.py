@@ -27,8 +27,7 @@ from ......utils.flags import (
     INFER_BENCHMARK_DATA_SIZE,
 )
 from .....utils.io import ImageReader, PDFReader
-from ....base import BaseTransformer
-from ...batchable import batchable
+from ....base import BaseProcessor
 from . import funcs as F
 
 
@@ -57,11 +56,8 @@ def _check_image_size(input_):
         raise TypeError(f"{input_} cannot represent a valid image size.")
 
 
-class ReadImage(BaseTransformer):
+class ReadImage(BaseProcessor):
     """Load image from the file."""
-
-    INPUT_KEYS = ["img"]
-    OUTPUT_KEYS = ["input_path", "img", "img_size"]
 
     _FLAGS_DICT = {
         "BGR": cv2.IMREAD_COLOR,
@@ -82,41 +78,26 @@ class ReadImage(BaseTransformer):
         flags = self._FLAGS_DICT[self.format]
         self._img_reader = ImageReader(backend="opencv", flags=flags)
 
-    @batchable
-    def apply(self, img):
+    def apply(self, imgs):
         """apply"""
+        return [self.read(img) for img in imgs]
 
-        def rand_data():
-            def parse_size(s):
-                res = ast.literal_eval(s)
-                if isinstance(res, int):
-                    return (res, res)
-                else:
-                    assert isinstance(res, (tuple, list))
-                    assert len(res) == 2
-                    assert all(isinstance(item, int) for item in res)
-                    return res
-
-            size = parse_size(INFER_BENCHMARK_DATA_SIZE)
-            return np.random.randint(0, 256, (*size, 3), dtype=np.uint8)
-
-        def process_ndarray(img):
+    def read(self, img):
+        if isinstance(img, np.ndarray):
             if self.format == "RGB":
                 img = img[:, :, ::-1]
-            return {
-                "input_path": "<numpy.ndarray object>",
-                "img": img,
-                "img_size": [img.shape[1], img.shape[0]],
-            }
-
-        # if INFER_BENCHMARK and img is None:
-        #     for _ in range(INFER_BENCHMARK_ITER):
-        #         yield [process_ndarray(rand_data()) for _ in range(self.batch_size)]
-
-        if isinstance(img, np.ndarray):
-            return process_ndarray(img)
+            return img
         elif isinstance(img, str):
-            return self._read_img(img)
+            blob = self._img_reader.read(img)
+            if blob is None:
+                raise Exception(f"Image read Error: {img}")
+
+            if self.format == "RGB":
+                if blob.ndim != 3:
+                    raise RuntimeError("Array is not 3-dimensional.")
+                # BGR to RGB
+                blob = blob[..., ::-1]
+            return blob
         else:
             raise TypeError(
                 f"ReadImage only supports the following types:\n"
@@ -125,46 +106,9 @@ class ReadImage(BaseTransformer):
                 f"However, got type: {type(img).__name__}."
             )
 
-    def _read_img(self, img_path):
-        blob = self._img_reader.read(img_path)
-        if blob is None:
-            raise Exception("Image read Error")
 
-        if self.format == "RGB":
-            if blob.ndim != 3:
-                raise RuntimeError("Array is not 3-dimensional.")
-            # BGR to RGB
-            blob = blob[..., ::-1]
-        return {
-            "input_path": img_path,
-            "img": blob,
-            "img_size": [blob.shape[1], blob.shape[0]],
-        }
-
-
-class GetImageInfo(BaseTransformer):
-    """Get Image Info"""
-
-    INPUT_KEYS = "img"
-    OUTPUT_KEYS = "img_size"
-    DEAULT_INPUTS = {"img": "img"}
-    DEAULT_OUTPUTS = {"img_size": "img_size"}
-
-    def __init__(self):
-        super().__init__()
-
-    def apply(self, img):
-        """apply"""
-        return {"img_size": [img.shape[1], img.shape[0]]}
-
-
-class Flip(BaseTransformer):
+class Flip(BaseProcessor):
     """Flip the image vertically or horizontally."""
-
-    INPUT_KEYS = "img"
-    OUTPUT_KEYS = "img"
-    DEAULT_INPUTS = {"img": "img"}
-    DEAULT_OUTPUTS = {"img": "img"}
 
     def __init__(self, mode="H"):
         """
@@ -185,14 +129,11 @@ class Flip(BaseTransformer):
             img = F.flip_h(img)
         elif self.mode == "V":
             img = F.flip_v(img)
-        return {"img": img}
+        return img
 
 
-class Crop(BaseTransformer):
+class Crop(BaseProcessor):
     """Crop region from the image."""
-
-    INPUT_KEYS = ["img"]
-    OUTPUT_KEYS = ["img", "img_size"]
 
     def __init__(self, crop_size, mode="C"):
         """
@@ -214,9 +155,11 @@ class Crop(BaseTransformer):
             raise ValueError("Unsupported interpolation method")
         self.mode = mode
 
-    @batchable
-    def apply(self, img):
+    def apply(self, imgs):
         """apply"""
+        return [self.crop(img) for img in imgs]
+
+    def crop(self, img):
         h, w = img.shape[:2]
         cw, ch = self.crop_size
         if self.mode == "C":
@@ -232,10 +175,10 @@ class Crop(BaseTransformer):
                 f"Input image ({w}, {h}) smaller than the target size ({cw}, {ch})."
             )
         img = F.slice(img, coords=coords)
-        return {"img": img, "img_size": [img.shape[1], img.shape[0]]}
+        return img
 
 
-class _BaseResize(BaseTransformer):
+class _BaseResize(BaseProcessor):
     _INTERP_DICT = {
         "NEAREST": cv2.INTER_NEAREST,
         "LINEAR": cv2.INTER_LINEAR,
@@ -272,15 +215,6 @@ class _BaseResize(BaseTransformer):
 class Resize(_BaseResize):
     """Resize the image."""
 
-    INPUT_KEYS = ["img"]
-    OUTPUT_KEYS = ["img", "img_size", "scale_factors"]
-    DEAULT_INPUTS = {"img": "img"}
-    DEAULT_OUTPUTS = {
-        "img": "img",
-        "img_size": "img_size",
-        "scale_factors": "scale_factors",
-    }
-
     def __init__(
         self, target_size, keep_ratio=False, size_divisor=None, interp="LINEAR"
     ):
@@ -305,8 +239,11 @@ class Resize(_BaseResize):
 
         self.keep_ratio = keep_ratio
 
-    def apply(self, img):
+    def apply(self, imgs):
         """apply"""
+        return [self.resize(img) for img in imgs]
+
+    def resize(self, img):
         target_size = self.target_size
         original_size = img.shape[:2][::-1]
 
@@ -319,17 +256,8 @@ class Resize(_BaseResize):
                 math.ceil(i / self.size_divisor) * self.size_divisor
                 for i in target_size
             ]
-
-        img_scale_w, img_scale_h = [
-            target_size[0] / original_size[0],
-            target_size[1] / original_size[1],
-        ]
         img = F.resize(img, target_size, interp=self.interp)
-        return {
-            "img": img,
-            "img_size": [img.shape[1], img.shape[0]],
-            "scale_factors": [img_scale_w, img_scale_h],
-        }
+        return img
 
 
 class ResizeByLong(_BaseResize):
@@ -337,11 +265,6 @@ class ResizeByLong(_BaseResize):
     Proportionally resize the image by specifying the target length of the
     longest side.
     """
-
-    INPUT_KEYS = ["img"]
-    OUTPUT_KEYS = ["img", "img_size"]
-    DEAULT_INPUTS = {"img": "img"}
-    DEAULT_OUTPUTS = {"img": "img", "img_size": "img_size"}
 
     def __init__(self, target_long_edge, size_divisor=None, interp="LINEAR"):
         """
@@ -357,8 +280,11 @@ class ResizeByLong(_BaseResize):
         super().__init__(size_divisor=size_divisor, interp=interp)
         self.target_long_edge = target_long_edge
 
-    def apply(self, img):
+    def apply(self, imgs):
         """apply"""
+        return [self.resize(img) for img in imgs]
+
+    def resize(self, img):
         h, w = img.shape[:2]
         scale = self.target_long_edge / max(h, w)
         h_resize = round(h * scale)
@@ -368,7 +294,7 @@ class ResizeByLong(_BaseResize):
             w_resize = math.ceil(w_resize / self.size_divisor) * self.size_divisor
 
         img = F.resize(img, (w_resize, h_resize), interp=self.interp)
-        return {"img": img, "img_size": [img.shape[1], img.shape[0]]}
+        return img
 
 
 class ResizeByShort(_BaseResize):
@@ -376,9 +302,6 @@ class ResizeByShort(_BaseResize):
     Proportionally resize the image by specifying the target length of the
     shortest side.
     """
-
-    INPUT_KEYS = ["img"]
-    OUTPUT_KEYS = ["img", "img_size"]
 
     def __init__(self, target_short_edge, size_divisor=None, interp="LINEAR"):
         """
@@ -394,9 +317,11 @@ class ResizeByShort(_BaseResize):
         super().__init__(size_divisor=size_divisor, interp=interp)
         self.target_short_edge = target_short_edge
 
-    @batchable
-    def apply(self, img):
+    def apply(self, imgs):
         """apply"""
+        return [self.resize(img) for img in imgs]
+
+    def resize(self, img):
         h, w = img.shape[:2]
         scale = self.target_short_edge / min(h, w)
         h_resize = round(h * scale)
@@ -406,16 +331,11 @@ class ResizeByShort(_BaseResize):
             w_resize = math.ceil(w_resize / self.size_divisor) * self.size_divisor
 
         img = F.resize(img, (w_resize, h_resize), interp=self.interp)
-        return {"img": img, "img_size": [img.shape[1], img.shape[0]]}
+        return img
 
 
-class Pad(BaseTransformer):
+class Pad(BaseProcessor):
     """Pad the image."""
-
-    INPUT_KEYS = "img"
-    OUTPUT_KEYS = ["img", "img_size"]
-    DEAULT_INPUTS = {"img": "img"}
-    DEAULT_OUTPUTS = {"img": "img", "img_size": "img_size"}
 
     def __init__(self, target_size, val=127.5):
         """
@@ -435,8 +355,11 @@ class Pad(BaseTransformer):
 
         self.val = val
 
-    def apply(self, img):
+    def apply(self, imgs):
         """apply"""
+        return [self.pad(img) for img in imgs]
+
+    def pad(self, img):
         h, w = img.shape[:2]
         tw, th = self.target_size
         ph = th - h
@@ -448,31 +371,29 @@ class Pad(BaseTransformer):
             )
         else:
             img = F.pad(img, pad=(0, ph, 0, pw), val=self.val)
-        return {"img": img, "img_size": [img.shape[1], img.shape[0]]}
+        return img
 
 
-class PadStride(BaseTransformer):
+class PadStride(BaseProcessor):
     """padding image for model with FPN , instead PadBatch(pad_to_stride, pad_gt) in original config
     Args:
         stride (bool): model with FPN need image shape % stride == 0
     """
 
-    INPUT_KEYS = "img"
-    OUTPUT_KEYS = "img"
-    DEAULT_INPUTS = {"img": "img"}
-    DEAULT_OUTPUTS = {"img": "img"}
-
     def __init__(self, stride=0):
         super().__init__()
         self.coarsest_stride = stride
 
-    def apply(self, img):
+    def apply(self, imgs):
         """
         Args:
             im (np.ndarray): image (np.ndarray)
         Returns:
             im (np.ndarray):  processed image (np.ndarray)
         """
+        return [self.pad(img) for img in imgs]
+
+    def pad(self, img):
         im = img
         coarsest_stride = self.coarsest_stride
         if coarsest_stride <= 0:
@@ -482,14 +403,11 @@ class PadStride(BaseTransformer):
         pad_w = int(np.ceil(float(im_w) / coarsest_stride) * coarsest_stride)
         padding_im = np.zeros((im_c, pad_h, pad_w), dtype=np.float32)
         padding_im[:, :im_h, :im_w] = im
-        return {"img": padding_im}
+        return padding_im
 
 
-class Normalize(BaseTransformer):
+class Normalize(BaseProcessor):
     """Normalize the image."""
-
-    INPUT_KEYS = ["img"]
-    OUTPUT_KEYS = ["img"]
 
     def __init__(self, scale=1.0 / 255, mean=0.5, std=0.5, preserve_dtype=False):
         """
@@ -516,29 +434,23 @@ class Normalize(BaseTransformer):
         self.std = np.asarray(std).astype("float32")
         self.preserve_dtype = preserve_dtype
 
-    @batchable
-    def apply(self, img):
+    def apply(self, imgs):
         """apply"""
-        old_type = img.dtype
+        old_type = imgs[0].dtype
         # XXX: If `old_type` has higher precision than float32,
         # we will lose some precision.
-        img = img.astype("float32", copy=False)
-        img *= self.scale
-        img -= self.mean
-        img /= self.std
+        imgs = np.array(imgs).astype("float32", copy=False)
+        imgs *= self.scale
+        imgs -= self.mean
+        imgs /= self.std
         if self.preserve_dtype:
-            img = img.astype(old_type, copy=False)
-        return {"img": img}
+            imgs = imgs.astype(old_type, copy=False)
+        return list(imgs)
 
 
-class ToCHWImage(BaseTransformer):
+class ToCHWImage(BaseProcessor):
     """Reorder the dimensions of the image from HWC to CHW."""
 
-    INPUT_KEYS = ["img"]
-    OUTPUT_KEYS = ["img"]
-
-    @batchable
-    def apply(self, img):
+    def apply(self, imgs):
         """apply"""
-        img = img.transpose((2, 0, 1))
-        return {"img": img}
+        return [img.transpose((2, 0, 1)) for img in imgs]

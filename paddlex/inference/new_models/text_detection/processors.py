@@ -26,17 +26,24 @@ from shapely.geometry import Polygon
 
 from ...utils.io import ImageReader
 from ....utils import logging
-from ..base import BaseTransformer
-from ..common.batchable import batchable
-
-__all__ = ["DetResizeForTest", "NormalizeImage", "DBPostProcess"]
+from ..base import BaseProcessor
+from ..base import BasePaddlePredictor
 
 
-class DetResizeForTest(BaseTransformer):
+__all__ = ["ImagePredictor", "DetResizeForTest", "NormalizeImage", "DBPostProcess"]
+
+
+class ImagePredictor(BasePaddlePredictor):
+
+    def to_batch(self, imgs):
+        return [np.stack(imgs, axis=0).astype(dtype=np.float32, copy=False)]
+
+    def format_output(self, pred):
+        return pred[0]
+
+
+class DetResizeForTest(BaseProcessor):
     """DetResizeForTest"""
-
-    INPUT_KEYS = ["img"]
-    OUTPUT_KEYS = ["img", "img_shape"]
 
     def __init__(self, **kwargs):
         super().__init__()
@@ -57,9 +64,16 @@ class DetResizeForTest(BaseTransformer):
             self.limit_side_len = 736
             self.limit_type = "min"
 
-    @batchable
-    def apply(self, img):
+    def apply(self, imgs):
         """apply"""
+        resize_imgs, img_shapes = [], []
+        for ori_img in imgs:
+            img, shape = self.resize(ori_img)
+            resize_imgs.append(img)
+            img_shapes.append(shape)
+        return resize_imgs, img_shapes
+
+    def resize(self, img):
         src_h, src_w, _ = img.shape
         if sum([src_h, src_w]) < 64:
             img = self.image_padding(img)
@@ -72,7 +86,7 @@ class DetResizeForTest(BaseTransformer):
         else:
             # img, shape = self.resize_image_type1(img)
             img, [ratio_h, ratio_w] = self.resize_image_type1(img)
-        return {"img": img, "img_shape": np.array([src_h, src_w, ratio_h, ratio_w])}
+        return img, np.array([src_h, src_w, ratio_h, ratio_w])
 
     def image_padding(self, im, value=0):
         """padding image"""
@@ -169,11 +183,8 @@ class DetResizeForTest(BaseTransformer):
         return img, [ratio_h, ratio_w]
 
 
-class NormalizeImage(BaseTransformer):
+class NormalizeImage(BaseProcessor):
     """normalize image such as substract mean, divide std"""
-
-    INPUT_KEYS = ["img"]
-    OUTPUT_KEYS = ["img"]
 
     def __init__(self, scale=None, mean=None, std=None, order="chw", **kwargs):
         super().__init__()
@@ -187,23 +198,19 @@ class NormalizeImage(BaseTransformer):
         self.mean = np.array(mean).reshape(shape).astype("float32")
         self.std = np.array(std).reshape(shape).astype("float32")
 
-    @batchable
-    def apply(self, img):
+    def apply(self, imgs):
         """apply"""
-        if isinstance(img, Image.Image):
-            img = np.array(img)
-        assert isinstance(img, np.ndarray), "invalid input 'img' in NormalizeImage"
-        img = (img.astype("float32") * self.scale - self.mean) / self.std
-        return {"img": img}
+
+        def norm(img):
+            return (img.astype("float32") * self.scale - self.mean) / self.std
+
+        return [norm(img) for img in imgs]
 
 
-class DBPostProcess(BaseTransformer):
+class DBPostProcess(BaseProcessor):
     """
     The post process for Differentiable Binarization (DB).
     """
-
-    INPUT_KEYS = ["pred", "img_shape"]
-    OUTPUT_KEYS = ["polys", "scores"]
 
     def __init__(
         self,
@@ -392,10 +399,17 @@ class DBPostProcess(BaseTransformer):
         cv2.fillPoly(mask, contour.reshape(1, -1, 2).astype(np.int32), 1)
         return cv2.mean(bitmap[ymin : ymax + 1, xmin : xmax + 1], mask)[0]
 
-    @batchable
-    def apply(self, pred, img_shape):
+    def apply(self, preds, img_shapes):
         """apply"""
-        pred = pred[0][0, :, :]
+        boxes, scores = [], []
+        for pred, img_shape in zip(preds, img_shapes):
+            box, score = self.process(pred, img_shape)
+            boxes.append(box)
+            scores.append(score)
+        return boxes, scores
+
+    def process(self, pred, img_shape):
+        pred = pred[0, :, :]
         segmentation = pred > self.thresh
 
         src_h, src_w, ratio_h, ratio_w = img_shape
@@ -412,5 +426,4 @@ class DBPostProcess(BaseTransformer):
             boxes, scores = self.boxes_from_bitmap(pred, mask, src_w, src_h)
         else:
             raise ValueError("box_type can only be one of ['quad', 'poly']")
-
-        return {"polys": boxes, "scores": scores}
+        return boxes, scores

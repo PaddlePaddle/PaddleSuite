@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import os
+import ast
 from pathlib import Path
 import numpy as np
 
@@ -23,10 +24,7 @@ from ...base.batch_sampler import BaseBatchSampler
 
 class ImageBatchSampler(BaseBatchSampler):
 
-    INPUT_KEYS = None
-    OUTPUT_KEYS = ["img"]
-
-    SUFFIX = ["jpg", "png", "jpeg", "JPEG", "JPG", "bmp", "PDF", "pdf"]
+    SUFFIX = ["jpg", "png", "jpeg", "JPEG", "JPG", "bmp"]
 
     # XXX: auto download for url
     def _download_from_url(self, in_path):
@@ -59,7 +57,7 @@ class ImageBatchSampler(BaseBatchSampler):
             inputs = [inputs]
         for input in inputs:
             if isinstance(input, np.ndarray):
-                yield [[input]], 1
+                yield [input]
             elif isinstance(input, str):
                 file_path = self._download_from_url(input)
                 file_list = self._get_files_list(file_path)
@@ -67,7 +65,29 @@ class ImageBatchSampler(BaseBatchSampler):
                 for file_path in file_list:
                     batch.append(file_path)
                     if len(batch) == self.batch_size:
-                        yield [batch], len(batch)
+                        yield batch
                         batch = []
                 if len(batch) > 0:
-                    yield [batch], len(batch)
+                    yield batch
+            else:
+                raise Exception(
+                    "Not supported input data type! Only `numpy.ndarray` and `str` are supported!"
+                )
+
+    def _rand_batch(self, data_size):
+        def parse_size(s):
+            res = ast.literal_eval(s)
+            if isinstance(res, int):
+                return (res, res)
+            else:
+                assert isinstance(res, (tuple, list))
+                assert len(res) == 2
+                assert all(isinstance(item, int) for item in res)
+                return res
+
+        size = parse_size(data_size)
+        rand_batch = [
+            np.random.randint(0, 256, (*size, 3), dtype=np.uint8)
+            for _ in range(self.batch_size)
+        ]
+        return rand_batch

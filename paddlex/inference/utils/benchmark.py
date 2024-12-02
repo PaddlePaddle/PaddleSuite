@@ -20,18 +20,22 @@ from pathlib import Path
 import numpy as np
 from prettytable import PrettyTable
 
-from ...utils.flags import INFER_BENCHMARK_OUTPUT
+from ...utils.flags import INFER_BENCHMARK, INFER_BENCHMARK_OUTPUT
+from ...utils.misc import Singleton
 from ...utils import logging
 
 
-class Benchmark:
-    def __init__(self, components):
-        self._components = components
+class Benchmark(metaclass=Singleton):
+    def __init__(self):
+        self._components = {}
         self._warmup_start = None
         self._warmup_elapse = None
         self._warmup_num = None
         self._e2e_tic = None
         self._e2e_elapse = None
+
+    def attach(self, component):
+        self._components[component.name] = component
 
     def start(self):
         self._warmup_start = time.time()
@@ -51,8 +55,8 @@ class Benchmark:
         if cmps is None:
             return
         for name, cmp in cmps.items():
-            if cmp.sub_cmps is not None:
-                yield from self.iterate_cmp(cmp.sub_cmps)
+            if hasattr(cmp, "benchmark"):
+                yield from self.iterate_cmp(cmp.benchmark)
             yield name, cmp
 
     def gather(self, e2e_num):
@@ -60,7 +64,7 @@ class Benchmark:
         from ...utils.flags import NEW_PREDICTOR
 
         if NEW_PREDICTOR:
-            from ..new_models.common.paddle_predictor import BasePaddlePredictor
+            from ..new_models.base import BasePaddlePredictor
         else:
             from ..models.common_components.paddle_predictor import BasePaddlePredictor
 
@@ -70,7 +74,7 @@ class Benchmark:
         for name, cmp in self._components.items():
             if isinstance(cmp, BasePaddlePredictor):
                 # TODO(gaotingquan): show by hierarchy. Now dont show xxxPredictor benchmark info to ensure mutual exclusivity between components.
-                for name, sub_cmp in cmp.sub_cmps.items():
+                for name, sub_cmp in cmp.benchmark.items():
                     times = sub_cmp.timer.logs
                     counts = len(times)
                     avg = np.mean(times) * 1000
@@ -79,6 +83,8 @@ class Benchmark:
                     summary["inference"] += total
                 op_tag = "postprocess"
             else:
+                # TODO(gaotingquan): support sub_cmps for others
+                # if hasattr(cmp, "benchmark"):
                 times = cmp.timer.logs
                 counts = len(times)
                 avg = np.mean(times) * 1000
@@ -174,7 +180,12 @@ class Benchmark:
 
 
 class Timer:
-    def __init__(self):
+    def __init__(self, component):
+        from ..new_models.base import BaseComponent
+
+        assert isinstance(component, BaseComponent)
+        benchmark.attach(component)
+        component.apply = self.watch_func(component.apply)
         self._tic = None
         self._elapses = []
 
@@ -215,3 +226,6 @@ class Timer:
     @property
     def logs(self):
         return self._elapses
+
+
+benchmark = Benchmark() if INFER_BENCHMARK else None
