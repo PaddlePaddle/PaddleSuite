@@ -80,7 +80,7 @@ training!"
             self.pdx_config.update_epochs(self.train_config.epochs_iters)
         if self.train_config.log_interval is not None:
             self.pdx_config.update_log_interval(self.train_config.log_interval)
-        if self.train_config.dy2st is not None:
+        if self.train_config.get("dy2st", False):
             self.pdx_config.update_to_static(self.train_config.dy2st)
         if self.global_config.output is not None:
             self.pdx_config.update_save_dir(self.global_config.output)
