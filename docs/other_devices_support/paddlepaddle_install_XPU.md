@@ -10,8 +10,8 @@ comments: true
 拉取镜像，此镜像仅为开发环境，镜像中不包含预编译的飞桨安装包
 
 ```
-docker pull registry.baidubce.com/device/paddle-xpu:ubuntu20-x86_64-gcc84-py310 # X86 架构
-docker pull registry.baidubce.com/device/paddle-xpu:kylinv10-aarch64-gcc82-py310 # ARM 架构
+docker pull ccr-2vdh3abv-pub.cnc.bj.baidubce.com/device/paddle-xpu:ubuntu20-x86_64-gcc84-py310 # X86 架构
+docker pull ccr-2vdh3abv-pub.cnc.bj.baidubce.com/device/paddle-xpu:kylinv10-aarch64-gcc82-py310 # ARM 架构
 ```
 参考如下命令启动容器
 
@@ -19,7 +19,7 @@ docker pull registry.baidubce.com/device/paddle-xpu:kylinv10-aarch64-gcc82-py310
 docker run -it --name=xxx -m 81920M --memory-swap=81920M \
     --shm-size=128G --privileged --net=host \
     -v $(pwd):/workspace -w /workspace \
-    registry.baidubce.com/device/paddle-xpu:$(uname -m)-py310 bash
+    ccr-2vdh3abv-pub.cnc.bj.baidubce.com/device/paddle-xpu:$(uname -m)-py310 bash
 ```
 ## 2、安装paddle包
 当前提供 Python3.10 的 wheel 安装包。如有其他 Python 版本需求，可以参考[飞桨官方文档](https://www.paddlepaddle.org.cn/install/quick)自行编译安装。
