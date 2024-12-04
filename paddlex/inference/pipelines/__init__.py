@@ -73,6 +73,7 @@ def create_pipeline_from_config(
     predictor_kwargs = {"use_hpip": use_hpip}
     if "use_hpip" in pipeline_setting:
         predictor_kwargs["use_hpip"] = use_hpip
+        pipeline_setting.pop("use_hpip", None)
     if hpi_params is not None:
         predictor_kwargs["hpi_params"] = hpi_params
         pipeline_setting.pop("hpi_params", None)
