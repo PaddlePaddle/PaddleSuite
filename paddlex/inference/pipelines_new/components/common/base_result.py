@@ -12,39 +12,37 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from abc import ABC, abstractmethod
-from ....utils.subclass_register import AutoRegisterABCMetaClass
-
 import inspect
 
-from ....utils.func_register import FuncRegister
-from ...utils.io import ImageReader, ImageWriter
-from .utils.mixin import JsonMixin, ImgMixin, StrMixin
-
-
-class BaseComponent(ABC, metaclass=AutoRegisterABCMetaClass):
-    """Base Component"""
-
-    __is_base = True
-
-    def __init__(self):
-        super().__init__()
-
-    @abstractmethod
-    def __call__(self):
-        raise NotImplementedError(
-            "The component method `__call__` has not been implemented yet."
-        )
+from ....utils.io import ImageReader, ImageWriter
+from ..utils.mixin import JsonMixin, ImgMixin, StrMixin
+from typing import Dict
 
 
 class BaseResult(dict, StrMixin, JsonMixin):
-    def __init__(self, data):
+    """Base Result"""
+
+    def __init__(self, data: Dict) -> None:
+        """Initializes the instance with the provided data.
+
+        Args:
+            data (Dict): The data to initialize the instance with.
+        """
         super().__init__(data)
         self._show_funcs = []
         StrMixin.__init__(self)
         JsonMixin.__init__(self)
 
-    def save_all(self, save_path):
+    def save_all(self, save_path: str) -> None:
+        """
+        Save all show functions to the specified path if they accept a save_path argument.
+
+        Args:
+            save_path (str): The path to save the functions' output.
+
+        Returns:
+            None
+        """
         for func in self._show_funcs:
             signature = inspect.signature(func)
             if "save_path" in signature.parameters:
@@ -54,7 +52,14 @@ class BaseResult(dict, StrMixin, JsonMixin):
 
 
 class CVResult(BaseResult, ImgMixin):
-    def __init__(self, data):
+    """Result For Computer Vision Tasks"""
+
+    def __init__(self, data: Dict) -> None:
+        """Initializes the instance with the given data and sets up image processing with the 'pillow' backend.
+
+        Args:
+            data (Dict): The data to initialize the instance with.
+        """
         super().__init__(data)
         ImgMixin.__init__(self, "pillow")
         self._img_reader = ImageReader(backend="pillow")

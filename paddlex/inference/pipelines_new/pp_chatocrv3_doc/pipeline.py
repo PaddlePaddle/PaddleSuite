@@ -28,6 +28,12 @@ import json
 
 from ....utils import logging
 
+from ...utils.pp_option import PaddlePredictorOption
+
+from ..layout_parsing.result import LayoutParsingResult
+
+import numpy as np
+
 
 class PP_ChatOCRv3_doc_Pipeline(BasePipeline):
     """PP-ChatOCRv3-doc Pipeline"""
@@ -36,12 +42,22 @@ class PP_ChatOCRv3_doc_Pipeline(BasePipeline):
 
     def __init__(
         self,
-        config,
-        device=None,
-        pp_option=None,
+        config: Dict,
+        device: str = None,
+        pp_option: PaddlePredictorOption = None,
         use_hpip: bool = False,
         hpi_params: Optional[Dict[str, Any]] = None,
-    ):
+    ) -> None:
+        """Initializes the pp-chatocrv3-doc pipeline.
+
+        Args:
+            config (Dict): Configuration dictionary containing various settings.
+            device (str, optional): Device to run the predictions on. Defaults to None.
+            pp_option (PaddlePredictorOption, optional): PaddlePredictor options. Defaults to None.
+            use_hpip (bool, optional): Whether to use high-performance inference (hpip) for prediction. Defaults to False.
+            hpi_params (Optional[Dict[str, Any]], optional): HPIP parameters. Defaults to None.
+        """
+
         super().__init__(
             device=device, pp_option=pp_option, use_hpip=use_hpip, hpi_params=hpi_params
         )
@@ -50,42 +66,71 @@ class PP_ChatOCRv3_doc_Pipeline(BasePipeline):
 
         self.img_reader = ReadImage(format="BGR")
 
-    def inintial_predictor(self, config):
-        # layout_parsing_config = config['SubPipelines']["LayoutParser"]
-        # self.layout_parsing_pipeline = self.create_pipeline(layout_parsing_config)
+        self.table_structure_len_max = 500
+
+    def inintial_predictor(self, config: dict) -> None:
+        """
+        Initializes the predictor with the given configuration.
+
+        Args:
+            config (dict): The configuration dictionary containing the necessary
+                                parameters for initializing the predictor.
+        Returns:
+            None
+        """
+        layout_parsing_config = config["SubPipelines"]["LayoutParser"]
+        self.layout_parsing_pipeline = self.create_pipeline(layout_parsing_config)
+
+        from .. import create_chat_bot
 
         chat_bot_config = config["SubModules"]["LLM_Chat"]
-        self.chat_bot = self.create_chat_bot(chat_bot_config)
+        self.chat_bot = create_chat_bot(chat_bot_config)
+
+        from .. import create_retriever
 
         retriever_config = config["SubModules"]["LLM_Retriever"]
-        self.retriever = self.create_retriever(retriever_config)
+        self.retriever = create_retriever(retriever_config)
+
+        from .. import create_prompt_engeering
 
         text_pe_config = config["SubModules"]["PromptEngneering"]["KIE_CommonText"]
-        self.text_pe = self.create_prompt_engeering(text_pe_config)
+        self.text_pe = create_prompt_engeering(text_pe_config)
 
         table_pe_config = config["SubModules"]["PromptEngneering"]["KIE_Table"]
-        self.table_pe = self.create_prompt_engeering(table_pe_config)
+        self.table_pe = create_prompt_engeering(table_pe_config)
 
         return
 
-    def decode_visual_result(self, layout_parsing_result):
+    def decode_visual_result(
+        self, layout_parsing_result: LayoutParsingResult
+    ) -> VisualInfoResult:
+        """
+        Decodes the visual result from the layout parsing result.
+
+        Args:
+            layout_parsing_result (LayoutParsingResult): The result of layout parsing.
+
+        Returns:
+            VisualInfoResult: The decoded visual information.
+        """
         text_paragraphs_ocr_res = layout_parsing_result["text_paragraphs_ocr_res"]
         seal_res_list = layout_parsing_result["seal_res_list"]
         normal_text_dict = {}
-        layout_type = "text"
+
+        for seal_res in seal_res_list:
+            for text in seal_res["rec_text"]:
+                layout_type = "印章"
+                if layout_type not in normal_text_dict:
+                    normal_text_dict[layout_type] = f"{text}"
+                else:
+                    normal_text_dict[layout_type] += f"\n {text}"
+
         for text in text_paragraphs_ocr_res["rec_text"]:
+            layout_type = "words in text block"
             if layout_type not in normal_text_dict:
                 normal_text_dict[layout_type] = text
             else:
                 normal_text_dict[layout_type] += f"\n {text}"
-
-        layout_type = "seal"
-        for seal_res in seal_res_list:
-            for text in seal_res["rec_text"]:
-                if layout_type not in normal_text_dict:
-                    normal_text_dict[layout_type] = text
-                else:
-                    normal_text_dict[layout_type] += f"\n {text}"
 
         table_res_list = layout_parsing_result["table_res_list"]
         table_text_list = []
@@ -101,16 +146,35 @@ class PP_ChatOCRv3_doc_Pipeline(BasePipeline):
         visual_info["table_html_list"] = table_html_list
         return VisualInfoResult(visual_info)
 
+    # Function to perform visual prediction on input images
     def visual_predict(
         self,
-        input,
-        use_doc_orientation_classify=True,
-        use_doc_unwarping=True,
-        use_common_ocr=True,
-        use_seal_recognition=True,
-        use_table_recognition=True,
+        input: str | list[str] | np.ndarray | list[np.ndarray],
+        use_doc_orientation_classify: bool = False,  # Whether to use document orientation classification
+        use_doc_unwarping: bool = False,  # Whether to use document unwarping
+        use_common_ocr: bool = True,  # Whether to use common OCR
+        use_seal_recognition: bool = True,  # Whether to use seal recognition
+        use_table_recognition: bool = True,  # Whether to use table recognition
         **kwargs,
-    ):
+    ) -> dict:
+        """
+        This function takes an input image or a list of images and performs various visual
+        prediction tasks such as document orientation classification, document unwarping,
+        common OCR, seal recognition, and table recognition based on the provided flags.
+
+        Args:
+            input (str | list[str] | np.ndarray | list[np.ndarray]): Input image path, list of image paths,
+                                                                        numpy array of an image, or list of numpy arrays.
+            use_doc_orientation_classify (bool): Flag to use document orientation classification.
+            use_doc_unwarping (bool): Flag to use document unwarping.
+            use_common_ocr (bool): Flag to use common OCR.
+            use_seal_recognition (bool): Flag to use seal recognition.
+            use_table_recognition (bool): Flag to use table recognition.
+            **kwargs: Additional keyword arguments.
+
+        Returns:
+            dict: A dictionary containing the layout parsing result and visual information.
+        """
 
         if not isinstance(input, list):
             input_list = [input]
@@ -145,7 +209,19 @@ class PP_ChatOCRv3_doc_Pipeline(BasePipeline):
             }
             yield visual_predict_res
 
-    def save_visual_info_list(self, visual_info, save_path):
+    def save_visual_info_list(
+        self, visual_info: VisualInfoResult, save_path: str
+    ) -> None:
+        """
+        Save the visual info list to the specified file path.
+
+        Args:
+            visual_info (VisualInfoResult): The visual info result, which can be a single object or a list of objects.
+            save_path (str): The file path to save the visual info list.
+
+        Returns:
+            None
+        """
         if not isinstance(visual_info, list):
             visual_info_list = [visual_info]
         else:
@@ -155,13 +231,34 @@ class PP_ChatOCRv3_doc_Pipeline(BasePipeline):
             fout.write(json.dumps(visual_info_list, ensure_ascii=False) + "\n")
         return
 
-    def load_visual_info_list(self, data_path):
+    def load_visual_info_list(self, data_path: str) -> list[VisualInfoResult]:
+        """
+        Loads visual info list from a JSON file.
+
+        Args:
+            data_path (str): The path to the JSON file containing visual info.
+
+        Returns:
+            list[VisualInfoResult]: A list of VisualInfoResult objects parsed from the JSON file.
+        """
         with open(data_path, "r") as fin:
             data = fin.readline()
             visual_info_list = json.loads(data)
         return visual_info_list
 
-    def merge_visual_info_list(self, visual_info_list):
+    def merge_visual_info_list(
+        self, visual_info_list: list[VisualInfoResult]
+    ) -> tuple[list, list, list]:
+        """
+        Merge visual info lists.
+
+        Args:
+            visual_info_list (list[VisualInfoResult]): A list of visual info results.
+
+        Returns:
+            tuple[list, list, list]: A tuple containing three lists, one for normal text dicts,
+                                               one for table text lists, and one for table HTML lists.
+        """
         all_normal_text_list = []
         all_table_text_list = []
         all_table_html_list = []
@@ -174,7 +271,23 @@ class PP_ChatOCRv3_doc_Pipeline(BasePipeline):
             all_table_html_list.extend(table_html_list)
         return all_normal_text_list, all_table_text_list, all_table_html_list
 
-    def build_vector(self, visual_info, min_characters=3500, llm_request_interval=1.0):
+    def build_vector(
+        self,
+        visual_info: VisualInfoResult,
+        min_characters: int = 3500,
+        llm_request_interval: float = 1.0,
+    ) -> dict:
+        """
+        Build a vector representation from visual information.
+
+        Args:
+            visual_info (VisualInfoResult): The visual information input, can be a single instance or a list of instances.
+            min_characters (int): The minimum number of characters required for text processing, defaults to 3500.
+            llm_request_interval (float): The interval between LLM requests, defaults to 1.0.
+
+        Returns:
+            dict: A dictionary containing the vector info and a flag indicating if the text is too short.
+        """
 
         if not isinstance(visual_info, list):
             visual_info_list = [visual_info]
@@ -184,17 +297,20 @@ class PP_ChatOCRv3_doc_Pipeline(BasePipeline):
         all_visual_info = self.merge_visual_info_list(visual_info_list)
         all_normal_text_list, all_table_text_list, all_table_html_list = all_visual_info
 
-        all_normal_text_str = "".join(
-            ["\n".join(e.values()) for e in all_normal_text_list]
-        )
         vector_info = {}
 
         all_items = []
         for i, normal_text_dict in enumerate(all_normal_text_list):
             for type, text in normal_text_dict.items():
-                all_items += [f"{type}：{text}"]
+                all_items += [f"{type}：{text}\n"]
 
-        if len(all_normal_text_str) > min_characters:
+        for table_html, table_text in zip(all_table_html_list, all_table_text_list):
+            if len(table_html) > min_characters - self.table_structure_len_max:
+                all_items += [f"table：{table_text}\n"]
+
+        all_text_str = "".join(all_items)
+
+        if len(all_text_str) > min_characters:
             vector_info["flag_too_short_text"] = False
             vector_info["vector"] = self.retriever.generate_vector_database(all_items)
         else:
@@ -202,8 +318,16 @@ class PP_ChatOCRv3_doc_Pipeline(BasePipeline):
             vector_info["vector"] = all_items
         return vector_info
 
-    def format_key(self, key_list):
-        """format key"""
+    def format_key(self, key_list: str | list[str]) -> list[str]:
+        """
+        Formats the key list.
+
+        Args:
+            key_list (str|list[str]): A string or a list of strings representing the keys.
+
+        Returns:
+            list[str]: A list of formatted keys.
+        """
         if key_list == "":
             return []
 
@@ -217,7 +341,16 @@ class PP_ChatOCRv3_doc_Pipeline(BasePipeline):
 
         return []
 
-    def fix_llm_result_format(self, llm_result):
+    def fix_llm_result_format(self, llm_result: str) -> dict:
+        """
+        Fix the format of the LLM result.
+
+        Args:
+            llm_result (str): The result from the LLM (Large Language Model).
+
+        Returns:
+            dict: A fixed format dictionary from the LLM result.
+        """
         if not llm_result:
             return {}
 
@@ -257,12 +390,30 @@ class PP_ChatOCRv3_doc_Pipeline(BasePipeline):
                 return {}
 
     def generate_and_merge_chat_results(
-        self, prompt, key_list, final_results, failed_results
-    ):
+        self, prompt: str, key_list: list, final_results: dict, failed_results: dict
+    ) -> None:
+        """
+        Generate and merge chat results into the final results dictionary.
+
+        Args:
+            prompt (str): The input prompt for the chat bot.
+            key_list (list): A list of keys to track which results to merge.
+            final_results (dict): The dictionary to store the final merged results.
+            failed_results (dict): A dictionary of failed results to avoid merging.
+
+        Returns:
+            None
+        """
 
         llm_result = self.chat_bot.generate_chat_results(prompt)
-        llm_result = self.fix_llm_result_format(llm_result)
+        if llm_result is None:
+            logging.warning(
+                "chat bot error: \n [prompt:]\n %s\n [result:] %s\n"
+                % (prompt, self.chat_bot.ERROR_MASSAGE)
+            )
+            return
 
+        llm_result = self.fix_llm_result_format(llm_result)
         for key, value in llm_result.items():
             if value not in failed_results and key in key_list:
                 key_list.remove(key)
@@ -271,24 +422,49 @@ class PP_ChatOCRv3_doc_Pipeline(BasePipeline):
 
     def chat(
         self,
-        visual_info,
-        key_list,
-        vector_info,
-        text_task_description=None,
-        text_output_format=None,
-        text_rules_str=None,
-        text_few_shot_demo_text_content=None,
-        text_few_shot_demo_key_value_list=None,
-        table_task_description=None,
-        table_output_format=None,
-        table_rules_str=None,
-        table_few_shot_demo_text_content=None,
-        table_few_shot_demo_key_value_list=None,
-    ):
+        key_list: str | list[str],
+        visual_info: VisualInfoResult,
+        use_vector_retrieval: bool = True,
+        vector_info: dict = None,
+        min_characters: int = 3500,
+        text_task_description: str = None,
+        text_output_format: str = None,
+        text_rules_str: str = None,
+        text_few_shot_demo_text_content: str = None,
+        text_few_shot_demo_key_value_list: str = None,
+        table_task_description: str = None,
+        table_output_format: str = None,
+        table_rules_str: str = None,
+        table_few_shot_demo_text_content: str = None,
+        table_few_shot_demo_key_value_list: str = None,
+    ) -> dict:
+        """
+        Generates chat results based on the provided key list and visual information.
+
+        Args:
+            key_list (str | list[str]): A single key or a list of keys to extract information.
+            visual_info (VisualInfoResult): The visual information result.
+            use_vector_retrieval (bool): Whether to use vector retrieval.
+            vector_info (dict): The vector information for retrieval.
+            min_characters (int): The minimum number of characters required.
+            text_task_description (str): The description of the text task.
+            text_output_format (str): The output format for text results.
+            text_rules_str (str): The rules for generating text results.
+            text_few_shot_demo_text_content (str): The text content for few-shot demos.
+            text_few_shot_demo_key_value_list (str): The key-value list for few-shot demos.
+            table_task_description (str): The description of the table task.
+            table_output_format (str): The output format for table results.
+            table_rules_str (str): The rules for generating table results.
+            table_few_shot_demo_text_content (str): The text content for table few-shot demos.
+            table_few_shot_demo_key_value_list (str): The key-value list for table few-shot demos.
+
+        Returns:
+            dict: A dictionary containing the chat results.
+        """
 
         key_list = self.format_key(key_list)
         if len(key_list) == 0:
-            return {"chat_res": "输入的key_list无效！"}
+            return {"error": "输入的key_list无效！"}
 
         if not isinstance(visual_info, list):
             visual_info_list = [visual_info]
@@ -301,52 +477,67 @@ class PP_ChatOCRv3_doc_Pipeline(BasePipeline):
         final_results = {}
         failed_results = ["大模型调用失败", "未知", "未找到关键信息", "None", ""]
 
-        for all_table_info in [all_table_html_list, all_table_text_list]:
-            for table_info in all_table_info:
-                if len(key_list) == 0:
-                    continue
+        for table_html, table_text in zip(all_table_html_list, all_table_text_list):
+            if len(table_html) <= min_characters - self.table_structure_len_max:
+                for table_info in [table_html, table_text]:
+                    if len(key_list) > 0:
+                        prompt = self.table_pe.generate_prompt(
+                            table_info,
+                            key_list,
+                            task_description=table_task_description,
+                            output_format=table_output_format,
+                            rules_str=table_rules_str,
+                            few_shot_demo_text_content=table_few_shot_demo_text_content,
+                            few_shot_demo_key_value_list=table_few_shot_demo_key_value_list,
+                        )
 
-                prompt = self.table_pe.generate_prompt(
-                    table_info,
+                        self.generate_and_merge_chat_results(
+                            prompt, key_list, final_results, failed_results
+                        )
+
+        if len(key_list) > 0:
+            if use_vector_retrieval and vector_info is not None:
+                question_key_list = [f"抽取关键信息:{key}" for key in key_list]
+                vector = vector_info["vector"]
+                if not vector_info["flag_too_short_text"]:
+                    related_text = self.retriever.similarity_retrieval(
+                        question_key_list, vector
+                    )
+                    # print(question_key_list, related_text)
+                else:
+                    if len(vector) > 0:
+                        related_text = "".join(vector)
+                    else:
+                        related_text = ""
+            else:
+                all_items = []
+                for i, normal_text_dict in enumerate(all_normal_text_list):
+                    for type, text in normal_text_dict.items():
+                        all_items += [f"{type}：{text}\n"]
+                related_text = "".join(all_items)
+                if len(related_text) > min_characters:
+                    logging.warning(
+                        "The input text content is too long, the large language model may truncate it."
+                    )
+
+            if len(related_text) > 0:
+                prompt = self.text_pe.generate_prompt(
+                    related_text,
                     key_list,
-                    task_description=table_task_description,
-                    output_format=table_output_format,
-                    rules_str=table_rules_str,
-                    few_shot_demo_text_content=table_few_shot_demo_text_content,
-                    few_shot_demo_key_value_list=table_few_shot_demo_key_value_list,
+                    task_description=text_task_description,
+                    output_format=text_output_format,
+                    rules_str=text_rules_str,
+                    few_shot_demo_text_content=text_few_shot_demo_text_content,
+                    few_shot_demo_key_value_list=text_few_shot_demo_key_value_list,
                 )
-
+                # print(prompt)
                 self.generate_and_merge_chat_results(
                     prompt, key_list, final_results, failed_results
                 )
 
-        if len(key_list) > 0:
-            question_key_list = [f"抽取关键信息:{key}" for key in key_list]
-            vector = vector_info["vector"]
-            if not vector_info["flag_too_short_text"]:
-                related_text = self.retriever.similarity_retrieval(
-                    question_key_list, vector
-                )
-            else:
-                related_text = " ".join(vector)
+        return {"chat_res": final_results}
 
-            prompt = self.text_pe.generate_prompt(
-                related_text,
-                key_list,
-                task_description=text_task_description,
-                output_format=text_output_format,
-                rules_str=text_rules_str,
-                few_shot_demo_text_content=text_few_shot_demo_text_content,
-                few_shot_demo_key_value_list=text_few_shot_demo_key_value_list,
-            )
-
-            self.generate_and_merge_chat_results(
-                prompt, key_list, final_results, failed_results
-            )
-
-        return final_results
-
-    def predict(self, *args, **kwargs):
+    def predict(self, *args, **kwargs) -> None:
         logging.error(
             "PP-ChatOCRv3-doc Pipeline do not support to call `predict()` directly! Please invoke `visual_predict`, `build_vector`, `chat` sequentially to obtain the result."
         )

@@ -15,26 +15,22 @@
 from abc import ABC, abstractmethod
 from .....utils.subclass_register import AutoRegisterABCMetaClass
 
-import inspect
 
-
-class BaseChat(ABC, metaclass=AutoRegisterABCMetaClass):
-    """Base class for all chat bots. This class serves as a foundation
-    for creating various chat bots.
-    """
+class BaseOperator(ABC, metaclass=AutoRegisterABCMetaClass):
+    """Base Operator"""
 
     __is_base = True
 
-    def __init__(self) -> None:
-        """Initializes an instance of base chat."""
+    def __init__(self):
+        """Initializes an instance of base operator."""
         super().__init__()
 
     @abstractmethod
-    def generate_chat_results(self):
+    def __call__(self):
         """
         Declaration of an abstract method. Subclasses are expected to
-        provide a concrete implementation of generate_chat_results.
+        provide a concrete implementation of call method.
         """
         raise NotImplementedError(
-            "The method `generate_chat_results` has not been implemented yet."
+            "The component method `__call__` has not been implemented yet."
         )

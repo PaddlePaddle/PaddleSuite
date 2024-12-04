@@ -25,6 +25,8 @@ from erniebot_agent.extensions.langchain.embeddings import ErnieEmbeddings
 
 import time
 
+from typing import Dict
+
 
 class ErnieBotRetriever(BaseRetriever):
     """Ernie Bot Retriever"""
@@ -40,8 +42,24 @@ class ErnieBotRetriever(BaseRetriever):
         "ernie-char-8k",
     ]
 
-    def __init__(self, config):
+    def __init__(self, config: Dict) -> None:
+        """
+        Initializes the ErnieBotRetriever instance with the provided configuration.
 
+        Args:
+            config (Dict): A dictionary containing configuration settings.
+                - model_name (str): The name of the model to use.
+                - api_type (str): The type of API to use ('aistudio' or 'qianfan').
+                - ak (str, optional): The access key for 'qianfan' API.
+                - sk (str, optional): The secret key for 'qianfan' API.
+                - access_token (str, optional): The access token for 'aistudio' API.
+
+        Raises:
+            ValueError: If model_name is not in self.entities,
+                api_type is not 'aistudio' or 'qianfan',
+                access_token is missing for 'aistudio' API,
+                or ak and sk are missing for 'qianfan' API.
+        """
         super().__init__()
 
         model_name = config.get("model_name", None)
@@ -65,16 +83,29 @@ class ErnieBotRetriever(BaseRetriever):
         self.model_name = model_name
         self.config = config
 
+    # Generates a vector database from a list of texts using different embeddings based on the configured API type.
+
     def generate_vector_database(
         self,
-        text_list,
-        block_size=300,
-        separators=["\t", "\n", "。", "\n\n", ""],
-        sleep_time=0.5,
-    ):
+        text_list: list[str],
+        block_size: int = 300,
+        separators: list[str] = ["\t", "\n", "。", "\n\n", ""],
+        sleep_time: float = 0.5,
+    ) -> FAISS:
         """
-        args:
-        return:
+        Generates a vector database from a list of texts.
+
+        Args:
+            text_list (list[str]): A list of texts to generate the vector database from.
+            block_size (int): The size of each chunk to split the text into.
+            separators (list[str]): A list of separators to use when splitting the text.
+            sleep_time (float): The time to sleep between embedding generations to avoid rate limiting.
+
+        Returns:
+            FAISS: The generated vector database.
+
+        Raises:
+            ValueError: If an unsupported API type is configured.
         """
         text_splitter = RecursiveCharacterTextSplitter(
             chunk_size=block_size, chunk_overlap=20, separators=separators
@@ -113,13 +144,36 @@ class ErnieBotRetriever(BaseRetriever):
 
         return vectorstore
 
-    def encode_vector_store_to_bytes(self, vectorstore):
+    def encode_vector_store_to_bytes(self, vectorstore: FAISS) -> str:
+        """
+        Encode the vector store serialized to bytes.
+
+        Args:
+            vectorstore (FAISS): The vector store to be serialized and encoded.
+
+        Returns:
+            str: The encoded vector store.
+        """
         vectorstore = self.encode_vector_store(vectorstore.serialize_to_bytes())
         return vectorstore
 
-    def decode_vector_store_from_bytes(self, vectorstore):
+    def decode_vector_store_from_bytes(self, vectorstore: str) -> FAISS:
+        """
+        Decode a vector store from bytes according to the specified API type.
+
+        Args:
+            vectorstore (str): The serialized vector store string.
+
+        Returns:
+            FAISS: Deserialized vector store object.
+
+        Raises:
+            ValueError: If the retrieved vector store is not for PaddleX
+            or if an unsupported API type is specified.
+        """
         if not self.is_vector_store(vectorstore):
             raise ValueError("The retrieved vectorstore is not for PaddleX.")
+
         api_type = self.config["api_type"]
 
         if api_type == "aistudio":
@@ -131,13 +185,26 @@ class ErnieBotRetriever(BaseRetriever):
             embeddings = QianfanEmbeddingsEndpoint(qianfan_ak=ak, qianfan_sk=sk)
         else:
             raise ValueError(f"Unsupported api_type: {api_type}")
+
         vector = vectorstores.FAISS.deserialize_from_bytes(
             self.decode_vector_store(vectorstore), embeddings
         )
         return vector
 
-    def similarity_retrieval(self, query_text_list, vectorstore, sleep_time=0.5):
-        # 根据提问匹配上下文
+    def similarity_retrieval(
+        self, query_text_list: list[str], vectorstore: FAISS, sleep_time: float = 0.5
+    ) -> str:
+        """
+        Retrieve similar contexts based on a list of query texts.
+
+        Args:
+            query_text_list (list[str]): A list of query texts to search for similar contexts.
+            vectorstore (FAISS): The vector store where to perform the similarity search.
+            sleep_time (float): The time to sleep between each query, in seconds. Default is 0.5.
+
+        Returns:
+            str: A concatenated string of all unique contexts found.
+        """
         C = []
         for query_text in query_text_list:
             QUESTION = query_text

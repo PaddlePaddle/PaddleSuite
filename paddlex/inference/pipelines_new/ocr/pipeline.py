@@ -14,11 +14,14 @@
 
 from ..base import BasePipeline
 from typing import Any, Dict, Optional
-from ..components import SortQuadBoxes, CropByPolys
+from ..components import SortQuadBoxes, SortPolyBoxes, CropByPolys
 from .result import OCRResult
 
 ########## [TODO]后续需要更新路径
 from ...components.transforms import ReadImage
+
+from ...utils.pp_option import PaddlePredictorOption
+import numpy as np
 
 
 class OCRPipeline(BasePipeline):
@@ -28,12 +31,22 @@ class OCRPipeline(BasePipeline):
 
     def __init__(
         self,
-        config,
-        device=None,
-        pp_option=None,
+        config: Dict,
+        device: str = None,
+        pp_option: PaddlePredictorOption = None,
         use_hpip: bool = False,
         hpi_params: Optional[Dict[str, Any]] = None,
-    ):
+    ) -> None:
+        """
+        Initializes the class with given configurations and options.
+
+        Args:
+            config (Dict): Configuration dictionary containing model and other parameters.
+            device (str): The device to run the prediction on. Default is None.
+            pp_option (PaddlePredictorOption): Options for PaddlePaddle predictor. Default is None.
+            use_hpip (bool): Whether to use high-performance inference (hpip) for prediction. Defaults to False.
+            hpi_params (Optional[Dict[str, Any]]): HPIP specific parameters. Default is None.
+        """
         super().__init__(
             device=device, pp_option=pp_option, use_hpip=use_hpip, hpi_params=hpi_params
         )
@@ -46,22 +59,34 @@ class OCRPipeline(BasePipeline):
 
         self.text_type = config["text_type"]
 
-        self._sort_quad_boxes = SortQuadBoxes()
-
         if self.text_type == "common":
+            self._sort_boxes = SortQuadBoxes()
             self._crop_by_polys = CropByPolys(det_box_type="quad")
         elif self.text_type == "seal":
+            self._sort_boxes = SortPolyBoxes()
             self._crop_by_polys = CropByPolys(det_box_type="poly")
         else:
             raise ValueError("Unsupported text type {}".format(self.text_type))
 
         self.img_reader = ReadImage(format="BGR")
 
-    def predict(self, input, **kwargs):
+    def predict(
+        self, input: str | list[str] | np.ndarray | list[np.ndarray], **kwargs
+    ) -> OCRResult:
+        """Predicts OCR results for the given input.
+
+        Args:
+            input (str | list[str] | np.ndarray | list[np.ndarray]): The input image(s) or path(s) to the images.
+            **kwargs: Additional keyword arguments that can be passed to the function.
+
+        Returns:
+            OCRResult: An iterable of OCRResult objects, each containing the predicted text and other relevant information.
+        """
         if not isinstance(input, list):
             input_list = [input]
         else:
             input_list = input
+
         img_id = 1
         for input in input_list:
             if isinstance(input, str):
@@ -76,10 +101,9 @@ class OCRPipeline(BasePipeline):
             dt_polys = det_res["dt_polys"]
             dt_scores = det_res["dt_scores"]
 
-            ########## [TODO]需要确认检测模块和识别模块过滤阈值等情况
+            ########## [TODO] Need to confirm filtering thresholds for detection and recognition modules
 
-            if self.text_type == "common":
-                dt_polys = self._sort_quad_boxes(dt_polys)
+            dt_polys = self._sort_boxes(dt_polys)
 
             single_img_res = {
                 "input_img": image_array,
@@ -93,7 +117,7 @@ class OCRPipeline(BasePipeline):
             if len(dt_polys) > 0:
                 all_subs_of_img = list(self._crop_by_polys(image_array, dt_polys))
 
-                ########## [TODO]updata in future
+                ########## [TODO] Update in the future
                 for sub_img in all_subs_of_img:
                     sub_img["input"] = sub_img["img"]
                 ##########

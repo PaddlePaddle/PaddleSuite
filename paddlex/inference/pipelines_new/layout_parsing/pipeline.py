@@ -22,8 +22,15 @@ from .table_recognition_post_processing import get_table_recognition_res
 
 from .result import LayoutParsingResult
 
+from ....utils import logging
+
+from ...utils.pp_option import PaddlePredictorOption
+
 ########## [TODO]后续需要更新路径
 from ...components.transforms import ReadImage
+
+from ..ocr.result import OCRResult
+from ...results import DetResult
 
 
 class LayoutParsingPipeline(BasePipeline):
@@ -33,12 +40,22 @@ class LayoutParsingPipeline(BasePipeline):
 
     def __init__(
         self,
-        config,
-        device=None,
-        pp_option=None,
+        config: Dict,
+        device: str = None,
+        pp_option: PaddlePredictorOption = None,
         use_hpip: bool = False,
         hpi_params: Optional[Dict[str, Any]] = None,
-    ):
+    ) -> None:
+        """Initializes the layout parsing pipeline.
+
+        Args:
+            config (Dict): Configuration dictionary containing various settings.
+            device (str, optional): Device to run the predictions on. Defaults to None.
+            pp_option (PaddlePredictorOption, optional): PaddlePredictor options. Defaults to None.
+            use_hpip (bool, optional): Whether to use high-performance inference (hpip) for prediction. Defaults to False.
+            hpi_params (Optional[Dict[str, Any]], optional): HPIP parameters. Defaults to None.
+        """
+
         super().__init__(
             device=device, pp_option=pp_option, use_hpip=use_hpip, hpi_params=hpi_params
         )
@@ -49,13 +66,23 @@ class LayoutParsingPipeline(BasePipeline):
 
         self._crop_by_boxes = CropByBoxes()
 
-    def inintial_predictor(self, config):
+    def inintial_predictor(self, config: Dict) -> None:
+        """Initializes the predictor based on the provided configuration.
+
+        Args:
+            config (Dict): A dictionary containing the configuration for the predictor.
+
+        Returns:
+            None
+        """
+
         layout_det_config = config["SubModules"]["LayoutDetection"]
         self.layout_det_model = self.create_model(layout_det_config)
 
         self.use_doc_preprocessor = False
         if "use_doc_preprocessor" in config:
             self.use_doc_preprocessor = config["use_doc_preprocessor"]
+
         if self.use_doc_preprocessor:
             doc_preprocessor_config = config["SubPipelines"]["DocPreprocessor"]
             self.doc_preprocessor_pipeline = self.create_pipeline(
@@ -87,41 +114,88 @@ class LayoutParsingPipeline(BasePipeline):
                 self.common_ocr_pipeline = self.create_pipeline(common_ocr_config)
         return
 
-    def get_text_paragraphs_ocr_res(self, overall_ocr_res, layout_det_res):
-        """get ocr res of the text paragraphs"""
+    def get_text_paragraphs_ocr_res(
+        self, overall_ocr_res: OCRResult, layout_det_res: DetResult
+    ) -> OCRResult:
+        """
+        Retrieves the OCR results for text paragraphs, excluding those of formulas, tables, and seals.
+
+        Args:
+            overall_ocr_res (OCRResult): The overall OCR result containing text information.
+            layout_det_res (DetResult): The detection result containing the layout information of the document.
+
+        Returns:
+            OCRResult: The OCR result for text paragraphs after excluding formulas, tables, and seals.
+        """
         object_boxes = []
         for box_info in layout_det_res["boxes"]:
-            if box_info["label"].lower() in ["image", "formula", "table", "seal"]:
+            if box_info["label"].lower() in ["formula", "table", "seal"]:
                 object_boxes.append(box_info["coordinate"])
         object_boxes = np.array(object_boxes)
         return get_sub_regions_ocr_res(overall_ocr_res, object_boxes, flag_within=False)
 
-    def check_input_params(self, input_params):
+    def check_input_params_valid(self, input_params: Dict) -> bool:
+        """
+        Check if the input parameters are valid based on the initialized models.
+
+        Args:
+            input_params (Dict): A dictionary containing input parameters.
+
+        Returns:
+            bool: True if all required models are initialized according to input parameters, False otherwise.
+        """
 
         if input_params["use_doc_preprocessor"] and not self.use_doc_preprocessor:
-            raise ValueError("The models for doc preprocessor are not initialized.")
+            logging.error(
+                "Set use_doc_preprocessor, but the models for doc preprocessor are not initialized."
+            )
+            return False
 
         if input_params["use_common_ocr"] and not self.use_common_ocr:
-            raise ValueError("The models for common OCR are not initialized.")
+            logging.error(
+                "Set use_common_ocr, but the models for common OCR are not initialized."
+            )
+            return False
 
         if input_params["use_seal_recognition"] and not self.use_seal_recognition:
-            raise ValueError("The models for seal recognition are not initialized.")
+            logging.error(
+                "Set use_seal_recognition, but the models for seal recognition are not initialized."
+            )
+            return False
 
         if input_params["use_table_recognition"] and not self.use_table_recognition:
-            raise ValueError("The models for table recognition are not initialized.")
+            logging.error(
+                "Set use_table_recognition, but the models for table recognition are not initialized."
+            )
+            return False
 
-        return
+        return True
 
     def predict(
         self,
-        input,
-        use_doc_orientation_classify=True,
-        use_doc_unwarping=True,
-        use_common_ocr=True,
-        use_seal_recognition=True,
-        use_table_recognition=True,
+        input: str | list[str] | np.ndarray | list[np.ndarray],
+        use_doc_orientation_classify: bool = False,
+        use_doc_unwarping: bool = False,
+        use_common_ocr: bool = True,
+        use_seal_recognition: bool = True,
+        use_table_recognition: bool = True,
         **kwargs
-    ):
+    ) -> LayoutParsingResult:
+        """
+        This function predicts the layout parsing result for the given input.
+
+        Args:
+            input (str | list[str] | np.ndarray | list[np.ndarray]): The input image(s) to be processed.
+            use_doc_orientation_classify (bool): Whether to use document orientation classification.
+            use_doc_unwarping (bool): Whether to use document unwarping.
+            use_common_ocr (bool): Whether to use common OCR.
+            use_seal_recognition (bool): Whether to use seal recognition.
+            use_table_recognition (bool): Whether to use table recognition.
+            **kwargs: Additional keyword arguments.
+
+        Returns:
+            LayoutParsingResult: The predicted layout parsing result.
+        """
 
         if not isinstance(input, list):
             input_list = [input]
@@ -139,8 +213,11 @@ class LayoutParsingPipeline(BasePipeline):
 
         if use_doc_orientation_classify or use_doc_unwarping:
             input_params["use_doc_preprocessor"] = True
+        else:
+            input_params["use_doc_preprocessor"] = False
 
-        self.check_input_params(input_params)
+        if not self.check_input_params_valid(input_params):
+            yield {"error": "input params invalid"}
 
         img_id = 1
         for input in input_list:

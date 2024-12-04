@@ -16,9 +16,13 @@ from ..base import BasePipeline
 from typing import Any, Dict, Optional
 from scipy.ndimage import rotate
 from .result import DocPreprocessorResult
+from ....utils import logging
+import numpy as np
 
 ########## [TODO]后续需要更新路径
 from ...components.transforms import ReadImage
+
+from ...utils.pp_option import PaddlePredictorOption
 
 
 class DocPreprocessorPipeline(BasePipeline):
@@ -28,12 +32,22 @@ class DocPreprocessorPipeline(BasePipeline):
 
     def __init__(
         self,
-        config,
-        device=None,
-        pp_option=None,
+        config: Dict,
+        device: str = None,
+        pp_option: PaddlePredictorOption = None,
         use_hpip: bool = False,
         hpi_params: Optional[Dict[str, Any]] = None,
-    ):
+    ) -> None:
+        """Initializes the doc preprocessor pipeline.
+
+        Args:
+            config (Dict): Configuration dictionary containing various settings.
+            device (str, optional): Device to run the predictions on. Defaults to None.
+            pp_option (PaddlePredictorOption, optional): PaddlePredictor options. Defaults to None.
+            use_hpip (bool, optional): Whether to use high-performance inference (hpip) for prediction. Defaults to False.
+            hpi_params (Optional[Dict[str, Any]], optional): HPIP parameters. Defaults to None.
+        """
+
         super().__init__(
             device=device, pp_option=pp_option, use_hpip=use_hpip, hpi_params=hpi_params
         )
@@ -56,35 +70,72 @@ class DocPreprocessorPipeline(BasePipeline):
 
         self.img_reader = ReadImage(format="BGR")
 
-    def rotate_image(self, image_array, rotate_angle):
-        """rotate image"""
+    def rotate_image(self, image_array: np.ndarray, rotate_angle: float) -> np.ndarray:
+        """
+        Rotate the given image array by the specified angle.
+
+        Args:
+            image_array (np.ndarray): The input image array to be rotated.
+            rotate_angle (float): The angle in degrees by which to rotate the image.
+
+        Returns:
+            np.ndarray: The rotated image array.
+
+        Raises:
+            AssertionError: If rotate_angle is not in the range [0, 360).
+        """
         assert (
             rotate_angle >= 0 and rotate_angle < 360
         ), "rotate_angle must in [0-360), but get {rotate_angle}."
         return rotate(image_array, rotate_angle, reshape=True)
 
-    def check_input_params(self, input_params):
+    def check_input_params_valid(self, input_params: Dict) -> bool:
+        """
+        Check if the input parameters are valid based on the initialized models.
+
+        Args:
+            input_params (Dict): A dictionary containing input parameters.
+
+        Returns:
+            bool: True if all required models are initialized according to input parameters, False otherwise.
+        """
 
         if (
             input_params["use_doc_orientation_classify"]
             and not self.use_doc_orientation_classify
         ):
-            raise ValueError(
-                "The model for doc orientation classify is not initialized."
+            logging.error(
+                "Set use_doc_orientation_classify, but the model for doc orientation classify is not initialized."
             )
+            return False
 
         if input_params["use_doc_unwarping"] and not self.use_doc_unwarping:
-            raise ValueError("The model for doc unwarping is not initialized.")
+            logging.error(
+                "Set use_doc_unwarping, but the model for doc unwarping is not initialized."
+            )
+            return False
 
-        return
+        return True
 
     def predict(
         self,
-        input,
-        use_doc_orientation_classify=True,
-        use_doc_unwarping=False,
+        input: str | list[str] | np.ndarray | list[np.ndarray],
+        use_doc_orientation_classify: bool = True,
+        use_doc_unwarping: bool = False,
         **kwargs
-    ):
+    ) -> DocPreprocessorResult:
+        """
+        Predict the preprocessing result for the input image or images.
+
+        Args:
+            input (str | list[str] | np.ndarray | list[np.ndarray]): The input image(s) or path(s) to the images.
+            use_doc_orientation_classify (bool): Whether to use document orientation classification.
+            use_doc_unwarping (bool): Whether to use document unwarping.
+            **kwargs: Additional keyword arguments.
+
+        Returns:
+            DocPreprocessorResult: A generator yielding preprocessing results.
+        """
 
         if not isinstance(input, list):
             input_list = [input]
@@ -95,7 +146,9 @@ class DocPreprocessorPipeline(BasePipeline):
             "use_doc_orientation_classify": use_doc_orientation_classify,
             "use_doc_unwarping": use_doc_unwarping,
         }
-        self.check_input_params(input_params)
+
+        if not self.check_input_params_valid(input_params):
+            yield {"error": "input params invalid"}
 
         img_id = 1
         for input in input_list:

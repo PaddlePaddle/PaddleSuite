@@ -15,9 +15,11 @@
 from .utils import convert_points_to_boxes, get_sub_regions_ocr_res
 import numpy as np
 from .result import TableRecognitionResult
+from typing import Any, Dict, Optional
+from ..ocr.result import OCRResult
 
 
-def get_ori_image_coordinate(x, y, box_list):
+def get_ori_image_coordinate(x: int, y: int, box_list: list) -> list:
     """
     get the original coordinate from Cropped image to Original image.
     Args:
@@ -38,8 +40,19 @@ def get_ori_image_coordinate(x, y, box_list):
 
 
 def convert_table_structure_pred_bbox(
-    table_structure_pred, crop_start_point, img_shape
-):
+    table_structure_pred: Dict, crop_start_point: list, img_shape: tuple
+) -> None:
+    """
+    Convert the predicted table structure bounding boxes to the original image coordinate system.
+
+    Args:
+        table_structure_pred (Dict): A dictionary containing the predicted table structure, including bounding boxes ('bbox').
+        crop_start_point (list): A list of two integers representing the starting point (x, y) of the cropped image region.
+        img_shape (tuple): A tuple of two integers representing the shape (height, width) of the original image.
+
+    Returns:
+        None: The function modifies the 'table_structure_pred' dictionary in place by adding the 'cell_box_list' key.
+    """
 
     cell_points_list = table_structure_pred["bbox"]
     ori_cell_points_list = get_ori_image_coordinate(
@@ -55,7 +68,7 @@ def convert_table_structure_pred_bbox(
     return
 
 
-def distance(box_1, box_2):
+def distance(box_1: list, box_2: list) -> float:
     """
     compute the distance between two boxes
 
@@ -64,7 +77,7 @@ def distance(box_1, box_2):
         box_2 (list): second rectangle box,eg.(x1, y1, x2, y2)
 
     Returns:
-        int: the distance between two boxes
+        float: the distance between two boxes
     """
     x1, y1, x2, y2 = box_1
     x3, y3, x4, y4 = box_2
@@ -74,7 +87,7 @@ def distance(box_1, box_2):
     return dis + min(dis_2, dis_3)
 
 
-def compute_iou(rec1, rec2):
+def compute_iou(rec1: list, rec2: list) -> float:
     """
     computing IoU
     Args:
@@ -104,7 +117,7 @@ def compute_iou(rec1, rec2):
         return (intersect / (sum_area - intersect)) * 1.0
 
 
-def match_table_and_ocr(cell_box_list, ocr_dt_boxes):
+def match_table_and_ocr(cell_box_list: list, ocr_dt_boxes: list) -> dict:
     """
     match table and ocr
 
@@ -133,7 +146,20 @@ def match_table_and_ocr(cell_box_list, ocr_dt_boxes):
     return matched
 
 
-def get_html_result(matched_index, ocr_contents, pred_structures):
+def get_html_result(
+    matched_index: dict, ocr_contents: dict, pred_structures: list
+) -> str:
+    """
+    Generates HTML content based on the matched index, OCR contents, and predicted structures.
+
+    Args:
+        matched_index (dict): A dictionary containing matched indices.
+        ocr_contents (dict): A dictionary of OCR contents.
+        pred_structures (list): A list of predicted HTML structures.
+
+    Returns:
+        str: Generated HTML content as a string.
+    """
     pred_html = []
     td_index = 0
     head_structure = pred_structures[0:3]
@@ -182,9 +208,20 @@ def get_html_result(matched_index, ocr_contents, pred_structures):
     return html
 
 
-def get_table_recognition_res(crop_img_info, table_structure_pred, overall_ocr_res):
-    """get_table_recognition_res"""
+def get_table_recognition_res(
+    crop_img_info: dict, table_structure_pred: dict, overall_ocr_res: OCRResult
+) -> TableRecognitionResult:
+    """
+    Retrieve table recognition result from cropped image info, table structure prediction, and overall OCR result.
 
+    Args:
+        crop_img_info (dict): Information about the cropped image, including the bounding box.
+        table_structure_pred (dict): Predicted table structure.
+        overall_ocr_res (OCRResult): Overall OCR result from the input image.
+
+    Returns:
+        TableRecognitionResult: An object containing the table recognition result.
+    """
     table_box = np.array([crop_img_info["box"]])
     table_ocr_pred = get_sub_regions_ocr_res(overall_ocr_res, table_box)
 

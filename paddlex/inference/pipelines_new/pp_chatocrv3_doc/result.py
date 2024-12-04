@@ -27,20 +27,3 @@ class VisualInfoResult(BaseResult):
     """VisualInfoResult"""
 
     pass
-
-
-# class VectorResult(BaseResult, Base64Mixin):
-#     """VisualInfoResult"""
-
-#     def _to_base64(self):
-#         return self["vector"]
-
-
-# class RetrievalResult(BaseResult):
-#     """VisualInfoResult"""
-
-#     pass
-
-
-# class ChatResult(BaseResult):
-#     """VisualInfoResult"""

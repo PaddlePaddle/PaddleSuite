@@ -12,5 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .sort_boxes import SortQuadBoxes
+from .base_result import CVResult, BaseResult
+from .sort_boxes import SortQuadBoxes, SortPolyBoxes
 from .crop_image_regions import CropByPolys, CropByBoxes

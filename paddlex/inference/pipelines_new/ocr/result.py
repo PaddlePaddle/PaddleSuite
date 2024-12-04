@@ -19,18 +19,41 @@ import cv2
 import PIL
 from PIL import Image, ImageDraw, ImageFont
 
-from ....utils.fonts import PINGFANG_FONT_FILE_PATH
+from ....utils.fonts import PINGFANG_FONT_FILE_PATH, create_font
 from ..components import CVResult
 
 
 class OCRResult(CVResult):
-    def save_to_img(self, save_path, *args, **kwargs):
+    """OCR result"""
+
+    def save_to_img(self, save_path: str, *args, **kwargs) -> None:
+        """
+        Save the image to the specified path with the appropriate extension.
+
+        If the save_path does not end with '.jpg' or '.png', it appends '_res_ocr_<img_id>.jpg'
+        to the path where <img_id> is the id of the image.
+
+        Args:
+            save_path (str): The path to save the image.
+            *args: Additional positional arguments.
+            **kwargs: Additional keyword arguments.
+        """
         if not str(save_path).lower().endswith((".jpg", ".png")):
             img_id = self["img_id"]
             save_path = save_path + "/res_ocr_%d.jpg" % img_id
         super().save_to_img(save_path, *args, **kwargs)
 
-    def get_minarea_rect(self, points):
+    def get_minarea_rect(self, points: np.ndarray) -> np.ndarray:
+        """
+        Get the minimum area rectangle for the given points using OpenCV.
+
+        Args:
+            points (np.ndarray): An array of 2D points.
+
+        Returns:
+            np.ndarray: An array of 2D points representing the corners of the minimum area rectangle
+                     in a specific order (clockwise or counterclockwise starting from the top-left corner).
+        """
         bounding_box = cv2.minAreaRect(points)
         points = sorted(list(cv2.boxPoints(bounding_box)), key=lambda x: x[0])
 
@@ -54,8 +77,14 @@ class OCRResult(CVResult):
 
         return box
 
-    def _to_img(self):
-        """draw ocr result"""
+    def _to_img(self) -> PIL.Image:
+        """
+        Converts the internal data to a PIL Image with detection and recognition results.
+
+        Returns:
+            PIL.Image: An image with detection boxes, texts, and scores blended on it.
+        """
+
         # TODO(gaotingquan): mv to postprocess
         drop_score = 0.5
 
@@ -105,8 +134,22 @@ class OCRResult(CVResult):
         return img_show
 
 
-def draw_box_txt_fine(img_size, box, txt, font_path):
-    """draw box text"""
+# Adds a function comment according to Google Style Guide
+def draw_box_txt_fine(
+    img_size: tuple, box: np.ndarray, txt: str, font_path: str
+) -> np.ndarray:
+    """
+    Draws text in a box on an image with fine control over size and orientation.
+
+    Args:
+        img_size (tuple): The size of the output image (width, height).
+        box (np.ndarray): A 4x2 numpy array defining the corners of the box in (x, y) order.
+        txt (str): The text to draw inside the box.
+        font_path (str): The path to the font file to use for drawing the text.
+
+    Returns:
+        np.ndarray: An image with the text drawn in the specified box.
+    """
     box_height = int(
         math.sqrt((box[0][0] - box[3][0]) ** 2 + (box[0][1] - box[3][1]) ** 2)
     )
@@ -144,18 +187,3 @@ def draw_box_txt_fine(img_size, box, txt, font_path):
         borderValue=(255, 255, 255),
     )
     return img_right_text
-
-
-def create_font(txt, sz, font_path):
-    """create font"""
-    font_size = int(sz[1] * 0.8)
-    font = ImageFont.truetype(font_path, font_size, encoding="utf-8")
-    if int(PIL.__version__.split(".")[0]) < 10:
-        length = font.getsize(txt)[0]
-    else:
-        length = font.getlength(txt)
-
-    if length > sz[0]:
-        font_size = int(font_size * sz[0] / length)
-        font = ImageFont.truetype(font_path, font_size, encoding="utf-8")
-    return font

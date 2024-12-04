@@ -2,50 +2,81 @@
 pipeline_name: PP-ChatOCRv3-doc
 input: https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/demo_paper.png
 
-use_vector_retrieval: True
-
 SubModules:
   LLM_Chat:
+    module_name: chat_bot
     model_name: ernie-3.5
     api_type: qianfan
-    # ak: "api_key" # Set this to a real API key
-    # sk: "secret_key"  # Set this to a real secret key
-    ak: 4iiqB0QfvXTAENgzUwNeDjQ7
-    sk: sHQCw4l5A6jnzbHMa0ZvDi05GT9Qz8tZ
+    ak: "api_key" # Set this to a real API key
+    sk: "secret_key"  # Set this to a real secret key
+
 
   LLM_Retriever:
+    module_name: retriever
     model_name: ernie-3.5
     api_type: qianfan
-    # ak: "api_key" # Set this to a real API key
-    # sk: "secret_key"  # Set this to a real secret key
-    ak: 4iiqB0QfvXTAENgzUwNeDjQ7
-    sk: sHQCw4l5A6jnzbHMa0ZvDi05GT9Qz8tZ
+    ak: "api_key" # Set this to a real API key
+    sk: "secret_key"  # Set this to a real secret key
 
   PromptEngneering:
     KIE_CommonText:
+      module_name: prompt_engneering
       task_type: text_kie_prompt
-      task_description: '你现在的任务是从OCR文字识别的结果中提取关键词列表中每一项对应的关键信息。
+
+      # task_description: '你现在的任务是从OCR文字识别的结果中提取关键词列表中每一项对应的关键信息。
+      #     OCR的文字识别结果使用```符号包围，包含所识别出来的文字，顺序在原始图片中从左至右、从上至下。
+      #     我指定的关键词列表使用[]符号包围。请注意OCR的文字识别结果可能存在长句子换行被切断、不合理的分词、
+      #     文字被错误合并等问题，你需要结合上下文语义进行综合判断，以抽取准确的关键信息。'
+
+      # task_description: '你现在的任务是从OCR文字识别的结果中提取关键词列表中每一项对应的关键信息。
+      #     OCR的文字识别结果使用```符号包围，包含所识别出来的文字，顺序在原始图片中从左至右、从上至下。
+      #     我指定的关键词列表使用[]符号包围。请注意OCR的文字识别结果可能存在长句子换行被切断、不合理的分词、
+      #     文字被错误合并等问题，你需要结合上下文语义进行综合判断，以抽取准确的关键信息。
+      #     提取的关键信息尽可能详细和完整，并保持格式、单位、符号和标点都与OCR结果中的内容完全一致。'
+
+      # rules_str: 
+
+      task_description: '你现在的任务是从OCR结果中提取问题列表中每一个问题的答案。
           OCR的文字识别结果使用```符号包围，包含所识别出来的文字，顺序在原始图片中从左至右、从上至下。
-          我指定的关键词列表使用[]符号包围。请注意OCR的文字识别结果可能存在长句子换行被切断、不合理的分词、
-          文字被错误合并等问题，你需要结合上下文语义进行综合判断，以抽取准确的关键信息。'
-      output_format: '在返回结果时使用JSON格式，包含多个key-value对，key值为我指定的关键词，value值为所抽取的结果。
-          如果认为OCR识别结果中没有关键词key对应的value，则将value赋值为"未知"。请只输出json格式的结果，
+          我指定的问题列表使用[]符号包围。请注意OCR的文字识别结果可能存在长句子换行被切断、不合理的分词、
+          文字被错误合并等问题，你需要结合上下文语义进行综合判断，以获取准确的答案。'
+
+      output_format: '在返回结果时使用JSON格式，包含多个key-value对，key值为我指定的问题，value值为该问题对应的答案。
+          如果认为OCR识别结果中，对于问题key，没有答案，则将value赋值为"未知"。请只输出json格式的结果，
           并做json格式校验后返回，不要包含其它多余文字！'
-      rules_str:
+
+      rules_str: '每个问题的答案用OCR结果的内容回答，可以是单词、短语或句子，针对问题回答尽可能详细和完整，
+        并保持格式、单位、符号和标点都与OCR结果中的内容完全一致。'
+
       few_shot_demo_text_content:
       few_shot_demo_key_value_list:
           
     KIE_Table:
+      module_name: prompt_engneering
       task_type: table_kie_prompt
-      task_description: '你现在的任务是从输入的html格式的表格内容中提取关键词列表中每一项对应的关键信息,
-          表格内容用```符号包围，我指定的关键词列表使用[]符号包围。你需要结合上下文语义进行综合判断，以抽取准确的关键信息。
-          在返回结果时使用JSON格式，包含多个key-value对，key值为我指定的关键词，value值为所抽取的结果。
-          如果认为输入的表格内容中没有关键词key对应的value值，则将value赋值为"未知"。
-          请只输出json格式的结果，并做json格式校验后返回，不要包含其它多余文字！'
-      output_format: '在返回结果时使用JSON格式，包含多个key-value对，key值为我指定的关键词，value值为所抽取的结果。
-          如果认为表格识别结果中没有关键词key对应的value，则将value赋值为"未知"。请只输出json格式的结果，
+
+      # task_description: '你现在的任务是从输入的表格内容中提取关键词列表中每一项对应的关键信息,
+      #     表格内容用```符号包围，我指定的关键词列表使用[]符号包围。你需要结合上下文语义进行综合判断，以抽取准确的关键信息。'
+
+      # task_description: '你现在的任务是从输入的表格内容中提取关键词列表中每一项对应的关键信息,
+      #     表格内容用```符号包围，我指定的关键词列表使用[]符号包围。你需要结合上下文语义进行综合判断，以抽取准确的关键信息。
+      #     提取的关键信息尽可能详细和完整，并保持格式、单位、符号和标点都与OCR结果中的内容完全一致。'
+
+      # output_format: '在返回结果时使用JSON格式，包含多个key-value对，key值为我指定的关键词，value值为所抽取的结果。
+      #     如果认为表格识别结果中没有关键词key对应的value，则将value赋值为"未知"。请只输出json格式的结果，
+      #     并做json格式校验后返回，不要包含其它多余文字！'
+      # rules_str:
+
+      task_description: '你现在的任务是从输入的表格内容中提取问题列表中每一个问题的答案。
+          表格内容使用```符号包围，我指定的问题列表使用[]符号包围。'
+
+      output_format: '在返回结果时使用JSON格式，包含多个key-value对，key值为我指定的问题，value值为该问题对应的答案。
+          如果认为表格内容中，对于问题key，没有答案，则将value赋值为"未知"。请只输出json格式的结果，
           并做json格式校验后返回，不要包含其它多余文字！'
-      rules_str:
+
+      rules_str: '每个问题的答案用表格中内容回答，可以是单词、短语或句子，针对问题回答尽可能详细和完整，
+        并保持格式、单位、符号和标点都与表格内容中的内容完全一致。'
+
       few_shot_demo_text_content:
       few_shot_demo_key_value_list:
 
@@ -59,10 +90,12 @@ SubPipelines:
 
     SubModules:
       LayoutDetection:
+        module_name: object_detection
         model_name: RT-DETR-H_layout_3cls
         model_dir: null
         batch_size: 1
       TableStructurePredictor:
+        module_name: table_recognition
         model_name: SLANet_plus
         model_dir: null
         batch_size: 1
@@ -74,10 +107,12 @@ SubPipelines:
         use_doc_unwarping: True
         SubModules:
           DocOrientationClassify:
+            module_name: image_classification
             model_name: PP-LCNet_x1_0_doc_ori
             model_dir: null
             batch_size: 1
           DocUnwarping:
+            module_name: image_unwarping
             model_name: UVDoc
             model_dir: null
             batch_size: 1
@@ -87,12 +122,15 @@ SubPipelines:
         text_type: common
         SubModules:
           TextDetection:
+            module_name: text_detection
             model_name: PP-OCRv4_server_det
             model_dir: null
             batch_size: 1    
           TextRecognition:
+            module_name: text_recognition
             model_name: PP-OCRv4_server_rec
             model_dir: null
+            # model_dir: /paddle/github/PaddleX/models/PP-OCRv4_server_rec_doc_infer
             batch_size: 1
 
       SealOCR:
@@ -100,10 +138,13 @@ SubPipelines:
         text_type: seal
         SubModules:
           TextDetection:
+            module_name: text_detection
             model_name: PP-OCRv4_server_seal_det
             model_dir: null
             batch_size: 1    
           TextRecognition:
+            module_name: text_recognition
             model_name: PP-OCRv4_server_rec
             model_dir: null
+            # model_dir: /paddle/github/PaddleX/models/PP-OCRv4_server_rec_doc_infer
             batch_size: 1  

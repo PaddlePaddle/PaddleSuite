@@ -19,13 +19,30 @@ import PIL
 from PIL import ImageFont
 
 
-def get_pingfang_file_path():
-    """get pingfang font file path"""
+def get_pingfang_file_path() -> str:
+    """
+    Get the path of the PingFang font file.
+
+    Returns:
+    str: The path to the PingFang font file.
+    """
+
     return (Path(__file__).parent / "PingFang-SC-Regular.ttf").resolve().as_posix()
 
 
-def create_font(txt, sz, font_path):
-    """create font"""
+def create_font(txt: str, sz: tuple, font_path: str) -> ImageFont:
+    """
+    Create a font object with specified size and path, adjusted to fit within the given image region.
+
+    Parameters:
+    txt (str): The text to be rendered with the font.
+    sz (tuple): A tuple containing the height and width of an image region, used for font size.
+    font_path (str): The path to the font file.
+
+    Returns:
+    ImageFont: An ImageFont object adjusted to fit within the given image region.
+    """
+
     font_size = int(sz[1] * 0.8)
     font = ImageFont.truetype(font_path, font_size, encoding="utf-8")
     if int(PIL.__version__.split(".")[0]) < 10:

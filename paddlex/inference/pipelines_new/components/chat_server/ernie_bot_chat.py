@@ -15,6 +15,7 @@
 from .....utils import logging
 from .base import BaseChat
 import erniebot
+from typing import Dict
 
 
 class ErnieBotChat(BaseChat):
@@ -31,7 +32,18 @@ class ErnieBotChat(BaseChat):
         "ernie-char-8k",
     ]
 
-    def __init__(self, config):
+    def __init__(self, config: Dict) -> None:
+        """Initializes the ErnieBotChat with given configuration.
+
+        Args:
+            config (Dict): Configuration dictionary containing model_name, api_type, ak, sk, and access_token.
+
+        Raises:
+            ValueError: If model_name is not in the predefined entities,
+            api_type is not one of ['aistudio', 'qianfan'],
+            access_token is None for 'aistudio' api_type,
+            or ak and sk are None for 'qianfan' api_type.
+        """
         super().__init__()
         model_name = config.get("model_name", None)
         api_type = config.get("api_type", None)
@@ -54,10 +66,19 @@ class ErnieBotChat(BaseChat):
         self.model_name = model_name
         self.config = config
 
-    def generate_chat_results(self, prompt, temperature=0.001, max_retries=1):
+    def generate_chat_results(
+        self, prompt: str, temperature: float = 0.001, max_retries: int = 1
+    ) -> Dict:
         """
-        args:
-        return:
+        Generate chat results using the specified model and configuration.
+
+        Args:
+            prompt (str): The user's input prompt.
+            temperature (float, optional): The temperature parameter for llms, defaults to 0.001.
+            max_retries (int, optional): The maximum number of retries for llms API calls, defaults to 1.
+
+        Returns:
+            Dict: The chat completion result from the model.
         """
         try:
             cur_config = {

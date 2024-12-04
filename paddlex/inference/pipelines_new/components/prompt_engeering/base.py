@@ -19,15 +19,18 @@ import inspect
 
 
 class BaseGeneratePrompt(ABC, metaclass=AutoRegisterABCMetaClass):
-    """Base Chat"""
+    """Base Generate Prompt class."""
 
     __is_base = True
 
     def __init__(self):
+        """Initializes an instance of base generate prompt."""
         super().__init__()
 
     @abstractmethod
     def generate_prompt(self):
+        """Declaration of an abstract method. Subclasses are expected to
+        provide a concrete implementation of generate prompt method."""
         raise NotImplementedError(
             "The method `generate_prompt` has not been implemented yet."
         )

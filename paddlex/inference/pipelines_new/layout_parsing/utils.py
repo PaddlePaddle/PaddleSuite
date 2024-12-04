@@ -16,9 +16,23 @@ __all__ = ["convert_points_to_boxes", "get_sub_regions_ocr_res"]
 
 import numpy as np
 import copy
+from ..ocr.result import OCRResult
 
 
-def convert_points_to_boxes(dt_polys):
+def convert_points_to_boxes(dt_polys: list) -> np.ndarray:
+    """
+    Converts a list of polygons to a numpy array of bounding boxes.
+
+    Args:
+        dt_polys (list): A list of polygons, where each polygon is represented
+                        as a list of (x, y) points.
+
+    Returns:
+        np.ndarray: A numpy array of bounding boxes, where each box is represented
+                    as [left, top, right, bottom].
+                    If the input list is empty, returns an empty numpy array.
+    """
+
     if len(dt_polys) > 0:
         dt_polys_tmp = dt_polys.copy()
         dt_polys_tmp = np.array(dt_polys_tmp)
@@ -33,8 +47,17 @@ def convert_points_to_boxes(dt_polys):
     return dt_boxes
 
 
-def get_overlap_boxes_idx(src_boxes, ref_boxes):
-    """get overlap boxes idx"""
+def get_overlap_boxes_idx(src_boxes: np.ndarray, ref_boxes: np.ndarray) -> list:
+    """
+    Get the indices of source boxes that overlap with reference boxes based on a specified threshold.
+
+    Args:
+        src_boxes (np.ndarray): A 2D numpy array of source bounding boxes.
+        ref_boxes (np.ndarray): A 2D numpy array of reference bounding boxes.
+
+    Returns:
+        list: A list of indices of source boxes that overlap with any reference box.
+    """
     match_idx_list = []
     src_boxes_num = len(src_boxes)
     if src_boxes_num > 0 and len(ref_boxes) > 0:
@@ -51,12 +74,20 @@ def get_overlap_boxes_idx(src_boxes, ref_boxes):
     return match_idx_list
 
 
-def get_sub_regions_ocr_res(overall_ocr_res, object_boxes, flag_within=True):
+def get_sub_regions_ocr_res(
+    overall_ocr_res: OCRResult, object_boxes: list, flag_within: bool = True
+) -> OCRResult:
     """
-    :param flag_within: True (within the object regions), False (outside the object regions)
-    :return:
-    """
+    Filters OCR results to only include text boxes within specified object boxes based on a flag.
 
+    Args:
+        overall_ocr_res (OCRResult): The original OCR result containing all text boxes.
+        object_boxes (list): A list of bounding boxes for the objects of interest.
+        flag_within (bool): If True, only include text boxes within the object boxes. If False, exclude text boxes within the object boxes.
+
+    Returns:
+        OCRResult: A filtered OCR result containing only the relevant text boxes.
+    """
     sub_regions_ocr_res = copy.deepcopy(overall_ocr_res)
     sub_regions_ocr_res["input_img"] = overall_ocr_res["input_img"]
     sub_regions_ocr_res["img_id"] = -1

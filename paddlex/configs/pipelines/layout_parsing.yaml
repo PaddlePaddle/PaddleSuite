@@ -8,10 +8,15 @@ use_table_recognition: True
 
 SubModules:
   LayoutDetection:
+    module_name: object_detection
     model_name: RT-DETR-H_layout_3cls
     model_dir: null
     batch_size: 1
+  ##############################################
+  ####### 【TODO】表格识别的 module_name 需要确认，是否是table_recognition
+  ##############################################
   TableStructurePredictor:
+    module_name: table_recognition
     model_name: SLANet_plus
     model_dir: null
     batch_size: 1
@@ -23,10 +28,12 @@ SubPipelines:
     use_doc_unwarping: True
     SubModules:
       DocOrientationClassify:
+        module_name: image_classification
         model_name: PP-LCNet_x1_0_doc_ori
         model_dir: null
         batch_size: 1
       DocUnwarping:
+        module_name: image_unwarping
         model_name: UVDoc
         model_dir: null
         batch_size: 1
@@ -35,10 +42,12 @@ SubPipelines:
     text_type: common
     SubModules:
       TextDetection:
+        module_name: text_detection
         model_name: PP-OCRv4_server_det
         model_dir: null
         batch_size: 1    
       TextRecognition:
+        module_name: text_recognition
         model_name: PP-OCRv4_server_rec
         model_dir: null
         batch_size: 1
@@ -47,10 +56,12 @@ SubPipelines:
     text_type: seal
     SubModules:
       TextDetection:
+        module_name: text_detection
         model_name: PP-OCRv4_server_seal_det
         model_dir: null
         batch_size: 1    
       TextRecognition:
+        module_name: text_recognition
         model_name: PP-OCRv4_server_rec
         model_dir: null
         batch_size: 1

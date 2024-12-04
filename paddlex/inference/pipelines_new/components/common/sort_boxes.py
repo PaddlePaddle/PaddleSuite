@@ -12,25 +12,26 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from ..base import BaseComponent
+from .base_operator import BaseOperator
 import numpy as np
 
 
-class SortQuadBoxes(BaseComponent):
-    """SortQuadBoxes Component"""
+class SortQuadBoxes(BaseOperator):
+    """SortQuadBoxes Operator."""
 
     entities = "SortQuadBoxes"
 
     def __init__(self):
+        """Initializes the class."""
         super().__init__()
 
-    def __call__(self, dt_polys):
+    def __call__(self, dt_polys: list[np.ndarray]) -> np.ndarray:
         """
         Sort quad boxes in order from top to bottom, left to right
         args:
-            dt_polys(array):detected quad boxes with shape [4, 2]
+            dt_polys(ndarray):detected quad boxes with shape [4, 2]
         return:
-            sorted boxes(array) with shape [4, 2]
+            sorted boxes(ndarray) with shape [4, 2]
         """
         dt_boxes = np.array(dt_polys)
         num_boxes = dt_boxes.shape[0]
@@ -48,3 +49,34 @@ class SortQuadBoxes(BaseComponent):
                 else:
                     break
         return _boxes
+
+
+class SortPolyBoxes(BaseOperator):
+    """SortPolyBoxes Operator."""
+
+    entities = "SortPolyBoxes"
+
+    def __init__(self):
+        """Initializes the class."""
+        super().__init__()
+
+    def __call__(self, dt_polys: list[np.ndarray]) -> np.ndarray:
+        """
+        Sort poly boxes in order from top to bottom, left to right
+        args:
+            dt_polys(ndarray):detected poly boxes with a [N, 2] np.ndarray list
+        return:
+            sorted boxes(ndarray) with [N, 2] np.ndarray list
+        """
+        num_boxes = len(dt_polys)
+        if num_boxes == 0:
+            return dt_polys
+        else:
+            y_min_list = []
+            for bno in range(num_boxes):
+                y_min_list.append(min(dt_polys[bno][:, 1]))
+            rank = np.argsort(np.array(y_min_list))
+            dt_polys_rank = []
+            for no in range(num_boxes):
+                dt_polys_rank.append(dt_polys[rank[no]])
+            return dt_polys_rank

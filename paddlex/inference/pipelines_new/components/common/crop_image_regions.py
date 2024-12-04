@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from ..base import BaseComponent
+from .base_operator import BaseOperator
 import numpy as np
 from ....utils.io import ImageReader
 import copy
@@ -20,19 +20,74 @@ import cv2
 from .seal_det_warp import AutoRectifier
 from shapely.geometry import Polygon
 from numpy.linalg import norm
+from typing import Tuple
 
 
-class CropByPolys(BaseComponent):
+class CropByBoxes(BaseOperator):
+    """Crop Image by Boxes"""
+
+    entities = "CropByBoxes"
+
+    def __init__(self) -> None:
+        """Initializes the class."""
+        super().__init__()
+
+    def __call__(self, img: np.ndarray, boxes: list[dict]) -> list[dict]:
+        """
+        Process the input image and bounding boxes to produce a list of cropped images
+        with their corresponding bounding box coordinates and labels.
+
+        Args:
+            img (np.ndarray): The input image as a NumPy array.
+            boxes (list[dict]): A list of dictionaries, each containing bounding box
+                information including 'cls_id' (class ID), 'coordinate' (bounding box
+                coordinates as a list or tuple, left, top, right, bottom),
+                and optionally 'label' (label text).
+
+        Returns:
+            list[dict]: A list of dictionaries, each containing a cropped image ('img'),
+                the original bounding box coordinates ('box'), and the label ('label').
+        """
+        output_list = []
+        for bbox_info in boxes:
+            label_id = bbox_info["cls_id"]
+            box = bbox_info["coordinate"]
+            label = bbox_info.get("label", label_id)
+            xmin, ymin, xmax, ymax = [int(i) for i in box]
+            img_crop = img[ymin:ymax, xmin:xmax].copy()
+            output_list.append({"img": img_crop, "box": box, "label": label})
+        return output_list
+
+
+class CropByPolys(BaseOperator):
     """Crop Image by Polys"""
 
     entities = "CropByPolys"
 
-    def __init__(self, det_box_type="quad"):
+    def __init__(self, det_box_type: str = "quad") -> None:
+        """
+        Initializes the operator with a default detection box type.
+
+        Args:
+            det_box_type (str, optional): The type of detection box, quad or poly. Defaults to "quad".
+        """
         super().__init__()
         self.det_box_type = det_box_type
 
-    def __call__(self, img, dt_polys):
-        """__call__"""
+    def __call__(self, img: np.ndarray, dt_polys: list[list]) -> list[dict]:
+        """
+        Call method to crop images based on detection boxes.
+
+        Args:
+            img (nd.ndarray): The input image.
+            dt_polys (list[list]): List of detection polygons.
+
+        Returns:
+            list[dict]: A list of dictionaries containing cropped images and their sizes.
+
+        Raises:
+            NotImplementedError: If det_box_type is not 'quad' or 'poly'.
+        """
 
         if self.det_box_type == "quad":
             dt_boxes = np.array(dt_polys)
@@ -63,8 +118,17 @@ class CropByPolys(BaseComponent):
 
         return output_list
 
-    def get_minarea_rect_crop(self, img, points):
-        """get_minarea_rect_crop"""
+    def get_minarea_rect_crop(self, img: np.ndarray, points: np.ndarray) -> np.ndarray:
+        """
+        Get the minimum area rectangle crop from the given image and points.
+
+        Args:
+            img (np.ndarray): The input image.
+            points (np.ndarray): A list of points defining the shape to be cropped.
+
+        Returns:
+            np.ndarray: The cropped image with the minimum area rectangle.
+        """
         bounding_box = cv2.minAreaRect(np.array(points).astype(np.int32))
         points = sorted(list(cv2.boxPoints(bounding_box)), key=lambda x: x[0])
 
@@ -86,16 +150,16 @@ class CropByPolys(BaseComponent):
         crop_img = self.get_rotate_crop_image(img, np.array(box))
         return crop_img
 
-    def get_rotate_crop_image(self, img, points):
+    def get_rotate_crop_image(self, img: np.ndarray, points: list) -> np.ndarray:
         """
-        img_height, img_width = img.shape[0:2]
-        left = int(np.min(points[:, 0]))
-        right = int(np.max(points[:, 0]))
-        top = int(np.min(points[:, 1]))
-        bottom = int(np.max(points[:, 1]))
-        img_crop = img[top:bottom, left:right, :].copy()
-        points[:, 0] = points[:, 0] - left
-        points[:, 1] = points[:, 1] - top
+        Crop and rotate the input image based on the given four points to form a perspective-transformed image.
+
+        Args:
+            img (np.ndarray): The input image array.
+            points (list): A list of four 2D points defining the crop region in the image.
+
+        Returns:
+            np.ndarray: The transformed image array.
         """
         assert len(points) == 4, "shape of points must be 4*2"
         img_crop_width = int(
@@ -131,7 +195,9 @@ class CropByPolys(BaseComponent):
             dst_img = np.rot90(dst_img)
         return dst_img
 
-    def reorder_poly_edge(self, points):
+    def reorder_poly_edge(
+        self, points: np.ndarray
+    ) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
         """Get the respective points composing head edge, tail edge, top
         sideline and bottom sideline.
 
@@ -165,11 +231,25 @@ class CropByPolys(BaseComponent):
         sideline2 = pad_points[tail_inds[1] : (head_inds[1] + len(points))]
         return head_edge, tail_edge, sideline1, sideline2
 
-    def vector_slope(self, vec):
+    def vector_slope(self, vec: list) -> float:
+        """
+        Calculate the slope of a vector in 2D space.
+
+        Args:
+            vec (list): A list of two elements representing the coordinates of the vector.
+
+        Returns:
+            float: The slope of the vector.
+
+        Raises:
+            AssertionError: If the length of the vector is not equal to 2.
+        """
         assert len(vec) == 2
         return abs(vec[1] / (vec[0] + 1e-8))
 
-    def find_head_tail(self, points, orientation_thr):
+    def find_head_tail(
+        self, points: np.ndarray, orientation_thr: float
+    ) -> tuple[list, list]:
         """Find the head edge and tail edge of a text polygon.
 
         Args:
@@ -277,7 +357,17 @@ class CropByPolys(BaseComponent):
 
         return head_inds, tail_inds
 
-    def vector_angle(self, vec1, vec2):
+    def vector_angle(self, vec1: np.ndarray, vec2: np.ndarray) -> float:
+        """
+        Calculate the angle between two vectors.
+
+        Args:
+            vec1 (ndarray): The first vector.
+            vec2 (ndarray): The second vector.
+
+        Returns:
+            float: The angle between the two vectors in radians.
+        """
         if vec1.ndim > 1:
             unit_vec1 = vec1 / (norm(vec1, axis=-1) + 1e-8).reshape((-1, 1))
         else:
@@ -288,7 +378,20 @@ class CropByPolys(BaseComponent):
             unit_vec2 = vec2 / (norm(vec2, axis=-1) + 1e-8)
         return np.arccos(np.clip(np.sum(unit_vec1 * unit_vec2, axis=-1), -1.0, 1.0))
 
-    def get_minarea_rect(self, img, points):
+    def get_minarea_rect(
+        self, img: np.ndarray, points: np.ndarray
+    ) -> tuple[np.ndarray, list]:
+        """
+        Get the minimum area rectangle for the given points and crop the image accordingly.
+
+        Args:
+            img (np.ndarray): The input image.
+            points (np.ndarray): The points to compute the minimum area rectangle for.
+
+        Returns:
+            tuple[np.ndarray, list]: The cropped image,
+            and the list of points in the order of the bounding box.
+        """
         bounding_box = cv2.minAreaRect(points)
         points = sorted(list(cv2.boxPoints(bounding_box)), key=lambda x: x[0])
 
@@ -453,24 +556,3 @@ class CropByPolys(BaseComponent):
             img = np.stack((img,) * 3, axis=-1)
         img_crop, image = rectifier.run(img, new_points_list, mode="homography")
         return np.array(img_crop[0], dtype=np.uint8)
-
-
-class CropByBoxes(BaseComponent):
-    """Crop Image by Box"""
-
-    entities = "CropByBoxes"
-
-    def __init__(self):
-        super().__init__()
-
-    def __call__(self, img, boxes):
-        """__call__"""
-        output_list = []
-        for bbox_info in boxes:
-            label_id = bbox_info["cls_id"]
-            box = bbox_info["coordinate"]
-            label = bbox_info.get("label", label_id)
-            xmin, ymin, xmax, ymax = [int(i) for i in box]
-            img_crop = img[ymin:ymax, xmin:xmax].copy()
-            output_list.append({"img": img_crop, "box": box, "label": label})
-        return output_list

@@ -18,24 +18,36 @@ import yaml
 import codecs
 from pathlib import Path
 from typing import Any, Dict, Optional
-from ..models import create_predictor
-from .components.chat_server.base import BaseChat
-from .components.retriever.base import BaseRetriever
-from .components.prompt_engeering.base import BaseGeneratePrompt
+from ..utils.pp_option import PaddlePredictorOption
+from ..models import BasePredictor
 
 
 class BasePipeline(ABC, metaclass=AutoRegisterABCMetaClass):
-    """Base Pipeline"""
+    """Base class for all pipelines.
+
+    This class serves as a foundation for creating various pipelines.
+    It includes common attributes and methods that are shared among all
+    pipeline implementations.
+    """
 
     __is_base = True
 
     def __init__(
         self,
-        device=None,
-        pp_option=None,
+        device: str = None,
+        pp_option: PaddlePredictorOption = None,
         use_hpip: bool = False,
         hpi_params: Optional[Dict[str, Any]] = None,
     ) -> None:
+        """
+        Initializes the class with specified parameters.
+
+        Args:
+            device (str, optional): The device to use for prediction. Defaults to None.
+            pp_option (PaddlePredictorOption, optional): The options for PaddlePredictor. Defaults to None.
+            use_hpip (bool, optional): Whether to use high-performance inference (hpip) for prediction. Defaults to False.
+            hpi_params (Dict[str, Any], optional): Additional parameters for hpip. Defaults to None.
+        """
         super().__init__()
         self.device = device
         self.pp_option = pp_option
@@ -44,32 +56,62 @@ class BasePipeline(ABC, metaclass=AutoRegisterABCMetaClass):
 
     @abstractmethod
     def predict(self, input, **kwargs):
+        """
+        Declaration of an abstract method. Subclasses are expected to
+        provide a concrete implementation of predict.
+        Args:
+            input: The input data to predict.
+            **kwargs: Additional keyword arguments.
+        """
         raise NotImplementedError("The method `predict` has not been implemented yet.")
 
-    def create_model(self, config):
+    def create_model(self, config: Dict) -> BasePredictor:
+        """
+        Create a model instance based on the given configuration.
+
+        Args:
+            config (Dict): A dictionary containing configuration settings.
+
+        Returns:
+            BasePredictor: An instance of the model.
+        """
 
         model_dir = config["model_dir"]
         if model_dir == None:
             model_dir = config["model_name"]
 
-        model = create_predictor(
-            model_dir,
+        from ...model import create_model
+
+        model = create_model(
+            model=model_dir,
             device=self.device,
             pp_option=self.pp_option,
             use_hpip=self.use_hpip,
             hpi_params=self.hpi_params,
         )
 
-        ########### [TODO]支持初始化传参能力
+        # [TODO] Support initializing with additional parameters
         if "batch_size" in config:
             batch_size = config["batch_size"]
             model.set_predictor(batch_size=batch_size)
 
         return model
 
-    def create_pipeline(self, config):
+    def create_pipeline(self, config: Dict):
+        """
+        Creates a pipeline based on the provided configuration.
+
+        Args:
+            config (Dict): A dictionary containing the pipeline configuration.
+
+        Returns:
+            BasePipeline: An instance of the created pipeline.
+        """
+        from . import create_pipeline
+
         pipeline_name = config["pipeline_name"]
-        pipeline = BasePipeline.get(pipeline_name)(
+        pipeline = create_pipeline(
+            pipeline_name,
             config=config,
             device=self.device,
             pp_option=self.pp_option,
@@ -78,20 +120,15 @@ class BasePipeline(ABC, metaclass=AutoRegisterABCMetaClass):
         )
         return pipeline
 
-    def create_chat_bot(self, config):
-        model_name = config["model_name"]
-        chat_bot = BaseChat.get(model_name)(config)
-        return chat_bot
-
-    def create_retriever(self, config):
-        model_name = config["model_name"]
-        retriever = BaseRetriever.get(model_name)(config)
-        return retriever
-
-    def create_prompt_engeering(self, config):
-        task_type = config["task_type"]
-        pe = BaseGeneratePrompt.get(task_type)(config)
-        return pe
-
     def __call__(self, input, **kwargs):
+        """
+        Calls the predict method with the given input and keyword arguments.
+
+        Args:
+            input: The input data to be predicted.
+            **kwargs: Additional keyword arguments to be passed to the predict method.
+
+        Returns:
+            The prediction result from the predict method.
+        """
         return self.predict(input, **kwargs)

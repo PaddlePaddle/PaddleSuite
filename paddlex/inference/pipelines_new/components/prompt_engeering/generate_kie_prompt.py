@@ -13,6 +13,7 @@
 # limitations under the License.
 
 from .base import BaseGeneratePrompt
+from typing import Dict
 
 
 class GenerateKIEPrompt(BaseGeneratePrompt):
@@ -20,7 +21,21 @@ class GenerateKIEPrompt(BaseGeneratePrompt):
 
     entities = ["text_kie_prompt", "table_kie_prompt"]
 
-    def __init__(self, config):
+    def __init__(self, config: Dict) -> None:
+        """Initializes the GenerateKIEPrompt instance with the given configuration.
+
+        Args:
+            config (Dict): A dictionary containing configuration settings.
+                - task_type (str): The type of task to generate a prompt for, in the support entities list.
+                - task_description (str, optional): A description of the task. Defaults to an empty string.
+                - output_format (str, optional): The desired output format. Defaults to an empty string.
+                - rules_str (str, optional): A string representing rules for the task. Defaults to an empty string.
+                - few_shot_demo_text_content (str, optional): Text content for few-shot demos. Defaults to an empty string.
+                - few_shot_demo_key_value_list (str, optional): A key-value list for few-shot demos. Defaults to an empty string.
+
+        Raises:
+            ValueError: If the task type is not in the allowed entities for GenerateKIEPrompt.
+        """
         super().__init__()
 
         task_type = config.get("task_type", "")
@@ -59,19 +74,31 @@ class GenerateKIEPrompt(BaseGeneratePrompt):
 
     def generate_prompt(
         self,
-        text_content,
-        key_list,
-        task_description=None,
-        output_format=None,
-        rules_str=None,
-        few_shot_demo_text_content=None,
-        few_shot_demo_key_value_list=None,
-    ):
-        """
-        args:
-        return:
-        """
+        text_content: str,
+        key_list: list,
+        task_description: str = None,
+        output_format: str = None,
+        rules_str: str = None,
+        few_shot_demo_text_content: str = None,
+        few_shot_demo_key_value_list: str = None,
+    ) -> str:
+        """Generates a prompt based on the given parameters.
 
+        Args:
+            text_content (str): The main text content to be used in the prompt.
+            key_list (list): A list of keywords for information extraction.
+            task_description (str, optional): A description of the task. Defaults to None.
+            output_format (str, optional): The desired output format. Defaults to None.
+            rules_str (str, optional): A string containing rules or instructions. Defaults to None.
+            few_shot_demo_text_content (str, optional): Text content for few-shot demos. Defaults to None.
+            few_shot_demo_key_value_list (str, optional): Key-value list for few-shot demos. Defaults to None.
+
+        Returns:
+            str: The generated prompt.
+
+        Raises:
+            ValueError: If the task_type is not supported.
+        """
         if task_description is None:
             task_description = self.task_description
 
@@ -87,19 +114,29 @@ class GenerateKIEPrompt(BaseGeneratePrompt):
         if few_shot_demo_key_value_list is None:
             few_shot_demo_key_value_list = self.few_shot_demo_key_value_list
 
-        prompt = f"""{task_description}{output_format}{rules_str}{few_shot_demo_text_content}{few_shot_demo_key_value_list}"""
+        prompt = f"""{task_description}{rules_str}{output_format}{few_shot_demo_text_content}{few_shot_demo_key_value_list}"""
         if self.task_type == "table_kie_prompt":
             prompt += f"""\n结合上面，下面正式开始：\
                 表格内容：```{text_content}```\
-                关键词列表：{key_list}。""".replace(
+                \n问题列表：{key_list}。""".replace(
                 "    ", ""
             )
+            # prompt += f"""\n结合上面，下面正式开始：\
+            #     表格内容：```{text_content}```\
+            #     \n关键词列表：{key_list}。""".replace(
+            #     "    ", ""
+            # )
         elif self.task_type == "text_kie_prompt":
             prompt += f"""\n结合上面的例子，下面正式开始：\
                 OCR文字：```{text_content}```\
-                关键词列表：{key_list}。""".replace(
+                \n问题列表：{key_list}。""".replace(
                 "    ", ""
             )
+            # prompt += f"""\n结合上面的例子，下面正式开始：\
+            #     OCR文字：```{text_content}```\
+            #     \n关键词列表：{key_list}。""".replace(
+            #     "    ", ""
+            # )
         else:
             raise ValueError(f"{self.task_type} is currently not supported.")
         return prompt
