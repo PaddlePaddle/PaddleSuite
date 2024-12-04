@@ -28,8 +28,8 @@ bash TopsRider_i3x_*_deb_amd64.run --driver --no-auto-load
 * 下载并安装 wheel 包。
 ```bash
 # 注意需要先安装飞桨 cpu 版本
-python -m pip install paddlepaddle==3.0.0.dev20241127 -i https://www.paddlepaddle.org.cn/packages/nightly/cpu/
-python -m pip install paddle_custom_gcu==3.0.0.dev20241127 -i https://www.paddlepaddle.org.cn/packages/nightly/gcu/
+python -m pip install paddlepaddle==3.0.0.dev20241202 -i https://www.paddlepaddle.org.cn/packages/nightly/cpu/
+python -m pip install paddle_custom_gcu==3.0.0.dev20241203 -i https://www.paddlepaddle.org.cn/packages/nightly/gcu/
 ```
 * 验证安装包：安装完成之后，运行如下命令：
 ```bash

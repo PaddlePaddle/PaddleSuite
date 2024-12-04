@@ -28,8 +28,8 @@ Download and install the wheel package released by PaddlePaddle within the docke
 * Download and install the wheel package.
 ```bash
 # Note: You need to install the CPU version of PaddlePaddle first
-python -m pip install paddlepaddle==3.0.0.dev20241127 -i https://www.paddlepaddle.org.cn/packages/nightly/cpu/
-python -m pip install paddle_custom_gcu==3.0.0.dev20241127 -i https://www.paddlepaddle.org.cn/packages/nightly/gcu/
+python -m pip install paddlepaddle==3.0.0.dev20241202 -i https://www.paddlepaddle.org.cn/packages/nightly/cpu/
+python -m pip install paddle_custom_gcu==3.0.0.dev20241203 -i https://www.paddlepaddle.org.cn/packages/nightly/gcu/
 ```
 * Verify the installation package. After installation, run the following command:
 ```bash
