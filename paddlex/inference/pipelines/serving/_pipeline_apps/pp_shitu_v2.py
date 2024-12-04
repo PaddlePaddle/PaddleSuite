@@ -13,10 +13,10 @@
 # limitations under the License.
 
 import asyncio
-import faiss
 import pickle
 from typing import Dict, List, Optional
 
+import faiss
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 from typing_extensions import Annotated, TypeAlias
