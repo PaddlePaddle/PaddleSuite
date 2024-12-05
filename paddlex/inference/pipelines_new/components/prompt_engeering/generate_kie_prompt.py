@@ -116,27 +116,27 @@ class GenerateKIEPrompt(BaseGeneratePrompt):
 
         prompt = f"""{task_description}{rules_str}{output_format}{few_shot_demo_text_content}{few_shot_demo_key_value_list}"""
         if self.task_type == "table_kie_prompt":
-            prompt += f"""\n结合上面，下面正式开始：\
-                表格内容：```{text_content}```\
-                \n问题列表：{key_list}。""".replace(
-                "    ", ""
-            )
             # prompt += f"""\n结合上面，下面正式开始：\
             #     表格内容：```{text_content}```\
-            #     \n关键词列表：{key_list}。""".replace(
+            #     \n问题列表：{key_list}。""".replace(
             #     "    ", ""
             # )
-        elif self.task_type == "text_kie_prompt":
-            prompt += f"""\n结合上面的例子，下面正式开始：\
-                OCR文字：```{text_content}```\
-                \n问题列表：{key_list}。""".replace(
+            prompt += f"""\n结合上面，下面正式开始：\
+                表格内容：```{text_content}```\
+                \n关键词列表：{key_list}。""".replace(
                 "    ", ""
             )
+        elif self.task_type == "text_kie_prompt":
             # prompt += f"""\n结合上面的例子，下面正式开始：\
             #     OCR文字：```{text_content}```\
-            #     \n关键词列表：{key_list}。""".replace(
+            #     \n问题列表：{key_list}。""".replace(
             #     "    ", ""
             # )
+            prompt += f"""\n结合上面的例子，下面正式开始：\
+                OCR文字：```{text_content}```\
+                \n关键词列表：{key_list}。""".replace(
+                "    ", ""
+            )
         else:
             raise ValueError(f"{self.task_type} is currently not supported.")
         return prompt

@@ -122,11 +122,11 @@ def create_pipeline(
         BasePipeline: The created pipeline instance.
     """
 
-    pipeline_name = pipeline
-
     if config is None:
-        config = load_pipeline_config(pipeline_name)
-        assert pipeline_name == config["pipeline_name"]
+        config = load_pipeline_config(pipeline)
+        pipeline_name = config["pipeline_name"]
+    else:
+        pipeline_name = pipeline
 
     pipeline = BasePipeline.get(pipeline_name)(
         config=config,
