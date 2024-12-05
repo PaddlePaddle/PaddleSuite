@@ -118,11 +118,13 @@ class OCRPipeline(BasePipeline):
                 all_subs_of_img = list(self._crop_by_polys(image_array, dt_polys))
 
                 ########## [TODO] Update in the future
-                for sub_img in all_subs_of_img:
-                    sub_img["input"] = sub_img["img"]
+                # for sub_img in all_subs_of_img:
+                #    sub_img["input"] = sub_img["img"]
                 ##########
 
-                for rec_res in self.text_rec_model(all_subs_of_img):
+                for rec_res in self.text_rec_model(
+                    [img["img"] for img in all_subs_of_img]
+                ):
                     single_img_res["rec_text"].append(rec_res["rec_text"])
                     single_img_res["rec_score"].append(rec_res["rec_score"])
 

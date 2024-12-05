@@ -65,8 +65,8 @@ class TextRecPredictor(BasicPredictor):
         return {
             "input_path": batch_data,
             "input_img": batch_raw_imgs,
-            "texts": texts,
-            "scores": scores,
+            "rec_text": texts,
+            "rec_score": scores,
         }
 
     @register("DecodeImage")

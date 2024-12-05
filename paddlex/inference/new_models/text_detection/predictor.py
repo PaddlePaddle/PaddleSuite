@@ -67,8 +67,8 @@ class TextDetPredictor(BasicPredictor):
         return {
             "input_path": batch_data,
             "input_img": batch_raw_imgs,
-            "polys": polys,
-            "scores": scores,
+            "dt_polys": polys,
+            "dt_scores": scores,
         }
 
     @register("DecodeImage")
