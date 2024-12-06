@@ -57,6 +57,9 @@ class BaseTSConfig(BaseConfig):
         Args:
             config_file_path (str): the path to save self as yaml file.
         """
+        output_dir = os.path.dirname(config_file_path)
+        if not os.path.exists(output_dir):
+            os.makedirs(output_dir)
         yaml = ruamel.yaml.YAML()
         with open(config_file_path, "w", encoding="utf-8") as f:
             dict_to_dump = self.dict

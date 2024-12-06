@@ -15,6 +15,7 @@
 
 import os
 import os.path as osp
+from pathlib import Path
 from collections import defaultdict, Counter
 
 import json
@@ -29,6 +30,20 @@ class TextDetDatasetChecker(BaseDatasetChecker):
     """Dataset Checker for Text Detection Model"""
 
     entities = MODELS
+
+    def get_dataset_root(self, dataset_dir: str) -> str:
+        """find the dataset root dir
+
+        Args:
+            dataset_dir (str): the directory that contain dataset.
+
+        Returns:
+            str: the root directory of dataset.
+        """
+        anno_dirs = list(Path(dataset_dir).glob("**/images"))
+        assert len(anno_dirs) == 1
+        dataset_dir = anno_dirs[0].parent.as_posix()
+        return dataset_dir
 
     def convert_dataset(self, src_dataset_dir: str) -> str:
         """convert the dataset from other type to specified type
@@ -64,7 +79,7 @@ class TextDetDatasetChecker(BaseDatasetChecker):
         Returns:
             dict: dataset summary.
         """
-        return check(dataset_dir, self.global_config.output, sample_num=10)
+        return check(dataset_dir, self.output, sample_num=10)
 
     def analyse(self, dataset_dir: str) -> dict:
         """deep analyse dataset
