@@ -17,4 +17,5 @@ from .predictor import (
     ImagePredictor,
     ImageDetPredictor,
     TSPPPredictor,
+    VideoPredictor,
 )

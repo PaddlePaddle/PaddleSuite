@@ -2169,4 +2169,50 @@ PaddleX 内置了多条产线，每条产线都包含了若干模块，每个模
 </table>
 <b>注：以上精度指标测量自 [UWaveGestureLibrary](https://paddlets.bj.bcebos.com/classification/UWaveGestureLibrary_TEST.csv)数据集。</b>
 
+## [视频分类模块](../module_usage/tutorials/video_modules/video_classification.md)
+
+
+<table>
+<thead>
+<tr>
+<th>模型名称</th>
+<th>Top1 Acc(%)</th>
+<th>GPU推理耗时（ms）</th>
+<th>CPU推理耗时（ms）</th>
+<th>模型存储大小</th>
+<th>yaml 文件</th>
+<th>模型下载链接</th></tr>
+</thead>
+<tbody>
+<tr>
+<td>PPTSM_ResNet50_k400_8frames_uniform</td>
+<td>74.36</td>
+<td>-</td>
+<td>-</td>
+<td>93.4 M</td>
+<td><a href="../../paddlex/configs/video_classification/PPTSM_ResNet50_k400_8frames_uniform.yaml">PPTSM_ResNet50_k400_8frames_uniform.yaml</a></td>
+<td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PPTSM_ResNet50_k400_8frames_uniform_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PPTSM_ResNet50_k400_8frames_uniform_pretrained.pdparams">训练模型</a></td></tr>
+<tr>
+<td>PPTSMv2_LCNet_k400_8frames_uniform</td>
+<td>71.71</td>
+<td>-</td>
+<td>-</td>
+<td>22.5 M</td>
+<td><a href="../../paddlex/configs/video_classification/PPTSMv2_LCNet_k400_8frames_uniform.yaml">PPTSMv2_LCNet_k400_8frames_uniform.yaml</a></td>
+<td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PPTSMv2_LCNet_k400_8frames_uniform_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PPTSMv2_LCNet_k400_8frames_uniform_pretrained.pdparams">训练模型</a></td></tr>
+
+<tr>
+<td>PPTSMv2_LCNet_k400_16frames_uniform</td>
+<td>73.11</td>
+<td>-</td>
+<td>-</td>
+<td>22.5 M</td>
+<td><a href="../../paddlex/configs/video_classification/PPTSMv2_LCNet_k400_16frames_uniform.yaml">PPTSMv2_LCNet_k400_16frames_uniform.yaml</a></td>
+<td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PPTSMv2_LCNet_k400_16frames_uniform_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PPTSMv2_LCNet_k400_16frames_uniform_pretrained.pdparams">训练模型</a></td></tr>
+
+</tbody>
+</table>
+
+<p><b>注：以上精度指标为 <a href="https://github.com/PaddlePaddle/PaddleVideo/blob/develop/docs/zh-CN/dataset/k400.md">K400</a> 验证集 Top1 Acc。
+
 &gt;<b>注：以上所有模型 GPU 推理耗时基于 NVIDIA Tesla T4 机器，精度类型为 FP32， CPU 推理速度基于 Intel(R) Xeon(R) Gold 5117 CPU @ 2.00GHz，线程数为8，精度类型为 FP32。</b>

@@ -15,8 +15,8 @@
 import inspect
 
 from ...utils.func_register import FuncRegister
-from ..utils.io import ImageReader, ImageWriter
-from .utils.mixin import JsonMixin, ImgMixin, StrMixin
+from ..utils.io import ImageReader, ImageWriter, VideoReader, VideoWriter
+from .utils.mixin import JsonMixin, ImgMixin, StrMixin, VideoMixin
 
 
 class BaseResult(dict, StrMixin, JsonMixin):
@@ -41,3 +41,11 @@ class CVResult(BaseResult, ImgMixin):
         ImgMixin.__init__(self, "pillow")
         self._img_reader = ImageReader(backend="pillow")
         self._img_writer = ImageWriter(backend="pillow")
+
+
+class VideoResult(BaseResult, VideoMixin):
+    def __init__(self, data):
+        super().__init__(data)
+        VideoMixin.__init__(self, "opencv")
+        self._video_reader = VideoReader(backend="decord")
+        self._video_writer = VideoWriter(backend="opencv")

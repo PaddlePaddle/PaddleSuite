@@ -1,0 +1,7 @@
+Global:
+  pipeline_name: video_classification
+  input: https://paddle-model-ecology.bj.bcebos.com/paddlex/videos/demo_video/general_video_classification_001.mp4
+  
+Pipeline:
+  model: PPTSMv2_LCNet_k400_8frames_uniform
+  batch_size: 1

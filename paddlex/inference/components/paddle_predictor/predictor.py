@@ -270,6 +270,19 @@ class ImagePredictor(BasePaddlePredictor):
         return [{"pred": res} for res in zip(*pred)]
 
 
+class VideoPredictor(BasePaddlePredictor):
+    INPUT_KEYS = {"img": "img"}
+    OUTPUT_KEYS = "pred"
+    DEAULT_INPUTS = {"img": "img"}
+    DEAULT_OUTPUTS = {"pred": "pred"}
+
+    def to_batch(self, img):
+        return [np.stack(img, axis=0).astype(dtype=np.float32, copy=False)]
+
+    def format_output(self, pred):
+        return [{"pred": res} for res in zip(*pred)]
+
+
 class ImageDetPredictor(BasePaddlePredictor):
 
     INPUT_KEYS = [
