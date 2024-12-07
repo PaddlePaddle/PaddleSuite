@@ -20,11 +20,10 @@ from ..common.vision import (
     ReadImage,
     Resize,
     ResizeByShort,
-    Crop,
     Normalize,
     ToCHWImage,
 )
-from .processors import Topk, ImagePredictor
+from .processors import Crop, ImagePredictor, Topk
 from .result import TopkResult
 
 

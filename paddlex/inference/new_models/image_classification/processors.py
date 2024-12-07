@@ -16,8 +16,7 @@ import numpy as np
 
 from ....utils import logging
 from ..base import BaseStaticInfer
-
-__all__ = ["Topk", "ImagePredictor"]
+from ..common.vision import F
 
 
 class ImagePredictor(BaseStaticInfer):
@@ -27,6 +26,52 @@ class ImagePredictor(BaseStaticInfer):
 
     def format_output(self, pred):
         return pred[0]
+
+
+class Crop:
+    """Crop region from the image."""
+
+    def __init__(self, crop_size, mode="C"):
+        """
+        Initialize the instance.
+
+        Args:
+            crop_size (list|tuple|int): Width and height of the region to crop.
+            mode (str, optional): 'C' for cropping the center part and 'TL' for
+                cropping the top left part. Default: 'C'.
+        """
+        super().__init__()
+        if isinstance(crop_size, int):
+            crop_size = [crop_size, crop_size]
+        F.check_image_size(crop_size)
+
+        self.crop_size = crop_size
+
+        if mode not in ("C", "TL"):
+            raise ValueError("Unsupported interpolation method")
+        self.mode = mode
+
+    def __call__(self, imgs):
+        """apply"""
+        return [self.crop(img) for img in imgs]
+
+    def crop(self, img):
+        h, w = img.shape[:2]
+        cw, ch = self.crop_size
+        if self.mode == "C":
+            x1 = max(0, (w - cw) // 2)
+            y1 = max(0, (h - ch) // 2)
+        elif self.mode == "TL":
+            x1, y1 = 0, 0
+        x2 = min(w, x1 + cw)
+        y2 = min(h, y1 + ch)
+        coords = (x1, y1, x2, y2)
+        if coords == (0, 0, w, h):
+            raise ValueError(
+                f"Input image ({w}, {h}) smaller than the target size ({cw}, {ch})."
+            )
+        img = F.slice(img, coords=coords)
+        return img
 
 
 class Topk:

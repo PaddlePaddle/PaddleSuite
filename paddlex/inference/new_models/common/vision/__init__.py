@@ -13,9 +13,9 @@
 # limitations under the License.
 
 from .image_batch_sampler import ImageBatchSampler
+from . import funcs as F
 from .processors import (
     ReadImage,
-    Crop,
     Resize,
     ResizeByLong,
     ResizeByShort,
