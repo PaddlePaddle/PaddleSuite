@@ -38,15 +38,15 @@ class TextDetPredictor(BasicPredictor):
         return TextDetResult
 
     def _build(self):
-        pre_tfs = {"ReadImage": ReadImage(format="RGB")}
+        pre_tfs = {"Read": ReadImage(format="RGB")}
 
         for cfg in self.config["PreProcess"]["transform_ops"]:
             tf_key = list(cfg.keys())[0]
             func = self._FUNC_MAP[tf_key]
             args = cfg.get(tf_key, {})
-            op = func(self, **args) if args else func(self)
+            name, op = func(self, **args) if args else func(self)
             if op:
-                pre_tfs[op.name] = op
+                pre_tfs[name] = op
 
         predictor = ImagePredictor(
             model_dir=self.model_dir,
@@ -58,10 +58,10 @@ class TextDetPredictor(BasicPredictor):
         return pre_tfs, predictor, post_op
 
     def process(self, batch_data):
-        batch_raw_imgs = self.pre_tfs["ReadImage"](imgs=batch_data)
-        batch_imgs, batch_shapes = self.pre_tfs["DetResizeForTest"](imgs=batch_raw_imgs)
-        batch_imgs = self.pre_tfs["NormalizeImage"](imgs=batch_imgs)
-        batch_imgs = self.pre_tfs["ToCHWImage"](imgs=batch_imgs)
+        batch_raw_imgs = self.pre_tfs["Read"](imgs=batch_data)
+        batch_imgs, batch_shapes = self.pre_tfs["Resize"](imgs=batch_raw_imgs)
+        batch_imgs = self.pre_tfs["Normalize"](imgs=batch_imgs)
+        batch_imgs = self.pre_tfs["ToCHW"](imgs=batch_imgs)
         batch_preds = self.predictor(imgs=batch_imgs)
         polys, scores = self.post_op(batch_preds, batch_shapes)
         return {
@@ -74,15 +74,14 @@ class TextDetPredictor(BasicPredictor):
     @register("DecodeImage")
     def build_readimg(self, channel_first, img_mode):
         assert channel_first == False
-        return ReadImage(format=img_mode)
+        return "Read", ReadImage(format=img_mode)
 
     @register("DetResizeForTest")
     def build_resize(self, **kwargs):
         # TODO: align to PaddleOCR
-        if self.model_name in ("PP-OCRv4_server_det", "PP-OCRv4_mobile_det"):
-            resize_long = kwargs.get("resize_long", 960)
-            return DetResizeForTest(limit_side_len=resize_long, limit_type="max")
-        return DetResizeForTest(**kwargs)
+        assert self.model_name in ("PP-OCRv4_server_det", "PP-OCRv4_mobile_det")
+        resize_long = kwargs.get("resize_long", 960)
+        return "Resize", DetResizeForTest(limit_side_len=resize_long, limit_type="max")
 
     @register("NormalizeImage")
     def build_normalize(
@@ -93,13 +92,13 @@ class TextDetPredictor(BasicPredictor):
         order="",
         channel_num=3,
     ):
-        return NormalizeImage(
+        return "Normalize", NormalizeImage(
             mean=mean, std=std, scale=scale, order=order, channel_num=channel_num
         )
 
     @register("ToCHWImage")
     def build_to_chw(self):
-        return ToCHWImage()
+        return "ToCHW", ToCHWImage()
 
     def build_postprocess(self, **kwargs):
         if kwargs.get("name") == "DBPostProcess":
@@ -118,8 +117,8 @@ class TextDetPredictor(BasicPredictor):
 
     @register("DetLabelEncode")
     def foo(self, *args, **kwargs):
-        return None
+        return None, None
 
     @register("KeepKeys")
     def foo(self, *args, **kwargs):
-        return None
+        return None, None

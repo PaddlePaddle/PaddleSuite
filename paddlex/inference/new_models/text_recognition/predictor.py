@@ -38,15 +38,15 @@ class TextRecPredictor(BasicPredictor):
         return TextRecResult
 
     def _build(self):
-        pre_tfs = {"ReadImage": ReadImage(format="RGB")}
+        pre_tfs = {"Read": ReadImage(format="RGB")}
         for cfg in self.config["PreProcess"]["transform_ops"]:
             tf_key = list(cfg.keys())[0]
             assert tf_key in self._FUNC_MAP
             func = self._FUNC_MAP[tf_key]
             args = cfg.get(tf_key, {})
-            op = func(self, **args) if args else func(self)
+            name, op = func(self, **args) if args else func(self)
             if op:
-                pre_tfs[op.name] = op
+                pre_tfs[name] = op
 
         predictor = ImagePredictor(
             model_dir=self.model_dir,
@@ -58,8 +58,8 @@ class TextRecPredictor(BasicPredictor):
         return pre_tfs, predictor, post_op
 
     def process(self, batch_data):
-        batch_raw_imgs = self.pre_tfs["ReadImage"](imgs=batch_data)
-        batch_imgs = self.pre_tfs["OCRReisizeNormImg"](imgs=batch_raw_imgs)
+        batch_raw_imgs = self.pre_tfs["Read"](imgs=batch_data)
+        batch_imgs = self.pre_tfs["ReisizeNorm"](imgs=batch_raw_imgs)
         batch_preds = self.predictor(imgs=batch_imgs)
         texts, scores = self.post_op(batch_preds)
         return {
@@ -72,15 +72,15 @@ class TextRecPredictor(BasicPredictor):
     @register("DecodeImage")
     def build_readimg(self, channel_first, img_mode):
         assert channel_first == False
-        return ReadImage(format=img_mode)
+        return "Read", ReadImage(format=img_mode)
 
     @register("RecResizeImg")
     def build_resize(self, image_shape):
-        return OCRReisizeNormImg(rec_image_shape=image_shape)
+        return "ReisizeNorm", OCRReisizeNormImg(rec_image_shape=image_shape)
 
     def build_postprocess(self, **kwargs):
         if kwargs.get("name") == "CTCLabelDecode":
-            return CTCLabelDecode(
+            return "Decode", CTCLabelDecode(
                 character_list=kwargs.get("character_dict"),
             )
         else:
@@ -88,8 +88,8 @@ class TextRecPredictor(BasicPredictor):
 
     @register("MultiLabelEncode")
     def foo(self, *args, **kwargs):
-        return None
+        return None, None
 
     @register("KeepKeys")
     def foo(self, *args, **kwargs):
-        return None
+        return None, None

@@ -25,7 +25,7 @@ class TextDetResult(BaseCVResult):
 
     def _to_img(self):
         """draw rectangle"""
-        boxes = self["polys"]
+        boxes = self["dt_polys"]
         image = self._input_img
         for box in boxes:
             box = np.reshape(np.array(box).astype(int), [-1, 1, 2]).astype(np.int64)
