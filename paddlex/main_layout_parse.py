@@ -9,13 +9,14 @@ import os
 from layout_parse.XYCut import recursive_yx_cut,recursive_xy_cut
 from layout_parse.Writer import DiskReaderWriter
 import json
+import glob
+import time
 
 def process_data(d, save_dir):
     if isinstance(d, dict):
         if 'input_path' in d:
-            del d['input_path']  # 去除 input_path 键
+            del d['input_path']  # 去除 input_path 
         for k, v in d.items():
-            # k = k.replace("'", '"')
             if k == 'img' and isinstance(v, np.ndarray) and v.ndim==3:  # 检查是否为图像数组
                 # 使用 UUID 生成唯一文件名
                 img_name = f"image_{uuid.uuid4().hex}.png"
@@ -164,36 +165,31 @@ def draw_bounding_boxes(image_path, bbox_index_pairs, output_path='output.png'):
 
 
 def main(image_dir=None):
-    # import glob
-    # # image_files = glob.glob("/workspace/shuailiu35/paddlex/input/*.jpg")
-    # # image_files.extend(glob.glob("/workspace/shuailiu35/paddlex/input/*.png"))
-    import time
+    extends = ['jpg', 'jpeg', 'png', 'bmp', 'tiff', 'tif']
+    image_files = []
+    for extend in extends:
+        image_files.extend(glob.glob(os.path.join(image_dir, f'*.{extend}')))
     pipeline = create_pipeline(pipeline="layout_parsing",device="gpu:1")
-    image_files = ["/workspace/shuailiu35/paddlex/input/0201_2020122604.jpg"]
-    print(image_files)
     total_times = 0 
     for i in range(len(image_files)): 
         image_file = image_files[i]
-        print(image_file)
         output = pipeline.predict(image_file)
         start_time = time.time()
         res = next(output) 
         total_times+=round(time.time() - start_time, 2)
-        json_data = res.print()
-        if not os.path.exists(f'./output/{i}/imgs'):
+        # 获取解析结果
+        json_data = res.print() 
+        if not os.path.exists(f'./output/{i}/imgs'): 
             os.makedirs(f'./output/{i}/imgs')
-        process_data(json_data,save_dir=f'output/{i}/imgs')
-        res.save_to_json(f"./output/{i}/")
-        # res.save_to_img(f"./output/{i}/")
-        # res.save_to_xlsx(f"./output/{i}/") ## 保存表格格式结
-        # res.save_to_html(f"./output/{i}/") ## 保存html结果
-        if json_data is not None:
+        # 预处理解析结果，后续需要预处理所有重叠框
+        process_data(json_data,save_dir=f'output/{i}/imgs') 
+        if json_data is not None: 
             layout_parsing_result = json_data['layout_parsing_result']
             parsing_result = layout_parsing_result['parsing_result']
             block_bboxes = []
             for block in parsing_result:
                 block['layout_bbox'] = list(block['layout_bbox'])
-                block['layout_bbox'] = [float(x) for x in block['layout_bbox']] # 需要预处理所有框，有些大的重合框
+                block['layout_bbox'] = [float(x) for x in block['layout_bbox']] 
                 block_bboxes.append(block["layout_bbox"])
             block_bboxes = np.array(block_bboxes)
             res = sort_by_xycut(block_bboxes)
@@ -203,17 +199,20 @@ def main(image_dir=None):
                     block['index'] = sorted_boxes.index(block['layout_bbox'])
                 except Exception as e:
                     print(block['layout_bbox'])
+            # 保存结果到 JSON 文件中
             save_to_json(json_data, f'output/{i}/{os.path.basename(image_files[i]).split(".")[0]}.json')
+            # 绘制边界框
             draw_bounding_boxes(image_path=image_files[i], bbox_index_pairs=[(block['layout_bbox'], block['index']) for block in parsing_result],output_path=f'./output/{i}/{os.path.basename(image_files[i]).split(".")[0]}_layout.png')
+            # 将解析结果转换为 Markdown 格式
             md_writer = DiskReaderWriter(f'output/{i}/')
             md_content = convert_to_markdown(parsing_results=parsing_result)
-            # 写入结果到 .md 文件中
             md_writer.write(
                 content=md_content,
                 path=f'{os.path.basename(image_files[i]).split(".")[0]}.md'
-            )  
+            ) 
+    print(total_times/len(image_files)) 
 
-main()
+main("/workspace/shuailiu35/paddlex/input")
   
     
     
