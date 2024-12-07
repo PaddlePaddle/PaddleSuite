@@ -26,8 +26,7 @@ import tempfile
 from tokenizers import Tokenizer as TokenizerFast
 
 from ....utils import logging
-from ..base import BaseProcessor
-from ..base import BasePaddlePredictor
+from ..base import BaseStaticInfer
 
 
 __all__ = [
@@ -37,7 +36,7 @@ __all__ = [
 ]
 
 
-class ImagePredictor(BasePaddlePredictor):
+class ImagePredictor(BaseStaticInfer):
 
     def to_batch(self, imgs):
         return [np.stack(imgs, axis=0).astype(dtype=np.float32, copy=False)]
@@ -46,7 +45,7 @@ class ImagePredictor(BasePaddlePredictor):
         return pred[0]
 
 
-class OCRReisizeNormImg(BaseProcessor):
+class OCRReisizeNormImg:
     """for ocr image resize and normalization"""
 
     def __init__(self, rec_image_shape=[3, 48, 320]):
@@ -74,7 +73,7 @@ class OCRReisizeNormImg(BaseProcessor):
         padding_im[:, :, 0:resized_w] = resized_image
         return padding_im
 
-    def apply(self, imgs):
+    def __call__(self, imgs):
         """apply"""
         return [self.resize(img) for img in imgs]
 
@@ -88,7 +87,7 @@ class OCRReisizeNormImg(BaseProcessor):
         return img
 
 
-class BaseRecLabelDecode(BaseProcessor):
+class BaseRecLabelDecode:
     """Convert between text-label and text-index"""
 
     def __init__(self, character_str=None, use_space_char=True):
@@ -163,7 +162,7 @@ class BaseRecLabelDecode(BaseProcessor):
         """get_ignored_tokens"""
         return [0]  # for ctc blank
 
-    def apply(self, pred):
+    def __call__(self, pred):
         """apply"""
         preds = np.array(pred)
         if isinstance(preds, tuple) or isinstance(preds, list):
@@ -185,7 +184,7 @@ class CTCLabelDecode(BaseRecLabelDecode):
     def __init__(self, character_list=None, use_space_char=True):
         super().__init__(character_list, use_space_char=use_space_char)
 
-    def apply(self, pred):
+    def __call__(self, pred):
         """apply"""
         preds = np.array(pred)
         preds_idx = preds.argmax(axis=-1)

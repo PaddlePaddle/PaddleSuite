@@ -27,22 +27,7 @@ from ......utils.flags import (
     INFER_BENCHMARK_DATA_SIZE,
 )
 from .....utils.io import ImageReader, PDFReader
-from ....base import BaseProcessor
 from . import funcs as F
-
-
-__all__ = [
-    "ReadImage",
-    "Flip",
-    "Crop",
-    "Resize",
-    "ResizeByLong",
-    "ResizeByShort",
-    "Pad",
-    "Normalize",
-    "ToCHWImage",
-    "PadStride",
-]
 
 
 def _check_image_size(input_):
@@ -56,7 +41,7 @@ def _check_image_size(input_):
         raise TypeError(f"{input_} cannot represent a valid image size.")
 
 
-class ReadImage(BaseProcessor):
+class ReadImage:
     """Load image from the file."""
 
     _FLAGS_DICT = {
@@ -78,7 +63,7 @@ class ReadImage(BaseProcessor):
         flags = self._FLAGS_DICT[self.format]
         self._img_reader = ImageReader(backend="opencv", flags=flags)
 
-    def apply(self, imgs):
+    def __call__(self, imgs):
         """apply"""
         return [self.read(img) for img in imgs]
 
@@ -107,32 +92,7 @@ class ReadImage(BaseProcessor):
             )
 
 
-class Flip(BaseProcessor):
-    """Flip the image vertically or horizontally."""
-
-    def __init__(self, mode="H"):
-        """
-        Initialize the instance.
-
-        Args:
-            mode (str, optional): 'H' for horizontal flipping and 'V' for vertical
-                flipping. Default: 'H'.
-        """
-        super().__init__()
-        if mode not in ("H", "V"):
-            raise ValueError("`mode` should be 'H' or 'V'.")
-        self.mode = mode
-
-    def apply(self, img):
-        """apply"""
-        if self.mode == "H":
-            img = F.flip_h(img)
-        elif self.mode == "V":
-            img = F.flip_v(img)
-        return img
-
-
-class Crop(BaseProcessor):
+class Crop:
     """Crop region from the image."""
 
     def __init__(self, crop_size, mode="C"):
@@ -155,7 +115,7 @@ class Crop(BaseProcessor):
             raise ValueError("Unsupported interpolation method")
         self.mode = mode
 
-    def apply(self, imgs):
+    def __call__(self, imgs):
         """apply"""
         return [self.crop(img) for img in imgs]
 
@@ -178,7 +138,7 @@ class Crop(BaseProcessor):
         return img
 
 
-class _BaseResize(BaseProcessor):
+class _BaseResize:
     _INTERP_DICT = {
         "NEAREST": cv2.INTER_NEAREST,
         "LINEAR": cv2.INTER_LINEAR,
@@ -239,7 +199,7 @@ class Resize(_BaseResize):
 
         self.keep_ratio = keep_ratio
 
-    def apply(self, imgs):
+    def __call__(self, imgs):
         """apply"""
         return [self.resize(img) for img in imgs]
 
@@ -280,7 +240,7 @@ class ResizeByLong(_BaseResize):
         super().__init__(size_divisor=size_divisor, interp=interp)
         self.target_long_edge = target_long_edge
 
-    def apply(self, imgs):
+    def __call__(self, imgs):
         """apply"""
         return [self.resize(img) for img in imgs]
 
@@ -317,7 +277,7 @@ class ResizeByShort(_BaseResize):
         super().__init__(size_divisor=size_divisor, interp=interp)
         self.target_short_edge = target_short_edge
 
-    def apply(self, imgs):
+    def __call__(self, imgs):
         """apply"""
         return [self.resize(img) for img in imgs]
 
@@ -334,79 +294,7 @@ class ResizeByShort(_BaseResize):
         return img
 
 
-class Pad(BaseProcessor):
-    """Pad the image."""
-
-    def __init__(self, target_size, val=127.5):
-        """
-        Initialize the instance.
-
-        Args:
-            target_size (list|tuple|int): Target width and height of the image after
-                padding.
-            val (float, optional): Value to fill the padded area. Default: 127.5.
-        """
-        super().__init__()
-
-        if isinstance(target_size, int):
-            target_size = [target_size, target_size]
-        _check_image_size(target_size)
-        self.target_size = target_size
-
-        self.val = val
-
-    def apply(self, imgs):
-        """apply"""
-        return [self.pad(img) for img in imgs]
-
-    def pad(self, img):
-        h, w = img.shape[:2]
-        tw, th = self.target_size
-        ph = th - h
-        pw = tw - w
-
-        if ph < 0 or pw < 0:
-            raise ValueError(
-                f"Input image ({w}, {h}) smaller than the target size ({tw}, {th})."
-            )
-        else:
-            img = F.pad(img, pad=(0, ph, 0, pw), val=self.val)
-        return img
-
-
-class PadStride(BaseProcessor):
-    """padding image for model with FPN , instead PadBatch(pad_to_stride, pad_gt) in original config
-    Args:
-        stride (bool): model with FPN need image shape % stride == 0
-    """
-
-    def __init__(self, stride=0):
-        super().__init__()
-        self.coarsest_stride = stride
-
-    def apply(self, imgs):
-        """
-        Args:
-            im (np.ndarray): image (np.ndarray)
-        Returns:
-            im (np.ndarray):  processed image (np.ndarray)
-        """
-        return [self.pad(img) for img in imgs]
-
-    def pad(self, img):
-        im = img
-        coarsest_stride = self.coarsest_stride
-        if coarsest_stride <= 0:
-            return {"img": im}
-        im_c, im_h, im_w = im.shape
-        pad_h = int(np.ceil(float(im_h) / coarsest_stride) * coarsest_stride)
-        pad_w = int(np.ceil(float(im_w) / coarsest_stride) * coarsest_stride)
-        padding_im = np.zeros((im_c, pad_h, pad_w), dtype=np.float32)
-        padding_im[:, :im_h, :im_w] = im
-        return padding_im
-
-
-class Normalize(BaseProcessor):
+class Normalize:
     """Normalize the image."""
 
     def __init__(self, scale=1.0 / 255, mean=0.5, std=0.5, preserve_dtype=False):
@@ -434,7 +322,7 @@ class Normalize(BaseProcessor):
         self.std = np.asarray(std).astype("float32")
         self.preserve_dtype = preserve_dtype
 
-    def apply(self, imgs):
+    def __call__(self, imgs):
         """apply"""
         old_type = imgs[0].dtype
         # XXX: If `old_type` has higher precision than float32,
@@ -448,9 +336,9 @@ class Normalize(BaseProcessor):
         return list(imgs)
 
 
-class ToCHWImage(BaseProcessor):
+class ToCHWImage:
     """Reorder the dimensions of the image from HWC to CHW."""
 
-    def apply(self, imgs):
+    def __call__(self, imgs):
         """apply"""
         return [img.transpose((2, 0, 1)) for img in imgs]

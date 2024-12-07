@@ -12,9 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .component import BaseComponent
 from .batch_sampler import BaseBatchSampler
-from .processor import BaseProcessor
-from .paddle_predictor import BasePaddlePredictor
+from .pp_infer import BaseStaticInfer
 from .result import BaseResult
 from .predictor import BasePredictor, BasicPredictor

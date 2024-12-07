@@ -19,10 +19,9 @@ from ....utils.flags import (
     INFER_BENCHMARK_ITER,
     INFER_BENCHMARK_DATA_SIZE,
 )
-from .component import BaseComponent
 
 
-class BaseBatchSampler(BaseComponent):
+class BaseBatchSampler:
 
     def __init__(self, batch_size=1):
         super().__init__()

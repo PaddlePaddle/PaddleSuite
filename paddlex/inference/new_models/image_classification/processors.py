@@ -15,13 +15,12 @@
 import numpy as np
 
 from ....utils import logging
-from ..base import BaseProcessor
-from ..base import BasePaddlePredictor
+from ..base import BaseStaticInfer
 
 __all__ = ["Topk", "ImagePredictor"]
 
 
-class ImagePredictor(BasePaddlePredictor):
+class ImagePredictor(BaseStaticInfer):
 
     def to_batch(self, imgs):
         return [np.stack(imgs, axis=0).astype(dtype=np.float32, copy=False)]
@@ -30,7 +29,7 @@ class ImagePredictor(BasePaddlePredictor):
         return pred[0]
 
 
-class Topk(BaseProcessor):
+class Topk:
     """Topk Transform"""
 
     def __init__(self, topk, class_ids=None):
@@ -46,8 +45,7 @@ class Topk(BaseProcessor):
         class_id_map = {id: str(lb) for id, lb in enumerate(class_ids)}
         return class_id_map
 
-    def apply(self, preds):
-        """apply"""
+    def __call__(self, preds):
         indexes = preds.argsort(axis=1)[:, -self.topk :][:, ::-1].astype("int32")
         scores = [
             np.around(pred[index], decimals=5) for pred, index in zip(preds, indexes)

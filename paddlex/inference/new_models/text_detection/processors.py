@@ -26,14 +26,13 @@ from shapely.geometry import Polygon
 
 from ...utils.io import ImageReader
 from ....utils import logging
-from ..base import BaseProcessor
-from ..base import BasePaddlePredictor
+from ..base import BaseStaticInfer
 
 
 __all__ = ["ImagePredictor", "DetResizeForTest", "NormalizeImage", "DBPostProcess"]
 
 
-class ImagePredictor(BasePaddlePredictor):
+class ImagePredictor(BaseStaticInfer):
 
     def to_batch(self, imgs):
         return [np.stack(imgs, axis=0).astype(dtype=np.float32, copy=False)]
@@ -42,7 +41,7 @@ class ImagePredictor(BasePaddlePredictor):
         return pred[0]
 
 
-class DetResizeForTest(BaseProcessor):
+class DetResizeForTest:
     """DetResizeForTest"""
 
     def __init__(self, **kwargs):
@@ -64,7 +63,7 @@ class DetResizeForTest(BaseProcessor):
             self.limit_side_len = 736
             self.limit_type = "min"
 
-    def apply(self, imgs):
+    def __call__(self, imgs):
         """apply"""
         resize_imgs, img_shapes = [], []
         for ori_img in imgs:
@@ -183,7 +182,7 @@ class DetResizeForTest(BaseProcessor):
         return img, [ratio_h, ratio_w]
 
 
-class NormalizeImage(BaseProcessor):
+class NormalizeImage:
     """normalize image such as substract mean, divide std"""
 
     def __init__(self, scale=None, mean=None, std=None, order="chw", **kwargs):
@@ -198,7 +197,7 @@ class NormalizeImage(BaseProcessor):
         self.mean = np.array(mean).reshape(shape).astype("float32")
         self.std = np.array(std).reshape(shape).astype("float32")
 
-    def apply(self, imgs):
+    def __call__(self, imgs):
         """apply"""
 
         def norm(img):
@@ -207,7 +206,7 @@ class NormalizeImage(BaseProcessor):
         return [norm(img) for img in imgs]
 
 
-class DBPostProcess(BaseProcessor):
+class DBPostProcess:
     """
     The post process for Differentiable Binarization (DB).
     """
@@ -399,7 +398,7 @@ class DBPostProcess(BaseProcessor):
         cv2.fillPoly(mask, contour.reshape(1, -1, 2).astype(np.int32), 1)
         return cv2.mean(bitmap[ymin : ymax + 1, xmin : xmax + 1], mask)[0]
 
-    def apply(self, preds, img_shapes):
+    def __call__(self, preds, img_shapes):
         """apply"""
         boxes, scores = [], []
         for pred, img_shape in zip(preds, img_shapes):

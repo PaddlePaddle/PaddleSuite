@@ -18,31 +18,30 @@ from abc import abstractmethod
 import lazy_paddle as paddle
 import numpy as np
 
-from ....utils.flags import FLAGS_json_format_model
-from ....utils import logging
-from ...utils.pp_option import PaddlePredictorOption
-from .processor import BaseProcessor
+from .....utils.flags import FLAGS_json_format_model
+from .....utils import logging
+from ....utils.pp_option import PaddlePredictorOption
 
 
-class Copy2GPU(BaseProcessor):
+class Copy2GPU:
 
     def __init__(self, input_handlers):
         super().__init__()
         self.input_handlers = input_handlers
 
-    def apply(self, x):
+    def __call__(self, x):
         for idx in range(len(x)):
             self.input_handlers[idx].reshape(x[idx].shape)
             self.input_handlers[idx].copy_from_cpu(x[idx])
 
 
-class Copy2CPU(BaseProcessor):
+class Copy2CPU:
 
     def __init__(self, output_handlers):
         super().__init__()
         self.output_handlers = output_handlers
 
-    def apply(self):
+    def __call__(self):
         output = []
         for out_tensor in self.output_handlers:
             batch = out_tensor.copy_to_cpu()
@@ -50,17 +49,17 @@ class Copy2CPU(BaseProcessor):
         return output
 
 
-class Infer(BaseProcessor):
+class Infer:
 
     def __init__(self, predictor):
         super().__init__()
         self.predictor = predictor
 
-    def apply(self):
+    def __call__(self):
         self.predictor.run()
 
 
-class BasePaddlePredictor(BaseProcessor):
+class BaseStaticInfer:
     """Predictor based on Paddle Inference"""
 
     def __init__(self, model_dir, model_prefix, option):
@@ -208,13 +207,13 @@ class BasePaddlePredictor(BaseProcessor):
             output_handlers.append(output_handler)
         return predictor, input_handlers, output_handlers
 
-    def apply(self, **kwargs):
+    def __call__(self, **kwargs):
         if self.option.changed:
             self._reset()
         batches = self.to_batch(**kwargs)
-        self.copy2gpu.apply(batches)
-        self.infer.apply()
-        pred = self.copy2cpu.apply()
+        self.copy2gpu(batches)
+        self.infer()
+        pred = self.copy2cpu()
         return self.format_output(pred)
 
     @property

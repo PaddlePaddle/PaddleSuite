@@ -38,13 +38,13 @@ class ClasPredictor(BasicPredictor):
         return TopkResult
 
     def _build(self):
-        preprocessors = {"ReadImage": ReadImage(format="RGB")}
+        preprocessors = {"Read": ReadImage(format="RGB")}
         for cfg in self.config["PreProcess"]["transform_ops"]:
             tf_key = list(cfg.keys())[0]
             func = self._FUNC_MAP[tf_key]
             args = cfg.get(tf_key, {})
-            op = func(self, **args) if args else func(self)
-            preprocessors[op.name] = op
+            name, op = func(self, **args) if args else func(self)
+            preprocessors[name] = op
 
         predictor = ImagePredictor(
             model_dir=self.model_dir,
@@ -56,16 +56,16 @@ class ClasPredictor(BasicPredictor):
         for key in self.config["PostProcess"]:
             func = self._FUNC_MAP.get(key)
             args = self.config["PostProcess"].get(key, {})
-            op = func(self, **args) if args else func(self)
-            postprocessors[op.name] = op
+            name, op = func(self, **args) if args else func(self)
+            postprocessors[name] = op
         return preprocessors, predictor, postprocessors
 
     def process(self, batch_data):
-        batch_raw_imgs = self.preprocessors["ReadImage"](imgs=batch_data)
+        batch_raw_imgs = self.preprocessors["Read"](imgs=batch_data)
         batch_imgs = self.preprocessors["Resize"](imgs=batch_raw_imgs)
         batch_imgs = self.preprocessors["Crop"](imgs=batch_imgs)
         batch_imgs = self.preprocessors["Normalize"](imgs=batch_imgs)
-        batch_imgs = self.preprocessors["ToCHWImage"](imgs=batch_imgs)
+        batch_imgs = self.preprocessors["ToCHW"](imgs=batch_imgs)
         batch_preds = self.predictor(imgs=batch_imgs)
         batch_class_ids, batch_scores, batch_label_names = self.postprocessors["Topk"](
             batch_preds
@@ -90,12 +90,11 @@ class ClasPredictor(BasicPredictor):
             )
         else:
             op = Resize(target_size=size)
-        op.name = "Resize"
-        return op
+        return "Resize", op
 
     @register("CropImage")
     def build_crop(self, size=224):
-        return Crop(crop_size=size)
+        return "Crop", Crop(crop_size=size)
 
     @register("NormalizeImage")
     def build_normalize(
@@ -108,16 +107,12 @@ class ClasPredictor(BasicPredictor):
     ):
         assert channel_num == 3
         assert order == ""
-        return Normalize(scale=scale, mean=mean, std=std)
+        return "Normalize", Normalize(scale=scale, mean=mean, std=std)
 
     @register("ToCHWImage")
     def build_to_chw(self):
-        return ToCHWImage()
+        return "ToCHW", ToCHWImage()
 
     @register("Topk")
     def build_topk(self, topk, label_list=None):
-        return Topk(topk=int(topk), class_ids=label_list)
-
-    @register("MultiLabelThreshOutput")
-    def build_threshoutput(self, threshold, label_list=None):
-        return MultiLabelThreshOutput(threshold=float(threshold), class_ids=label_list)
+        return "Topk", Topk(topk=int(topk), class_ids=label_list)
