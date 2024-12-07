@@ -58,13 +58,14 @@ class StrMixin:
         if json_format:
             return json.dumps(data.json, indent=indent, ensure_ascii=ensure_ascii)
         else:
-            return str(data)
+            return data
 
     def print(self, json_format=False, indent=4, ensure_ascii=False):
         str_ = self._to_str(
             self, json_format=json_format, indent=indent, ensure_ascii=ensure_ascii
         )
-        logging.info(str_)
+        # logging.info(str_)
+        return str_
 
 
 class JsonMixin:
