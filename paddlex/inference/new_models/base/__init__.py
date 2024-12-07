@@ -14,5 +14,4 @@
 
 from .batch_sampler import BaseBatchSampler
 from .pp_infer import BaseStaticInfer
-from .result import BaseResult
 from .predictor import BasePredictor, BasicPredictor

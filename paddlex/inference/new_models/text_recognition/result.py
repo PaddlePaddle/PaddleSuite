@@ -16,10 +16,10 @@ import PIL
 from PIL import Image, ImageDraw, ImageFont
 
 from ....utils.fonts import PINGFANG_FONT_FILE_PATH
-from ..common.vision import CVResult
+from ...result import BaseCVResult
 
 
-class TextRecResult(CVResult):
+class TextRecResult(BaseCVResult):
 
     def _to_img(self):
         """Draw label on image"""

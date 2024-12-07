@@ -22,4 +22,3 @@ from .processors import (
     Normalize,
     ToCHWImage,
 )
-from .cv_result import CVResult

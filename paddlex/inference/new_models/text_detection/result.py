@@ -15,10 +15,10 @@
 import numpy as np
 import cv2
 
-from ..common.vision import CVResult
+from ...result import BaseCVResult
 
 
-class TextDetResult(CVResult):
+class TextDetResult(BaseCVResult):
 
     def __init__(self, data):
         super().__init__(data)
