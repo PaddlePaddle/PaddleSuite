@@ -15,8 +15,16 @@
 from ....utils.func_register import FuncRegister
 from ....modules.image_classification.model_list import MODELS
 from ..base import BasicPredictor
-from ..common.vision import *
-from .processors import *
+from ..common.vision import (
+    ImageBatchSampler,
+    ReadImage,
+    Resize,
+    ResizeByShort,
+    Crop,
+    Normalize,
+    ToCHWImage,
+)
+from .processors import Topk, ImagePredictor
 from .result import TopkResult
 
 

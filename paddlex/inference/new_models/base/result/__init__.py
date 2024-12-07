@@ -13,4 +13,12 @@
 # limitations under the License.
 
 from .result import BaseResult
-from .mixin import *
+from .mixin import (
+    StrMixin,
+    JsonMixin,
+    Base64Mixin,
+    ImgMixin,
+    CSVMixin,
+    HtmlMixin,
+    XlsxMixin,
+)

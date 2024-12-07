@@ -15,8 +15,8 @@
 from ....utils.func_register import FuncRegister
 from ....modules.text_recognition.model_list import MODELS
 from ..base import BasicPredictor
-from ..common.vision import *
-from .processors import *
+from ..common.vision import ImageBatchSampler, ReadImage, Resize
+from .processors import ImagePredictor, OCRReisizeNormImg, CTCLabelDecode
 from .result import TextRecResult
 
 

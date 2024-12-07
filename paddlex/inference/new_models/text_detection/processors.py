@@ -29,9 +29,6 @@ from ....utils import logging
 from ..base import BaseStaticInfer
 
 
-__all__ = ["ImagePredictor", "DetResizeForTest", "NormalizeImage", "DBPostProcess"]
-
-
 class ImagePredictor(BaseStaticInfer):
 
     def to_batch(self, imgs):

@@ -15,8 +15,8 @@
 from ....utils.func_register import FuncRegister
 from ....modules.text_detection.model_list import MODELS
 from ..base import BasicPredictor
-from ..common.vision import *
-from .processors import *
+from ..common.vision import ImageBatchSampler, ReadImage, Resize, ToCHWImage
+from .processors import DetResizeForTest, NormalizeImage, ImagePredictor, DBPostProcess
 from .result import TextDetResult
 
 
