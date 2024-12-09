@@ -26,16 +26,6 @@ from shapely.geometry import Polygon
 
 from ...utils.io import ImageReader
 from ....utils import logging
-from ..base import BaseStaticInfer
-
-
-class ImagePredictor(BaseStaticInfer):
-
-    def to_batch(self, imgs):
-        return [np.stack(imgs, axis=0).astype(dtype=np.float32, copy=False)]
-
-    def format_output(self, pred):
-        return pred[0]
 
 
 class DetResizeForTest:
@@ -398,7 +388,7 @@ class DBPostProcess:
     def __call__(self, preds, img_shapes):
         """apply"""
         boxes, scores = [], []
-        for pred, img_shape in zip(preds, img_shapes):
+        for pred, img_shape in zip(preds[0], img_shapes):
             box, score = self.process(pred, img_shape)
             boxes.append(box)
             scores.append(score)

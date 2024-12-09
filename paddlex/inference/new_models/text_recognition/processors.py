@@ -26,16 +26,6 @@ import tempfile
 from tokenizers import Tokenizer as TokenizerFast
 
 from ....utils import logging
-from ..base import BaseStaticInfer
-
-
-class ImagePredictor(BaseStaticInfer):
-
-    def to_batch(self, imgs):
-        return [np.stack(imgs, axis=0).astype(dtype=np.float32, copy=False)]
-
-    def format_output(self, pred):
-        return pred[0]
 
 
 class OCRReisizeNormImg:
@@ -179,7 +169,7 @@ class CTCLabelDecode(BaseRecLabelDecode):
 
     def __call__(self, pred):
         """apply"""
-        preds = np.array(pred)
+        preds = np.array(pred[0])
         preds_idx = preds.argmax(axis=-1)
         preds_prob = preds.max(axis=-1)
         text = self.decode(preds_idx, preds_prob, is_remove_duplicate=True)

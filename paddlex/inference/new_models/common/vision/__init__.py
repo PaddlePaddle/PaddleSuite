@@ -21,4 +21,5 @@ from .processors import (
     ResizeByShort,
     Normalize,
     ToCHWImage,
+    ToBatch,
 )

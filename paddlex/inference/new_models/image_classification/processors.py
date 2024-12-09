@@ -15,17 +15,7 @@
 import numpy as np
 
 from ....utils import logging
-from ..base import BaseStaticInfer
 from ..common.vision import F
-
-
-class ImagePredictor(BaseStaticInfer):
-
-    def to_batch(self, imgs):
-        return [np.stack(imgs, axis=0).astype(dtype=np.float32, copy=False)]
-
-    def format_output(self, pred):
-        return pred[0]
 
 
 class Crop:
@@ -91,9 +81,9 @@ class Topk:
         return class_id_map
 
     def __call__(self, preds):
-        indexes = preds.argsort(axis=1)[:, -self.topk :][:, ::-1].astype("int32")
+        indexes = preds[0].argsort(axis=1)[:, -self.topk :][:, ::-1].astype("int32")
         scores = [
-            np.around(pred[index], decimals=5) for pred, index in zip(preds, indexes)
+            np.around(pred[index], decimals=5) for pred, index in zip(preds[0], indexes)
         ]
         label_names = [[self.class_id_map[i] for i in index] for index in indexes]
         return indexes, scores, label_names

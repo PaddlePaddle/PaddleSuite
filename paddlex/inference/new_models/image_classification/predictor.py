@@ -12,9 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from typing import Any, Union, Dict, List, Tuple
+import numpy as np
+
 from ....utils.func_register import FuncRegister
 from ....modules.image_classification.model_list import MODELS
 from ..base import BasicPredictor
+from ..common import StaticInfer
 from ..common.vision import (
     ImageBatchSampler,
     ReadImage,
@@ -22,29 +26,52 @@ from ..common.vision import (
     ResizeByShort,
     Normalize,
     ToCHWImage,
+    ToBatch,
 )
-from .processors import Crop, ImagePredictor, Topk
+from .processors import Crop, Topk
 from .result import TopkResult
 
 
 class ClasPredictor(BasicPredictor):
+    """ClasPredictor that inherits from BasicPredictor."""
 
     entities = MODELS
 
     _FUNC_MAP = {}
     register = FuncRegister(_FUNC_MAP)
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.preprocessors, self.predictor, self.postprocessors = self._build()
+    def __init__(self, *args: List, **kwargs: Dict) -> None:
+        """Initializes ClasPredictor.
 
-    def _build_batch_sampler(self):
+        Args:
+            *args: Arbitrary positional arguments passed to the superclass.
+            **kwargs: Arbitrary keyword arguments passed to the superclass.
+        """
+        super().__init__(*args, **kwargs)
+        self.preprocessors, self.infer, self.postprocessors = self._build()
+
+    def _build_batch_sampler(self) -> ImageBatchSampler:
+        """Builds and returns an ImageBatchSampler instance.
+
+        Returns:
+            ImageBatchSampler: An instance of ImageBatchSampler.
+        """
         return ImageBatchSampler()
 
-    def _get_result_class(self):
+    def _get_result_class(self) -> type:
+        """Returns the result class, TopkResult.
+
+        Returns:
+            type: The TopkResult class.
+        """
         return TopkResult
 
-    def _build(self):
+    def _build(self) -> Tuple:
+        """Build the preprocessors, inference engine, and postprocessors based on the configuration.
+
+        Returns:
+            tuple: A tuple containing the preprocessors, inference engine, and postprocessors.
+        """
         preprocessors = {"Read": ReadImage(format="RGB")}
         for cfg in self.config["PreProcess"]["transform_ops"]:
             tf_key = list(cfg.keys())[0]
@@ -52,8 +79,9 @@ class ClasPredictor(BasicPredictor):
             args = cfg.get(tf_key, {})
             name, op = func(self, **args) if args else func(self)
             preprocessors[name] = op
+        preprocessors["ToBatch"] = ToBatch()
 
-        predictor = ImagePredictor(
+        infer = StaticInfer(
             model_dir=self.model_dir,
             model_prefix=self.MODEL_FILE_PREFIX,
             option=self.pp_option,
@@ -65,15 +93,25 @@ class ClasPredictor(BasicPredictor):
             args = self.config["PostProcess"].get(key, {})
             name, op = func(self, **args) if args else func(self)
             postprocessors[name] = op
-        return preprocessors, predictor, postprocessors
+        return preprocessors, infer, postprocessors
 
-    def process(self, batch_data):
+    def process(self, batch_data: List[Union[str, np.ndarray]]) -> Dict[str, Any]:
+        """
+        Process a batch of data through the preprocessing, inference, and postprocessing.
+
+        Args:
+            batch_data (List[Union[str, np.ndarray], ...]): A batch of input data (e.g., image file paths).
+
+        Returns:
+            dict: A dictionary containing the input path, raw image, class IDs, scores, and label names for every instance of the batch. Keys include 'input_path', 'input_img', 'class_ids', 'scores', and 'label_names'.
+        """
         batch_raw_imgs = self.preprocessors["Read"](imgs=batch_data)
         batch_imgs = self.preprocessors["Resize"](imgs=batch_raw_imgs)
         batch_imgs = self.preprocessors["Crop"](imgs=batch_imgs)
         batch_imgs = self.preprocessors["Normalize"](imgs=batch_imgs)
         batch_imgs = self.preprocessors["ToCHW"](imgs=batch_imgs)
-        batch_preds = self.predictor(imgs=batch_imgs)
+        x = self.preprocessors["ToBatch"](imgs=batch_imgs)
+        batch_preds = self.infer(x=x)
         batch_class_ids, batch_scores, batch_label_names = self.postprocessors["Topk"](
             batch_preds
         )

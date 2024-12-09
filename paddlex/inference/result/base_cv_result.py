@@ -18,13 +18,23 @@ from ..utils.io import ImageWriter
 
 
 class BaseCVResult(BaseResult, StrMixin, JsonMixin, ImgMixin):
+    """Base class for computer vision results."""
 
-    INPUT_KEYS = ["input_img"]
+    INPUT_IMG_KEY = "input_img"
 
     def __init__(self, data: dict) -> None:
-        assert set(BaseCVResult.INPUT_KEYS) <= set(
-            self.INPUT_KEYS
-        ), f"`{BaseCVResult.INPUT_KEYS}` is needed, but not found in `{self.INPUT_KEYS}`!"
+        """
+        Initialize the BaseCVResult.
+
+        Args:
+            data (dict): The initial data.
+
+        Raises:
+            AssertionError: If the required key (`BaseCVResult.INPUT_IMG_KEY`) are not found in the data.
+        """
+        assert (
+            BaseCVResult.INPUT_IMG_KEY in data
+        ), f"`{BaseCVResult.INPUT_IMG_KEY}` is needed, but not found in `{list(data.keys())}`!"
         self._input_img = data.pop("input_img", None)
         self._img_writer = ImageWriter(backend="pillow")
 

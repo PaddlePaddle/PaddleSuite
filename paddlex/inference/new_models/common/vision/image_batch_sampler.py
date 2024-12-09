@@ -52,7 +52,7 @@ class ImageBatchSampler(BaseBatchSampler):
         file_list = sorted(file_list)
         return file_list
 
-    def apply(self, inputs):
+    def sample(self, inputs):
         if not isinstance(inputs, list):
             inputs = [inputs]
         for input in inputs:

@@ -19,9 +19,9 @@ from abc import abstractmethod
 import lazy_paddle as paddle
 import numpy as np
 
-from .....utils.flags import FLAGS_json_format_model
-from .....utils import logging
-from ....utils.pp_option import PaddlePredictorOption
+from ....utils.flags import FLAGS_json_format_model
+from ....utils import logging
+from ...utils.pp_option import PaddlePredictorOption
 
 
 class Copy2GPU:
@@ -60,7 +60,7 @@ class Infer:
         self.predictor.run()
 
 
-class BaseStaticInfer:
+class StaticInfer:
     """Predictor based on Paddle Inference"""
 
     def __init__(
@@ -216,14 +216,13 @@ class BaseStaticInfer:
             output_handlers.append(output_handler)
         return predictor, input_handlers, output_handlers
 
-    def __call__(self, **kwargs: Dict[str, Any]) -> List[Any]:
+    def __call__(self, x) -> List[Any]:
         if self.option.changed:
             self._reset()
-        batches = self.to_batch(**kwargs)
-        self.copy2gpu(batches)
+        self.copy2gpu(x)
         self.infer()
         pred = self.copy2cpu()
-        return self.format_output(pred)
+        return pred
 
     @property
     def benchmark(self):
@@ -232,11 +231,3 @@ class BaseStaticInfer:
             "Infer": self.infer,
             "Copy2CPU": self.copy2cpu,
         }
-
-    @abstractmethod
-    def to_batch(self):
-        raise NotImplementedError
-
-    @abstractmethod
-    def format_output(self, pred):
-        raise NotImplementedError

@@ -16,11 +16,26 @@ import inspect
 
 
 class BaseResult(dict):
+    """Base class for result objects that can save themselves.
+
+    This class inherits from dict and provides properties and methods for handling result.
+    """
+
     def __init__(self, data: dict) -> None:
+        """Initializes the BaseResult with the given data.
+
+        Args:
+            data (dict): The initial data.
+        """
         super().__init__(data)
         self._save_funcs = []
 
     def save_all(self, save_path: str) -> None:
+        """Calls all registered save methods with the given save path.
+
+        Args:
+            save_path (str): The path to save the result to.
+        """
         for func in self._save_funcs:
             signature = inspect.signature(func)
             if "save_path" in signature.parameters:

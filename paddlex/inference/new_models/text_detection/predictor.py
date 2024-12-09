@@ -15,8 +15,9 @@
 from ....utils.func_register import FuncRegister
 from ....modules.text_detection.model_list import MODELS
 from ..base import BasicPredictor
-from ..common.vision import ImageBatchSampler, ReadImage, Resize, ToCHWImage
-from .processors import DetResizeForTest, NormalizeImage, ImagePredictor, DBPostProcess
+from ..common import StaticInfer
+from ..common.vision import ImageBatchSampler, ReadImage, Resize, ToCHWImage, ToBatch
+from .processors import DetResizeForTest, NormalizeImage, DBPostProcess
 from .result import TextDetResult
 
 
@@ -29,7 +30,7 @@ class TextDetPredictor(BasicPredictor):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.pre_tfs, self.predictor, self.post_op = self._build()
+        self.pre_tfs, self.infer, self.post_op = self._build()
 
     def _build_batch_sampler(self):
         return ImageBatchSampler()
@@ -47,22 +48,24 @@ class TextDetPredictor(BasicPredictor):
             name, op = func(self, **args) if args else func(self)
             if op:
                 pre_tfs[name] = op
+        pre_tfs["ToBatch"] = ToBatch()
 
-        predictor = ImagePredictor(
+        infer = StaticInfer(
             model_dir=self.model_dir,
             model_prefix=self.MODEL_FILE_PREFIX,
             option=self.pp_option,
         )
 
         post_op = self.build_postprocess(**self.config["PostProcess"])
-        return pre_tfs, predictor, post_op
+        return pre_tfs, infer, post_op
 
     def process(self, batch_data):
         batch_raw_imgs = self.pre_tfs["Read"](imgs=batch_data)
         batch_imgs, batch_shapes = self.pre_tfs["Resize"](imgs=batch_raw_imgs)
         batch_imgs = self.pre_tfs["Normalize"](imgs=batch_imgs)
         batch_imgs = self.pre_tfs["ToCHW"](imgs=batch_imgs)
-        batch_preds = self.predictor(imgs=batch_imgs)
+        x = self.pre_tfs["ToBatch"](imgs=batch_imgs)
+        batch_preds = self.infer(x=x)
         polys, scores = self.post_op(batch_preds, batch_shapes)
         return {
             "input_path": batch_data,
