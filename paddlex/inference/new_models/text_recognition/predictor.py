@@ -80,7 +80,7 @@ class TextRecPredictor(BasicPredictor):
 
     def build_postprocess(self, **kwargs):
         if kwargs.get("name") == "CTCLabelDecode":
-            return "Decode", CTCLabelDecode(
+            return CTCLabelDecode(
                 character_list=kwargs.get("character_dict"),
             )
         else:

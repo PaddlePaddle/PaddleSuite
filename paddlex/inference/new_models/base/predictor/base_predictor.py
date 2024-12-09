@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from typing import Union, Tuple, List, Dict, Any, Iterator
 from pathlib import Path
 from abc import abstractmethod, ABC
 
@@ -22,18 +23,17 @@ class BasePredictor(ABC):
 
     MODEL_FILE_PREFIX = "inference"
 
-    def __init__(self, model_dir, config=None):
+    def __init__(self, model_dir: str, config: dict = None) -> None:
         super().__init__()
         self.model_dir = Path(model_dir)
         self.config = config if config else self.load_config(self.model_dir)
 
         # alias predict() to the __call__()
         self.predict = self.__call__
-        self.pkg_res = True
         self.benchmark = None
 
     @property
-    def config_path(self):
+    def config_path(self) -> str:
         return self.get_config_path(self.model_dir)
 
     @property
@@ -41,31 +41,22 @@ class BasePredictor(ABC):
         return self.config["Global"]["model_name"]
 
     @classmethod
-    def get_config_path(cls, model_dir):
+    def get_config_path(cls, model_dir) -> str:
         return model_dir / f"{cls.MODEL_FILE_PREFIX}.yml"
 
     @classmethod
-    def load_config(cls, model_dir):
+    def load_config(cls, model_dir) -> dict:
         yaml_reader = YAMLReader()
         return yaml_reader.read(cls.get_config_path(model_dir))
 
-    @property
-    def package_result(self):
-        return self._pkg_res
-
-    @package_result.setter
-    def package_result(self, pkg_res):
-        assert isinstance(pkg_res, bool)
-        self._pkg_res = pkg_res
-
     @abstractmethod
-    def __call__(self, input, **kwargs):
+    def __call__(self, input: Any, **kwargs: dict[str, Any]) -> Iterator[Any]:
         raise NotImplementedError
 
     @abstractmethod
-    def apply(self, input):
+    def apply(self, input: Any) -> Iterator[Any]:
         raise NotImplementedError
 
     @abstractmethod
-    def set_predictor(self):
+    def set_predictor(self) -> None:
         raise NotImplementedError

@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from typing import Union, Tuple, List, Dict, Any, Iterator
 import os
 import inspect
 from abc import abstractmethod
@@ -62,28 +63,30 @@ class Infer:
 class BaseStaticInfer:
     """Predictor based on Paddle Inference"""
 
-    def __init__(self, model_dir, model_prefix, option):
+    def __init__(
+        self, model_dir: str, model_prefix: str, option: PaddlePredictorOption
+    ) -> None:
         super().__init__()
         self.model_dir = model_dir
         self.model_prefix = model_prefix
         self._update_option(option)
 
-    def _update_option(self, option):
-        if option:
-            if self.option and option == self.option:
-                return
-            self._option = option
-            self._reset()
+    def _update_option(self, option: PaddlePredictorOption) -> None:
+        if self.option and option == self.option:
+            return
+        self._option = option
+        self._reset()
 
     @property
-    def option(self):
+    def option(self) -> PaddlePredictorOption:
         return self._option if hasattr(self, "_option") else None
 
     @option.setter
-    def option(self, option):
-        self._update_option(option)
+    def option(self, option: Union[None, PaddlePredictorOption]) -> None:
+        if option:
+            self._update_option(option)
 
-    def _reset(self):
+    def _reset(self) -> None:
         if not self.option:
             self.option = PaddlePredictorOption()
         logging.debug(f"Env: {self.option}")
@@ -97,7 +100,13 @@ class BaseStaticInfer:
         self.infer = Infer(predictor)
         self.option.changed = False
 
-    def _create(self):
+    def _create(
+        self,
+    ) -> Tuple[
+        paddle.base.libpaddle.PaddleInferPredictor,
+        paddle.base.libpaddle.PaddleInferTensor,
+        paddle.base.libpaddle.PaddleInferTensor,
+    ]:
         """_create"""
         from lazy_paddle.inference import Config, create_predictor
 
@@ -207,7 +216,7 @@ class BaseStaticInfer:
             output_handlers.append(output_handler)
         return predictor, input_handlers, output_handlers
 
-    def __call__(self, **kwargs):
+    def __call__(self, **kwargs: Dict[str, Any]) -> List[Any]:
         if self.option.changed:
             self._reset()
         batches = self.to_batch(**kwargs)
