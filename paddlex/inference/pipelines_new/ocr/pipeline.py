@@ -59,7 +59,7 @@ class OCRPipeline(BasePipeline):
 
         self.text_type = config["text_type"]
 
-        if self.text_type == "common":
+        if self.text_type == "general":
             self._sort_boxes = SortQuadBoxes()
             self._crop_by_polys = CropByPolys(det_box_type="quad")
         elif self.text_type == "seal":

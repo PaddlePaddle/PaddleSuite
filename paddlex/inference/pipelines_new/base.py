@@ -38,6 +38,8 @@ class BasePipeline(ABC, metaclass=AutoRegisterABCMetaClass):
         pp_option: PaddlePredictorOption = None,
         use_hpip: bool = False,
         hpi_params: Optional[Dict[str, Any]] = None,
+        *args,
+        **kwargs,
     ) -> None:
         """
         Initializes the class with specified parameters.

@@ -134,6 +134,8 @@ def create_pipeline(
         pp_option=pp_option,
         use_hpip=use_hpip,
         hpi_params=hpi_params,
+        *args,
+        **kwargs,
     )
     return pipeline
 

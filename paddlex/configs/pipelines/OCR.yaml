@@ -6,7 +6,7 @@ pipeline_name: OCR
 ##############################################
 
 input: https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/general_ocr_001.png
-text_type: common
+text_type: general
 
 SubModules:
   TextDetection:
@@ -29,7 +29,7 @@ SubModules:
 
 # SubModules:
 #   TextDetection:
-#     module_name: text_detection
+#     module_name: seal_text_detection
 #     model_name: PP-OCRv4_mobile_seal_det
 #     model_dir: null
 #     batch_size: 1    
