@@ -28,7 +28,14 @@ class DetTrainer(BaseTrainer):
 
     def _update_dataset(self):
         """update dataset settings"""
-        self.pdx_config.update_dataset(self.global_config.dataset_dir, "COCODetDataset")
+        metric = self.pdx_config.metric if 'metric' in self.pdx_config else 'COCO'
+        data_fields = self.pdx_config.TrainDataset['data_fields'] if 'data_fields' in self.pdx_config.TrainDataset else None
+
+        self.pdx_config.update_dataset(
+            self.global_config.dataset_dir, "COCODetDataset",
+            data_fields=data_fields,
+            metric=metric,
+        )
 
     def update_config(self):
         """update training config"""

@@ -1703,10 +1703,16 @@ PaddleX incorporates multiple pipelines, each containing several modules, and ea
 <td>31.5 M</td>
 <td><a href="https://github.com/PaddlePaddle/PaddleX/blob/develop/paddlex/configs/instance_segmentation/PP-YOLOE_seg-S.yaml">PP-YOLOE_seg-S.yaml</a></td>
 <td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-YOLOE_seg-S_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-YOLOE_seg-S_pretrained.pdparams">Trained Model</a></td></tr>
+<tr>
+<td>SOLOv2</td>
+<td>35.5</td>
+<td>-</td>
+<td>-</td>
+<td>179.1 M</td>
+<td><a href="https://github.com/PaddlePaddle/PaddleX/blob/release/3.0-beta2/paddlex/configs/instance_segmentation/SOLOv2.yaml">SOLOv2.yaml</a></td>
+<td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/SOLOv2_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/SOLOv2_pretrained.pdparams">Trained Model</a></td></tr>
 </tbody>
 </table>
-|SOLOv2| 35.5|-|-|179.1 M|[SOLOv2.yaml](https://github.com/PaddlePaddle/PaddleX/blob/develop/paddlex/configs/instance_segmentation/SOLOv2.yaml)
-
 <b>Note: The above accuracy metrics are evaluated on the </b>[COCO2017](https://cocodataset.org/#home)<b> validation set using Mask AP(0.5:0.95).</b>
 
 ## [Text Detection Module](../module_usage/tutorials/ocr_modules/text_detection.en.md)

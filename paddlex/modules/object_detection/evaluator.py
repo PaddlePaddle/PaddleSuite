@@ -22,11 +22,22 @@ class DetEvaluator(BaseEvaluator):
 
     entities = MODELS
 
+    def _update_dataset(self):
+        """update dataset settings"""
+        metric = self.pdx_config.metric if 'metric' in self.pdx_config else 'COCO'
+        data_fields = self.pdx_config.EvalDataset['data_fields'] if 'data_fields' in self.pdx_config.EvalDataset else None
+
+        self.pdx_config.update_dataset(
+            self.global_config.dataset_dir, "COCODetDataset",
+            data_fields=data_fields,
+            metric=metric,
+        )
+
     def update_config(self):
         """update evalution config"""
         if self.eval_config.log_interval:
             self.pdx_config.update_log_interval(self.eval_config.log_interval)
-        self.pdx_config.update_dataset(self.global_config.dataset_dir, "COCODetDataset")
+        self._update_dataset()
         self.pdx_config.update_weights(self.eval_config.weight_path)
 
     def get_eval_kwargs(self) -> dict:
