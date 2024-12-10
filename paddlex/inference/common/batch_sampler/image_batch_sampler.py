@@ -17,9 +17,9 @@ import ast
 from pathlib import Path
 import numpy as np
 
-from .....utils.download import download
-from .....utils.cache import CACHE_DIR
-from ...base.batch_sampler import BaseBatchSampler
+from ....utils.download import download
+from ....utils.cache import CACHE_DIR
+from .base_batch_sampler import BaseBatchSampler
 
 
 class ImageBatchSampler(BaseBatchSampler):

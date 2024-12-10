@@ -15,7 +15,7 @@
 import numpy as np
 import cv2
 
-from ...result import BaseCVResult
+from ...common.result import BaseCVResult
 
 
 class TextDetResult(BaseCVResult):

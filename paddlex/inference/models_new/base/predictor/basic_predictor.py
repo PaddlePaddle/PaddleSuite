@@ -23,7 +23,7 @@ from .....utils.flags import (
 from .....utils import logging
 from ....utils.pp_option import PaddlePredictorOption
 from ....utils.benchmark import benchmark
-from ..batch_sampler import BaseBatchSampler
+from ....common.batch_sampler import BaseBatchSampler
 from .base_predictor import BasePredictor
 
 

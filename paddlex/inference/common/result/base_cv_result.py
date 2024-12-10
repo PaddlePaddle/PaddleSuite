@@ -14,7 +14,7 @@
 
 from .base_result import BaseResult
 from .mixin import StrMixin, JsonMixin, ImgMixin
-from ..utils.io import ImageWriter
+from ...utils.io import ImageWriter
 
 
 class BaseCVResult(BaseResult, StrMixin, JsonMixin, ImgMixin):

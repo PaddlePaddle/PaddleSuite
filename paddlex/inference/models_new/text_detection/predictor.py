@@ -14,9 +14,17 @@
 
 from ....utils.func_register import FuncRegister
 from ....modules.text_detection.model_list import MODELS
+from ...common.batch_sampler import ImageBatchSampler
+from ...common.reader import ReadImage
+from ..common import (
+    Resize,
+    ResizeByShort,
+    Normalize,
+    ToCHWImage,
+    ToBatch,
+    StaticInfer,
+)
 from ..base import BasicPredictor
-from ..common import StaticInfer
-from ..common.vision import ImageBatchSampler, ReadImage, Resize, ToCHWImage, ToBatch
 from .processors import DetResizeForTest, NormalizeImage, DBPostProcess
 from .result import TextDetResult
 

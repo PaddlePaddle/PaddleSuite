@@ -21,8 +21,8 @@ import numpy as np
 from PIL import Image
 import pandas as pd
 
-from ...utils import logging
-from ..utils.io import (
+from ....utils import logging
+from ...utils.io import (
     JsonWriter,
     ImageReader,
     ImageWriter,

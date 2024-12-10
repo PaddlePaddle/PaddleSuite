@@ -19,7 +19,7 @@ import numpy as np
 
 from ....utils.fonts import PINGFANG_FONT_FILE_PATH
 from ...utils.color_map import get_colormap
-from ...result import BaseCVResult
+from ...common.result import BaseCVResult
 
 
 class TopkResult(BaseCVResult):

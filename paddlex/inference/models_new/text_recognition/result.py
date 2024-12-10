@@ -16,7 +16,7 @@ import PIL
 from PIL import Image, ImageDraw, ImageFont
 
 from ....utils.fonts import PINGFANG_FONT_FILE_PATH
-from ...result import BaseCVResult
+from ...common.result import BaseCVResult
 
 
 class TextRecResult(BaseCVResult):
