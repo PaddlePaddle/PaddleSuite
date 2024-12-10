@@ -43,7 +43,7 @@ class InferRequest(BaseModel):
     file: str
     fileType: Optional[FileType] = None
     useImgOrientationCls: bool = True
-    useImgUnwrapping: bool = True
+    useImgUnwarping: bool = True
     useSealTextDet: bool = True
     inferenceParams: Optional[InferenceParams] = None
 
@@ -154,7 +154,7 @@ def create_pipeline_app(
             result = await pipeline.infer(
                 images,
                 use_doc_image_ori_cls_model=request.useImgOrientationCls,
-                use_doc_image_unwarp_model=request.useImgUnwrapping,
+                use_doc_image_unwarp_model=request.useImgUnwarping,
                 use_seal_text_det_model=request.useSealTextDet,
             )
 

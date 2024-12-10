@@ -45,7 +45,7 @@ class AnalyzeImagesRequest(BaseModel):
     file: str
     fileType: Optional[FileType] = None
     useImgOrientationCls: bool = True
-    useImgUnwrapping: bool = True
+    useImgUnwarping: bool = True
     useSealTextDet: bool = True
     inferenceParams: Optional[InferenceParams] = None
 
@@ -249,7 +249,7 @@ def create_pipeline_app(pipeline: PPChatOCRPipeline, app_config: AppConfig) -> F
                 pipeline.pipeline.visual_predict,
                 images,
                 use_doc_image_ori_cls_model=request.useImgOrientationCls,
-                use_doc_image_unwarp_model=request.useImgUnwrapping,
+                use_doc_image_unwarp_model=request.useImgUnwarping,
                 use_seal_text_det_model=request.useSealTextDet,
             )
 

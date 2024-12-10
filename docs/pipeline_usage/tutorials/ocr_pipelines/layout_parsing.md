@@ -636,7 +636,7 @@ for res in output:
 <td>否</td>
 </tr>
 <tr>
-<td><code>useImgUnwrapping</code></td>
+<td><code>useImgUnwarping</code></td>
 <td><code>boolean</code></td>
 <td>是否启用文本图像矫正功能。默认启用该功能。</td>
 <td>否</td>
@@ -770,7 +770,7 @@ payload = {
     &quot;file&quot;: image_data, # Base64编码的文件内容或者文件URL
     &quot;fileType&quot;: 1,
     &quot;useImgOrientationCls&quot;: True,
-    &quot;useImgUnwrapping&quot;: True,
+    &quot;useImgUnwarping&quot;: True,
     &quot;useSealTextDet&quot;: True,
 }
 

@@ -690,7 +690,7 @@ chat_result.print()
 <td>否</td>
 </tr>
 <tr>
-<td><code>useImgUnwrapping</code></td>
+<td><code>useImgUnwarping</code></td>
 <td><code>boolean</code></td>
 <td>是否启用文本图像矫正功能。默认启用该功能。</td>
 <td>否</td>
@@ -1172,7 +1172,7 @@ payload = {
     &quot;file&quot;: file_data,
     &quot;fileType&quot;: 1,
     &quot;useImgOrientationCls&quot;: True,
-    &quot;useImgUnwrapping&quot;: True,
+    &quot;useImgUnwarping&quot;: True,
     &quot;useSealTextDet&quot;: True,
 }
 resp_vision = requests.post(url=f&quot;{API_BASE_URL}/chatocr-vision&quot;, json=payload)
