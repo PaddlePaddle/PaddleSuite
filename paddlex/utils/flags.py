@@ -20,7 +20,6 @@ __all__ = [
     "DRY_RUN",
     "CHECK_OPTS",
     "EAGER_INITIALIZATION",
-    "NEW_PREDICTOR",
     "INFER_BENCHMARK",
     "INFER_BENCHMARK_ITER",
     "INFER_BENCHMARK_WARMUP",
@@ -50,7 +49,6 @@ EAGER_INITIALIZATION = get_flag_from_env_var("PADDLE_PDX_EAGER_INIT", True)
 FLAGS_json_format_model = get_flag_from_env_var("FLAGS_json_format_model", None)
 USE_NEW_INFERENCE = get_flag_from_env_var("USE_NEW_INFERENCE", False)
 
-NEW_PREDICTOR = get_flag_from_env_var("PADDLE_PDX_NEW_PREDICTOR", False)
 
 # Inference Benchmark
 INFER_BENCHMARK = get_flag_from_env_var("PADDLE_PDX_INFER_BENCHMARK", None)
