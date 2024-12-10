@@ -32,6 +32,8 @@ LICENSE_TEXT = """# copyright (c) 2024 PaddlePaddle Authors. All Rights Reserve.
 
 
 def check(file_path):
+    if "paddlex" not in file_path:
+        return True
     with open(file_path, "r") as f:
         content = f.read()
     # Exclude shebang line
