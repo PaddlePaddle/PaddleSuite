@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import os
 import re
 import sys
 
@@ -32,7 +33,7 @@ LICENSE_TEXT = """# copyright (c) 2024 PaddlePaddle Authors. All Rights Reserve.
 
 
 def check(file_path):
-    if "paddlex" not in file_path:
+    if "paddlex" not in file_path.split(os.sep):
         return True
     with open(file_path, "r") as f:
         content = f.read()
