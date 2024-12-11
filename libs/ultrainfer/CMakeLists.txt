@@ -563,6 +563,7 @@ if(WIN32)
     ARCHIVE DESTINATION lib
     RUNTIME DESTINATION lib
   )
+else()
   install(
     TARGETS ${LIBRARY_NAME}
     LIBRARY DESTINATION lib)
