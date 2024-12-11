@@ -27,8 +27,8 @@ from typing import (
     Union,
 )
 
-import xdeploy as xd
-from xdeploy.model import BaseXDeployModel
+import ultrainfer as ui
+from ultrainfer.model import BaseUltraInferModel
 from paddlex.inference.components import ReadImage, ReadTS
 from paddlex.inference.models import BasePredictor
 from paddlex.inference.utils.new_ir_blacklist import NEWIR_BLOCKLIST
@@ -64,7 +64,7 @@ class HPPredictor(BasePredictor, metaclass=AutoRegisterABCMetaClass):
         self._device = device or device_helper.get_default_device()
         self._hpi_params = hpi_params or {}
         self._hpi_config = self._get_hpi_config()
-        self._xd_model = self.build_xd_model()
+        self._ui_model = self.build_ui_model()
 
     @property
     def model_path(self) -> Path:
@@ -87,12 +87,12 @@ class HPPredictor(BasePredictor, metaclass=AutoRegisterABCMetaClass):
         if kwargs:
             raise TypeError(f"Unexpected arguments: {kwargs}")
 
-    def build_xd_model(self) -> BaseXDeployModel:
-        option = self._create_xd_option()
-        return self._build_xd_model(option)
+    def build_ui_model(self) -> BaseUltraInferModel:
+        option = self._create_ui_option()
+        return self._build_ui_model(option)
 
     @abc.abstractmethod
-    def _build_xd_model(self, option: xd.RuntimeOption) -> BaseXDeployModel:
+    def _build_ui_model(self, option: ui.RuntimeOption) -> BaseUltraInferModel:
         raise NotImplementedError
 
     def _get_hpi_config(self) -> HPIConfig:
@@ -111,8 +111,8 @@ class HPPredictor(BasePredictor, metaclass=AutoRegisterABCMetaClass):
         backend = self._hpi_config.get_selected_backend(self.model_name, device_type)
         return backend
 
-    def _create_xd_option(self) -> xd.RuntimeOption:
-        option = xd.RuntimeOption()
+    def _create_ui_option(self) -> ui.RuntimeOption:
+        option = ui.RuntimeOption()
         # HACK: Disable new IR for models that are known to have issues with the
         # new IR.
         if self.model_name in NEWIR_BLOCKLIST:
@@ -136,7 +136,7 @@ class HPPredictor(BasePredictor, metaclass=AutoRegisterABCMetaClass):
         )
         logging.info("Backend: %s", backend)
         logging.info("Backend config: %s", backend_config)
-        backend_config.update_xd_option(option, self.model_dir)
+        backend_config.update_ui_option(option, self.model_dir)
         return option
 
 

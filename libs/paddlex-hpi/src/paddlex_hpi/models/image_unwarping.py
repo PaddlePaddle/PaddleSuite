@@ -14,7 +14,7 @@
 
 from typing import Any, List
 
-import xdeploy as xd
+import ultrainfer as ui
 import numpy as np
 from paddlex.inference.results import DocTrResult
 from paddlex.modules.image_unwarping.model_list import MODELS
@@ -26,8 +26,8 @@ from paddlex_hpi.models.base import CVPredictor
 class WarpPredictor(CVPredictor):
     entities = MODELS
 
-    def _build_xd_model(self, option: xd.RuntimeOption) -> xd.vision.ocr.UVDocWarpper:
-        model = xd.vision.ocr.UVDocWarpper(
+    def _build_ui_model(self, option: ui.RuntimeOption) -> ui.vision.ocr.UVDocWarpper:
+        model = ui.vision.ocr.UVDocWarpper(
             str(self.model_path),
             str(self.params_path),
             runtime_option=option,
@@ -36,15 +36,15 @@ class WarpPredictor(CVPredictor):
 
     def _predict(self, batch_data: BatchData) -> BatchData:
         imgs = [np.ascontiguousarray(data["img"]) for data in batch_data]
-        xd_results = self._xd_model.batch_predict(imgs)
+        ui_results = self._ui_model.batch_predict(imgs)
         results: BatchData = []
-        for data, xd_result in zip(batch_data, xd_results):
-            warp_result = self._create_warp_result(data, xd_result)
+        for data, ui_result in zip(batch_data, ui_results):
+            warp_result = self._create_warp_result(data, ui_result)
             results.append({"result": warp_result})
         return results
 
-    def _create_warp_result(self, data: Data, xd_result: Any) -> DocTrResult:
-        img = xd_result.numpy()
+    def _create_warp_result(self, data: Data, ui_result: Any) -> DocTrResult:
+        img = ui_result.numpy()
         img = np.moveaxis(img[0], 0, 2)
         img *= 255
         img = img[:, :, ::-1]

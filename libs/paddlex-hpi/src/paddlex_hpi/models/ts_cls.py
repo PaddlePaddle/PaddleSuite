@@ -14,7 +14,7 @@
 
 from typing import Any, List
 
-import xdeploy as xd
+import ultrainfer as ui
 import pandas as pd
 from paddlex.inference.results import TSClsResult
 from paddlex.modules.ts_classification.model_list import MODELS
@@ -26,10 +26,10 @@ from paddlex_hpi.models.base import TSPredictor
 class TSClsPredictor(TSPredictor):
     entities = MODELS
 
-    def _build_xd_model(
-        self, option: xd.RuntimeOption
-    ) -> xd.ts.classification.PyOnlyClassificationModel:
-        model = xd.ts.classification.PyOnlyClassificationModel(
+    def _build_ui_model(
+        self, option: ui.RuntimeOption
+    ) -> ui.ts.classification.PyOnlyClassificationModel:
+        model = ui.ts.classification.PyOnlyClassificationModel(
             str(self.model_path),
             str(self.params_path),
             str(self.config_path),
@@ -39,16 +39,16 @@ class TSClsPredictor(TSPredictor):
 
     def _predict(self, batch_data: BatchData) -> BatchData:
         ts_data = [data["ts"] for data in batch_data]
-        xd_results = self._xd_model.batch_predict(ts_data)
+        ui_results = self._ui_model.batch_predict(ts_data)
         results: BatchData = []
-        for data, xd_result in zip(batch_data, xd_results):
-            ts_cls_result = self._create_ts_cls_result(data, xd_result)
+        for data, ui_result in zip(batch_data, ui_results):
+            ts_cls_result = self._create_ts_cls_result(data, ui_result)
             results.append({"result": ts_cls_result})
         return results
 
-    def _create_ts_cls_result(self, data: Data, xd_result: Any) -> TSClsResult:
+    def _create_ts_cls_result(self, data: Data, ui_result: Any) -> TSClsResult:
         classification = pd.DataFrame.from_dict(
-            {"classid": [xd_result.class_id], "score": [xd_result.score]}
+            {"classid": [ui_result.class_id], "score": [ui_result.score]}
         )
         classification.index.name = "sample"
         dic = {"input_path": data["input_path"], "classification": classification}

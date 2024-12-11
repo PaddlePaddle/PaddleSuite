@@ -14,7 +14,7 @@
 
 from typing import Any, List
 
-import xdeploy as xd
+import ultrainfer as ui
 import pandas as pd
 from paddlex.inference.results import TSAdResult
 from paddlex.modules.ts_anomaly_detection.model_list import MODELS
@@ -26,10 +26,10 @@ from paddlex_hpi.models.base import TSPredictor
 class TSAdPredictor(TSPredictor):
     entities = MODELS
 
-    def _build_xd_model(
-        self, option: xd.RuntimeOption
-    ) -> xd.ts.anomalydetection.PyOnlyAnomalyDetectionModel:
-        model = xd.ts.anomalydetection.PyOnlyAnomalyDetectionModel(
+    def _build_ui_model(
+        self, option: ui.RuntimeOption
+    ) -> ui.ts.anomalydetection.PyOnlyAnomalyDetectionModel:
+        model = ui.ts.anomalydetection.PyOnlyAnomalyDetectionModel(
             str(self.model_path),
             str(self.params_path),
             str(self.config_path),
@@ -39,20 +39,20 @@ class TSAdPredictor(TSPredictor):
 
     def _predict(self, batch_data: BatchData) -> BatchData:
         ts_data = [data["ts"] for data in batch_data]
-        xd_results = self._xd_model.batch_predict(ts_data)
+        ui_results = self._ui_model.batch_predict(ts_data)
         results: BatchData = []
-        for data, xd_result in zip(batch_data, xd_results):
-            ts_ad_result = self._create_ts_ad_result(data, xd_result)
+        for data, ui_result in zip(batch_data, ui_results):
+            ts_ad_result = self._create_ts_ad_result(data, ui_result)
             results.append({"result": ts_ad_result})
         return results
 
-    def _create_ts_ad_result(self, data: Data, xd_result: Any) -> TSAdResult:
+    def _create_ts_ad_result(self, data: Data, ui_result: Any) -> TSAdResult:
         data_dict = {
-            xd_result.col_names[i]: xd_result.data[i]
-            for i in range(len(xd_result.col_names))
+            ui_result.col_names[i]: ui_result.data[i]
+            for i in range(len(ui_result.col_names))
         }
         anomaly = pd.DataFrame.from_dict(data_dict)
-        anomaly.index = xd_result.dates
+        anomaly.index = ui_result.dates
         anomaly.index.name = "timestamp"
         dic = {"input_path": data["input_path"], "anomaly": anomaly}
         return TSAdResult(dic)

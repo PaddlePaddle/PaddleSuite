@@ -15,7 +15,7 @@
 import tempfile
 from typing import List
 
-import xdeploy as xd
+import ultrainfer as ui
 import numpy as np
 from paddlex.inference.results import TextRecResult
 from paddlex.modules.text_recognition.model_list import MODELS
@@ -27,31 +27,31 @@ from paddlex_hpi.models.base import CVPredictor
 class TextRecPredictor(CVPredictor):
     entities = MODELS
 
-    def _build_xd_model(self, option: xd.RuntimeOption) -> xd.vision.ocr.Recognizer:
+    def _build_ui_model(self, option: ui.RuntimeOption) -> ui.vision.ocr.Recognizer:
         with tempfile.NamedTemporaryFile("w", encoding="utf-8", suffix=".txt") as f:
             pp_config = self.config["PostProcess"]
             for lab in pp_config["character_dict"]:
                 f.write(lab + "\n")
             f.flush()
-            model = xd.vision.ocr.Recognizer(
+            model = ui.vision.ocr.Recognizer(
                 str(self.model_path),
                 str(self.params_path),
                 label_path=f.name,
                 runtime_option=option,
             )
-            self._config_xd_preprocessor(model)
+            self._config_ui_preprocessor(model)
         return model
 
     def _predict(self, batch_data: BatchData) -> BatchData:
         imgs = [np.ascontiguousarray(data["img"]) for data in batch_data]
-        xd_result = self._xd_model.batch_predict(imgs)
+        ui_result = self._ui_model.batch_predict(imgs)
         results: BatchData = []
-        for data, text, score in zip(batch_data, xd_result.text, xd_result.rec_scores):
+        for data, text, score in zip(batch_data, ui_result.text, ui_result.rec_scores):
             text_rec_result = self._create_text_rec_result(data, text, score)
             results.append({"result": text_rec_result})
         return results
 
-    def _config_xd_preprocessor(self, model: xd.vision.ocr.Recognizer) -> None:
+    def _config_ui_preprocessor(self, model: ui.vision.ocr.Recognizer) -> None:
         pp_config = self.config["PreProcess"]
         preprocessor = model.preprocessor
         found_resize_op = False

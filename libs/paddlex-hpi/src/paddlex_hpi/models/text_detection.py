@@ -15,7 +15,7 @@
 import os
 from typing import Any, Dict, List, Optional, Union
 
-import xdeploy as xd
+import ultrainfer as ui
 import numpy as np
 from paddlex.inference.results import TextDetResult
 from paddlex.modules.text_detection.model_list import CURVE_MODELS, MODELS
@@ -47,35 +47,35 @@ class TextDetPredictor(CVPredictor):
     def _is_curve_model(self) -> bool:
         return self.model_name in CURVE_MODELS
 
-    def _build_xd_model(
-        self, option: xd.RuntimeOption
-    ) -> Union[xd.vision.ocr.DBDetector, xd.vision.ocr.DBCURVEDetector]:
+    def _build_ui_model(
+        self, option: ui.RuntimeOption
+    ) -> Union[ui.vision.ocr.DBDetector, ui.vision.ocr.DBCURVEDetector]:
         if self._is_curve_model:
-            model = xd.vision.ocr.DBCURVEDetector(
+            model = ui.vision.ocr.DBCURVEDetector(
                 str(self.model_path),
                 str(self.params_path),
                 runtime_option=option,
             )
         else:
-            model = xd.vision.ocr.DBDetector(
+            model = ui.vision.ocr.DBDetector(
                 str(self.model_path),
                 str(self.params_path),
                 runtime_option=option,
             )
-        self._config_xd_preprocessor(model)
-        self._config_xd_postprocessor(model)
+        self._config_ui_preprocessor(model)
+        self._config_ui_postprocessor(model)
         return model
 
     def _predict(self, batch_data: BatchData) -> BatchData:
         imgs = [np.ascontiguousarray(data["img"]) for data in batch_data]
-        xd_results = self._xd_model.batch_predict(imgs)
+        ui_results = self._ui_model.batch_predict(imgs)
         results: BatchData = []
-        for data, xd_result in zip(batch_data, xd_results):
-            text_det_result = self._create_text_det_result(data, xd_result)
+        for data, ui_result in zip(batch_data, ui_results):
+            text_det_result = self._create_text_det_result(data, ui_result)
             results.append({"result": text_det_result})
         return results
 
-    def _config_xd_preprocessor(self, model: xd.vision.ocr.DBDetector) -> None:
+    def _config_ui_preprocessor(self, model: ui.vision.ocr.DBDetector) -> None:
         pp_config = self.config["PreProcess"]
         preprocessor = model.preprocessor
         for item in pp_config["transform_ops"]:
@@ -112,7 +112,7 @@ class TextDetPredictor(CVPredictor):
             else:
                 raise RuntimeError(f"Unkown preprocessing operator: {op_name}")
 
-    def _config_xd_postprocessor(self, model: xd.vision.ocr.DBDetector) -> None:
+    def _config_ui_postprocessor(self, model: ui.vision.ocr.DBDetector) -> None:
         pp_config = self.config["PostProcess"]
         # XXX: Default values copied from
         # `paddlex.inference.models.TextDetPredictor`
@@ -154,11 +154,11 @@ class TextDetPredictor(CVPredictor):
             else:
                 postprocessor.det_db_box_type = "poly"
 
-    def _create_text_det_result(self, data: Data, xd_result: Any) -> TextDetResult:
-        polys = [list(zip(*([iter(box)] * 2))) for box in xd_result.boxes]
-        # XXX: Currently, we cannot get scores from `xd_result`, so we
+    def _create_text_det_result(self, data: Data, ui_result: Any) -> TextDetResult:
+        polys = [list(zip(*([iter(box)] * 2))) for box in ui_result.boxes]
+        # XXX: Currently, we cannot get scores from `ui_result`, so we
         # temporarily use dummy scores here.
-        dummy_scores = [0.0 for _ in xd_result.boxes]
+        dummy_scores = [0.0 for _ in ui_result.boxes]
         dic = {
             "input_path": data["input_path"],
             "dt_polys": polys,

@@ -14,7 +14,7 @@
 
 from typing import Any, List
 
-import xdeploy as xd
+import ultrainfer as ui
 import numpy as np
 from paddlex.inference.results import SegResult
 from paddlex.modules.anomaly_detection.model_list import MODELS
@@ -26,10 +26,10 @@ from paddlex_hpi.models.base import CVPredictor
 class UadPredictor(CVPredictor):
     entities = MODELS
 
-    def _build_xd_model(
-        self, option: xd.RuntimeOption
-    ) -> xd.vision.segmentation.PyOnlyAnomalyDetectionModel:
-        model = xd.vision.segmentation.PyOnlyAnomalyDetectionModel(
+    def _build_ui_model(
+        self, option: ui.RuntimeOption
+    ) -> ui.vision.segmentation.PyOnlyAnomalyDetectionModel:
+        model = ui.vision.segmentation.PyOnlyAnomalyDetectionModel(
             str(self.model_path),
             str(self.params_path),
             str(self.config_path),
@@ -39,15 +39,15 @@ class UadPredictor(CVPredictor):
 
     def _predict(self, batch_data: BatchData) -> BatchData:
         imgs = [np.ascontiguousarray(data["img"]) for data in batch_data]
-        xd_results = self._xd_model.batch_predict(imgs)
+        ui_results = self._ui_model.batch_predict(imgs)
         results: BatchData = []
-        for data, xd_result in zip(batch_data, xd_results):
-            uad_result = self._create_uad_result(data, xd_result)
+        for data, ui_result in zip(batch_data, ui_results):
+            uad_result = self._create_uad_result(data, ui_result)
             results.append({"result": uad_result})
         return results
 
-    def _create_uad_result(self, data: Data, xd_result: Any) -> SegResult:
-        pred = np.array(xd_result.label_map, dtype=np.int32).reshape(xd_result.shape)
+    def _create_uad_result(self, data: Data, ui_result: Any) -> SegResult:
+        pred = np.array(ui_result.label_map, dtype=np.int32).reshape(ui_result.shape)
         pred = pred[np.newaxis]
         dic = {
             "input_path": data["input_path"],

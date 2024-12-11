@@ -14,7 +14,7 @@
 
 from typing import Any, List
 
-import xdeploy as xd
+import ultrainfer as ui
 import numpy as np
 from paddlex.inference.results import BaseResult
 from paddlex.modules.general_recognition.model_list import MODELS
@@ -26,10 +26,10 @@ from paddlex_hpi.models.base import CVPredictor
 class ShiTuRecPredictor(CVPredictor):
     entities = MODELS
 
-    def _build_xd_model(
-        self, option: xd.RuntimeOption
-    ) -> xd.vision.classification.PPShiTuV2Recognizer:
-        model = xd.vision.classification.PPShiTuV2Recognizer(
+    def _build_ui_model(
+        self, option: ui.RuntimeOption
+    ) -> ui.vision.classification.PPShiTuV2Recognizer:
+        model = ui.vision.classification.PPShiTuV2Recognizer(
             str(self.model_path),
             str(self.params_path),
             str(self.config_path),
@@ -41,16 +41,16 @@ class ShiTuRecPredictor(CVPredictor):
         imgs = [
             np.ascontiguousarray(data["img"]).astype("float32") for data in batch_data
         ]
-        xd_results = self._xd_model.batch_predict(imgs)
+        ui_results = self._ui_model.batch_predict(imgs)
         results: BatchData = []
-        for data, xd_result in zip(batch_data, xd_results):
-            clas_result = self._create_rec_result(data, xd_result)
+        for data, ui_result in zip(batch_data, ui_results):
+            clas_result = self._create_rec_result(data, ui_result)
             results.append({"result": clas_result})
         return results
 
-    def _create_rec_result(self, data: Data, xd_result: Any) -> BaseResult:
+    def _create_rec_result(self, data: Data, ui_result: Any) -> BaseResult:
         dic = {
             "input_path": data["input_path"],
-            "feature": np.array(xd_result.feature, dtype="float32"),
+            "feature": np.array(ui_result.feature, dtype="float32"),
         }
         return BaseResult(dic)

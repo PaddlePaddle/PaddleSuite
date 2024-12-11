@@ -14,7 +14,7 @@
 
 from typing import Any, List
 
-import xdeploy as xd
+import ultrainfer as ui
 import numpy as np
 from paddlex.inference.results import FormulaRecResult
 from paddlex.modules.formula_recognition.model_list import MODELS
@@ -26,10 +26,10 @@ from paddlex_hpi.models.base import CVPredictor
 class LaTeXOCRPredictor(CVPredictor):
     entities = MODELS
 
-    def _build_xd_model(
-        self, option: xd.RuntimeOption
-    ) -> xd.vision.ocr.PyOnlyFormulaRecognitionModel:
-        model = xd.vision.ocr.PyOnlyFormulaRecognitionModel(
+    def _build_ui_model(
+        self, option: ui.RuntimeOption
+    ) -> ui.vision.ocr.PyOnlyFormulaRecognitionModel:
+        model = ui.vision.ocr.PyOnlyFormulaRecognitionModel(
             str(self.model_path),
             str(self.params_path),
             str(self.config_path),
@@ -41,16 +41,16 @@ class LaTeXOCRPredictor(CVPredictor):
         imgs = [
             np.ascontiguousarray(data["img"]).astype("float32") for data in batch_data
         ]
-        xd_results = self._xd_model.batch_predict(imgs)
+        ui_results = self._ui_model.batch_predict(imgs)
         results: BatchData = []
-        for data, xd_result in zip(batch_data, xd_results):
-            rec_result = self._create_rec_result(data, xd_result)
+        for data, ui_result in zip(batch_data, ui_results):
+            rec_result = self._create_rec_result(data, ui_result)
             results.append({"result": rec_result})
         return results
 
-    def _create_rec_result(self, data: Data, xd_result: Any) -> FormulaRecResult:
+    def _create_rec_result(self, data: Data, ui_result: Any) -> FormulaRecResult:
         dic = {
             "input_path": data["input_path"],
-            "rec_text": xd_result.rec_text,
+            "rec_text": ui_result.rec_text,
         }
         return FormulaRecResult(dic)

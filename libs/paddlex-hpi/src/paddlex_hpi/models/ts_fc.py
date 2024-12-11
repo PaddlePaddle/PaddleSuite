@@ -14,7 +14,7 @@
 
 from typing import Any, List
 
-import xdeploy as xd
+import ultrainfer as ui
 import pandas as pd
 from paddlex.inference.results import TSFcResult
 from paddlex.modules.ts_forecast.model_list import MODELS
@@ -26,10 +26,10 @@ from paddlex_hpi.models.base import TSPredictor
 class TSFcPredictor(TSPredictor):
     entities = MODELS
 
-    def _build_xd_model(
-        self, option: xd.RuntimeOption
-    ) -> xd.ts.forecasting.PyOnlyForecastingModel:
-        model = xd.ts.forecasting.PyOnlyForecastingModel(
+    def _build_ui_model(
+        self, option: ui.RuntimeOption
+    ) -> ui.ts.forecasting.PyOnlyForecastingModel:
+        model = ui.ts.forecasting.PyOnlyForecastingModel(
             str(self.model_path),
             str(self.params_path),
             str(self.config_path),
@@ -39,20 +39,20 @@ class TSFcPredictor(TSPredictor):
 
     def _predict(self, batch_data: BatchData) -> BatchData:
         ts_data = [data["ts"] for data in batch_data]
-        xd_results = self._xd_model.batch_predict(ts_data)
+        ui_results = self._ui_model.batch_predict(ts_data)
         results: BatchData = []
-        for data, xd_result in zip(batch_data, xd_results):
-            ts_fc_result = self._create_ts_fc_result(data, xd_result)
+        for data, ui_result in zip(batch_data, ui_results):
+            ts_fc_result = self._create_ts_fc_result(data, ui_result)
             results.append({"result": ts_fc_result})
         return results
 
-    def _create_ts_fc_result(self, data: Data, xd_result: Any) -> TSFcResult:
+    def _create_ts_fc_result(self, data: Data, ui_result: Any) -> TSFcResult:
         data_dict = {
-            xd_result.col_names[i]: xd_result.data[i]
-            for i in range(len(xd_result.col_names))
+            ui_result.col_names[i]: ui_result.data[i]
+            for i in range(len(ui_result.col_names))
         }
         forecast = pd.DataFrame.from_dict(data_dict)
-        forecast.index = xd_result.dates
+        forecast.index = ui_result.dates
         forecast.index.name = "date"
         dic = {"input_path": data["input_path"], "forecast": forecast}
         return TSFcResult(dic)

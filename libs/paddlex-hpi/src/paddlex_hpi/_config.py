@@ -16,7 +16,7 @@ import warnings
 from pathlib import Path
 from typing import Any, Dict, List, Mapping, Optional, Tuple, Type, Union
 
-import xdeploy as xd
+import ultrainfer as ui
 from paddlex.utils import logging
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 from typing_extensions import Annotated, TypeAlias, TypedDict, assert_never
@@ -25,20 +25,10 @@ from paddlex_hpi._model_info import get_model_info
 from paddlex_hpi._utils.typing import Backend, DeviceType
 
 
-# HACK: https://github.com/pydantic/pydantic/issues/6670
-class _CyFunctionDetectorMeta(type):
-    def __instancecheck__(self, instance: object) -> bool:
-        return instance.__class__.__name__ == "cython_function_or_method"
-
-
-class _CyFunctionDetector(metaclass=_CyFunctionDetectorMeta):
-    pass
-
-
 class _BackendConfig(BaseModel):
-    model_config = ConfigDict(ignored_types=(_CyFunctionDetector,))
+    model_config = ConfigDict()
 
-    def update_xd_option(self, option: xd.RuntimeOption, model_dir: Path) -> None:
+    def update_ui_option(self, option: ui.RuntimeOption, model_dir: Path) -> None:
         raise NotImplementedError
 
 
@@ -50,7 +40,7 @@ class PaddleInferConfig(_BackendConfig):
     trt_dynamic_shape_input_data: Optional[Dict[str, List[List[float]]]] = None
     enable_log_info: bool = False
 
-    def update_xd_option(self, option: xd.RuntimeOption, model_dir: Path) -> None:
+    def update_ui_option(self, option: ui.RuntimeOption, model_dir: Path) -> None:
         option.use_paddle_infer_backend()
         option.set_cpu_thread_num(self.cpu_num_threads)
         option.paddle_infer_option.enable_mkldnn = self.enable_mkldnn
@@ -71,7 +61,7 @@ class PaddleInferConfig(_BackendConfig):
 class OpenVINOConfig(_BackendConfig):
     cpu_num_threads: int = 8
 
-    def update_xd_option(self, option: xd.RuntimeOption, model_dir: Path) -> None:
+    def update_ui_option(self, option: ui.RuntimeOption, model_dir: Path) -> None:
         option.use_openvino_backend()
         option.set_cpu_thread_num(self.cpu_num_threads)
 
@@ -79,7 +69,7 @@ class OpenVINOConfig(_BackendConfig):
 class ONNXRuntimeConfig(_BackendConfig):
     cpu_num_threads: int = 8
 
-    def update_xd_option(self, option: xd.RuntimeOption, model_dir: Path) -> None:
+    def update_ui_option(self, option: ui.RuntimeOption, model_dir: Path) -> None:
         option.use_ort_backend()
         option.set_cpu_thread_num(self.cpu_num_threads)
 
@@ -87,7 +77,7 @@ class ONNXRuntimeConfig(_BackendConfig):
 class TensorRTConfig(_BackendConfig):
     dynamic_shapes: Optional[Dict[str, List[List[int]]]] = None
 
-    def update_xd_option(self, option: xd.RuntimeOption, model_dir: Path) -> None:
+    def update_ui_option(self, option: ui.RuntimeOption, model_dir: Path) -> None:
         option.use_trt_backend()
         option.trt_option.serialize_file = str(model_dir / "trt_serialized.trt")
         if self.dynamic_shapes is not None:
@@ -100,7 +90,7 @@ class PaddleTensorRTConfig(_BackendConfig):
     dynamic_shape_input_data: Optional[Dict[str, List[List[float]]]] = None
     enable_log_info: bool = False
 
-    def update_xd_option(self, option: xd.RuntimeOption, model_dir: Path) -> None:
+    def update_ui_option(self, option: ui.RuntimeOption, model_dir: Path) -> None:
         option.use_paddle_infer_backend()
         option.paddle_infer_option.enable_trt = True
         option.trt_option.serialize_file = str(model_dir / "trt_serialized.trt")
@@ -149,9 +139,7 @@ class BackendConfigs(TypedDict, total=False):
 
 
 class HPIConfig(BaseModel):
-    model_config = ConfigDict(
-        ignored_types=(_CyFunctionDetector,), populate_by_name=True
-    )
+    model_config = ConfigDict(populate_by_name=True)
 
     selected_backends: Optional[Dict[DeviceType, Backend]] = None
     # For backward compatilibity
