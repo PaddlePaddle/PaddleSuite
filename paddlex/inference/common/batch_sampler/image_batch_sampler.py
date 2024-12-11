@@ -17,6 +17,7 @@ import ast
 from pathlib import Path
 import numpy as np
 
+from ....utils import logging
 from ....utils.download import download
 from ....utils.cache import CACHE_DIR
 from .base_batch_sampler import BaseBatchSampler
@@ -53,9 +54,15 @@ class ImageBatchSampler(BaseBatchSampler):
     def sample(self, inputs):
         if not isinstance(inputs, list):
             inputs = [inputs]
+
+        batch = []
         for input in inputs:
             if isinstance(input, np.ndarray):
-                yield [input]
+                # yield [input]
+                batch.append(input)
+                if len(batch) == self.batch_size:
+                    yield batch
+                    batch = []
             elif isinstance(input, str):
                 file_path = (
                     self._download_from_url(input)
@@ -63,18 +70,17 @@ class ImageBatchSampler(BaseBatchSampler):
                     else input
                 )
                 file_list = self._get_files_list(file_path)
-                batch = []
                 for file_path in file_list:
                     batch.append(file_path)
                     if len(batch) == self.batch_size:
                         yield batch
                         batch = []
-                if len(batch) > 0:
-                    yield batch
             else:
-                raise Exception(
-                    "Not supported input data type! Only `numpy.ndarray` and `str` are supported!"
+                logging.warning(
+                    f"Not supported input data type! Only `numpy.ndarray` and `str` are supported! So has been ignored: {input}."
                 )
+        if len(batch) > 0:
+            yield batch
 
     def _rand_batch(self, data_size):
         def parse_size(s):
