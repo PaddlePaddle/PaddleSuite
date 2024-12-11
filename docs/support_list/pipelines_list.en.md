@@ -306,6 +306,69 @@ comments: true
   <tr>
     <td>Text Recognition</td>
   </tr>
+<tr>
+    <td rowspan = 2>General Image Recognition</td>
+    <td>Subject Detection</td>
+    <td rowspan = 2>None</td>
+    <td rowspan = 2>The general image recognition production line is designed to address open-domain target localization and recognition issues. It can effectively identify and differentiate various target objects in different environments and conditions, making it widely applicable in autonomous driving, intelligent security, medical image analysis, and industrial automation, among other fields.</td>
+    <td rowspan = 2>
+    <ul>
+        <li>Automated Identity Verification</li>
+        <li>Unmanned Retail</li>
+        <li>Autonomous Driving</li>
+      </ul>
+      </td>
+  </tr>
+  <tr>
+    <td>Image Features</td>
+  </tr>
+  <tr>
+    <td rowspan = 2>Pedestrian Attribute Recognition</td>
+    <td>Pedestrian Detection</td>
+    <td rowspan = 2>None</td>
+    <td rowspan = 2>Pedestrian attribute recognition is a key function in computer vision systems used to locate and tag specific features of pedestrians in images or videos, such as gender, age, clothing color, and style.</td>
+    <td rowspan = 2>
+    <ul>
+        <li>Smart City</li>
+        <li>Security Monitoring</li>
+      </ul>
+      </td>
+  </tr>
+  <tr>
+    <td>Pedestrian Attribute Recognition</td>
+  </tr>
+  <tr>
+    <td rowspan = 2>Vehicle Attribute Recognition</td>
+    <td>Vehicle Detection</td>
+    <td rowspan = 2>None</td>
+    <td rowspan = 2>Vehicle attribute recognition is an important component of computer vision systems. Its main task is to locate and tag specific attributes of vehicles in images or videos, such as vehicle type, color, and license plate number. This task not only requires accurate detection of vehicles but also the recognition of detailed attribute information for each vehicle.</td>
+    <td rowspan = 2>
+    <ul>
+        <li>Intelligent Parking</li>
+        <li>Traffic Management</li>
+        <li>Autonomous Driving</li>
+      </ul>
+      </td>
+  </tr>
+  <tr>
+    <td>Vehicle Attribute Recognition</td>
+  </tr>
+  <tr>
+    <td rowspan = 2>Face Recognition</td>
+    <td>Face Detection</td>
+    <td rowspan = 2>None</td>
+    <td rowspan = 2>The facial recognition task is an important component of the computer vision field, aiming to realize automatic personal identity recognition through the analysis and comparison of facial features.</td>
+    <td rowspan = 2>
+    <ul>
+        <li>Security Authentication</li>
+        <li>Monitoring Systems</li>
+        <li>Social Media</li>
+      </ul>
+      </td>
+  </tr>
+  <tr>
+    <td>Face Features</td>
+  </tr>
 </table>
 
 ## 2. Featured Pipelines
