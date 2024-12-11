@@ -28,12 +28,10 @@ class ImageBatchSampler(BaseBatchSampler):
 
     # XXX: auto download for url
     def _download_from_url(self, in_path):
-        if in_path.startswith("http"):
-            file_name = Path(in_path).name
-            save_path = Path(CACHE_DIR) / "predict_input" / file_name
-            download(in_path, save_path, overwrite=True)
-            return save_path.as_posix()
-        return in_path
+        file_name = Path(in_path).name
+        save_path = Path(CACHE_DIR) / "predict_input" / file_name
+        download(in_path, save_path, overwrite=True)
+        return save_path.as_posix()
 
     def _get_files_list(self, fp):
         file_list = []
@@ -59,7 +57,11 @@ class ImageBatchSampler(BaseBatchSampler):
             if isinstance(input, np.ndarray):
                 yield [input]
             elif isinstance(input, str):
-                file_path = self._download_from_url(input)
+                file_path = (
+                    self._download_from_url(input)
+                    if input.startswith("http")
+                    else input
+                )
                 file_list = self._get_files_list(file_path)
                 batch = []
                 for file_path in file_list:

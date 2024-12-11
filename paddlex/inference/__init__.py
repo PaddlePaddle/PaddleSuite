@@ -13,13 +13,13 @@
 # limitations under the License.
 
 from ..utils import flags
-from ..utils.flags import USE_NEW_INFERENCE
+from ..utils.flags import USE_NEW_INFERENCE, NEW_PREDICTOR
 
 if USE_NEW_INFERENCE:
     from .pipelines_new import create_pipeline
 else:
     from .pipelines import create_pipeline
-if USE_NEW_INFERENCE:
+if NEW_PREDICTOR:
     from .models_new import create_predictor
 else:
     from .models import create_predictor
