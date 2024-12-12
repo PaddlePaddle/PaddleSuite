@@ -23,7 +23,6 @@ from .....utils.flags import (
 from .....utils import logging
 from ....utils.pp_option import PaddlePredictorOption
 from ....utils.benchmark import benchmark
-from ....common.batch_sampler import BaseBatchSampler
 from .base_predictor import BasePredictor
 
 
@@ -87,7 +86,6 @@ class BasicPredictor(
         if device:
             pp_option.device = device
         self.pp_option = pp_option
-        self.batch_sampler = self._build_batch_sampler()
         self.result_class = self._get_result_class()
         logging.debug(f"{self.__class__.__name__}: {self.model_dir}")
         self.benchmark = benchmark
@@ -166,15 +164,6 @@ class BasicPredictor(
             self.pp_option = pp_option
 
     @abstractmethod
-    def _build_batch_sampler(self) -> BaseBatchSampler:
-        """Build batch sampler.
-
-        Returns:
-            BaseBatchSampler: batch sampler object.
-        """
-        raise NotImplementedError
-
-    @abstractmethod
     def process(self, batch_data: List[Any]) -> Dict[str, List[Any]]:
         """process the batch data sampled from BatchSampler and return the prediction result.
 
@@ -183,14 +172,5 @@ class BasicPredictor(
 
         Returns:
             Dict[str, List[Any]]: The prediction result.
-        """
-        raise NotImplementedError
-
-    @abstractmethod
-    def _get_result_class(self) -> type:
-        """Get the result class.
-
-        Returns:
-            type: The result class.
         """
         raise NotImplementedError

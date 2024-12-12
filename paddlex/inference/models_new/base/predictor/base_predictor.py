@@ -17,6 +17,7 @@ from pathlib import Path
 from abc import abstractmethod, ABC
 
 from ....utils.io import YAMLReader
+from ....common.batch_sampler import BaseBatchSampler
 
 
 class BasePredictor(ABC):
@@ -34,6 +35,8 @@ class BasePredictor(ABC):
         super().__init__()
         self.model_dir = Path(model_dir)
         self.config = config if config else self.load_config(self.model_dir)
+        self.batch_sampler = self._build_batch_sampler()
+        self.result_class = self._get_result_class()
 
         # alias predict() to the __call__()
         self.predict = self.__call__
@@ -90,11 +93,24 @@ class BasePredictor(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def apply(self, input: Any) -> Iterator[Any]:
-        """Predict the given input."""
+    def set_predictor(self) -> None:
+        """Sets up the predictor."""
         raise NotImplementedError
 
     @abstractmethod
-    def set_predictor(self) -> None:
-        """Sets up the predictor."""
+    def _build_batch_sampler(self) -> BaseBatchSampler:
+        """Build batch sampler.
+
+        Returns:
+            BaseBatchSampler: batch sampler object.
+        """
+        raise NotImplementedError
+
+    @abstractmethod
+    def _get_result_class(self) -> type:
+        """Get the result class.
+
+        Returns:
+            type: The result class.
+        """
         raise NotImplementedError
