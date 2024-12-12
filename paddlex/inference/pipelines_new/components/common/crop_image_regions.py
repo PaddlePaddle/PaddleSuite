@@ -95,24 +95,14 @@ class CropByPolys(BaseOperator):
             for bno in range(len(dt_boxes)):
                 tmp_box = copy.deepcopy(dt_boxes[bno])
                 img_crop = self.get_minarea_rect_crop(img, tmp_box)
-                output_list.append(
-                    {
-                        "img": img_crop,
-                        "img_size": [img_crop.shape[1], img_crop.shape[0]],
-                    }
-                )
+                output_list.append(img_crop)
         elif self.det_box_type == "poly":
             output_list = []
             dt_boxes = dt_polys
             for bno in range(len(dt_boxes)):
                 tmp_box = copy.deepcopy(dt_boxes[bno])
                 img_crop = self.get_poly_rect_crop(img.copy(), tmp_box)
-                output_list.append(
-                    {
-                        "img": img_crop,
-                        "img_size": [img_crop.shape[1], img_crop.shape[0]],
-                    }
-                )
+                output_list.append(img_crop)
         else:
             raise NotImplementedError
 

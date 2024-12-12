@@ -12,16 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from ..base import BasePipeline
 from typing import Any, Dict, Optional
-from ..components import SortQuadBoxes, SortPolyBoxes, CropByPolys
-from .result import OCRResult
-
-########## [TODO]后续需要更新路径
-from ...components.transforms import ReadImage
-
-from ...utils.pp_option import PaddlePredictorOption
 import numpy as np
+
+from ...common.reader import ReadImage
+from ...common.batch_sampler import ImageBatchSampler
+from ...utils.pp_option import PaddlePredictorOption
+from ..base import BasePipeline
+from ..components import CropByPolys, SortQuadBoxes, SortPolyBoxes
+from .result import OCRResult
 
 
 class OCRPipeline(BasePipeline):
@@ -68,6 +67,7 @@ class OCRPipeline(BasePipeline):
         else:
             raise ValueError("Unsupported text type {}".format(self.text_type))
 
+        self.batch_sampler = ImageBatchSampler(batch_size=1)
         self.img_reader = ReadImage(format="BGR")
 
     def predict(
@@ -82,21 +82,10 @@ class OCRPipeline(BasePipeline):
         Returns:
             OCRResult: An iterable of OCRResult objects, each containing the predicted text and other relevant information.
         """
-        if not isinstance(input, list):
-            input_list = [input]
-        else:
-            input_list = input
 
-        img_id = 1
-        for input in input_list:
-            if isinstance(input, str):
-                image_array = next(self.img_reader(input))[0]["img"]
-            else:
-                image_array = input
-
-            assert len(image_array.shape) == 3
-
-            det_res = next(self.text_det_model(image_array))
+        for img_id, batch_data in enumerate(self.batch_sampler(input)):
+            raw_img = self.img_reader(batch_data)[0]
+            det_res = next(self.text_det_model(raw_img))
 
             dt_polys = det_res["dt_polys"]
             dt_scores = det_res["dt_scores"]
@@ -106,7 +95,7 @@ class OCRPipeline(BasePipeline):
             dt_polys = self._sort_boxes(dt_polys)
 
             single_img_res = {
-                "input_img": image_array,
+                "input_img": raw_img,
                 "dt_polys": dt_polys,
                 "img_id": img_id,
                 "text_type": self.text_type,
@@ -115,12 +104,7 @@ class OCRPipeline(BasePipeline):
             single_img_res["rec_text"] = []
             single_img_res["rec_score"] = []
             if len(dt_polys) > 0:
-                all_subs_of_img = list(self._crop_by_polys(image_array, dt_polys))
-
-                ########## [TODO] Update in the future
-                for sub_img in all_subs_of_img:
-                    sub_img["input"] = sub_img["img"]
-                ##########
+                all_subs_of_img = list(self._crop_by_polys(raw_img, dt_polys))
 
                 for rec_res in self.text_rec_model(all_subs_of_img):
                     single_img_res["rec_text"].append(rec_res["rec_text"])
