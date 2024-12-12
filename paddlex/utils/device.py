@@ -19,7 +19,7 @@ import lazy_paddle as paddle
 from . import logging
 from .errors import raise_unsupported_device_error
 
-SUPPORTED_DEVICE_TYPE = ["cpu", "gpu", "xpu", "npu", "mlu"]
+SUPPORTED_DEVICE_TYPE = ["cpu", "gpu", "xpu", "npu", "mlu", "gcu"]
 
 
 def _constr_device(device_type, device_ids):
@@ -77,7 +77,7 @@ def set_env_for_device(device):
             logging.debug(f"{key} has been set to {val}.")
 
     device_type, device_ids = parse_device(device)
-    if device_type.lower() in ["gpu", "xpu", "npu", "mlu"]:
+    if device_type.lower() in ["gpu", "xpu", "npu", "mlu", "gcu"]:
         if device_type.lower() == "gpu" and paddle.is_compiled_with_rocm():
             envs = {"FLAGS_conv_workspace_size_limit": "2000"}
             _set(envs)
@@ -99,5 +99,8 @@ def set_env_for_device(device):
             }
             _set(envs)
         if device_type.lower() == "mlu":
+            envs = {"FLAGS_use_stride_kernel": "0"}
+            _set(envs)
+        if device_type.lower() == "gcu":
             envs = {"FLAGS_use_stride_kernel": "0"}
             _set(envs)

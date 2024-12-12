@@ -73,11 +73,11 @@ class TSModel(BaseModel):
         if resume_path:
             raise ValueError("`resume_path` is not supported.")
         # No need to handle `ips`
-        if amp is not None and amp != "OFF":
-            raise ValueError(f"`amp`={amp} is not supported.")
-
-        if dy2st:
-            raise ValueError(f"`dy2st`={dy2st} is not supported.")
+        benchmark = kwargs.pop("benchmark", None)
+        if benchmark is not None:
+            amp = benchmark.get("amp", None)
+            if amp in ["O1", "O2"]:
+                config.update_amp(amp)
 
         if use_vdl:
             raise ValueError(f"`use_vdl`={use_vdl} is not supported.")
@@ -85,7 +85,6 @@ class TSModel(BaseModel):
         if device is not None:
             device_type, _ = parse_device(device)
             cli_args.append(CLIArgument("--device", device_type))
-
         if save_dir is not None:
             save_dir = abspath(save_dir)
         else:

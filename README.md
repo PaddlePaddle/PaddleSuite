@@ -209,7 +209,7 @@ PaddleX的各个产线均支持本地**快速推理**，部分模型支持在[AI
         <td><a href="https://paddlepaddle.github.io/PaddleX/latest/pipeline_usage/tutorials/ocr_pipelines/layout_parsing.html">通用版面解析</a></td>
         <td>🚧</td>
         <td>✅</td>
-        <td>🚧</td>
+        <td>✅</td>
         <td>✅</td>
         <td>🚧</td>
         <td>✅</td>
@@ -219,7 +219,7 @@ PaddleX的各个产线均支持本地**快速推理**，部分模型支持在[AI
         <td><a href="https://paddlepaddle.github.io/PaddleX/latest/pipeline_usage/tutorials/ocr_pipelines/formula_recognition.html">公式识别</a></td>
         <td>🚧</td>
         <td>✅</td>
-        <td>🚧</td>
+        <td>✅</td>
         <td>✅</td>
         <td>🚧</td>
         <td>✅</td>
@@ -379,7 +379,7 @@ python -m pip install paddlepaddle-gpu==3.0.0b2 -i https://www.paddlepaddle.org.
 * **安装PaddleX**
 
 ```bash
-pip install https://paddle-model-ecology.bj.bcebos.com/paddlex/whl/paddlex-3.0.0b2-py3-none-any.whl
+pip install paddlex==3.0.0b2
 ```
 
 > ❗ 更多安装方式参考 [PaddleX 安装教程](https://paddlepaddle.github.io/PaddleX/latest/installation/installation.html)

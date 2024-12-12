@@ -360,13 +360,13 @@ PaddleX incorporates multiple pipelines, each containing several modules, and ea
 </table>
 <b>Note: The above accuracy metrics refer to Top-1 Accuracy on the [ImageNet-1k](https://www.image-net.org/index.php) validation set.</b>
 
-## [图像多标签分类模块](../module_usage/tutorials/cv_modules/image_multilabel_classification.md)
+## [Image Multi-label Classification Module](../module_usage/tutorials/cv_modules/image_multilabel_classification.en.md)
 <table>
 <thead>
 <tr>
-<th>模型名称</th>
-<th>mAP（%）</th>
-<th>模型存储大小</th>
+<th>Model Name</th>
+<th>mAP (%)</th>
+<th>Model Storage Size</th>
 <th>Model Download Link</th></tr>
 </thead>
 <tbody>
@@ -374,24 +374,26 @@ PaddleX incorporates multiple pipelines, each containing several modules, and ea
 <td>CLIP_vit_base_patch16_448_ML</td>
 <td>89.15</td>
 <td>325.6 M</td>
-<td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/CLIP_vit_base_patch16_448_ML_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/CLIP_vit_base_patch16_448_ML_pretrained.pdparams">Trained Model</a></td></tr>
+<td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/CLIP_vit_base_patch16_448_ML_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/CLIP_vit_base_patch16_448_ML_pretrained.pdparams">Training Model</a></td></tr>
 <tr>
 <td>PP-HGNetV2-B0_ML</td>
 <td>80.98</td>
 <td>39.6 M</td>
+<td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-HGNetV2-B0_ML_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-HGNetV2-B0_ML_pretrained.pdparams">Training Model</a></td>
 <tr>
 <td>PP-HGNetV2-B4_ML</td>
 <td>87.96</td>
 <td>88.5 M</td>
-<td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-HGNetV2-B4_ML_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-HGNetV2-B4_ML_pretrained.pdparams">Trained Model</a></td></tr>
+<td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-HGNetV2-B4_ML_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-HGNetV2-B4_ML_pretrained.pdparams">Training Model</a></td></tr>
 <tr>
 <td>PP-HGNetV2-B6_ML</td>
-<td>91.25</td>
+<td>91.06</td>
 <td>286.5 M</td>
-<td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-HGNetV2-B6_ML_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-HGNetV2-B6_ML_pretrained.pdparams">Trained Model</a></td></tr>
-<td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-HGNetV2-B0_ML_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-HGNetV2-B0_ML_pretrained.pdparams">Trained Model</a></td></tr></tbody>
+<td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-HGNetV2-B6_ML_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-HGNetV2-B6_ML_pretrained.pdparams">Training Model</a></td></tr>
+</tr></tbody>
 </table>
-<b>注：以上精度指标为 [COCO2017](https://cocodataset.org/#home) 的多标签分类任务mAP。</b>
+<b>Note: The above accuracy metrics are for the multi-label classification task mAP of [COCO2017](https://cocodataset.org/#home).</b>
+
 
 ## Object Detection Module
 <table>

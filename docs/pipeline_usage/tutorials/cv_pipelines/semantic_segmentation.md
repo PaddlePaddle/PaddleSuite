@@ -241,9 +241,7 @@ paddlex --pipeline semantic_segmentation --input makassaridn-road_demo.png --dev
 
 运行后，得到的结果为：
 
-```
-{'input_path': 'general_object_detection_002.png'}
-```
+{'input_path': 'makassaridn-road_demo.png', 'pred': '...'}
 <img src="https://raw.githubusercontent.com/cuicheng01/PaddleX_doc_images/main/images/pipelines/semantic_segmentation/03.png">
 可视化图片默认不进行保存，您可以通过 `--save_path` 自定义保存路径，随后所有结果将被保存在指定路径下。
 

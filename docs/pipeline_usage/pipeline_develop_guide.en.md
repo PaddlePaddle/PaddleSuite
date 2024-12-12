@@ -186,67 +186,83 @@ Choose the appropriate deployment method for your model pipeline based on your n
 <tbody>
 <tr>
 <td>PP-ChatOCR-doc v3</td>
-<td><a href="./tutorials/information_extraction_pipelines/document_scene_information_extraction.en.md">PP-ChatOCR-doc v3 Pipeline Usage Tutorial</a></td>
+<td><a href="https://paddlepaddle.github.io/PaddleX/latest/en/pipeline_usage/tutorials/information_extraction_pipelines/document_scene_information_extraction.html">PP-ChatOCR-doc v3 Pipeline Usage Tutorial</a></td>
 </tr>
 <tr>
 <td>Image Classification</td>
-<td><a href="./tutorials/cv_pipelines/image_classification.en.md">Image Classification Pipeline Usage Tutorial</a></td>
+<td><a href="https://paddlepaddle.github.io/PaddleX/latest/en/pipeline_usage/tutorials/cv_pipelines/image_classification.html">Image Classification Pipeline Usage Tutorial</a></td>
 </tr>
 <tr>
 <td>Object Detection</td>
-<td><a href="./tutorials/cv_pipelines/object_detection.en.md">Object Detection Pipeline Usage Tutorial</a></td>
+<td><a href="https://paddlepaddle.github.io/PaddleX/latest/en/pipeline_usage/tutorials/cv_pipelines/object_detection.html">Object Detection Pipeline Usage Tutorial</a></td>
 </tr>
 <tr>
 <td>Instance Segmentation</td>
-<td><a href="./tutorials/cv_pipelines/instance_segmentation.en.md">Instance Segmentation Pipeline Usage Tutorial</a></td>
+<td><a href="https://paddlepaddle.github.io/PaddleX/latest/en/pipeline_usage/tutorials/cv_pipelines/instance_segmentation.html">Instance Segmentation Pipeline Usage Tutorial</a></td>
 </tr>
 <tr>
 <td>Semantic Segmentation</td>
-<td><a href="./tutorials/cv_pipelines/semantic_segmentation.en.md">Semantic Segmentation Pipeline Usage Tutorial</a></td>
+<td><a href="https://paddlepaddle.github.io/PaddleX/latest/en/pipeline_usage/tutorials/cv_pipelines/semantic_segmentation.html">Semantic Segmentation Pipeline Usage Tutorial</a></td>
 </tr>
 <tr>
 <td>Image Multi-label Classification</td>
-<td><a href="./tutorials/cv_pipelines/image_multi_label_classification.en.md">Image Multi-label Classification Pipeline Usage Tutorial</a></td>
+<td><a href="https://paddlepaddle.github.io/PaddleX/latest/en/pipeline_usage/tutorials/cv_pipelines/image_multi_label_classification.html">Image Multi-label Classification Pipeline Usage Tutorial</a></td>
+</tr>
+<tr>
+<td>Image Recognition</td>
+<td><a href="https://paddlepaddle.github.io/PaddleX/latest/en/pipeline_usage/tutorials/cv_pipelines/general_image_recognition.html">Image Recognition Pipeline Usage Tutorial</a></td>
+</tr>
+<tr>
+<td>Pedestrian Attribute Recognition</td>
+<td><a href="https://paddlepaddle.github.io/PaddleX/latest/en/pipeline_usage/tutorials/cv_pipelines/pedestrian_attribute.html">Pedestrian Attribute Recognition Pipeline Usage Tutorial</a></td>
+</tr>
+<tr>
+<td>Vehicle Attribute Recognition</td>
+<td><a href="https://paddlepaddle.github.io/PaddleX/latest/en/pipeline_usage/tutorials/cv_pipelines/vehicle_attribute.html">Vehicle Attribute Recognition Pipeline Usage Tutorial</a></td>
+</tr>
+<tr>
+<td>Face Recognition</td>
+<td><a href="https://paddlepaddle.github.io/PaddleX/latest/en/pipeline_usage/tutorials/cv_pipelines/face_recognition.html">Face Recognition Pipeline Usage Tutorial</a></td>
 </tr>
 <tr>
 <td>Small Object Detection</td>
-<td><a href="./tutorials/cv_pipelines/small_object_detection.en.md">Small Object Detection Pipeline Usage Tutorial</a></td>
+<td><a href="https://paddlepaddle.github.io/PaddleX/latest/en/pipeline_usage/tutorials/cv_pipelines/small_object_detection.html">Small Object Detection Pipeline Usage Tutorial</a></td>
 </tr>
 <tr>
 <td>Image Anomaly Detection</td>
-<td><a href="./tutorials/cv_pipelines/image_anomaly_detection.en.md">Image Anomaly Detection Pipeline Usage Tutorial</a></td>
+<td><a href="https://paddlepaddle.github.io/PaddleX/latest/en/pipeline_usage/tutorials/cv_pipelines/image_anomaly_detection.html">Image Anomaly Detection Pipeline Usage Tutorial</a></td>
 </tr>
 <tr>
 <td>OCR</td>
-<td><a href="./tutorials/ocr_pipelines/OCR.en.md">OCR Pipeline Usage Tutorial</a></td>
+<td><a href="https://paddlepaddle.github.io/PaddleX/latest/en/pipeline_usage/tutorials/ocr_pipelines/OCR.html">OCR Pipeline Usage Tutorial</a></td>
 </tr>
 <tr>
 <td>Table Recognition</td>
-<td><a href="./tutorials/ocr_pipelines/table_recognition.en.md">Table Recognition Pipeline Usage Tutorial</a></td>
+<td><a href="https://paddlepaddle.github.io/PaddleX/latest/en/pipeline_usage/tutorials/ocr_pipelines/table_recognition.html">Table Recognition Pipeline Usage Tutorial</a></td>
 </tr>
 <tr>
 <td>Layout Parsing</td>
-<td><a href="./tutorials/ocr_pipelines/layout_parsing.en.md">Layout Parsing Pipeline Usage Tutorial</a></td>
+<td><a href="https://paddlepaddle.github.io/PaddleX/latest/en/pipeline_usage/tutorials/ocr_pipelines/layout_parsing.html">Layout Parsing Pipeline Usage Tutorial</a></td>
 </tr>
 <tr>
 <td>Formula Recognition</td>
-<td><a href="./tutorials/ocr_pipelines/formula_recognition.en.md">Formula Recognition Pipeline Usage Tutorial</a></td>
+<td><a href="https://paddlepaddle.github.io/PaddleX/latest/en/pipeline_usage/tutorials/ocr_pipelines/formula_recognition.html">Formula Recognition Pipeline Usage Tutorial</a></td>
 </tr>
 <tr>
 <td>Seal Recognition</td>
-<td><a href="./tutorials/ocr_pipelines/seal_recognition.en.md">Seal Recognition Pipeline Usage Tutorial</a></td>
+<td><a href="https://paddlepaddle.github.io/PaddleX/latest/en/pipeline_usage/tutorials/ocr_pipelines/seal_recognition.html">Seal Recognition Pipeline Usage Tutorial</a></td>
 </tr>
 <tr>
 <td>Time Series Forecasting</td>
-<td><a href="./tutorials/time_series_pipelines/time_series_forecasting.en.md">Time Series Forecasting Pipeline Usage Tutorial</a></td>
+<td><a href="https://paddlepaddle.github.io/PaddleX/latest/en/pipeline_usage/tutorials/time_series_pipelines/time_series_forecasting.html">Time Series Forecasting Pipeline Usage Tutorial</a></td>
 </tr>
 <tr>
 <td>Time Series Anomaly Detection</td>
-<td><a href="./tutorials/time_series_pipelines/time_series_anomaly_detection.en.md">Time Series Anomaly Detection Pipeline Usage Tutorial</a></td>
+<td><a href="https://paddlepaddle.github.io/PaddleX/latest/en/pipeline_usage/tutorials/time_series_pipelines/time_series_anomaly_detection.html">Time Series Anomaly Detection Pipeline Usage Tutorial</a></td>
 </tr>
 <tr>
 <td>Time Series Classification</td>
-<td><a href="./tutorials/time_series_pipelines/time_series_classification.en.md">Time Series Classification Pipeline Usage Tutorial</a></td>
+<td><a href="https://paddlepaddle.github.io/PaddleX/latest/en/pipeline_usage/tutorials/time_series_pipelines/time_series_classification.html">Time Series Classification Pipeline Usage Tutorial</a></td>
 </tr>
 </tbody>
 </table>

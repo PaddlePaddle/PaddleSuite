@@ -874,7 +874,6 @@ register_model_info(
         "config_path": osp.join(PDX_CONFIG_DIR, "MobileFaceNet.yaml"),
         "supported_apis": ["train", "evaluate", "predict", "export", "infer"],
         "infer_config": "deploy/configs/inference_cls.yaml",
-        "hpi_config_path": None,
     }
 )
 
@@ -885,6 +884,15 @@ register_model_info(
         "config_path": osp.join(PDX_CONFIG_DIR, "ResNet50_face.yaml"),
         "supported_apis": ["train", "evaluate", "predict", "export", "infer"],
         "infer_config": "deploy/configs/inference_cls.yaml",
-        "hpi_config_path": None,
+    }
+)
+
+register_model_info(
+    {
+        "model_name": "PP-LCNet_x0_25_textline_ori",
+        "suite": "Cls",
+        "config_path": osp.join(PDX_CONFIG_DIR, "PP-LCNet_x0_25_textline_ori.yaml"),
+        "supported_apis": ["train", "evaluate", "predict", "export", "infer"],
+        "infer_config": "deploy/configs/inference_cls.yaml",
     }
 )
