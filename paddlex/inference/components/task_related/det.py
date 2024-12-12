@@ -293,9 +293,6 @@ class DetPostProcess(BaseComponent):
 
     def apply(self, boxes, img_size):
         """apply"""
-        expect_boxes = (boxes[:, 1] > self.threshold) & (boxes[:, 0] > -1)
-        boxes = boxes[expect_boxes, :]
-
         if isinstance(self.threshold, float):
             expect_boxes = (boxes[:, 1] > self.threshold) & (boxes[:, 0] > -1)
             boxes = boxes[expect_boxes, :]
