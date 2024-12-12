@@ -7,7 +7,7 @@ use_doc_unwarping: True
 
 SubModules:
   DocOrientationClassify:
-    module_name: image_classification
+    module_name: doc_text_orientation
     model_name: PP-LCNet_x1_0_doc_ori
     model_dir: null
     batch_size: 1

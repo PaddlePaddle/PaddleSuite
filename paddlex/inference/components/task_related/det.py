@@ -43,6 +43,34 @@ def restructured_boxes(boxes, labels, img_size):
     return box_list
 
 
+def restructured_rotated_boxes(boxes, labels, img_size):
+
+    box_list = []
+    w, h = img_size
+
+    assert boxes.shape[1] == 10, 'The shape of rotated boxes should be [N, 10]'
+    for box in boxes:
+        x1, y1, x2, y2, x3, y3, x4, y4 = box[2:]
+        x1 = min(max(0, x1), w)
+        y1 = min(max(0, y1), h)
+        x2 = min(max(0, x2), w)
+        y2 = min(max(0, y2), h)
+        x3 = min(max(0, x3), w)
+        y3 = min(max(0, y3), h)
+        x4 = min(max(0, x4), w)
+        y4 = min(max(0, y4), h)
+        box_list.append(
+            {
+                "cls_id": int(box[0]),
+                "label": labels[int(box[0])],
+                "score": float(box[1]),
+                "coordinate": [x1, y1, x2, y2, x3, y3, x4, y4],
+            }
+        )
+
+    return box_list
+
+
 def rotate_point(pt, angle_rad):
     """Rotate a point by an angle.
     Args:
@@ -217,7 +245,17 @@ class DetPostProcess(BaseComponent):
         """apply"""
         expect_boxes = (boxes[:, 1] > self.threshold) & (boxes[:, 0] > -1)
         boxes = boxes[expect_boxes, :]
-        boxes = restructured_boxes(boxes, self.labels, img_size)
+        if boxes.shape[1] == 6:
+            """For Normal Object Detection"""
+            boxes = restructured_boxes(boxes, self.labels, img_size)
+        elif boxes.shape[1] == 10:
+            """Adapt For Rotated Object Detection"""
+            boxes = restructured_rotated_boxes(boxes, self.labels, img_size)
+        else:
+            """Unexpected Input Box Shape"""
+            raise ValueError(
+                f"The shape of boxes should be 6 or 10, instead of {boxes.shape[1]}"
+            )
         result = {"boxes": boxes}
 
         return result

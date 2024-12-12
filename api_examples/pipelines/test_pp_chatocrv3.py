@@ -22,8 +22,8 @@ key_list = ["驾驶室准乘人数"]
 
 visual_predict_res = pipeline.visual_predict(
     img_path,
-    use_doc_orientation_classify=False,
-    use_doc_unwarping=False,
+    use_doc_orientation_classify=True,
+    use_doc_unwarping=True,
     use_common_ocr=True,
     use_seal_recognition=True,
     use_table_recognition=True,

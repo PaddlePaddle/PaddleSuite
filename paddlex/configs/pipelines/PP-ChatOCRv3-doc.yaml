@@ -10,7 +10,6 @@ SubModules:
     ak: "api_key" # Set this to a real API key
     sk: "secret_key"  # Set this to a real secret key
 
-
   LLM_Retriever:
     module_name: retriever
     model_name: ernie-3.5
@@ -54,18 +53,18 @@ SubPipelines:
   LayoutParser:
     pipeline_name: layout_parsing
     use_doc_preprocessor: True
-    use_common_ocr: True
+    use_general_ocr: True
     use_seal_recognition: True
     use_table_recognition: True
 
     SubModules:
       LayoutDetection:
-        module_name: object_detection
+        module_name: layout_detection
         model_name: RT-DETR-H_layout_3cls
         model_dir: null
         batch_size: 1
-      TableStructurePredictor:
-        module_name: table_recognition
+      TableStructureRecognition:
+        module_name: table_structure_recognition
         model_name: SLANet_plus
         model_dir: null
         batch_size: 1
@@ -77,7 +76,7 @@ SubPipelines:
         use_doc_unwarping: True
         SubModules:
           DocOrientationClassify:
-            module_name: image_classification
+            module_name: doc_text_orientation
             model_name: PP-LCNet_x1_0_doc_ori
             model_dir: null
             batch_size: 1
@@ -87,9 +86,9 @@ SubPipelines:
             model_dir: null
             batch_size: 1
 
-      CommonOCR:
+      GeneralOCR:
         pipeline_name: OCR
-        text_type: common
+        text_type: general
         SubModules:
           TextDetection:
             module_name: text_detection
@@ -107,7 +106,7 @@ SubPipelines:
         text_type: seal
         SubModules:
           TextDetection:
-            module_name: text_detection
+            module_name: seal_text_detection
             model_name: PP-OCRv4_server_seal_det
             model_dir: null
             batch_size: 1    

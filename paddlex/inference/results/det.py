@@ -50,10 +50,24 @@ def draw_box(img, boxes):
         color = tuple(label2color[label])
         font_color = tuple(catid2fontcolor[label])
 
-        xmin, ymin, xmax, ymax = bbox
+        if len(bbox) == 4:
+            # draw bbox of normal object detection
+            xmin, ymin, xmax, ymax = bbox
+            rectangle = [(xmin, ymin), (xmin, ymax), (xmax, ymax), (xmax, ymin), (xmin, ymin)]
+        elif len(bbox) == 8:
+            # draw bbox of rotated object detection
+            x1, y1, x2, y2, x3, y3, x4, y4 = bbox
+            rectangle = [(x1, y1), (x2, y2), (x3, y3), (x4, y4), (x1, y1)]
+            xmin = min(x1, x2, x3, x4)
+            ymin = min(y1, y2, y3, y4)
+        else:
+            raise ValueError(
+                f"Only support bbox format of [xmin,ymin,xmax,ymax] or [x1,y1,x2,y2,x3,y3,x4,y4], got bbox of shape {len(bbox)}."
+            )
+        
         # draw bbox
         draw.line(
-            [(xmin, ymin), (xmin, ymax), (xmax, ymax), (xmax, ymin), (xmin, ymin)],
+            rectangle,
             width=draw_thickness,
             fill=color,
         )

@@ -158,7 +158,7 @@ class LayoutParsingResult(dict):
             save_img_path = save_path + "/doc_preprocessor_result.jpg"
             self["doc_preprocessor_res"].save_to_img(save_img_path)
 
-        if input_params["use_common_ocr"]:
+        if input_params["use_general_ocr"]:
             save_img_path = save_path + "/text_paragraphs_ocr_result.jpg"
             self["text_paragraphs_ocr_res"].save_to_img(save_img_path)
 

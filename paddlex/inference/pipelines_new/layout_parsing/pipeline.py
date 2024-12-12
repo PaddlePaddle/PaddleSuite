@@ -89,12 +89,12 @@ class LayoutParsingPipeline(BasePipeline):
                 doc_preprocessor_config
             )
 
-        self.use_common_ocr = False
-        if "use_common_ocr" in config:
-            self.use_common_ocr = config["use_common_ocr"]
-        if self.use_common_ocr:
-            common_ocr_config = config["SubPipelines"]["CommonOCR"]
-            self.common_ocr_pipeline = self.create_pipeline(common_ocr_config)
+        self.use_general_ocr = False
+        if "use_general_ocr" in config:
+            self.use_general_ocr = config["use_general_ocr"]
+        if self.use_general_ocr:
+            general_ocr_config = config["SubPipelines"]["GeneralOCR"]
+            self.general_ocr_pipeline = self.create_pipeline(general_ocr_config)
 
         self.use_seal_recognition = False
         if "use_seal_recognition" in config:
@@ -107,11 +107,11 @@ class LayoutParsingPipeline(BasePipeline):
         if "use_table_recognition" in config:
             self.use_table_recognition = config["use_table_recognition"]
         if self.use_table_recognition:
-            table_structure_config = config["SubModules"]["TableStructurePredictor"]
+            table_structure_config = config["SubModules"]["TableStructureRecognition"]
             self.table_structure_model = self.create_model(table_structure_config)
-            if not self.use_common_ocr:
-                common_ocr_config = config["SubPipelines"]["OCR"]
-                self.common_ocr_pipeline = self.create_pipeline(common_ocr_config)
+            if not self.use_general_ocr:
+                general_ocr_config = config["SubPipelines"]["GeneralOCR"]
+                self.general_ocr_pipeline = self.create_pipeline(general_ocr_config)
         return
 
     def get_text_paragraphs_ocr_res(
@@ -151,9 +151,9 @@ class LayoutParsingPipeline(BasePipeline):
             )
             return False
 
-        if input_params["use_common_ocr"] and not self.use_common_ocr:
+        if input_params["use_general_ocr"] and not self.use_general_ocr:
             logging.error(
-                "Set use_common_ocr, but the models for common OCR are not initialized."
+                "Set use_general_ocr, but the models for general OCR are not initialized."
             )
             return False
 
@@ -176,7 +176,7 @@ class LayoutParsingPipeline(BasePipeline):
         input: str | list[str] | np.ndarray | list[np.ndarray],
         use_doc_orientation_classify: bool = False,
         use_doc_unwarping: bool = False,
-        use_common_ocr: bool = True,
+        use_general_ocr: bool = True,
         use_seal_recognition: bool = True,
         use_table_recognition: bool = True,
         **kwargs
@@ -188,7 +188,7 @@ class LayoutParsingPipeline(BasePipeline):
             input (str | list[str] | np.ndarray | list[np.ndarray]): The input image(s) to be processed.
             use_doc_orientation_classify (bool): Whether to use document orientation classification.
             use_doc_unwarping (bool): Whether to use document unwarping.
-            use_common_ocr (bool): Whether to use common OCR.
+            use_general_ocr (bool): Whether to use general OCR.
             use_seal_recognition (bool): Whether to use seal recognition.
             use_table_recognition (bool): Whether to use table recognition.
             **kwargs: Additional keyword arguments.
@@ -206,7 +206,7 @@ class LayoutParsingPipeline(BasePipeline):
             "use_doc_preprocessor": self.use_doc_preprocessor,
             "use_doc_orientation_classify": use_doc_orientation_classify,
             "use_doc_unwarping": use_doc_unwarping,
-            "use_common_ocr": use_common_ocr,
+            "use_general_ocr": use_general_ocr,
             "use_seal_recognition": use_seal_recognition,
             "use_table_recognition": use_table_recognition,
         }
@@ -245,8 +245,10 @@ class LayoutParsingPipeline(BasePipeline):
             ########## [TODO]RT-DETR 检测结果有重复
             layout_det_res = next(self.layout_det_model(doc_preprocessor_image))
 
-            if input_params["use_common_ocr"] or input_params["use_table_recognition"]:
-                overall_ocr_res = next(self.common_ocr_pipeline(doc_preprocessor_image))
+            if input_params["use_general_ocr"] or input_params["use_table_recognition"]:
+                overall_ocr_res = next(
+                    self.general_ocr_pipeline(doc_preprocessor_image)
+                )
                 overall_ocr_res["img_id"] = img_id
                 dt_boxes = convert_points_to_boxes(overall_ocr_res["dt_polys"])
                 overall_ocr_res["dt_boxes"] = dt_boxes
@@ -254,7 +256,7 @@ class LayoutParsingPipeline(BasePipeline):
                 overall_ocr_res = {}
 
             text_paragraphs_ocr_res = {}
-            if input_params["use_common_ocr"]:
+            if input_params["use_general_ocr"]:
                 text_paragraphs_ocr_res = self.get_text_paragraphs_ocr_res(
                     overall_ocr_res, layout_det_res
                 )
