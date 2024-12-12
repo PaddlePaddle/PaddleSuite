@@ -35,38 +35,6 @@ from ...utils.io import (
 )
 
 
-def _save_list_data(save_func, save_path, data, *args, **kwargs):
-    """
-    Save list type data to the specified path.
-    If data type is a list, iterate through it and save each element using save_func with a modified filename (appending an index and the original file extension).
-
-    Args:
-        save_func (Callable): The function to be used for saving data.
-        save_path (Union[str, Path]): The path to save the data.
-        data (Union[None, list, Any]): The data to be saved. If None, the function will return immediately.
-        *args: Additional positional arguments to be passed to save_func.
-        **kwargs: Additional keyword arguments to be passed to save_func.
-
-    Returns:
-        None
-    """
-    save_path = Path(save_path)
-    if data is None:
-        return
-    if isinstance(data, list):
-        for idx, single in enumerate(data):
-            save_func(
-                (
-                    save_path.parent / f"{save_path.stem}_{idx}{save_path.suffix}"
-                ).as_posix(),
-                single,
-                *args,
-                **kwargs,
-            )
-    save_func(save_path.as_posix(), data, *args, **kwargs)
-    logging.info(f"The result has been saved in {save_path}.")
-
-
 class StrMixin:
     """Mixin class for adding string conversion capabilities."""
 
@@ -269,26 +237,22 @@ class ImgMixin:
         self._save_funcs.append(self.save_to_img)
 
     @abstractmethod
-    def _to_img(self) -> Union[np.ndarray, Image.Image]:
+    def _to_img(self) -> Union[Image.Image, Dict[str, Image.Image]]:
         """Abstract method to convert the result to an image.
 
         Returns:
-        Union[np.ndarray, Image.Image]: The image representation result.
+        Union[Image.Image, Dict[str, Image.Image]]: The image representation result.
         """
         raise NotImplementedError
 
     @property
-    def img(self) -> Image.Image:
+    def img(self) -> Union[Image.Image, Dict[str, Image.Image]]:
         """Property to get the image representation of the result.
 
         Returns:
-            Image.Image: The image representation of the result.
+            Union[Image.Image, Dict[str, Image.Image]]: The image representation of the result.
         """
-        image = self._to_img()
-        # The img must be a PIL.Image obj
-        if isinstance(image, np.ndarray):
-            return Image.fromarray(image)
-        return image
+        return self._to_img()
 
     def save_to_img(self, save_path: str, *args: List, **kwargs: Dict) -> None:
         """Saves the image representation of the result to the specified path.
@@ -303,11 +267,24 @@ class ImgMixin:
             mime_type, _ = mimetypes.guess_type(file_path)
             return mime_type is not None and mime_type.startswith("image/")
 
-        if not _is_image_file(save_path):
-            fp = Path(self["input_path"])
-            save_path = Path(save_path) / f"{fp.stem}{fp.suffix}"
-            save_path = save_path.as_posix()
-        self._img_writer.write(save_path, self.img, *args, **kwargs)
+        img = self.img
+        if isinstance(img, dict):
+            if not _is_image_file(save_path):
+                fp = Path(self["input_path"])
+                stem = fp.stem
+                suffix = fp.suffix
+            else:
+                stem = save_path.stem
+                suffix = save_path.suffix
+            base_save_path = Path(save_path)
+            for key in img:
+                save_path = base_save_path / f"{stem}_{key}{suffix}"
+                self._img_writer.write(save_path.as_posix(), img[key], *args, **kwargs)
+        else:
+            if not _is_image_file(save_path):
+                fp = Path(self["input_path"])
+                save_path = Path(save_path) / f"{fp.stem}{fp.suffix}"
+            self._img_writer.write(save_path.as_posix(), img, *args, **kwargs)
 
 
 class CSVMixin:
