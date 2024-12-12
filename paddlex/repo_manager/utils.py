@@ -18,8 +18,11 @@ import json
 import platform
 import subprocess
 import contextlib
-
 from parsley import makeGrammar
+import lazy_paddle as paddle
+
+from ..utils.env import get_device_type
+from ..utils import logging
 
 
 PLATFORM = platform.system()
@@ -32,28 +35,32 @@ def _check_call(*args, **kwargs):
 def _check_output(*args, **kwargs):
     return subprocess.check_output(*args, **kwargs)
 
+
 def _compare_version(version1, version2):
     import re
+
     def parse_version(version_str):
         version_pattern = re.compile(
-            r'^(?P<major>\d+)\.(?P<minor>\d+)\.(?P<patch>\d+)(?:-(?P<pre_release>.*))?(?:\+(?P<build_metadata>.+))?$'
+            r"^(?P<major>\d+)\.(?P<minor>\d+)\.(?P<patch>\d+)(?:-(?P<pre_release>.*))?(?:\+(?P<build_metadata>.+))?$"
         )
         match = version_pattern.match(version_str)
         if not match:
             raise ValueError(f"Unexpected version string: {version_str}")
         return (
-            int(match.group('major')), int(match.group('minor')),
-            int(match.group('patch')), match.group('pre_release')
+            int(match.group("major")),
+            int(match.group("minor")),
+            int(match.group("patch")),
+            match.group("pre_release"),
         )
 
     v1_infos = parse_version(version1)
     v2_infos = parse_version(version2)
     for v1_info, v2_info in zip(v1_infos, v2_infos):
-        if v1_info is None and v2_info is None: 
+        if v1_info is None and v2_info is None:
             continue
-        if v1_info is None or (v2_info is not None and v1_info < v2_info): 
+        if v1_info is None or (v2_info is not None and v1_info < v2_info):
             return -1
-        if v2_info is None or (v1_info is not None and v1_info > v2_info): 
+        if v2_info is None or (v1_info is not None and v1_info > v2_info):
             return 1
     return 0
 
@@ -93,20 +100,26 @@ def install_packages_using_pip(
         args.extend(pip_flags)
     return _check_call(args)
 
+
 def install_external_deps(repo_name, repo_root):
     """install paddle repository custom dependencies"""
-    import paddle
-    from ..utils import logging
-    paddle_version = paddle.__version__
-    paddle_w_cuda = paddle.is_compiled_with_cuda()
-    gcc_version = subprocess.check_output(["gcc", "--version"]).decode('utf-8').split()[2]
+    gcc_version = (
+        subprocess.check_output(["gcc", "--version"]).decode("utf-8").split()[2]
+    )
 
-    if repo_name == 'PaddleDetection':
-        if os.path.exists(os.path.join(repo_root, 'ppdet', 'ext_op')):
+    if repo_name == "PaddleDetection":
+        if os.path.exists(os.path.join(repo_root, "ppdet", "ext_op")):
             """Install custom op for rotated object detection"""
-            if _compare_version(paddle_version, '2.0.1') >= 0 and paddle_w_cuda and _compare_version(gcc_version, '8.2.0') >= 0:
-                with switch_working_dir(os.path.join(repo_root, 'ppdet', 'ext_op')):
-                    args = [sys.executable, 'setup.py', 'install']
+            if (
+                _compare_version(gcc_version, "8.2.0") >= 0
+                and "gpu" in get_device_type()
+                and (
+                    paddle.is_compiled_with_cuda()
+                    and not paddle.is_compiled_with_rocm()
+                )
+            ):
+                with switch_working_dir(os.path.join(repo_root, "ppdet", "ext_op")):
+                    args = [sys.executable, "setup.py", "install"]
                     _check_call(args)
             else:
                 logging.warning(
