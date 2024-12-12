@@ -12,5 +12,4 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .image_reader import ReadImage
-from .ts_reader import ReadTS
+from .predictor import TSFcPredictor

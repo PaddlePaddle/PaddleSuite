@@ -14,6 +14,7 @@
 
 from .base_result import BaseResult
 from .base_cv_result import BaseCVResult
+from .base_ts_result import BaseTSResult
 from .mixin import (
     StrMixin,
     JsonMixin,

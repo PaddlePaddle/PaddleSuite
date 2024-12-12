@@ -12,5 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .image_reader import ReadImage
-from .ts_reader import ReadTS
+from ...common.result import BaseTSResult
+from ...common.result.mixin import CSVMixin
+
+
+class _BaseTSResult(BaseTSResult, CSVMixin):
+    def __init__(self, data):
+        super().__init__(data)
+        CSVMixin.__init__(self)
+
+
+class TSAdResult(_BaseTSResult):
+    def _to_csv(self):
+        return self["anomaly"]
