@@ -26,8 +26,6 @@ from paddlex_hpi._utils.typing import Backend, DeviceType
 
 
 class _BackendConfig(BaseModel):
-    model_config = ConfigDict()
-
     def update_ui_option(self, option: ui.RuntimeOption, model_dir: Path) -> None:
         raise NotImplementedError
 

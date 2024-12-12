@@ -39,7 +39,6 @@ from typing_extensions import assert_never
 
 from paddlex_hpi._config import HPIConfig
 from paddlex_hpi._utils.typing import Backend, BatchData
-from paddlex_hpi.models._enc import ENC_INFO_FILENAME
 
 HPI_CONFIG_KEY: Final[str] = "Hpi"
 
@@ -73,10 +72,6 @@ class HPPredictor(BasePredictor, metaclass=AutoRegisterABCMetaClass):
     @property
     def params_path(self) -> Path:
         return self.model_dir / f"{self.MODEL_FILE_PREFIX}.pdiparams"
-
-    @property
-    def enc_info_path(self) -> Path:
-        return self.model_dir / ENC_INFO_FILENAME
 
     def set_predictor(self, **kwargs: Any) -> None:
         if "device" in kwargs:
