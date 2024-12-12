@@ -16,10 +16,3 @@ include-package-data = true
 [tool.setuptools.dynamic]
 dependencies = {file = ["requirements.txt"]}
 optional-dependencies.test = {file = ["test_requirements.txt"]}
-
-[[tool.mypy.overrides]]
-module = [
-    "ultrainfer.*",
-    "paddlex.*",
-]
-ignore_missing_imports = true
