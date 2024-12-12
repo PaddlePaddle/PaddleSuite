@@ -293,7 +293,9 @@ class DetPostProcess(BaseComponent):
 
     def apply(self, boxes, img_size):
         """apply"""
-        filtered_boxes = []
+        expect_boxes = (boxes[:, 1] > self.threshold) & (boxes[:, 0] > -1)
+        boxes = boxes[expect_boxes, :]
+
         if isinstance(self.threshold, float):
             expect_boxes = (boxes[:, 1] > self.threshold) & (boxes[:, 0] > -1)
             boxes = boxes[expect_boxes, :]
@@ -308,6 +310,7 @@ class DetPostProcess(BaseComponent):
             boxes = np.vstack(category_filtered_boxes) if category_filtered_boxes else np.array([])
 
         if self.layout_postprocess:
+            filtered_boxes = []
             ### Layout postprocess for NMS
             for cat_id in np.unique(boxes[:, 0]):
                 category_boxes = boxes[boxes[:, 0] == cat_id]
@@ -357,7 +360,17 @@ class DetPostProcess(BaseComponent):
                 boxes = np.array(non_overlaps)
             boxes = np.array(final_boxes)
 
-        boxes = restructured_boxes(boxes, self.labels, img_size)
+        if boxes.shape[1] == 6:
+            """For Normal Object Detection"""
+            boxes = restructured_boxes(boxes, self.labels, img_size)
+        elif boxes.shape[1] == 10:
+            """Adapt For Rotated Object Detection"""
+            boxes = restructured_rotated_boxes(boxes, self.labels, img_size)
+        else:
+            """Unexpected Input Box Shape"""
+            raise ValueError(
+                f"The shape of boxes should be 6 or 10, instead of {boxes.shape[1]}"
+            )
         result = {"boxes": boxes}
         return result
 
