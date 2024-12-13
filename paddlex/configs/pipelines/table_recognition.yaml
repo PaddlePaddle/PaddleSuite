@@ -1,10 +1,7 @@
 
-pipeline_name: layout_parsing
+pipeline_name: table_recognition
 
 use_doc_preprocessor: True
-use_general_ocr: True
-use_seal_recognition: True
-use_table_recognition: True
 
 SubModules:
   LayoutDetection:
@@ -42,20 +39,6 @@ SubPipelines:
       TextDetection:
         module_name: text_detection
         model_name: PP-OCRv4_server_det
-        model_dir: null
-        batch_size: 1    
-      TextRecognition:
-        module_name: text_recognition
-        model_name: PP-OCRv4_server_rec
-        model_dir: null
-        batch_size: 1
-  SealOCR:
-    pipeline_name: OCR
-    text_type: seal
-    SubModules:
-      TextDetection:
-        module_name: seal_text_detection
-        model_name: PP-OCRv4_server_seal_det
         model_dir: null
         batch_size: 1    
       TextRecognition:

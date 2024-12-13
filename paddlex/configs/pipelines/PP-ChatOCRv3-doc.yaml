@@ -1,6 +1,5 @@
 
 pipeline_name: PP-ChatOCRv3-doc
-input: https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/demo_paper.png
 
 SubModules:
   LLM_Chat:
