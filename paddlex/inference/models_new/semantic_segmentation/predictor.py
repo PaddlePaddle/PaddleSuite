@@ -72,9 +72,9 @@ class SegPredictor(BasicPredictor):
             tuple: A tuple containing the preprocessors, inference engine, and postprocessors.
         """
         preprocessors = {"Read": ReadImage(format="RGB")}
-        preprocessors['ToCHW'] = ToCHWImage()
+        preprocessors["ToCHW"] = ToCHWImage()
         for cfg in self.config["Deploy"]["transforms"]:
-            tf_key = cfg.pop('type')
+            tf_key = cfg.pop("type")
             func = self._FUNC_MAP[tf_key]
             args = cfg
             name, op = func(self, **args) if args else func(self)
@@ -87,7 +87,7 @@ class SegPredictor(BasicPredictor):
             option=self.pp_option,
         )
 
-        postprocessors = {} # Empty for Semantic Segmentation for now
+        postprocessors = {}  # Empty for Semantic Segmentation for now
 
         return preprocessors, infer, postprocessors
 
@@ -107,42 +107,13 @@ class SegPredictor(BasicPredictor):
         x = self.preprocessors["ToBatch"](imgs=batch_imgs)
         batch_preds = self.infer(x=x)
         if len(batch_data) > 1:
-            batch_preds = np.split(batch_preds[0], len(batch_data), axis = 0)
+            batch_preds = np.split(batch_preds[0], len(batch_data), axis=0)
         # postprocessors is empty for static infer of semantic segmentation
         return {
             "input_path": batch_data,
             "input_img": batch_raw_imgs,
             "pred": batch_preds,
         }
-
-    @register("Resize")
-    def build_resize(
-        self, target_size, keep_ratio=False, size_divisor=None, interp="LINEAR"
-    ):
-        assert target_size
-        op = Resize(
-            target_size=target_size,
-            keep_ratio=keep_ratio,
-            size_divisor=size_divisor,
-            interp=interp,
-        )
-        return "Resize", op
-
-    @register("ResizeByLong")
-    def build_resizebylong(self, long_size):
-        assert long_size
-        op = ResizeByLong(
-            target_long_edge=long_size, size_divisor=size_divisor, interp=interp
-        )
-        return "ResizeByLong", op
-
-    @register("ResizeByShort")
-    def build_resizebylong(self, short_size):
-        assert short_size
-        op = ResizeByLong(
-            target_long_edge=short_size, size_divisor=size_divisor, interp=interp
-        )
-        return "ResizeByShort", op
 
     @register("Normalize")
     def build_normalize(
