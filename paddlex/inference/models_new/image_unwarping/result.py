@@ -12,16 +12,23 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 import copy
 import numpy as np
-from PIL import Image, ImageDraw, ImageFont
-
 from ...common.result import BaseCVResult
 
 
 class DocTrResult(BaseCVResult):
+    """
+    Result class for DocTr, encapsulating the output of a document image processing task.
 
-    def _to_img(self):
+    Attributes:
+        (inherited from BaseCVResult): Any attributes defined in the base class.
+
+    Methods:
+        _to_img(self) -> np.ndarray:
+            Converts the stored image result to a numpy array.
+    """
+
+    def _to_img(self) -> np.ndarray:
         result = np.array(self["doctr_img"])
         return result

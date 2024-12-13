@@ -13,25 +13,73 @@
 # limitations under the License.
 
 import numpy as np
+from typing import List, Union, Tuple
 
 
 class DocTrPostProcess:
-    """Crop region from the image."""
+    """
+    Post-processing class for cropping regions from images (though currently only performs scaling and color channel adjustments).
 
-    def __init__(self, scale=None, **kwargs):
+    Attributes:
+        scale (np.float32): A scaling factor to be applied to the image pixel values.
+            Defaults to 255.0 if not provided.
+
+    Methods:
+        __call__(imgs: List[Union[np.ndarray, Tuple[np.ndarray, ...]]]) -> List[np.ndarray]:
+            Call method to process a list of images.
+        doctr(pred: Union[np.ndarray, Tuple[np.ndarray, ...]]) -> np.ndarray:
+            Method to process a single image or a tuple/list containing an image.
+    """
+
+    def __init__(self, scale: Union[str, float, None] = None):
+        """
+        Initializes the DocTrPostProcess class with a scaling factor.
+
+        Args:
+            scale (Union[str, float, None]): A scaling factor for the image pixel values.
+                If a string is provided, it will be converted to a float. Defaults to 255.0.
+        """
         super().__init__()
-        if isinstance(scale, str):
-            scale = np.float32(scale)
-        self.scale = np.float32(scale if scale is not None else 255.0)
+        self.scale = (
+            np.float32(scale) if isinstance(scale, (str, float)) else np.float32(255.0)
+        )
 
-    def __call__(self, imgs):
+    def __call__(
+        self, imgs: List[Union[np.ndarray, Tuple[np.ndarray, ...]]]
+    ) -> List[np.ndarray]:
+        """
+        Processes a list of images using the `doctr` method.
 
+        Args:
+            imgs (List[Union[np.ndarray, Tuple[np.ndarray, ...]]]): A list of images to process.
+                Each image can be a numpy array or a tuple containing a numpy array.
+
+        Returns:
+            List[np.ndarray]: A list of processed images.
+        """
         return [self.doctr(img) for img in imgs]
 
-    def doctr(self, pred):
-        im = pred[0]
-        assert isinstance(im, np.ndarray), "invalid input 'im' in DocTrPostProcess"
+    def doctr(self, pred: Union[np.ndarray, Tuple[np.ndarray, ...]]) -> np.ndarray:
+        """
+        Processes a single image.
 
+        Args:
+            pred (Union[np.ndarray, Tuple[np.ndarray, ...]]): The image to process, which can be
+                a numpy array or a tuple containing a numpy array. Only the first element is used if it's a tuple.
+
+        Returns:
+            np.ndarray: The processed image.
+
+        Raises:
+            AssertionError: If the input is not a numpy array.
+        """
+        if isinstance(pred, tuple):
+            im = pred[0]
+        else:
+            im = pred
+        assert isinstance(
+            im, np.ndarray
+        ), "Invalid input 'im' in DocTrPostProcess. Expected a numpy array."
         im = im.squeeze()
         im = im.transpose(1, 2, 0)
         im *= self.scale
