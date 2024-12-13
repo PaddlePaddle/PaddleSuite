@@ -31,10 +31,10 @@ def draw_box(img, boxes):
     Returns:
         img (PIL.Image.Image): visualized image
     """
-    font_size = int(0.024 * int(img.width)) + 2
+    font_size = int(0.018 * int(img.width)) + 2
     font = ImageFont.truetype(PINGFANG_FONT_FILE_PATH, font_size, encoding="utf-8")
 
-    draw_thickness = int(max(img.size) * 0.005)
+    draw_thickness = int(max(img.size) * 0.002)
     draw = ImageDraw.Draw(img)
     label2color = {}
     catid2fontcolor = {}
