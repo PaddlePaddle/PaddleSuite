@@ -16,6 +16,7 @@ import os
 import ast
 from pathlib import Path
 import numpy as np
+import pandas as pd
 
 from ....utils import logging
 from ....utils.download import download
@@ -57,8 +58,7 @@ class TSBatchSampler(BaseBatchSampler):
 
         batch = []
         for input in inputs:
-            if isinstance(input, np.ndarray):
-                # yield [input]
+            if isinstance(input, pd.DataFrame):
                 batch.append(input)
                 if len(batch) == self.batch_size:
                     yield batch
@@ -77,7 +77,7 @@ class TSBatchSampler(BaseBatchSampler):
                         batch = []
             else:
                 logging.warning(
-                    f"Not supported input data type! Only `numpy.ndarray` and `str` are supported! So has been ignored: {input}."
+                    f"Not supported input data type! Only `pd.DataFrame` and `str` are supported! So has been ignored: {input}."
                 )
         if len(batch) > 0:
             yield batch
@@ -95,4 +95,5 @@ class TSBatchSampler(BaseBatchSampler):
 
         size = parse_size(data_size)
         rand_batch = [np.random.rand(size[0], size[1]) for _ in range(self.batch_size)]
-        return rand_batch
+        df_list = [pd.DataFrame(arr) for arr in rand_batch]
+        return df_list

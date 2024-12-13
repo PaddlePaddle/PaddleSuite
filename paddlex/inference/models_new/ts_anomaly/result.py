@@ -13,15 +13,8 @@
 # limitations under the License.
 
 from ...common.result import BaseTSResult
-from ...common.result.mixin import CSVMixin
 
 
-class _BaseTSResult(BaseTSResult, CSVMixin):
-    def __init__(self, data):
-        super().__init__(data)
-        CSVMixin.__init__(self)
-
-
-class TSAdResult(_BaseTSResult):
+class TSAdResult(BaseTSResult):
     def _to_csv(self):
         return self["anomaly"]
