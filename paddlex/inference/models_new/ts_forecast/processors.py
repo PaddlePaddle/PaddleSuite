@@ -12,40 +12,98 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from typing import List, Dict, Any, Union
 import joblib
 import numpy as np
 import pandas as pd
 
 
 class TSDeNormalize:
+    """A class to de-normalize time series prediction data using a pre-fitted scaler."""
 
-    def __init__(self, scale_path, params_info):
+    def __init__(self, scale_path: str, params_info: dict):
+        """
+        Initializes the TSDeNormalize class with a scaler and parameters information.
+
+        Args:
+            scale_path (str): The file path to the serialized scaler object.
+            params_info (dict): Additional parameters information.
+        """
         super().__init__()
         self.scaler = joblib.load(scale_path)
         self.params_info = params_info
 
-    def __call__(self, preds_list):
-        """apply"""
+    def __call__(self, preds_list: List[pd.DataFrame]) -> List[pd.DataFrame]:
+        """
+        Applies de-normalization to a list of prediction DataFrames.
+
+        Args:
+            preds_list (List[pd.DataFrame]): A list of DataFrames containing normalized prediction data.
+
+        Returns:
+            List[pd.DataFrame]: A list of DataFrames with de-normalized prediction data.
+        """
         return [self.tsdenorm(pred) for pred in preds_list]
 
-    def tsdenorm(self, pred):
+    def tsdenorm(self, pred: pd.DataFrame) -> pd.DataFrame:
+        """
+        De-normalizes a single prediction DataFrame.
+
+        Args:
+            pred (pd.DataFrame): A DataFrame containing normalized prediction data.
+
+        Returns:
+            pd.DataFrame: A DataFrame with de-normalized prediction data.
+        """
         scale_cols = pred.columns.values.tolist()
         pred[scale_cols] = self.scaler.inverse_transform(pred[scale_cols])
         return pred
 
 
 class ArraytoTS:
+    """A class to convert arrays of predictions into time series format."""
 
-    def __init__(self, info_params):
+    def __init__(self, info_params: Dict[str, Any]):
+        """
+        Initializes the ArraytoTS class with the given parameters.
+
+        Args:
+            info_params (Dict[str, Any]): Configuration parameters including target columns, frequency, and time column name.
+        """
         super().__init__()
         self.info_params = info_params
 
-    def __call__(self, ori_ts_list, pred_list):
+    def __call__(
+        self, ori_ts_list: List[Dict[str, Any]], pred_list: List[np.ndarray]
+    ) -> List[pd.DataFrame]:
+        """
+        Converts a list of arrays to a list of time series DataFrames.
+
+        Args:
+            ori_ts_list (List[Dict[str, Any]]): Original time series data for each prediction, including past and covariate information.
+            pred_list (List[np.ndarray]): List of prediction arrays corresponding to each time series in ori_ts_list.
+
+        Returns:
+            List[pd.DataFrame]: A list of DataFrames, each representing the forecasted time series.
+        """
         return [
             self.arraytots(ori_ts, pred) for ori_ts, pred in zip(ori_ts_list, pred_list)
         ]
 
-    def arraytots(self, ori_ts, pred):
+    def arraytots(self, ori_ts: Dict[str, Any], pred: np.ndarray) -> pd.DataFrame:
+        """
+        Converts a single array prediction to a time series DataFrame.
+
+        Args:
+            ori_ts (Dict[str, Any]): Original time series data for a single time series.
+            pred (np.ndarray): Prediction array for the given time series.
+
+        Returns:
+            pd.DataFrame: A DataFrame representing the forecasted time series.
+
+        Raises:
+            ValueError: If none of the expected keys are found in ori_ts.
+        """
         pred = pred[0]
         if ori_ts.get("past_target", None) is not None:
             ts = ori_ts["past_target"]

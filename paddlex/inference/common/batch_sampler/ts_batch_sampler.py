@@ -25,17 +25,36 @@ from .base_batch_sampler import BaseBatchSampler
 
 
 class TSBatchSampler(BaseBatchSampler):
+    """Batch sampler for time series data, supporting CSV file inputs."""
 
     SUFFIX = ["csv"]
 
-    # XXX: auto download for url
-    def _download_from_url(self, in_path):
+    def _download_from_url(self, in_path: str) -> str:
+        """Download a file from a URL to a cache directory.
+
+        Args:
+            in_path (str): URL of the file to be downloaded.
+
+        Returns:
+            str: Path to the downloaded file.
+        """
         file_name = Path(in_path).name
         save_path = Path(CACHE_DIR) / "predict_input" / file_name
         download(in_path, save_path, overwrite=True)
         return save_path.as_posix()
 
-    def _get_files_list(self, fp):
+    def _get_files_list(self, fp: str) -> list:
+        """Get a list of CSV files from a directory or a single file path.
+
+        Args:
+            fp (str): Path to a directory or a single CSV file.
+
+        Returns:
+            list: Sorted list of CSV file paths.
+
+        Raises:
+            Exception: If no CSV file is found in the path.
+        """
         file_list = []
         if fp is None or not os.path.exists(fp):
             raise Exception(f"Not found any csv file in path: {fp}")
@@ -52,7 +71,15 @@ class TSBatchSampler(BaseBatchSampler):
         file_list = sorted(file_list)
         return file_list
 
-    def sample(self, inputs):
+    def sample(self, inputs: list) -> list:
+        """Generate batches of data from inputs, which can be DataFrames or file paths.
+
+        Args:
+            inputs (list): List of DataFrames or file paths.
+
+        Yields:
+            list: A batch of data which is either DataFrames or file paths.
+        """
         if not isinstance(inputs, list):
             inputs = [inputs]
 
@@ -82,7 +109,16 @@ class TSBatchSampler(BaseBatchSampler):
         if len(batch) > 0:
             yield batch
 
-    def _rand_batch(self, data_size):
+    def _rand_batch(self, data_size: str) -> list:
+        """Generate a random batch of data with specified size.
+
+        Args:
+            data_size (str): Size of the data in the format of 'rows' or '(rows, columns)'.
+
+        Returns:
+            list: List of DataFrames with random data.
+        """
+
         def parse_size(s):
             res = ast.literal_eval(s)
             if isinstance(res, int):

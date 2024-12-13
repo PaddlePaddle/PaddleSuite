@@ -18,7 +18,7 @@ from ...utils.io import CSVWriter
 
 
 class BaseTSResult(BaseResult, StrMixin, JsonMixin, CSVMixin):
-    """Base class for computer vision results."""
+    """Base class for times series results."""
 
     INPUT_TS_KEY = "input_ts"
 
@@ -30,7 +30,7 @@ class BaseTSResult(BaseResult, StrMixin, JsonMixin, CSVMixin):
             data (dict): The initial data.
 
         Raises:
-            AssertionError: If the required key (`BaseTSResult.INPUT_Ts_KEY`) are not found in the data.
+            AssertionError: If the required key (`BaseTSResult.INPUT_TS_KEY`) are not found in the data.
         """
         assert (
             BaseTSResult.INPUT_TS_KEY in data

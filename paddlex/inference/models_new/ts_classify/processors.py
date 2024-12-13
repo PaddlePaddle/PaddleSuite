@@ -14,17 +14,38 @@
 
 import numpy as np
 import pandas as pd
+from typing import List, Any, Dict
 
 
 class GetCls:
+    """A class to process prediction outputs and return class IDs and scores."""
 
     def __init__(self):
+        """Initializes the GetCls instance."""
         super().__init__()
 
-    def __call__(self, pred_list):
+    def __call__(self, pred_list: List[Any]) -> List[pd.DataFrame]:
+        """
+        Processes a list of predictions and returns a list of DataFrames with class IDs and scores.
+
+        Args:
+            pred_list (List[Any]): A list of predictions, where each prediction is expected to be an iterable of arrays.
+
+        Returns:
+            List[pd.DataFrame]: A list of DataFrames, each containing the class ID and score for the corresponding prediction.
+        """
         return [self.getcls(pred) for pred in pred_list]
 
-    def getcls(self, pred):
+    def getcls(self, pred: Any) -> pd.DataFrame:
+        """
+        Computes the class ID and score from a single prediction.
+
+        Args:
+            pred (Any): A prediction, expected to be an iterable where the first element is an array representing logits or probabilities.
+
+        Returns:
+            pd.DataFrame: A DataFrame containing the class ID and score for the prediction.
+        """
         pred_ts = pred[0]
         pred_ts -= np.max(pred_ts, axis=-1, keepdims=True)
         pred_ts = np.exp(pred_ts) / np.sum(np.exp(pred_ts), axis=-1, keepdims=True)
@@ -36,15 +57,43 @@ class GetCls:
 
 
 class BuildPadMask:
+    """A class to build padding masks for time series data."""
 
-    def __init__(self, input_data):
+    def __init__(self, input_data: Dict[str, Any]):
+        """
+        Initializes the BuildPadMask instance.
+
+        Args:
+            input_data (Dict[str, Any]): A dictionary containing configuration data, including 'features'
+                                         and 'pad_mask' keys that influence how padding is applied.
+        """
         super().__init__()
         self.input_data = input_data
 
-    def __call__(self, ts_list):
+    def __call__(self, ts_list: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+        """
+        Applies padding mask to a list of time series data.
+
+        Args:
+            ts_list (List[Dict[str, Any]]): A list of dictionaries, each representing a time series instance
+                                            with keys like 'features' and 'past_target'.
+
+        Returns:
+            List[Dict[str, Any]]: A list of dictionaries with updated 'features' and 'pad_mask' keys.
+        """
         return [self.padmask(ts) for ts in ts_list]
 
-    def padmask(self, ts):
+    def padmask(self, ts: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Builds a padding mask for a single time series instance.
+
+        Args:
+            ts (Dict[str, Any]): A dictionary representing a time series instance, expected to have keys
+                                 like 'features' and 'past_target'.
+
+        Returns:
+            Dict[str, Any]: The input dictionary with potentially updated 'features' and 'pad_mask' keys.
+        """
         if "features" in self.input_data:
             ts["features"] = ts["past_target"]
 

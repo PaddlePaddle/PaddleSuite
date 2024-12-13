@@ -14,6 +14,7 @@
 
 from typing import Any, Union, Dict, List, Tuple
 import numpy as np
+import pandas as pd
 import os
 
 from ....modules.ts_anomaly_detection.model_list import MODELS
@@ -104,12 +105,12 @@ class TSAdPredictor(BasicPredictor):
         )
         return preprocessors, infer, postprocessors
 
-    def process(self, batch_data: List[Union[str, np.ndarray]]) -> Dict[str, Any]:
+    def process(self, batch_data: List[Union[str, pd.DataFrame]]) -> Dict[str, Any]:
         """
         Process a batch of data through the preprocessing, inference, and postprocessing.
 
         Args:
-            batch_data (List[Union[str, np.ndarray], ...]): A batch of input data (e.g., image file paths).
+            batch_data (List[Union[str, pd.DataFrame], ...]): A batch of input data (e.g., image file paths).
 
         Returns:
             dict: A dictionary containing the input path, raw image, class IDs, scores, and label names for every instance of the batch. Keys include 'input_path', 'input_img', 'class_ids', 'scores', and 'label_names'.

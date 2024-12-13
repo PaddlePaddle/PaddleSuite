@@ -12,11 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import os
+
 from typing import Any, Callable, List, Optional, Sequence, Tuple, Union, Dict
+import os
 import numpy as np
 import pandas as pd
-import joblib
 import chinese_calendar
 from pandas.tseries.offsets import DateOffset, Easter, Day
 from pandas.tseries import holiday as hd
@@ -185,8 +185,25 @@ def load_from_one_dataframe(
     freq: Optional[Union[str, int]] = None,
     drop_tail_nan: bool = False,
     dtype: Optional[Union[type, Dict[str, type]]] = None,
-):
+) -> pd.DataFrame:
+    """Transforms a DataFrame or Series into a time-indexed DataFrame.
 
+    Args:
+        data (Union[pd.DataFrame, pd.Series]): The input data containing time series information.
+        time_col (Optional[str]): The column name representing time information. If None, uses the index.
+        value_cols (Optional[Union[List[str], str]]): Columns to extract as values. If None, uses all except time_col.
+        freq (Optional[Union[str, int]]): The frequency of the time series data.
+        drop_tail_nan (bool): If True, drop trailing NaN values from the data.
+        dtype (Optional[Union[type, Dict[str, type]]]): Enforce a specific data type on the resulting DataFrame.
+
+    Returns:
+        pd.DataFrame: A DataFrame with time as the index and specified value columns.
+
+    Raises:
+        ValueError: If the time column doesn't exist, or if frequency cannot be inferred.
+
+    """
+    # Initialize series_data with specified value columns or all except time_col
     series_data = None
     if value_cols is None:
         if isinstance(data, pd.Series):
@@ -196,6 +213,7 @@ def load_from_one_dataframe(
     else:
         series_data = data.loc[:, value_cols].copy()
 
+    # Determine the time column values
     if time_col:
         if time_col not in data.columns:
             raise ValueError(
@@ -205,9 +223,11 @@ def load_from_one_dataframe(
     else:
         time_col_vals = data.index
 
+    # Handle integer-based time column values when frequency is a string
     if np.issubdtype(time_col_vals.dtype, np.integer) and isinstance(freq, str):
         time_col_vals = time_col_vals.astype(str)
 
+    # Process integer-based time column values
     if np.issubdtype(time_col_vals.dtype, np.integer):
         if freq:
             if not isinstance(freq, int) or freq < 1:
@@ -215,11 +235,13 @@ def load_from_one_dataframe(
                     "The type of `freq` should be `int` when the type of `time_col` is `RangeIndex`."
                 )
         else:
-            freq = 1
+            freq = 1  # Default frequency for integer index
         start_idx, stop_idx = min(time_col_vals), max(time_col_vals) + freq
         if (stop_idx - start_idx) / freq != len(data):
             raise ValueError("The number of rows doesn't match with the RangeIndex!")
         time_index = pd.RangeIndex(start=start_idx, stop=stop_idx, step=freq)
+
+    # Process datetime-like time column values
     elif np.issubdtype(time_col_vals.dtype, np.object_) or np.issubdtype(
         time_col_vals.dtype, np.datetime64
     ):
@@ -231,7 +253,7 @@ def load_from_one_dataframe(
                     "The type of `freq` should be `str` when the type of `time_col` is `DatetimeIndex`."
                 )
         else:
-            # If freq is not provided and automatic inference fail, throw exception
+            # Attempt to infer frequency if not provided
             freq = pd.infer_freq(time_index)
             if freq is None:
                 raise ValueError(
@@ -239,10 +261,16 @@ def load_from_one_dataframe(
                 )
             if freq[0] == "-":
                 freq = freq[1:]
+
+    # Raise error for unsupported time column types
     else:
         raise ValueError("The type of `time_col` is invalid.")
+
+    # Ensure series_data is a DataFrame
     if isinstance(series_data, pd.Series):
         series_data = series_data.to_frame()
+
+    # Set time index and sort data
     series_data.set_index(time_index, inplace=True)
     series_data.sort_index(inplace=True)
     return series_data
@@ -250,7 +278,7 @@ def load_from_one_dataframe(
 
 def load_from_dataframe(
     df: pd.DataFrame,
-    group_id: str = None,
+    group_id: Optional[str] = None,
     time_col: Optional[str] = None,
     target_cols: Optional[Union[List[str], str]] = None,
     label_col: Optional[Union[List[str], str]] = None,
@@ -263,27 +291,63 @@ def load_from_dataframe(
     fillna_method: str = "pre",
     fillna_window_size: int = 10,
     **kwargs,
-):
+) -> Dict[str, Optional[Union[pd.DataFrame, Dict[str, any]]]]:
+    """Loads and processes time series data from a DataFrame.
 
-    dfs = []  # seperate multiple group
+    This function extracts and organizes time series data from a given DataFrame.
+    It supports optional grouping and extraction of specific columns as features.
+
+    Args:
+        df (pd.DataFrame): The input DataFrame containing time series data.
+        group_id (Optional[str]): Column name used for grouping the data.
+        time_col (Optional[str]): Name of the time column.
+        target_cols (Optional[Union[List[str], str]]): Columns to be used as target.
+        label_col (Optional[Union[List[str], str]]): Columns to be used as label.
+        observed_cov_cols (Optional[Union[List[str], str]]): Columns for observed covariates.
+        feature_cols (Optional[Union[List[str], str]]): Columns to be used as features.
+        known_cov_cols (Optional[Union[List[str], str]]): Columns for known covariates.
+        static_cov_cols (Optional[Union[List[str], str]]): Columns for static covariates.
+        freq (Optional[Union[str, int]]): Frequency of the time series data.
+        fill_missing_dates (bool): Whether to fill missing dates in the time series.
+        fillna_method (str): Method to fill missing values ('pre' or 'post').
+        fillna_window_size (int): Window size for filling missing values.
+        **kwargs: Additional keyword arguments.
+
+    Returns:
+        Dict[str, Optional[Union[pd.DataFrame, Dict[str, any]]]]: A dictionary containing processed time series data.
+    """
+    # List to store DataFrames if grouping is applied
+    dfs = []
+
+    # Separate the DataFrame into groups if group_id is provided
     if group_id is not None:
         group_unique = df[group_id].unique()
         for column in group_unique:
             dfs.append(df[df[group_id].isin([column])])
     else:
         dfs = [df]
+
+    # Result list to store processed data from each group
     res = []
+
+    # If label_col is provided, ensure it is a single column
     if label_col:
         if isinstance(label_col, str) and len(label_col) > 1:
             raise ValueError("The length of label_col must be 1.")
         target_cols = label_col
+
+    # If feature_cols is provided, treat it as observed_cov_cols
     if feature_cols:
         observed_cov_cols = feature_cols
+
+    # Process each DataFrame in the list
     for df in dfs:
         target = None
         observed_cov = None
         known_cov = None
         static_cov = dict()
+
+        # If no specific columns are provided, use all columns except time_col
         if not any([target_cols, observed_cov_cols, known_cov_cols, static_cov_cols]):
             target = load_from_one_dataframe(
                 df,
@@ -291,7 +355,6 @@ def load_from_dataframe(
                 [a for a in df.columns if a != time_col],
                 freq,
             )
-
         else:
             if target_cols:
                 target = load_from_one_dataframe(
@@ -323,9 +386,10 @@ def load_from_dataframe(
                 for col in static_cov_cols:
                     if col not in df.columns or len(np.unique(df[col])) != 1:
                         raise ValueError(
-                            "static cov cals data is not in columns or schema is not right!"
+                            "Static covariate columns data is not in columns or schema is not correct!"
                         )
                     static_cov[col] = df[col].iloc[0]
+        # Append the processed data into the results list
         res.append(
             {
                 "past_target": target,
@@ -334,11 +398,38 @@ def load_from_dataframe(
                 "static_cov_numeric": static_cov,
             }
         )
+    # Return the first processed result
     return res[0]
 
 
-def _distance_to_holiday(holiday):
-    def _distance_to_day(index):
+def _distance_to_holiday(holiday) -> Callable[[pd.Timestamp], float]:
+    """Creates a function to calculate the distance in days to the nearest holiday.
+
+    This function generates a closure that computes the number of days from
+    a given date index to the nearest holiday within a defined window.
+
+    Args:
+        holiday: An object that provides a `dates` method, which returns the
+            dates of holidays within a specified range.
+
+    Returns:
+        Callable[[pd.Timestamp], float]: A function that takes a date index
+        as input and returns the distance in days to the nearest holiday.
+    """
+
+    def _distance_to_day(index: pd.Timestamp) -> float:
+        """Calculates the distance in days from a given date index to the nearest holiday.
+
+        Args:
+            index (pd.Timestamp): The date index for which the distance to the
+                nearest holiday should be calculated.
+
+        Returns:
+            float: The number of days to the nearest holiday.
+
+        Raises:
+            AssertionError: If no holiday is found within the specified window.
+        """
         holiday_date = holiday.dates(
             index - pd.Timedelta(days=MAX_WINDOW),
             index + pd.Timedelta(days=MAX_WINDOW),
@@ -353,31 +444,49 @@ def _distance_to_holiday(holiday):
     return _distance_to_day
 
 
-def time_feature(dataset, freq, feature_cols, extend_points, inplace: bool = False):
-    """
-    Transform time column to time features.
+def time_feature(
+    dataset: Dict,
+    freq: Optional[Union[str, int]],
+    feature_cols: List[str],
+    extend_points: int,
+    inplace: bool = False,
+) -> Dict:
+    """Transforms the time column of a dataset into time features.
+
+    This function extracts time-related features from the time column in a
+    dataset, optionally extending the time series for future points and
+    normalizing holiday distances.
 
     Args:
-        dataset(TSDataset): Dataset to be transformed.
-        inplace(bool): Whether to perform the transformation inplace. default=False
+        dataset (Dict): Dataset to be transformed.
+        freq: Optional[Union[str, int]]: Frequency of the time series data. If not provided,
+            the frequency will be inferred.
+        feature_cols (List[str]): List of feature columns to be extracted.
+        extend_points (int): Number of future points to extend the time series.
+        inplace (bool): Whether to perform the transformation inplace. Default is False.
 
     Returns:
-        TSDataset
+        Dict: The transformed dataset with time features added.
+
+    Raises:
+        ValueError: If the time column is of an integer type instead of datetime.
     """
     new_ts = dataset
     if not inplace:
         new_ts = dataset.copy()
-    # Get known_cov
+    # Get known_cov_numeric or initialize with past target index
     kcov = new_ts["known_cov_numeric"]
     if not kcov:
         tf_kcov = new_ts["past_target"].index.to_frame()
     else:
         tf_kcov = kcov.index.to_frame()
     time_col = tf_kcov.columns[0]
+    # Check if time column is of datetime type
     if np.issubdtype(tf_kcov[time_col].dtype, np.integer):
         raise ValueError(
             "The time_col can't be the type of numpy.integer, and it must be the type of numpy.datetime64"
         )
+    # Extend the time series if no known_cov_numeric
     if not kcov:
         freq = freq if freq is not None else pd.infer_freq(tf_kcov[time_col])
         extend_time = pd.date_range(
@@ -389,6 +498,7 @@ def time_feature(dataset, freq, feature_cols, extend_points, inplace: bool = Fal
         ).to_frame()
         tf_kcov = pd.concat([tf_kcov, extend_time])
 
+    # Extract and add time features to known_cov_numeric
     for k in feature_cols:
         if k != "holidays":
             v = tf_kcov[time_col].apply(lambda x: CAL_DATE_METHOD[k](x))
@@ -400,7 +510,6 @@ def time_feature(dataset, freq, feature_cols, extend_points, inplace: bool = Fal
                 new_ts["known_cov_numeric"][k] = v.rename(k).reindex(
                     new_ts["known_cov_numeric"].index
                 )
-
         else:
             holidays_col = []
             for i, H in enumerate(HOLIDAYS):

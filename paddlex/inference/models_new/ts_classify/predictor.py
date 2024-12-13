@@ -14,6 +14,7 @@
 
 from typing import Any, Union, Dict, List, Tuple
 import numpy as np
+import pandas as pd
 import os
 
 from ....modules.ts_classification.model_list import MODELS
@@ -50,18 +51,18 @@ class TSClsPredictor(BasicPredictor):
         self.preprocessors, self.infer, self.postprocessors = self._build()
 
     def _build_batch_sampler(self) -> TSBatchSampler:
-        """Builds and returns an ImageBatchSampler instance.
+        """Builds and returns an TSBatchSampler instance.
 
         Returns:
-            ImageBatchSampler: An instance of ImageBatchSampler.
+            TSBatchSampler: An instance of TSBatchSampler.
         """
         return TSBatchSampler()
 
     def _get_result_class(self) -> type:
-        """Returns the result class, TopkResult.
+        """Returns the result class.
 
         Returns:
-            type: The TopkResult class.
+            type: The Result class.
         """
         return TSClsResult
 
@@ -97,17 +98,16 @@ class TSClsPredictor(BasicPredictor):
         postprocessors["GetCls"] = GetCls()
         return preprocessors, infer, postprocessors
 
-    def process(self, batch_data: List[Union[str, np.ndarray]]) -> Dict[str, Any]:
+    def process(self, batch_data: List[Union[str, pd.DataFrame]]) -> Dict[str, Any]:
         """
-        Process a batch of data through the preprocessing, inference, and postprocessing.
+        Processes a batch of time series data through a series of preprocessing, inference, and postprocessing steps.
 
         Args:
-            batch_data (List[Union[str, np.ndarray], ...]): A batch of input data (e.g., image file paths).
+            batch_data (List[Union[str, pd.DataFrame]]): A list of paths or identifiers for the batch of time series data to be processed.
 
         Returns:
-            dict: A dictionary containing the input path, raw image, class IDs, scores, and label names for every instance of the batch. Keys include 'input_path', 'input_img', 'class_ids', 'scores', and 'label_names'.
+            Dict[str, Any]: A dictionary containing the paths to the input data, the raw input time series, and the classification results.
         """
-
         batch_raw_ts = self.preprocessors["ReadTS"](ts_list=batch_data)
 
         if "TSNormalize" in self.preprocessors:
