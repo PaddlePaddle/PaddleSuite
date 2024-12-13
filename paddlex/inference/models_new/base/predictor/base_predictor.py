@@ -124,11 +124,6 @@ class BasePredictor(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def apply(self, input: Any) -> Iterator[Any]:
-        """Predict the given input."""
-        raise NotImplementedError
-
-    @abstractmethod
     def set_predictor(self) -> None:
         """Sets up the predictor."""
         raise NotImplementedError
