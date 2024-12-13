@@ -15,6 +15,7 @@
 from typing import Union, Tuple, List, Dict, Any, Iterator
 from abc import abstractmethod
 from pathlib import Path
+import mimetypes
 import json
 import copy
 import numpy as np
@@ -184,10 +185,16 @@ class JsonMixin:
             *args: Additional positional arguments to pass to the underlying writer.
             **kwargs: Additional keyword arguments to pass to the underlying writer.
         """
-        if not str(save_path).endswith(".json"):
+
+        def _is_json_file(file_path):
+            mime_type, _ = mimetypes.guess_type(file_path)
+            return mime_type is not None and mime_type == "application/json"
+
+        if not _is_json_file(save_path):
             save_path = Path(save_path) / f"{Path(self['input_path']).stem}.json"
+            save_path = save_path.as_posix()
         self._json_writer.write(
-            save_path.as_posix(),
+            save_path,
             self.json,
             indent=indent,
             ensure_ascii=ensure_ascii,
@@ -288,10 +295,16 @@ class ImgMixin:
             *args: Additional positional arguments that will be passed to the image writer.
             **kwargs: Additional keyword arguments that will be passed to the image writer.
         """
-        if not str(save_path).lower().endswith((".jpg", ".png")):
+
+        def _is_image_file(file_path):
+            mime_type, _ = mimetypes.guess_type(file_path)
+            return mime_type is not None and mime_type.startswith("image/")
+
+        if not _is_image_file(save_path):
             fp = Path(self["input_path"])
             save_path = Path(save_path) / f"{fp.stem}{fp.suffix}"
-        self._img_writer.write(save_path.as_posix(), self.img, *args, **kwargs)
+            save_path = save_path.as_posix()
+        self._img_writer.write(save_path, self.img, *args, **kwargs)
 
 
 class CSVMixin:

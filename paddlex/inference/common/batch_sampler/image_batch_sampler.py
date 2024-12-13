@@ -58,7 +58,6 @@ class ImageBatchSampler(BaseBatchSampler):
         batch = []
         for input in inputs:
             if isinstance(input, np.ndarray):
-                # yield [input]
                 batch.append(input)
                 if len(batch) == self.batch_size:
                     yield batch
