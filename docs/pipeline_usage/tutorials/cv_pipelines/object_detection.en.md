@@ -1090,3 +1090,6 @@ At this point, if you wish to switch the hardware to Ascend NPU, simply modify t
 paddlex --pipeline object_detection --input general_object_detection_002.png --device npu:0
 ```
 If you want to use the General Object Detection Pipeline on more types of hardware, please refer to the [PaddleX Multi-Device Usage Guide](../../../other_devices_support/multi_devices_use_guide.en.md).
+
+!!! tip
+    For some frequently asked questions about our project, please refer to [FAQ](../../../FAQ.en.md). If your question has not been answered, feel free to raise it in [Issues](https://github.com/PaddlePaddle/PaddleX/issues).

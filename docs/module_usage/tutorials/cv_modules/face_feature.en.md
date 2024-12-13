@@ -263,3 +263,6 @@ The face feature module can be integrated into the PaddleX pipeline for [<b>Face
 2. <b>Module Integration</b>
 
 The weights you produced can be directly integrated into the face feature module. You can refer to the Python example code in [Quick Integration](#III.-Quick-Integration) and only need to replace the model with the path to the model you trained.
+
+!!! tip
+    For some frequently asked questions about our project, please refer to [FAQ](../../../FAQ.en.md). If your question has not been answered, feel free to raise it in [Issues](https://github.com/PaddlePaddle/PaddleX/issues).

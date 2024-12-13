@@ -276,3 +276,6 @@ The document image classification module can be integrated into PaddleX pipeline
 2.<b>Module Integration</b>
 
 The weights you produce can be directly integrated into the document image orientation classification module. You can refer to the Python sample code in [Quick Integration](#iii-quick-integration) and just replace the model with the path to the model you trained.
+
+!!! tip
+    For some frequently asked questions about our project, please refer to [FAQ](../../../FAQ.en.md). If your question has not been answered, feel free to raise it in [Issues](https://github.com/PaddlePaddle/PaddleX/issues).

@@ -789,3 +789,6 @@ At this point, if you wish to switch the hardware to Ascend NPU, simply modify t
 paddlex --pipeline multi_label_image_classification --input https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/general_image_classification_001.jpg --device npu:0
 ```
 If you want to use the General Image Multi-label Classification Pipeline on more diverse hardware, please refer to the [PaddleX Multi-device Usage Guide](../../../other_devices_support/multi_devices_use_guide.en.md).
+
+!!! tip
+    For some frequently asked questions about our project, please refer to [FAQ](../../../FAQ.en.md). If your question has not been answered, feel free to raise it in [Issues](https://github.com/PaddlePaddle/PaddleX/issues).

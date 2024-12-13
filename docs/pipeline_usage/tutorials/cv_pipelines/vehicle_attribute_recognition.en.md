@@ -473,3 +473,6 @@ At this point, if you want to switch the hardware to Ascend NPU, you only need t
 paddlex --pipeline vehicle_attribute_recognition --input vehicle_attribute_002.jpg --device npu:0
 ```
 If you want to use the vehicle attribute recognition pipeline on more types of hardware, please refer to the [PaddleX Multi-device Usage Guide](../../../other_devices_support/multi_devices_use_guide.en.md).
+
+!!! tip
+    For some frequently asked questions about our project, please refer to [FAQ](../../../FAQ.en.md). If your question has not been answered, feel free to raise it in [Issues](https://github.com/PaddlePaddle/PaddleX/issues).

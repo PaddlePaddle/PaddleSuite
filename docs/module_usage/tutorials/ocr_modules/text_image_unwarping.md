@@ -48,3 +48,6 @@ for res in output:
 
 ## 四、二次开发
 当前模块暂时不支持微调训练，仅支持推理集成。关于该模块的微调训练，计划在未来支持。
+
+!!! tip
+    关于我们项目的一些常见问题解答，请参考[FAQ](../../../FAQ.md)。如果您的问题没有得到解答，请随时在 [Issues](https://github.com/PaddlePaddle/PaddleX/issues) 中提出。

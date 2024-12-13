@@ -839,3 +839,6 @@ At this point, if you want to switch the hardware to Ascend NPU, simply modify `
 paddlex --pipeline layout_parsing --input layout_parsing.jpg --device npu:0
 ```
 If you want to use the general layout parsing pipeline on more types of hardware, please refer to the [PaddleX Multi-Device Usage Guide](../../../other_devices_support/multi_devices_use_guide.md).
+
+!!! tip
+    For some frequently asked questions about our project, please refer to [FAQ](../../../FAQ.en.md). If your question has not been answered, feel free to raise it in [Issues](https://github.com/PaddlePaddle/PaddleX/issues).
