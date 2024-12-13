@@ -66,7 +66,9 @@ class BasePredictor(ABC):
         super().__init__()
         self.model_dir = Path(model_dir)
         self.config = config if config else self.load_config(self.model_dir)
-
+        self.batch_sampler = self._build_batch_sampler()
+        self.result_class = self._get_result_class()
+        
         # alias predict() to the __call__()
         self.predict = self.__call__
         self.benchmark = None

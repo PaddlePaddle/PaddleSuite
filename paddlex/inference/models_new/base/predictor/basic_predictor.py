@@ -55,8 +55,7 @@ class BasicPredictor(
         if device:
             pp_option.device = device
         self.pp_option = pp_option
-        self.batch_sampler = self._build_batch_sampler()
-        self.result_class = self._get_result_class()
+
         logging.debug(f"{self.__class__.__name__}: {self.model_dir}")
         self.benchmark = benchmark
 
