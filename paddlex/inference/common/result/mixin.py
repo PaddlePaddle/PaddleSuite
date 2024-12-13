@@ -125,11 +125,11 @@ class JsonMixin:
         self._json_writer = JsonWriter()
         self._save_funcs.append(self.save_to_json)
 
-    def _to_json(self) -> dict:
+    def _to_json(self) -> Dict[str, Any]:
         """Convert the object to a JSON-serializable format.
 
         Returns:
-            dict: A dictionary representation of the object that is JSON-serializable.
+            Dict[str, Any]: A dictionary representation of the object that is JSON-serializable.
         """
 
         def _format_data(obj):
@@ -163,7 +163,7 @@ class JsonMixin:
         """Property to get the JSON representation of the result.
 
         Returns:
-            dict: The dict type JSON representation of the result.
+            Dict[str, Any]: The dict type JSON representation of the result.
         """
 
         return self._to_json()
