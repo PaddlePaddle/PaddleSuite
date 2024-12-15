@@ -35,6 +35,10 @@ class TextRecEvaluator(BaseEvaluator):
             self.pdx_config.update_dataset(
                 self.global_config.dataset_dir, "LaTeXOCRDataSet"
             )
+        elif "PP-OCRv3" in self.global_config["model"]:
+            self.pdx_config.update_dataset(
+                self.global_config.dataset_dir, "SimpleDataSet"
+            )
         else:
             self.pdx_config.update_dataset(
                 self.global_config.dataset_dir, "MSTextRecDataset"

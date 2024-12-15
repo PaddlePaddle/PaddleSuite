@@ -36,6 +36,116 @@ register_suite_info(
 
 register_model_info(
     {
+        "model_name": "PP-OCRv3_mobile_rec",
+        "suite": "TextRec",
+        "config_path": osp.join(PDX_CONFIG_DIR, "PP-OCRv3_mobile_rec.yaml"),
+        "supported_apis": ["train", "evaluate", "predict", "export"],
+    }
+)
+
+register_model_info(
+    {
+        "model_name": "en_PP-OCRv3_mobile_rec",
+        "suite": "TextRec",
+        "config_path": osp.join(PDX_CONFIG_DIR, "en_PP-OCRv3_mobile_rec.yaml"),
+        "supported_apis": ["train", "evaluate", "predict", "export"],
+    }
+)
+
+
+register_model_info(
+    {
+        "model_name": "korean_PP-OCRv3_mobile_rec",
+        "suite": "TextRec",
+        "config_path": osp.join(PDX_CONFIG_DIR, "korean_PP-OCRv3_mobile_rec.yml"),
+        "supported_apis": ["train", "evaluate", "predict", "export"],
+    }
+)
+
+register_model_info(
+    {
+        "model_name": "japan_PP-OCRv3_mobile_rec",
+        "suite": "TextRec",
+        "config_path": osp.join(PDX_CONFIG_DIR, "japan_PP-OCRv3_mobile_rec.yaml"),
+        "supported_apis": ["train", "evaluate", "predict", "export"],
+    }
+)
+
+register_model_info(
+    {
+        "model_name": "chinese_cht_PP-OCRv3_mobile_rec",
+        "suite": "TextRec",
+        "config_path": osp.join(PDX_CONFIG_DIR, "chinese_cht_PP-OCRv3_mobile_rec.yaml"),
+        "supported_apis": ["train", "evaluate", "predict", "export"],
+    }
+)
+
+register_model_info(
+    {
+        "model_name": "te_PP-OCRv3_mobile_rec",
+        "suite": "TextRec",
+        "config_path": osp.join(PDX_CONFIG_DIR, "te_PP-OCRv3_mobile_rec.yaml"),
+        "supported_apis": ["train", "evaluate", "predict", "export"],
+    }
+)
+
+register_model_info(
+    {
+        "model_name": "ka_PP-OCRv3_mobile_rec",
+        "suite": "TextRec",
+        "config_path": osp.join(PDX_CONFIG_DIR, "ka_PP-OCRv3_mobile_rec.yaml"),
+        "supported_apis": ["train", "evaluate", "predict", "export"],
+    }
+)
+
+register_model_info(
+    {
+        "model_name": "ta_PP-OCRv3_mobile_rec",
+        "suite": "TextRec",
+        "config_path": osp.join(PDX_CONFIG_DIR, "ta_PP-OCRv3_mobile_rec.yaml"),
+        "supported_apis": ["train", "evaluate", "predict", "export"],
+    }
+)
+
+register_model_info(
+    {
+        "model_name": "latin_PP-OCRv3_mobile_rec",
+        "suite": "TextRec",
+        "config_path": osp.join(PDX_CONFIG_DIR, "latin_PP-OCRv3_mobile_rec.yaml"),
+        "supported_apis": ["train", "evaluate", "predict", "export"],
+    }
+)
+
+register_model_info(
+    {
+        "model_name": "arabic_PP-OCRv3_mobile_rec",
+        "suite": "TextRec",
+        "config_path": osp.join(PDX_CONFIG_DIR, "arabic_PP-OCRv3_mobile_rec.yaml"),
+        "supported_apis": ["train", "evaluate", "predict", "export"],
+    }
+)
+
+register_model_info(
+    {
+        "model_name": "cyrillic_PP-OCRv3_mobile_rec",
+        "suite": "TextRec",
+        "config_path": osp.join(PDX_CONFIG_DIR, "cyrillic_PP-OCRv3_mobile_rec.yaml"),
+        "supported_apis": ["train", "evaluate", "predict", "export"],
+    }
+)
+
+register_model_info(
+    {
+        "model_name": "devanagari_PP-OCRv3_mobile_rec",
+        "suite": "TextRec",
+        "config_path": osp.join(PDX_CONFIG_DIR, "devanagari_PP-OCRv3_mobile_rec.yaml"),
+        "supported_apis": ["train", "evaluate", "predict", "export"],
+    }
+)
+
+
+register_model_info(
+    {
         "model_name": "PP-OCRv4_mobile_rec",
         "suite": "TextRec",
         "config_path": osp.join(PDX_CONFIG_DIR, "PP-OCRv4_mobile_rec.yaml"),
@@ -48,6 +158,24 @@ register_model_info(
         "model_name": "PP-OCRv4_server_rec",
         "suite": "TextRec",
         "config_path": osp.join(PDX_CONFIG_DIR, "PP-OCRv4_server_rec.yaml"),
+        "supported_apis": ["train", "evaluate", "predict", "export"],
+    }
+)
+
+register_model_info(
+    {
+        "model_name": "en_PP-OCRv4_mobile_rec",
+        "suite": "TextRec",
+        "config_path": osp.join(PDX_CONFIG_DIR, "en_PP-OCRv4_mobile_rec.yaml"),
+        "supported_apis": ["train", "evaluate", "predict", "export"],
+    }
+)
+
+register_model_info(
+    {
+        "model_name": "PP-OCRv4_server_rec_doc",
+        "suite": "TextRec",
+        "config_path": osp.join(PDX_CONFIG_DIR, "PP-OCRv4_server_rec_doc.yaml"),
         "supported_apis": ["train", "evaluate", "predict", "export"],
     }
 )
