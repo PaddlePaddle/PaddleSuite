@@ -47,7 +47,7 @@ class SegPredictor(BasicPredictor):
             **kwargs: Arbitrary keyword arguments passed to the superclass.
         """
         super().__init__(*args, **kwargs)
-        self.preprocessors, self.infer, self.postprocessors = self._build()
+        self.preprocessors, self.infer = self._build()
 
     def _build_batch_sampler(self) -> ImageBatchSampler:
         """Builds and returns an ImageBatchSampler instance.
@@ -87,9 +87,7 @@ class SegPredictor(BasicPredictor):
             option=self.pp_option,
         )
 
-        postprocessors = {}  # Empty for Semantic Segmentation for now
-
-        return preprocessors, infer, postprocessors
+        return preprocessors, infer
 
     def process(self, batch_data: List[Union[str, np.ndarray]]) -> Dict[str, Any]:
         """
@@ -108,7 +106,7 @@ class SegPredictor(BasicPredictor):
         batch_preds = self.infer(x=x)
         if len(batch_data) > 1:
             batch_preds = np.split(batch_preds[0], len(batch_data), axis=0)
-        # postprocessors is empty for static infer of semantic segmentation
+
         return {
             "input_path": batch_data,
             "input_img": batch_raw_imgs,
