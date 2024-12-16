@@ -108,28 +108,3 @@ class TSBatchSampler(BaseBatchSampler):
                 )
         if len(batch) > 0:
             yield batch
-
-    # def _rand_batch(self, data_size: str) -> list:
-    #     """Generate a random batch of data with specified size.
-
-    #     Args:
-    #         data_size (str): Size of the data in the format of 'rows' or '(rows, columns)'.
-
-    #     Returns:
-    #         list: List of DataFrames with random data.
-    #     """
-
-    #     def parse_size(s):
-    #         res = ast.literal_eval(s)
-    #         if isinstance(res, int):
-    #             return (res, 1)
-    #         else:
-    #             assert isinstance(res, (tuple, list))
-    #             assert len(res) == 2
-    #             assert all(isinstance(item, int) for item in res)
-    #             return res
-
-    #     size = parse_size(data_size)
-    #     rand_batch = [np.random.rand(size[0], size[1]) for _ in range(self.batch_size)]
-    #     df_list = [pd.DataFrame(arr) for arr in rand_batch]
-    #     return df_list
