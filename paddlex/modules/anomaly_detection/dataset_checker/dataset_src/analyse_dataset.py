@@ -37,14 +37,20 @@ def anaylse_dataset(dataset_dir, output):
                 _, ann_file = line.split(" ")
                 ann_file = osp.join(dataset_dir, ann_file)
                 ann = np.array(ImageOps.exif_transpose(Image.open(ann_file)), "uint8")
-
-                for idx in set(ann.reshape([-1]).tolist()):
-                    if idx == 255:
-                        continue
-                    if idx not in label2count[tag]:
-                        label2count[tag][idx] = 1
+                if tag == "train":
+                    if 0 not in label2count[tag]:
+                        label2count[tag][0] = 1
                     else:
-                        label2count[tag][idx] += 1
+                        label2count[tag][0] += 1
+
+                if tag == "val":
+                    for idx in set(ann.reshape([-1]).tolist()):
+                        if idx == 255:
+                            continue
+                        if idx not in label2count[tag]:
+                            label2count[tag][idx] = 1
+                        else:
+                            label2count[tag][idx] += 1
             if label2count[tag].get(0, None) is None:
                 label2count[tag][0] = 0
 

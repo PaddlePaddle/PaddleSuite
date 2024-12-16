@@ -26,6 +26,7 @@ premailer
 PyMuPDF
 ujson
 Pillow
+importlib_resources>=6.4
 ######## For Chatocrv3 #######
 qianfan==0.0.3
 langchain==0.1.5

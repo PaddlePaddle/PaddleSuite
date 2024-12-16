@@ -11,12 +11,10 @@ Small object detection is a specialized technique for identifying tiny objects w
 
 <b>The small object detection pipeline includes a small object detection module. If you prioritize model accuracy, choose a model with higher accuracy. If you prioritize inference speed, select a model with faster inference. If you prioritize model storage size, opt for a model with a smaller storage size.</b>
 
-<details><summary> 👉Model List Details</summary>
-
 <table>
 <thead>
 <tr>
-<th>Model Name</th>
+<th>Model Name</th><th>Model Download Link</th>
 <th>mAP (%)</th>
 <th>GPU Inference Time (ms)</th>
 <th>CPU Inference Time (ms)</th>
@@ -25,21 +23,21 @@ Small object detection is a specialized technique for identifying tiny objects w
 </thead>
 <tbody>
 <tr>
-<td>PP-YOLOE_plus_SOD-S</td>
+<td>PP-YOLOE_plus_SOD-S</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-YOLOE_plus_SOD-S_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-YOLOE_plus_SOD-S_pretrained.pdparams">Trained Model</a></td>
 <td>25.1</td>
 <td>65.4608</td>
 <td>324.37</td>
 <td>77.3 M</td>
 </tr>
 <tr>
-<td>PP-YOLOE_plus_SOD-L</td>
+<td>PP-YOLOE_plus_SOD-L</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-YOLOE_plus_SOD-L_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-YOLOE_plus_SOD-L_pretrained.pdparams">Trained Model</a></td>
 <td>31.9</td>
 <td>57.1448</td>
 <td>1006.98</td>
 <td>325.0 M</td>
 </tr>
 <tr>
-<td>PP-YOLOE_plus_SOD-largesize-L</td>
+<td>PP-YOLOE_plus_SOD-largesize-L</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-YOLOE_plus_SOD-largesize-L_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-YOLOE_plus_SOD-largesize-L_pretrained.pdparams">Trained Model</a></td>
 <td>42.7</td>
 <td>458.521</td>
 <td>11172.7</td>
@@ -47,7 +45,7 @@ Small object detection is a specialized technique for identifying tiny objects w
 </tr>
 </tbody>
 </table>
-<p><b>Note: The above accuracy metrics are based on the </b><a href="https://github.com/VisDrone/VisDrone-Dataset">VisDrone-DET</a><b> validation set mAP(0.5:0.95). All GPU inference times are based on an NVIDIA Tesla T4 machine with FP32 precision. CPU inference speeds are based on an Intel(R) Xeon(R) Gold 5117 CPU @ 2.00GHz with 8 threads and FP32 precision.</b></p></details>
+<p><b>Note: The above accuracy metrics are based on the </b><a href="https://github.com/VisDrone/VisDrone-Dataset">VisDrone-DET</a><b> validation set mAP(0.5:0.95). All GPU inference times are based on an NVIDIA Tesla T4 machine with FP32 precision. CPU inference speeds are based on an Intel(R) Xeon(R) Gold 5117 CPU @ 2.00GHz with 8 threads and FP32 precision.</b></p>
 
 ## 2. Quick Start
 PaddleX supports experiencing the small object detection pipeline's effects through command line or Python locally.
@@ -195,12 +193,12 @@ In the above Python script, the following steps are executed:
 <tr>
 <td>print</td>
 <td>Prints results to the terminal</td>
-<td><code>- format_json</code>: bool, whether to format the output content with json indentation, default is True;<br><code>- indent</code>: int, json formatting setting, only valid when format_json is True, default is 4;<br><code>- ensure_ascii</code>: bool, json formatting setting, only valid when format_json is True, default is False;</td>
+<td><code>- format_json</code>: bool, whether to format the output content with json indentation, default is True;<br/><code>- indent</code>: int, json formatting setting, only valid when format_json is True, default is 4;<br/><code>- ensure_ascii</code>: bool, json formatting setting, only valid when format_json is True, default is False;</td>
 </tr>
 <tr>
 <td>save_to_json</td>
 <td>Saves results as a json file</td>
-<td><code>- save_path</code>: str, the path to save the file, when it's a directory, the saved file name is consistent with the input file type;<br><code>- indent</code>: int, json formatting setting, default is 4;<br><code>- ensure_ascii</code>: bool, json formatting setting, default is False;</td>
+<td><code>- save_path</code>: str, the path to save the file, when it's a directory, the saved file name is consistent with the input file type;<br/><code>- indent</code>: int, json formatting setting, default is 4;<br/><code>- ensure_ascii</code>: bool, json formatting setting, default is False;</td>
 </tr>
 <tr>
 <td>save_to_img</td>
@@ -240,9 +238,10 @@ Below are the API references and multi-language service invocation examples:
 
 <details><summary>API Reference</summary>
 
-<p>For all operations provided by the service:</p>
+<p>For main operations provided by the service:</p>
 <ul>
-<li>Both the response body and the request body for POST requests are JSON data (JSON objects).</li>
+<li>The HTTP request method is POST.</li>
+<li>The request body and the response body are both JSON data (JSON objects).</li>
 <li>When the request is processed successfully, the response status code is <code>200</code>, and the response body properties are as follows:</li>
 </ul>
 <table>
@@ -291,12 +290,12 @@ Below are the API references and multi-language service invocation examples:
 </tr>
 </tbody>
 </table>
-<p>Operations provided by the service are as follows:</p>
+<p>Main operations provided by the service are as follows:</p>
 <ul>
 <li><b><code>infer</code></b></li>
 </ul>
 <p>Performs object detection on an image.</p>
-<p><code>POST /object-detection</code></p>
+<p><code>POST /small-object-detection</code></p>
 <ul>
 <li>The request body properties are as follows:</li>
 </ul>
@@ -406,7 +405,7 @@ Below are the API references and multi-language service invocation examples:
 <pre><code class="language-python">import base64
 import requests
 
-API_URL = &quot;http://localhost:8080/object-detection&quot;
+API_URL = &quot;http://localhost:8080/small-object-detection&quot;
 image_path = &quot;./demo.jpg&quot;
 output_image_path = &quot;./out.jpg&quot;
 
@@ -459,7 +458,7 @@ int main() {
     jsonObj[&quot;image&quot;] = encodedImage;
     std::string body = jsonObj.dump();
 
-    auto response = client.Post(&quot;/object-detection&quot;, headers, body, &quot;application/json&quot;);
+    auto response = client.Post(&quot;/small-object-detection&quot;, headers, body, &quot;application/json&quot;);
     if (response &amp;&amp; response-&gt;status == 200) {
         nlohmann::json jsonResponse = nlohmann::json::parse(response-&gt;body);
         auto result = jsonResponse[&quot;result&quot;];
@@ -504,7 +503,7 @@ import java.util.Base64;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-        String API_URL = &quot;http://localhost:8080/object-detection&quot;;
+        String API_URL = &quot;http://localhost:8080/small-object-detection&quot;;
         String imagePath = &quot;./demo.jpg&quot;;
         String outputImagePath = &quot;./out.jpg&quot;;
 
@@ -560,7 +559,7 @@ import (
 )
 
 func main() {
-    API_URL := &quot;http://localhost:8080/object-detection&quot;
+    API_URL := &quot;http://localhost:8080/small-object-detection&quot;
     imagePath := &quot;./demo.jpg&quot;
     outputImagePath := &quot;./out.jpg&quot;
 
@@ -640,7 +639,7 @@ using Newtonsoft.Json.Linq;
 
 class Program
 {
-    static readonly string API_URL = &quot;http://localhost:8080/object-detection&quot;;
+    static readonly string API_URL = &quot;http://localhost:8080/small-object-detection&quot;;
     static readonly string imagePath = &quot;./demo.jpg&quot;;
     static readonly string outputImagePath = &quot;./out.jpg&quot;;
 
@@ -676,7 +675,7 @@ class Program
 <pre><code class="language-js">const axios = require('axios');
 const fs = require('fs');
 
-const API_URL = 'http://localhost:8080/object-detection'
+const API_URL = 'http://localhost:8080/small-object-detection'
 const imagePath = './demo.jpg'
 const outputImagePath = &quot;./out.jpg&quot;;
 
@@ -714,7 +713,7 @@ axios.request(config)
 
 <pre><code class="language-php">&lt;?php
 
-$API_URL = &quot;http://localhost:8080/object-detection&quot;;
+$API_URL = &quot;http://localhost:8080/small-object-detection&quot;;
 $image_path = &quot;./demo.jpg&quot;;
 $output_image_path = &quot;./out.jpg&quot;;
 
@@ -724,6 +723,7 @@ $payload = array(&quot;image&quot; =&gt; $image_data);
 $ch = curl_init($API_URL);
 curl_setopt($ch, CURLOPT_POST, true);
 curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
+curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 $response = curl_exec($ch);
 curl_close($ch);

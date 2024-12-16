@@ -56,6 +56,7 @@ MODELS = [
     "PP-HGNetV2-B5",
     "PP-HGNetV2-B6",
     "PP-LCNet_x0_25",
+    "PP-LCNet_x0_25_textline_ori",
     "PP-LCNet_x0_35",
     "PP-LCNet_x0_5",
     "PP-LCNet_x0_75",

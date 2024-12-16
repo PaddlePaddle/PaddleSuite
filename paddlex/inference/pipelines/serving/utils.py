@@ -101,11 +101,20 @@ def image_bytes_to_array(data: bytes) -> np.ndarray:
     return cv2.imdecode(np.frombuffer(data, np.uint8), cv2.IMREAD_COLOR)
 
 
-def image_to_base64(image: Image.Image) -> str:
+def image_bytes_to_image(data: bytes) -> Image.Image:
+    return Image.open(io.BytesIO(data))
+
+
+def image_to_bytes(image: Image.Image, format: str = "JPEG") -> bytes:
     with io.BytesIO() as f:
-        image.save(f, format="JPEG")
-        image_base64 = base64.b64encode(f.getvalue()).decode("ascii")
-    return image_base64
+        image.save(f, format=format)
+        img_bytes = f.getvalue()
+    return img_bytes
+
+
+def image_array_to_bytes(image: np.ndarray, ext: str = ".jpg") -> str:
+    image = cv2.imencode(ext, image)[1]
+    return image.tobytes()
 
 
 def csv_bytes_to_data_frame(data: bytes) -> pd.DataFrame:
@@ -114,8 +123,12 @@ def csv_bytes_to_data_frame(data: bytes) -> pd.DataFrame:
     return df
 
 
-def data_frame_to_base64(df: str) -> str:
-    return base64.b64encode(df.to_csv().encode("utf-8")).decode("ascii")
+def data_frame_to_bytes(df: str) -> str:
+    return df.to_csv().encode("utf-8")
+
+
+def base64_encode(data: bytes) -> str:
+    return base64.b64encode(data).decode("ascii")
 
 
 def read_pdf(

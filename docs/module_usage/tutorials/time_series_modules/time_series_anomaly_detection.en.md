@@ -12,7 +12,7 @@ Time series anomaly detection focuses on identifying abnormal points or periods 
 <table>
 <thead>
 <tr>
-<th>Model Name</th>
+<th>Model Name</th><th>Model Download Link</th>
 <th>Precision</th>
 <th>Recall</th>
 <th>F1-Score</th>
@@ -22,7 +22,7 @@ Time series anomaly detection focuses on identifying abnormal points or periods 
 </thead>
 <tbody>
 <tr>
-<td>AutoEncoder_ad_ad</td>
+<td>AutoEncoder_ad_ad</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/AutoEncoder_ad_ad_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/AutoEncoder_ad_ad_pretrained.pdparams">Trained Model</a></td>
 <td>0.9898</td>
 <td>0.9396</td>
 <td>0.9641</td>
@@ -30,7 +30,7 @@ Time series anomaly detection focuses on identifying abnormal points or periods 
 <td>AutoEncoder_ad_ad is a simple, efficient, and easy-to-use time series anomaly detection model</td>
 </tr>
 <tr>
-<td>Nonstationary_ad</td>
+<td>Nonstationary_ad</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/Nonstationary_ad_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/Nonstationary_ad_pretrained.pdparams">Trained Model</a></td>
 <td>0.9855</td>
 <td>0.8895</td>
 <td>0.9351</td>
@@ -38,7 +38,7 @@ Time series anomaly detection focuses on identifying abnormal points or periods 
 <td>Based on the transformer structure, optimized for anomaly detection in non-stationary time series</td>
 </tr>
 <tr>
-<td>AutoEncoder_ad</td>
+<td>AutoEncoder_ad</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/AutoEncoder_ad_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/AutoEncoder_ad_pretrained.pdparams">Trained Model</a></td>
 <td>0.9936</td>
 <td>0.8436</td>
 <td>0.9125</td>
@@ -46,7 +46,7 @@ Time series anomaly detection focuses on identifying abnormal points or periods 
 <td>AutoEncoder_ad is a classic autoencoder-based, efficient, and easy-to-use time series anomaly detection model</td>
 </tr>
 <tr>
-<td>PatchTST_ad</td>
+<td>PatchTST_ad</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PatchTST_ad_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PatchTST_ad_pretrained.pdparams">Trained Model</a></td>
 <td>0.9878</td>
 <td>0.9070</td>
 <td>0.9457</td>
@@ -54,7 +54,7 @@ Time series anomaly detection focuses on identifying abnormal points or periods 
 <td>PatchTST is a high-precision time series anomaly detection model that balances local patterns and global dependencies</td>
 </tr>
 <tr>
-<td>TimesNet_ad</td>
+<td>TimesNet_ad</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/TimesNet_ad_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/TimesNet_ad_pretrained.pdparams">Trained Model</a></td>
 <td>0.9837</td>
 <td>0.9480</td>
 <td>0.9656</td>

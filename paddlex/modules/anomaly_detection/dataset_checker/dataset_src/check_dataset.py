@@ -65,7 +65,8 @@ def check_dataset(dataset_dir, output, sample_num=10):
                     f"The shape of {img_file}:{img.shape[:2]} and "
                     f"{ann_file}:{ann.shape} must be the same!"
                 )
-                class_ids = class_ids | set(ann.reshape([-1]).tolist())
+                if tag == "val":
+                    class_ids = class_ids | set(ann.reshape([-1]).tolist())
                 if i < sample_num:
                     vis_img = visualize(img, ann)
                     vis_img = Image.fromarray(vis_img)

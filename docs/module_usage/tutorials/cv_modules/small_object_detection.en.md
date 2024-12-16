@@ -10,41 +10,40 @@ Small object detection typically refers to accurately detecting and locating sma
 ## II. Supported Model List
 
 <table>
-  <tr>
-    <th>Model</th>
-    <th>mAP(0.5:0.95)</th>
-    <th>mAP(0.5)</th>
-    <th>GPU Inference Time (ms)</th>
-    <th>CPU Inference Time (ms)</th>
-    <th>Model Size (M)</th>
-    <th>Description (VisDrone)</th>
-  </tr>
-  <tr>
-    <td>PP-YOLOE_plus_SOD-L</td>
-    <td>31.9</td>
-    <td>52.1</td>
-    <td>57.1</td>
-    <td>1007.0</td>
-    <td>324.93</td>
-    <td rowspan="3">PP-YOLOE_plus small object detection model trained on VisDrone. VisDrone is a benchmark dataset specifically for unmanned aerial vehicle (UAV) visual data, which is used for small object detection due to the small size of the targets and the inherent challenges they pose.</td>
-
-  </tr>
-  <tr>
-    <td>PP-YOLOE_plus_SOD-S</td>
-    <td>25.1</td>
-    <td>42.8</td>
-    <td>65.5</td>
-    <td>324.4</td>
-    <td>77.29</td>
-  </tr>
-  <tr>
-    <td>PP-YOLOE_plus_SOD-largesize-L</td>
-    <td>42.7</td>
-    <td>65.9</td>
-    <td>458.5</td>
-    <td>11172.7</td>
-    <td>340.42</td>
-  </tr>
+<tr>
+<th>Model</th><th>Model Download Link</th>
+<th>mAP(0.5:0.95)</th>
+<th>mAP(0.5)</th>
+<th>GPU Inference Time (ms)</th>
+<th>CPU Inference Time (ms)</th>
+<th>Model Size (M)</th>
+<th>Description (VisDrone)</th>
+</tr>
+<tr>
+<td>PP-YOLOE_plus_SOD-L</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-YOLOE_plus_SOD-L_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-YOLOE_plus_SOD-L_pretrained.pdparams">Trained Model</a></td>
+<td>31.9</td>
+<td>52.1</td>
+<td>57.1</td>
+<td>1007.0</td>
+<td>324.93</td>
+<td rowspan="3">PP-YOLOE_plus small object detection model trained on VisDrone. VisDrone is a benchmark dataset specifically for unmanned aerial vehicle (UAV) visual data, which is used for small object detection due to the small size of the targets and the inherent challenges they pose.</td>
+</tr>
+<tr>
+<td>PP-YOLOE_plus_SOD-S</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-YOLOE_plus_SOD-S_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-YOLOE_plus_SOD-S_pretrained.pdparams">Trained Model</a></td>
+<td>25.1</td>
+<td>42.8</td>
+<td>65.5</td>
+<td>324.4</td>
+<td>77.29</td>
+</tr>
+<tr>
+<td>PP-YOLOE_plus_SOD-largesize-L</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-YOLOE_plus_SOD-largesize-L_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-YOLOE_plus_SOD-largesize-L_pretrained.pdparams">Trained Model</a></td>
+<td>42.7</td>
+<td>65.9</td>
+<td>458.5</td>
+<td>11172.7</td>
+<td>340.42</td>
+</tr>
 </table>
 
 <b>Note: The evaluation set for the above accuracy metrics is VisDrone-DET dataset mAP(0.5:0.95). GPU inference time is based on an NVIDIA Tesla T4 machine with FP32 precision. CPU inference speed is based on an Intel(R) Xeon(R) Gold 5117 CPU @ 2.00GHz with 8 threads and FP32 precision.</b>

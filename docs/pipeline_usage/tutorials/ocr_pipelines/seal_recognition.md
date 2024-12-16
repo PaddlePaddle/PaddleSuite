@@ -15,13 +15,12 @@ comments: true
 
 <b>如您更考虑模型精度，请选择精度较高的模型，如您更考虑模型推理速度，请选择推理速度较快的模型，如您更考虑模型存储大小，请选择存储大小较小的模型</b>。
 
-<details><summary> 👉模型列表详情</summary>
 
 <p><b>版面区域分析模块模型：</b></p>
 <table>
 <thead>
 <tr>
-<th>模型</th>
+<th>模型</th><th>模型下载链接</th>
 <th>mAP(0.5)（%）</th>
 <th>GPU推理耗时（ms）</th>
 <th>CPU推理耗时 (ms)</th>
@@ -31,7 +30,7 @@ comments: true
 </thead>
 <tbody>
 <tr>
-<td>PicoDet_layout_1x</td>
+<td>PicoDet_layout_1x</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PicoDet_layout_1x_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PicoDet_layout_1x_pretrained.pdparams">训练模型</a></td>
 <td>86.8</td>
 <td>13.0</td>
 <td>91.3</td>
@@ -39,7 +38,15 @@ comments: true
 <td>基于PicoDet-1x在PubLayNet数据集训练的高效率版面区域定位模型，可定位包含文字、标题、表格、图片以及列表这5类区域</td>
 </tr>
 <tr>
-<td>PicoDet-S_layout_3cls</td>
+<td>PicoDet_layout_1x_table</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PicoDet_layout_1x_table_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PicoDet_layout_1x_table_pretrained.pdparams">训练模型</a></td>
+<td>95.7</td>
+<td>12.623</td>
+<td>90.8934</td>
+<td>7.4 M</td>
+<td>基于PicoDet-1x在自建数据集训练的高效率版面区域定位模型，可定位包含表格这1类区域</td>
+</tr>
+<tr>
+<td>PicoDet-S_layout_3cls</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PicoDet-S_layout_3cls_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PicoDet-S_layout_3cls_pretrained.pdparams">训练模型</a></td>
 <td>87.1</td>
 <td>13.5</td>
 <td>45.8</td>
@@ -47,7 +54,7 @@ comments: true
 <td>基于PicoDet-S轻量模型在中英文论文、杂志和研报等场景上自建数据集训练的高效率版面区域定位模型，包含3个类别：表格，图像和印章</td>
 </tr>
 <tr>
-<td>PicoDet-S_layout_17cls</td>
+<td>PicoDet-S_layout_17cls</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PicoDet-S_layout_17cls_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PicoDet-S_layout_17cls_pretrained.pdparams">训练模型</a></td>
 <td>70.3</td>
 <td>13.6</td>
 <td>46.2</td>
@@ -55,7 +62,7 @@ comments: true
 <td>基于PicoDet-S轻量模型在中英文论文、杂志和研报等场景上自建数据集训练的高效率版面区域定位模型，包含17个版面常见类别，分别是：段落标题、图片、文本、数字、摘要、内容、图表标题、公式、表格、表格标题、参考文献、文档标题、脚注、页眉、算法、页脚、印章</td>
 </tr>
 <tr>
-<td>PicoDet-L_layout_3cls</td>
+<td>PicoDet-L_layout_3cls</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PicoDet-L_layout_3cls_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PicoDet-L_layout_3cls_pretrained.pdparams">训练模型</a></td>
 <td>89.3</td>
 <td>15.7</td>
 <td>159.8</td>
@@ -63,7 +70,7 @@ comments: true
 <td>基于PicoDet-L在中英文论文、杂志和研报等场景上自建数据集训练的高效率版面区域定位模型，包含3个类别：表格，图像和印章</td>
 </tr>
 <tr>
-<td>PicoDet-L_layout_17cls</td>
+<td>PicoDet-L_layout_17cls</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PicoDet-L_layout_17cls_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PicoDet-L_layout_17cls_pretrained.pdparams">训练模型</a></td>
 <td>79.9</td>
 <td>17.2</td>
 <td>160.2</td>
@@ -71,7 +78,7 @@ comments: true
 <td>基于PicoDet-L在中英文论文、杂志和研报等场景上自建数据集训练的高效率版面区域定位模型，包含17个版面常见类别，分别是：段落标题、图片、文本、数字、摘要、内容、图表标题、公式、表格、表格标题、参考文献、文档标题、脚注、页眉、算法、页脚、印章</td>
 </tr>
 <tr>
-<td>RT-DETR-H_layout_3cls</td>
+<td>RT-DETR-H_layout_3cls</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/RT-DETR-H_layout_3cls_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/RT-DETR-H_layout_3cls_pretrained.pdparams">训练模型</a></td>
 <td>95.9</td>
 <td>114.6</td>
 <td>3832.6</td>
@@ -79,7 +86,7 @@ comments: true
 <td>基于RT-DETR-H在中英文论文、杂志和研报等场景上自建数据集训练的高精度版面区域定位模型，包含3个类别：表格，图像和印章</td>
 </tr>
 <tr>
-<td>RT-DETR-H_layout_17cls</td>
+<td>RT-DETR-H_layout_17cls</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/RT-DETR-H_layout_17cls_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/RT-DETR-H_layout_17cls_pretrained.pdparams">训练模型</a></td>
 <td>92.6</td>
 <td>115.1</td>
 <td>3827.2</td>
@@ -93,7 +100,7 @@ comments: true
 <table>
 <thead>
 <tr>
-<th>模型</th>
+<th>模型</th><th>模型下载链接</th>
 <th>检测Hmean（%）</th>
 <th>GPU推理耗时（ms）</th>
 <th>CPU推理耗时 (ms)</th>
@@ -103,7 +110,7 @@ comments: true
 </thead>
 <tbody>
 <tr>
-<td>PP-OCRv4_server_seal_det</td>
+<td>PP-OCRv4_server_seal_det</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-OCRv4_server_seal_det_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-OCRv4_server_seal_det_pretrained.pdparams">训练模型</a></td>
 <td>98.21</td>
 <td>84.341</td>
 <td>2425.06</td>
@@ -111,7 +118,7 @@ comments: true
 <td>PP-OCRv4的服务端印章文本检测模型，精度更高，适合在较好的服务器上部署</td>
 </tr>
 <tr>
-<td>PP-OCRv4_mobile_seal_det</td>
+<td>PP-OCRv4_mobile_seal_det</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-OCRv4_mobile_seal_det_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-OCRv4_mobile_seal_det_pretrained.pdparams">训练模型</a></td>
 <td>96.47</td>
 <td>10.5878</td>
 <td>131.813</td>
@@ -125,7 +132,7 @@ comments: true
 <table>
 <thead>
 <tr>
-<th>模型名称</th>
+<th>模型</th><th>模型下载链接</th>
 <th>识别Avg Accuracy(%)</th>
 <th>GPU推理耗时（ms）</th>
 <th>CPU推理耗时</th>
@@ -135,7 +142,7 @@ comments: true
 </thead>
 <tbody>
 <tr>
-<td>PP-OCRv4_mobile_rec</td>
+<td>PP-OCRv4_mobile_rec</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-OCRv4_mobile_rec_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-OCRv4_mobile_rec_pretrained.pdparams">训练模型</a></td>
 <td>78.20</td>
 <td>7.95018</td>
 <td>46.7868</td>
@@ -143,7 +150,7 @@ comments: true
 <td>PP-OCRv4的移动端文本识别模型，效率更高，适合在端侧部署</td>
 </tr>
 <tr>
-<td>PP-OCRv4_server_rec</td>
+<td>PP-OCRv4_server_rec</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-OCRv4_server_rec_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-OCRv4_server_rec_pretrained.pdparams">训练模型</a></td>
 <td>79.20</td>
 <td>7.19439</td>
 <td>140.179</td>
@@ -152,7 +159,7 @@ comments: true
 </tr>
 </tbody>
 </table>
-<p><b>注：以上精度指标的评估集是 PaddleOCR 自建的中文数据集 ，覆盖街景、网图、文档、手写多个场景，其中文本识别包含 1.1w 张图片。以上所有模型 GPU 推理耗时基于 NVIDIA Tesla T4 机器，精度类型为 FP32， CPU 推理速度基于 Intel(R) Xeon(R) Gold 5117 CPU @ 2.00GHz，线程数为8，精度类型为 FP32。</b></p></details>
+<p><b>注：以上精度指标的评估集是 PaddleOCR 自建的中文数据集 ，覆盖街景、网图、文档、手写多个场景，其中文本识别包含 1.1w 张图片。以上所有模型 GPU 推理耗时基于 NVIDIA Tesla T4 机器，精度类型为 FP32， CPU 推理速度基于 Intel(R) Xeon(R) Gold 5117 CPU @ 2.00GHz，线程数为8，精度类型为 FP32。</b></p>
 
 ## 2. 快速开始
 PaddleX 所提供的预训练的模型产线均可以快速体验效果，你可以在本地使用命令行或 Python 体验印章文本识别产线的效果。
@@ -192,113 +199,135 @@ paddlex --pipeline seal_recognition --input seal_text_det.png --device gpu:0 --s
 
 <details><summary> 👉点击展开</summary>
 
-<pre><code>{'input_path': 'seal_text_det.png', 'layout_result': {'input_path': 'seal_text_det.png', 'boxes': [{'cls_id': 2, 'label': 'seal', 'score': 0.9813116192817688, 'coordinate': [0, 5.2238655, 639.59766, 637.6985]}]}, 'ocr_result': [{'input_path': PosixPath('/root/.paddlex/temp/tmp19fn93y5.png'), 'dt_polys': [array([[468, 469],
-       [472, 469],
-       [477, 471],
-       [507, 501],
-       [509, 505],
-       [509, 509],
-       [508, 513],
-       [506, 514],
-       [456, 553],
-       [454, 555],
-       [391, 581],
-       [388, 581],
-       [309, 590],
-       [306, 590],
-       [234, 577],
-       [232, 577],
-       [172, 548],
-       [170, 546],
-       [121, 504],
-       [118, 501],
-       [118, 496],
-       [119, 492],
-       [121, 490],
-       [152, 463],
-       [156, 461],
-       [160, 461],
-       [164, 463],
-       [202, 495],
-       [252, 518],
-       [311, 530],
-       [371, 522],
-       [425, 501],
-       [464, 471]]), array([[442, 439],
-       [445, 442],
-       [447, 447],
-       [449, 490],
-       [448, 494],
-       [446, 497],
-       [440, 499],
-       [197, 500],
-       [193, 499],
-       [190, 496],
-       [188, 491],
-       [188, 448],
-       [189, 444],
-       [192, 441],
-       [197, 439],
-       [438, 438]]), array([[465, 341],
-       [470, 344],
-       [472, 346],
-       [476, 356],
-       [476, 419],
-       [475, 424],
-       [472, 428],
-       [467, 431],
-       [462, 433],
-       [175, 434],
-       [170, 433],
-       [166, 430],
-       [163, 426],
-       [161, 420],
-       [161, 354],
-       [162, 349],
-       [165, 345],
-       [170, 342],
-       [175, 340],
-       [460, 340]]), array([[326,  34],
-       [481,  85],
-       [485,  88],
-       [488,  90],
-       [584, 220],
-       [586, 225],
-       [587, 229],
-       [589, 378],
-       [588, 383],
-       [585, 388],
-       [581, 391],
-       [576, 393],
-       [570, 392],
-       [507, 373],
-       [502, 371],
-       [498, 367],
-       [496, 359],
-       [494, 255],
-       [423, 162],
-       [322, 129],
-       [246, 151],
-       [205, 169],
-       [144, 252],
-       [139, 360],
-       [137, 365],
-       [134, 369],
-       [128, 373],
-       [ 66, 391],
-       [ 61, 392],
-       [ 56, 390],
-       [ 51, 387],
-       [ 48, 382],
-       [ 47, 377],
-       [ 49, 230],
-       [ 50, 225],
-       [ 52, 221],
-       [149,  89],
-       [153,  86],
-       [157,  84],
-       [318,  34],
-       [322,  33]])], 'dt_scores': [0.9943362380813267, 0.9994290391836306, 0.9945320407374245, 0.9908104427126033], 'rec_text': ['5263647368706', '吗繁物', '发票专用章', '天津君和缘商贸有限公司'], 'rec_score': [0.9921098351478577, 0.997374951839447, 0.9999369382858276, 0.9901710152626038]}]}
+<pre><code>
+{'input_path': PosixPath('/root/.paddlex/temp/tmpa8eqnpus.png'), 'layout_result': {'input_path': PosixPath('/root/.paddlex/temp/tmpa8eqnpus.png'), 'boxes': [{'cls_id': 2, 'label': 'seal', 'score': 0.9813321828842163, 'coordinate': [0, 5.1820183, 639.59314, 637.7533]}]}, 'ocr_result': {'dt_polys': [array([[166, 468],
+                        [206, 503],
+                    [249, 523],
+                    [312, 535],
+                    [364, 529],
+                    [390, 521],
+                    [428, 505],
+                    [465, 476],
+                    [468, 474],
+                    [473, 474],
+                    [476, 475],
+                    [478, 477],
+                    [508, 507],
+                    [510, 510],
+                    [511, 514],
+                    [509, 518],
+                    [507, 521],
+                    [458, 559],
+                    [455, 560],
+                    [399, 584],
+                    [399, 584],
+                    [369, 591],
+                    [367, 592],
+                    [308, 597],
+                    [305, 596],
+                    [240, 584],
+                    [239, 584],
+                    [220, 577],
+                    [169, 552],
+                    [166, 551],
+                    [120, 510],
+                    [117, 507],
+                    [116, 503],
+                    [117, 499],
+                    [121, 495],
+                    [153, 468],
+                    [156, 467],
+                    [161, 467]]), array([[439, 444],
+                    [443, 444],
+                    [446, 446],
+                    [448, 448],
+                    [450, 451],
+                    [450, 454],
+                    [448, 498],
+                    [448, 502],
+                    [445, 505],
+                    [442, 507],
+                    [439, 507],
+                    [399, 505],
+                    [196, 506],
+                    [192, 505],
+                    [189, 503],
+                    [187, 500],
+                    [187, 497],
+                    [186, 458],
+                    [186, 456],
+                    [187, 451],
+                    [188, 448],
+                    [192, 444],
+                    [194, 444],
+                    [198, 443]]), array([[463, 347],
+                    [468, 347],
+                    [472, 350],
+                    [474, 353],
+                    [476, 360],
+                    [477, 425],
+                    [476, 429],
+                    [474, 433],
+                    [470, 436],
+                    [466, 438],
+                    [463, 438],
+                    [175, 439],
+                    [170, 438],
+                    [166, 435],
+                    [163, 432],
+                    [161, 426],
+                    [161, 361],
+                    [161, 356],
+                    [163, 352],
+                    [167, 349],
+                    [172, 347],
+                    [184, 346],
+                    [186, 346]]), array([[325,  38],
+                    [485,  91],
+                    [489,  94],
+                    [493,  96],
+                    [587, 225],
+                    [588, 230],
+                    [589, 234],
+                    [592, 384],
+                    [591, 389],
+                    [588, 393],
+                    [585, 397],
+                    [581, 399],
+                    [576, 399],
+                    [572, 398],
+                    [508, 380],
+                    [503, 379],
+                    [499, 375],
+                    [498, 370],
+                    [497, 367],
+                    [493, 258],
+                    [428, 171],
+                    [421, 165],
+                    [323, 136],
+                    [225, 165],
+                    [207, 175],
+                    [144, 260],
+                    [141, 365],
+                    [141, 370],
+                    [138, 374],
+                    [134, 378],
+                    [131, 379],
+                    [ 66, 398],
+                    [ 61, 398],
+                    [ 56, 398],
+                    [ 52, 395],
+                    [ 48, 391],
+                    [ 47, 386],
+                    [ 47, 384],
+                    [ 47, 235],
+                    [ 48, 230],
+                    [ 50, 226],
+                    [146,  96],
+                    [151,  92],
+                    [154,  91],
+                    [315,  38],
+                    [320,  37]])], 'dt_scores': [0.99375725701319, 0.9871711582010613, 0.9937523531067023, 0.9911629231838204], 'rec_text': ['5263647368706', '吗繁物', '发票专天津君和缘商贸有限公司'], 'rec_score': [0.9933745265007019, 0.998288631439209, 0.9999362230300903, 0.9923253655433655], 'input_path': PosixPath('/Users/chenghong0temp/tmpa8eqnpus.png')}, 'src_file_name': 'https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/seal_text_det.png', 'page_id': 0}
 </code></pre></details>
 
 <img src="https://raw.githubusercontent.com/cuicheng01/PaddleX_doc_images/main/images/pipelines/seal_recognition/03.png">
@@ -408,12 +437,12 @@ for res in output:
 <tr>
 <td>print</td>
 <td>打印结果到终端</td>
-<td><code>- format_json</code>：bool类型，是否对输出内容进行使用json缩进格式化，默认为True；<br><code>- indent</code>：int类型，json格式化设置，仅当format_json为True时有效，默认为4；<br><code>- ensure_ascii</code>：bool类型，json格式化设置，仅当format_json为True时有效，默认为False；</td>
+<td><code>- format_json</code>：bool类型，是否对输出内容进行使用json缩进格式化，默认为True；<br/><code>- indent</code>：int类型，json格式化设置，仅当format_json为True时有效，默认为4；<br/><code>- ensure_ascii</code>：bool类型，json格式化设置，仅当format_json为True时有效，默认为False；</td>
 </tr>
 <tr>
 <td>save_to_json</td>
 <td>将结果保存为json格式的文件</td>
-<td><code>- save_path</code>：str类型，保存的文件路径，当为目录时，保存文件命名与输入文件类型命名一致；<br><code>- indent</code>：int类型，json格式化设置，默认为4；<br><code>- ensure_ascii</code>：bool类型，json格式化设置，默认为False；</td>
+<td><code>- save_path</code>：str类型，保存的文件路径，当为目录时，保存文件命名与输入文件类型命名一致；<br/><code>- indent</code>：int类型，json格式化设置，默认为4；<br/><code>- ensure_ascii</code>：bool类型，json格式化设置，默认为False；</td>
 </tr>
 <tr>
 <td>save_to_img</td>
@@ -449,9 +478,10 @@ for res in output:
 
 <details><summary>API参考</summary>
 
-<p>对于服务提供的所有操作：</p>
+<p>对于服务提供的主要操作：</p>
 <ul>
-<li>响应体以及POST请求的请求体均为JSON数据（JSON对象）。</li>
+<li>HTTP请求方法为POST。</li>
+<li>请求体和响应体均为JSON数据（JSON对象）。</li>
 <li>当请求处理成功时，响应状态码为<code>200</code>，响应体的属性如下：</li>
 </ul>
 <table>
@@ -500,7 +530,7 @@ for res in output:
 </tr>
 </tbody>
 </table>
-<p>服务提供的操作如下：</p>
+<p>服务提供的主要操作如下：</p>
 <ul>
 <li><b><code>infer</code></b></li>
 </ul>
@@ -565,31 +595,19 @@ for res in output:
 </thead>
 <tbody>
 <tr>
-<td><code>sealImpressions</code></td>
+<td><code>texts</code></td>
 <td><code>array</code></td>
-<td>印章文本识别结果。</td>
+<td>文本位置、内容和得分。</td>
 </tr>
 <tr>
 <td><code>layoutImage</code></td>
 <td><code>string</code></td>
 <td>版面区域检测结果图。图像为JPEG格式，使用Base64编码。</td>
 </tr>
-</tbody>
-</table>
-<p><code>sealImpressions</code>中的每个元素为一个<code>object</code>，具有如下属性：</p>
-<table>
-<thead>
 <tr>
-<th>名称</th>
-<th>类型</th>
-<th>含义</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>texts</code></td>
-<td><code>array</code></td>
-<td>文本位置、内容和得分。</td>
+<td><code>ocrImage</code></td>
+<td><code>string</code></td>
+<td>OCR结果图。图像为JPEG格式，使用Base64编码。</td>
 </tr>
 </tbody>
 </table>
@@ -632,6 +650,7 @@ import requests
 
 API_URL = &quot;http://localhost:8080/seal-recognition&quot; # 服务URL
 image_path = &quot;./demo.jpg&quot;
+ocr_image_path = &quot;./ocr.jpg&quot;
 layout_image_path = &quot;./layout.jpg&quot;
 
 # 对本地图像进行Base64编码
@@ -647,11 +666,14 @@ response = requests.post(API_URL, json=payload)
 # 处理接口返回数据
 assert response.status_code == 200
 result = response.json()[&quot;result&quot;]
+with open(ocr_image_path, &quot;wb&quot;) as file:
+    file.write(base64.b64decode(result[&quot;ocrImage&quot;]))
+print(f&quot;Output image saved at {ocr_image_path}&quot;)
 with open(layout_image_path, &quot;wb&quot;) as file:
     file.write(base64.b64decode(result[&quot;layoutImage&quot;]))
 print(f&quot;Output image saved at {layout_image_path}&quot;)
-print(&quot;\nDetected seal impressions:&quot;)
-print(result[&quot;sealImpressions&quot;])
+print(&quot;\nDetected texts:&quot;)
+print(result[&quot;texts&quot;])
 </code></pre></details>
 
 <details><summary>C++</summary>
@@ -664,6 +686,7 @@ print(result[&quot;sealImpressions&quot;])
 int main() {
     httplib::Client client(&quot;localhost:8080&quot;);
     const std::string imagePath = &quot;./demo.jpg&quot;;
+    const std::string ocrImagePath = &quot;./ocr.jpg&quot;;
     const std::string layoutImagePath = &quot;./layout.jpg&quot;;
 
     httplib::Headers headers = {
@@ -694,6 +717,18 @@ int main() {
         nlohmann::json jsonResponse = nlohmann::json::parse(response-&gt;body);
         auto result = jsonResponse[&quot;result&quot;];
 
+        encodedImage = result[&quot;ocrImage&quot;];
+        std::string decoded_string = base64::from_base64(encodedImage);
+        std::vector&lt;unsigned char&gt; decodedOcrImage(decoded_string.begin(), decoded_string.end());
+        std::ofstream outputOcrFile(ocrImagePath, std::ios::binary | std::ios::out);
+        if (outputOcrFile.is_open()) {
+            outputOcrFile.write(reinterpret_cast&lt;char*&gt;(decodedOcrImage.data()), decodedOcrImage.size());
+            outputOcrFile.close();
+            std::cout &lt;&lt; &quot;Output image saved at &quot; &lt;&lt; ocrImagePath &lt;&lt; std::endl;
+        } else {
+            std::cerr &lt;&lt; &quot;Unable to open file for writing: &quot; &lt;&lt; ocrImagePath &lt;&lt; std::endl;
+        }
+
         encodedImage = result[&quot;layoutImage&quot;];
         decodedString = base64::from_base64(encodedImage);
         std::vector&lt;unsigned char&gt; decodedLayoutImage(decodedString.begin(), decodedString.end());
@@ -706,10 +741,10 @@ int main() {
             std::cerr &lt;&lt; &quot;Unable to open file for writing: &quot; &lt;&lt; layoutImagePath &lt;&lt; std::endl;
         }
 
-        auto impressions = result[&quot;sealImpressions&quot;];
-        std::cout &lt;&lt; &quot;\nDetected seal impressions:&quot; &lt;&lt; std::endl;
-        for (const auto&amp; impression : impressions) {
-            std::cout &lt;&lt; impression &lt;&lt; std::endl;
+        auto texts = result[&quot;texts&quot;];
+        std::cout &lt;&lt; &quot;\nDetected texts:&quot; &lt;&lt; std::endl;
+        for (const auto&amp; text : texts) {
+            std::cout &lt;&lt; text &lt;&lt; std::endl;
         }
     } else {
         std::cout &lt;&lt; &quot;Failed to send HTTP request.&quot; &lt;&lt; std::endl;
@@ -736,6 +771,7 @@ public class Main {
     public static void main(String[] args) throws IOException {
         String API_URL = &quot;http://localhost:8080/seal-recognition&quot;; // 服务URL
         String imagePath = &quot;./demo.jpg&quot;; // 本地图像
+        String ocrImagePath = &quot;./ocr.jpg&quot;;
         String layoutImagePath = &quot;./layout.jpg&quot;;
 
         // 对本地图像进行Base64编码
@@ -762,8 +798,15 @@ public class Main {
                 String responseBody = response.body().string();
                 JsonNode resultNode = objectMapper.readTree(responseBody);
                 JsonNode result = resultNode.get(&quot;result&quot;);
+                String ocrBase64Image = result.get(&quot;ocrImage&quot;).asText();
                 String layoutBase64Image = result.get(&quot;layoutImage&quot;).asText();
-                JsonNode impressions = result.get(&quot;sealImpressions&quot;);
+                JsonNode texts = result.get(&quot;texts&quot;);
+
+                byte[] imageBytes = Base64.getDecoder().decode(ocrBase64Image);
+                try (FileOutputStream fos = new FileOutputStream(ocrImagePath)) {
+                    fos.write(imageBytes);
+                }
+                System.out.println(&quot;Output image saved at &quot; + ocrBase64Image);
 
                 imageBytes = Base64.getDecoder().decode(layoutBase64Image);
                 try (FileOutputStream fos = new FileOutputStream(layoutImagePath)) {
@@ -771,7 +814,7 @@ public class Main {
                 }
                 System.out.println(&quot;Output image saved at &quot; + layoutImagePath);
 
-                System.out.println(&quot;\nDetected seal impressions: &quot; + impressions.toString());
+                System.out.println(&quot;\nDetected texts: &quot; + texts.toString());
             } else {
                 System.err.println(&quot;Request failed with code: &quot; + response.code());
             }
@@ -796,6 +839,7 @@ import (
 func main() {
     API_URL := &quot;http://localhost:8080/seal-recognition&quot;
     imagePath := &quot;./demo.jpg&quot;
+    ocrImagePath := &quot;./ocr.jpg&quot;
     layoutImagePath := &quot;./layout.jpg&quot;
 
     // 对本地图像进行Base64编码
@@ -836,8 +880,9 @@ func main() {
     }
     type Response struct {
         Result struct {
+            OcrImage      string   `json:&quot;ocrImage&quot;`
             LayoutImage      string   `json:&quot;layoutImage&quot;`
-            Impressions []map[string]interface{} `json:&quot;sealImpressions&quot;`
+            Texts []map[string]interface{} `json:&quot;texts&quot;`
         } `json:&quot;result&quot;`
     }
     var respData Response
@@ -846,6 +891,18 @@ func main() {
         fmt.Println(&quot;Error unmarshaling response body:&quot;, err)
         return
     }
+
+    ocrImageData, err := base64.StdEncoding.DecodeString(respData.Result.OcrImage)
+    if err != nil {
+        fmt.Println(&quot;Error decoding base64 image data:&quot;, err)
+        return
+    }
+    err = ioutil.WriteFile(ocrImagePath, ocrImageData, 0644)
+    if err != nil {
+        fmt.Println(&quot;Error writing image to file:&quot;, err)
+        return
+    }
+    fmt.Printf(&quot;Image saved at %s.jpg\n&quot;, ocrImagePath)
 
     layoutImageData, err := base64.StdEncoding.DecodeString(respData.Result.LayoutImage)
     if err != nil {
@@ -859,9 +916,9 @@ func main() {
     }
     fmt.Printf(&quot;Image saved at %s.jpg\n&quot;, layoutImagePath)
 
-    fmt.Println(&quot;\nDetected seal impressions:&quot;)
-    for _, impression := range respData.Result.Impressions {
-        fmt.Println(impression)
+    fmt.Println(&quot;\nDetected texts:&quot;)
+    for _, text := range respData.Result.Texts {
+        fmt.Println(text)
     }
 }
 </code></pre></details>
@@ -880,6 +937,7 @@ class Program
 {
     static readonly string API_URL = &quot;http://localhost:8080/seal-recognition&quot;;
     static readonly string imagePath = &quot;./demo.jpg&quot;;
+    static readonly string ocrImagePath = &quot;./ocr.jpg&quot;;
     static readonly string layoutImagePath = &quot;./layout.jpg&quot;;
 
     static async Task Main(string[] args)
@@ -901,13 +959,18 @@ class Program
         string responseBody = await response.Content.ReadAsStringAsync();
         JObject jsonResponse = JObject.Parse(responseBody);
 
+        string ocrBase64Image = jsonResponse[&quot;result&quot;][&quot;ocrImage&quot;].ToString();
+        byte[] ocrImageBytes = Convert.FromBase64String(ocrBase64Image);
+        File.WriteAllBytes(ocrImagePath, ocrImageBytes);
+        Console.WriteLine($&quot;Output image saved at {ocrImagePath}&quot;);
+
         string layoutBase64Image = jsonResponse[&quot;result&quot;][&quot;layoutImage&quot;].ToString();
         byte[] layoutImageBytes = Convert.FromBase64String(layoutBase64Image);
         File.WriteAllBytes(layoutImagePath, layoutImageBytes);
         Console.WriteLine($&quot;Output image saved at {layoutImagePath}&quot;);
 
-        Console.WriteLine(&quot;\nDetected seal impressions:&quot;);
-        Console.WriteLine(jsonResponse[&quot;result&quot;][&quot;sealImpressions&quot;].ToString());
+        Console.WriteLine(&quot;\nDetected texts:&quot;);
+        Console.WriteLine(jsonResponse[&quot;result&quot;][&quot;texts&quot;].ToString());
     }
 }
 </code></pre></details>
@@ -919,6 +982,7 @@ const fs = require('fs');
 
 const API_URL = 'http://localhost:8080/seal-recognition'
 const imagePath = './demo.jpg'
+const ocrImagePath = &quot;./ocr.jpg&quot;;
 const layoutImagePath = &quot;./layout.jpg&quot;;
 
 let config = {
@@ -942,14 +1006,20 @@ axios.request(config)
     // 处理接口返回数据
     const result = response.data[&quot;result&quot;];
 
+    const imageBuffer = Buffer.from(result[&quot;ocrImage&quot;], 'base64');
+    fs.writeFile(ocrImagePath, imageBuffer, (err) =&gt; {
+      if (err) throw err;
+      console.log(`Output image saved at ${ocrImagePath}`);
+    });
+
     imageBuffer = Buffer.from(result[&quot;layoutImage&quot;], 'base64');
     fs.writeFile(layoutImagePath, imageBuffer, (err) =&gt; {
       if (err) throw err;
       console.log(`Output image saved at ${layoutImagePath}`);
     });
 
-    console.log(&quot;\nDetected seal impressions:&quot;);
-    console.log(result[&quot;sealImpressions&quot;]);
+    console.log(&quot;\nDetected texts:&quot;);
+    console.log(result[&quot;texts&quot;]);
 })
 .catch((error) =&gt; {
   console.log(error);
@@ -962,6 +1032,7 @@ axios.request(config)
 
 $API_URL = &quot;http://localhost:8080/seal-recognition&quot;; // 服务URL
 $image_path = &quot;./demo.jpg&quot;;
+$ocr_image_path = &quot;./ocr.jpg&quot;;
 $layout_image_path = &quot;./layout.jpg&quot;;
 
 // 对本地图像进行Base64编码
@@ -972,18 +1043,21 @@ $payload = array(&quot;image&quot; =&gt; $image_data); // Base64编码的文件�
 $ch = curl_init($API_URL);
 curl_setopt($ch, CURLOPT_POST, true);
 curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
+curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 $response = curl_exec($ch);
 curl_close($ch);
 
 // 处理接口返回数据
 $result = json_decode($response, true)[&quot;result&quot;];
+file_put_contents($ocr_image_path, base64_decode($result[&quot;ocrImage&quot;]));
+echo &quot;Output image saved at &quot; . $ocr_image_path . &quot;\n&quot;;
 
 file_put_contents($layout_image_path, base64_decode($result[&quot;layoutImage&quot;]));
 echo &quot;Output image saved at &quot; . $layout_image_path . &quot;\n&quot;;
 
-echo &quot;\nDetected seal impressions:\n&quot;;
-print_r($result[&quot;sealImpressions&quot;]);
+echo &quot;\nDetected texts:\n&quot;;
+print_r($result[&quot;texts&quot;]);
 
 ?&gt;
 </code></pre></details>

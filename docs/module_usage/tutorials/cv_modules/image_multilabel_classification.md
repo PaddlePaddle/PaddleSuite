@@ -11,46 +11,46 @@ comments: true
 
 
 <table>
-  <tr>
-    <th>模型</th>
-    <th>mAP(%)</th>
-    <th>模型存储大小 (M)</th>
-    <th>介绍</th>
-  </tr>
-  <tr>
-    <td>CLIP_vit_base_patch16_448_ML</td>
-    <td>89.15</td>
-    <td>325.6 M</td>
-    <td>CLIP_ML是一种基于CLIP的图像多标签分类模型，通过结合ML-Decoder，显著提升了模型在图像多标签分类任务上的准确性。</td>
-  </tr>
-  <tr>
-    <td>PP-HGNetV2-B0_ML</td>
-    <td>80.98</td>
-    <td>39.6 M</td>
-    <td rowspan="3">PP-HGNetV2_ML是一种基于PP-HGNetV2的图像多标签分类模型，通过结合ML-Decoder，显著提升了模型在图像多标签分类任务上的准确性。</td>
-  </tr>
-  <tr>
-    <td>PP-HGNetV2-B4_ML</td>
-    <td>87.96</td>
-    <td>88.5 M</td>
-  </tr>
-  <tr>
-    <td>PP-HGNetV2-B6_ML</td>
-    <td>91.25</td>
-    <td>286.5 M</td>
-  </tr>
-  <tr>
-    <td>PP-LCNet_x1_0_ML</td>
-    <td>77.96</td>
-    <td>29.4 M</td>
-    <td>PP-LCNet_ML是一种基于PP-LCNet的图像多标签分类模型，通过结合ML-Decoder，显著提升了模型在图像多标签分类任务上的准确性。</td>
-  </tr>
-  <tr>
-    <td>ResNet50_ML</td>
-    <td>83.50</td>
-    <td>108.9 M</td>
-    <td>ResNet50_ML是一种基于ResNet50的图像多标签分类模型，通过结合ML-Decoder，显著提升了模型在图像多标签分类任务上的准确性。</td>
-  </tr>
+<tr>
+<th>模型</th><th>模型下载链接</th>
+<th>mAP(%)</th>
+<th>模型存储大小 (M)</th>
+<th>介绍</th>
+</tr>
+<tr>
+<td>CLIP_vit_base_patch16_448_ML</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/CLIP_vit_base_patch16_448_ML_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/CLIP_vit_base_patch16_448_ML_pretrained.pdparams">训练模型</a></td>
+<td>89.15</td>
+<td>325.6 M</td>
+<td>CLIP_ML是一种基于CLIP的图像多标签分类模型，通过结合ML-Decoder，显著提升了模型在图像多标签分类任务上的准确性。</td>
+</tr>
+<tr>
+<td>PP-HGNetV2-B0_ML</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-HGNetV2-B0_ML_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-HGNetV2-B0_ML_pretrained.pdparams">训练模型</a></td>
+<td>80.98</td>
+<td>39.6 M</td>
+<td rowspan="3">PP-HGNetV2_ML是一种基于PP-HGNetV2的图像多标签分类模型，通过结合ML-Decoder，显著提升了模型在图像多标签分类任务上的准确性。</td>
+</tr>
+<tr>
+<td>PP-HGNetV2-B4_ML</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-HGNetV2-B4_ML_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-HGNetV2-B4_ML_pretrained.pdparams">训练模型</a></td>
+<td>87.96</td>
+<td>88.5 M</td>
+</tr>
+<tr>
+<td>PP-HGNetV2-B6_ML</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-HGNetV2-B6_ML_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-HGNetV2-B6_ML_pretrained.pdparams">训练模型</a></td>
+<td>91.25</td>
+<td>286.5 M</td>
+</tr>
+<tr>
+<td>PP-LCNet_x1_0_ML</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-LCNet_x1_0_ML_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-LCNet_x1_0_ML_pretrained.pdparams">训练模型</a></td>
+<td>77.96</td>
+<td>29.4 M</td>
+<td>PP-LCNet_ML是一种基于PP-LCNet的图像多标签分类模型，通过结合ML-Decoder，显著提升了模型在图像多标签分类任务上的准确性。</td>
+</tr>
+<tr>
+<td>ResNet50_ML</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/ResNet50_ML_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/ResNet50_ML_pretrained.pdparams">训练模型</a></td>
+<td>83.50</td>
+<td>108.9 M</td>
+<td>ResNet50_ML是一种基于ResNet50的图像多标签分类模型，通过结合ML-Decoder，显著提升了模型在图像多标签分类任务上的准确性。</td>
+</tr>
 </table>
 
 
@@ -89,7 +89,7 @@ tar -xf ./dataset/mlcls_nus_examples.tar -C ./dataset/
 一行命令即可完成数据校验：
 
 ```bash
-python main.py -c paddlex/configs/multilabel_classification/PP-LCNet_x1_0_ML.yaml \
+python main.py -c paddlex/configs/image_multilabel_classification/PP-LCNet_x1_0_ML.yaml \
     -o Global.mode=check_dataset \
     -o Global.dataset_dir=./dataset/mlcls_nus_examples
 ```
@@ -177,13 +177,13 @@ CheckDataset:
   ......
 </code></pre>
 <p>随后执行命令：</p>
-<pre><code class="language-bash">python main.py -c paddlex/configs/multilabel_classification/PP-LCNet_x1_0_ML.yaml \
+<pre><code class="language-bash">python main.py -c paddlex/configs/image_multilabel_classification/PP-LCNet_x1_0_ML.yaml \
     -o Global.mode=check_dataset \
     -o Global.dataset_dir=./dataset/det_coco_examples
 </code></pre>
 <p>数据转换执行之后，原有标注文件会被在原路径下重命名为 <code>xxx.bak</code>。</p>
 <p>以上参数同样支持通过追加命令行参数的方式进行设置：</p>
-<pre><code class="language-bash">python main.py -c paddlex/configs/multilabel_classification/PP-LCNet_x1_0_ML.yaml \
+<pre><code class="language-bash">python main.py -c paddlex/configs/image_multilabel_classification/PP-LCNet_x1_0_ML.yaml \
     -o Global.mode=check_dataset \
     -o Global.dataset_dir=./dataset/det_coco_examples \
     -o CheckDataset.convert.enable=True \
@@ -209,13 +209,13 @@ CheckDataset:
   ......
 </code></pre>
 <p>随后执行命令：</p>
-<pre><code class="language-bash">python main.py -c paddlex/configs/multilabel_classification/PP-LCNet_x1_0_ML.yaml \
+<pre><code class="language-bash">python main.py -c paddlex/configs/image_multilabel_classification/PP-LCNet_x1_0_ML.yaml \
     -o Global.mode=check_dataset \
     -o Global.dataset_dir=./dataset/det_coco_examples
 </code></pre>
 <p>数据划分执行之后，原有标注文件会被在原路径下重命名为 <code>xxx.bak</code>。</p>
 <p>以上参数同样支持通过追加命令行参数的方式进行设置：</p>
-<pre><code class="language-bash">python main.py -c paddlex/configs/multilabel_classification/PP-LCNet_x1_0_ML.yaml \
+<pre><code class="language-bash">python main.py -c paddlex/configs/image_multilabel_classification/PP-LCNet_x1_0_ML.yaml \
     -o Global.mode=check_dataset \
     -o Global.dataset_dir=./dataset/det_coco_examples \
     -o CheckDataset.split.enable=True \
@@ -227,7 +227,7 @@ CheckDataset:
 一条命令即可完成模型的训练，以此处图像多标签分类模型 PP-LCNet_x1_0_ML 的训练为例：
 
 ```bash
-python main.py -c paddlex/configs/multilabel_classification/PP-LCNet_x1_0_ML.yaml \
+python main.py -c paddlex/configs/image_multilabel_classification/PP-LCNet_x1_0_ML.yaml \
     -o Global.mode=train \
     -o Global.dataset_dir=./dataset/mlcls_nus_examples
 ```
@@ -258,7 +258,7 @@ python main.py -c paddlex/configs/multilabel_classification/PP-LCNet_x1_0_ML.yam
 在完成模型训练后，可以对指定的模型权重文件在验证集上进行评估，验证模型精度。使用 PaddleX 进行模型评估，一条命令即可完成模型的评估：
 
 ```bash
-python main.py -c paddlex/configs/multilabel_classification/PP-LCNet_x1_0_ML.yaml \
+python main.py -c paddlex/configs/image_multilabel_classification/PP-LCNet_x1_0_ML.yaml \
     -o Global.mode=evaluate \
     -o Global.dataset_dir=./dataset/mlcls_nus_examples
 ```
@@ -281,7 +281,7 @@ python main.py -c paddlex/configs/multilabel_classification/PP-LCNet_x1_0_ML.yam
 
 * 通过命令行的方式进行推理预测，只需如下一条命令。运行以下代码前，请您下载[示例图片](https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/multilabel_classification_005.png)到本地。
 ```bash
-python main.py -c paddlex/configs/multilabel_classification/PP-LCNet_x1_0_ML.yaml  \
+python main.py -c paddlex/configs/image_multilabel_classification/PP-LCNet_x1_0_ML.yaml  \
     -o Global.mode=predict \
     -o Predict.model_dir="./output/best_model/inference" \
     -o Predict.input="multilabel_classification_005.png"

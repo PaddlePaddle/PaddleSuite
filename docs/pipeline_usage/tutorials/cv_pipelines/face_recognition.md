@@ -13,64 +13,62 @@ comments: true
 
 <b>人脸识别产线中包含了人脸检测模块和人脸特征模块</b>，每个模块中包含了若干模型，具体使用哪些模型，您可以根据下边的 benchmark 数据来选择。<b>如您更考虑模型精度，请选择精度较高的模型，如您更考虑模型推理速度，请选择推理速度较快的模型，如您更考虑模型存储大小，请选择存储大小较小的模型</b>。
 
-<details><summary> 👉模型列表详情</summary>
-
 <p><b>人脸检测模块：</b></p>
 <table>
 <thead>
 <tr>
-<th>模型</th>
-<th>AP (%)<br>Easy/Medium/Hard</th>
+<th>模型</th><th>模型下载链接</th>
+<th>AP (%)<br/>Easy/Medium/Hard</th>
 <th>GPU推理耗时 (ms)</th>
-<th>CPU推理耗时</th>
+<th>CPU推理耗时 (ms)</th>
 <th>模型存储大小 (M)</th>
 <th>介绍</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>BlazeFace</td>
+<td>BlazeFace</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/BlazeFace_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/BlazeFace_pretrained.pdparams">训练模型</a></td>
 <td>77.7/73.4/49.5</td>
-<td></td>
-<td></td>
+<td>49.9</td>
+<td>68.2</td>
 <td>0.447</td>
 <td>轻量高效的人脸检测模型</td>
 </tr>
 <tr>
-<td>BlazeFace-FPN-SSH</td>
+<td>BlazeFace-FPN-SSH</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/BlazeFace-FPN-SSH_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/BlazeFace-FPN-SSH_pretrained.pdparams">训练模型</a></td>
 <td>83.2/80.5/60.5</td>
-<td></td>
-<td></td>
+<td>52.4</td>
+<td>73.2</td>
 <td>0.606</td>
 <td>BlazeFace的改进模型，增加FPN和SSH结构</td>
 </tr>
 <tr>
-<td>PicoDet_LCNet_x2_5_face</td>
+<td>PicoDet_LCNet_x2_5_face</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PicoDet_LCNet_x2_5_face_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PicoDet_LCNet_x2_5_face_pretrained.pdparams">训练模型</a></td>
 <td>93.7/90.7/68.1</td>
-<td></td>
-<td></td>
+<td>33.7</td>
+<td>185.1</td>
 <td>28.9</td>
 <td>基于PicoDet_LCNet_x2_5的人脸检测模型</td>
 </tr>
 <tr>
-<td>PP-YOLOE_plus-S_face</td>
+<td>PP-YOLOE_plus-S_face</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-YOLOE_plus-S_face_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-YOLOE_plus-S_face_pretrained.pdparams">训练模型</a></td>
 <td>93.9/91.8/79.8</td>
-<td></td>
-<td></td>
+<td>25.8</td>
+<td>159.9</td>
 <td>26.5</td>
 <td>基于PP-YOLOE_plus-S的人脸检测模型</td>
 </tr>
 </tbody>
 </table>
 <p>注：以上精度指标是在WIDER-FACE验证集上，以640
-*640作为输入尺寸评估得到的。所有模型 GPU 推理耗时基于 NVIDIA Tesla T4 机器，精度类型为 FP32， CPU 推理速度基于 Intel(R) Xeon(R) Gold 5117 CPU @ 2.00GHz，线程数为8，精度类型为 FP32。</p>
+*640作为输入尺寸评估得到的。所有模型 GPU 推理耗时基于 NVIDIA V100 机器，精度类型为 FP32， CPU 推理速度基于 Intel(R) Xeon(R) Gold 6271C CPU @ 2.60GHz，精度类型为 FP32。</p>
 <p><b>人脸特征模块：</b></p>
 <table>
 <thead>
 <tr>
-<th>模型</th>
+<th>模型</th><th>模型下载链接</th>
 <th>输出特征维度</th>
-<th>Acc (%)<br>AgeDB-30/CFP-FP/LFW</th>
+<th>Acc (%)<br/>AgeDB-30/CFP-FP/LFW</th>
 <th>GPU推理耗时 (ms)</th>
 <th>CPU推理耗时</th>
 <th>模型存储大小 (M)</th>
@@ -79,26 +77,26 @@ comments: true
 </thead>
 <tbody>
 <tr>
-<td>MobileFaceNet</td>
+<td>MobileFaceNet</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/MobileFaceNet_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/MobileFaceNet_pretrained.pdparams">训练模型</a></td>
 <td>128</td>
 <td>96.28/96.71/99.58</td>
-<td></td>
-<td></td>
+<td>5.7</td>
+<td>101.6</td>
 <td>4.1</td>
 <td>基于MobileFaceNet在MS1Mv3数据集上训练的人脸特征提取模型</td>
 </tr>
 <tr>
-<td>ResNet50_face</td>
+<td>ResNet50_face</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/ResNet50_face_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/ResNet50_face_pretrained.pdparams">训练模型</a></td>
 <td>512</td>
 <td>98.12/98.56/99.77</td>
-<td></td>
-<td></td>
+<td>8.7</td>
+<td>200.7</td>
 <td>87.2</td>
 <td>基于ResNet50在MS1Mv3数据集上训练的人脸特征提取模型</td>
 </tr>
 </tbody>
 </table>
-<p>注：以上精度指标是分别在 AgeDB-30、CFP-FP 和 LFW 数据集上测得的 Accuracy。所有模型 GPU 推理耗时基于 NVIDIA Tesla T4 机器，精度类型为 FP32， CPU 推理速度基于 Intel(R) Xeon(R) Gold 5117 CPU @ 2.00GHz，线程数为8，精度类型为 FP32。</p></details>
+<p>注：以上精度指标是分别在 AgeDB-30、CFP-FP 和 LFW 数据集上测得的 Accuracy。所有模型 GPU 推理耗时基于 NVIDIA Tesla T4 机器，精度类型为 FP32， CPU 推理速度基于 Intel(R) Xeon(R) Gold 5117 CPU @ 2.00GHz，线程数为8，精度类型为 FP32。</p>
 
 ## 2. 快速开始
 PaddleX 所提供的预训练的模型产线均可以快速体验效果，你可以在线体验人脸识别产线的效果，也可以在本地使用命令行或 Python 体验人脸识别产线的效果。
@@ -142,9 +140,10 @@ from paddlex import create_pipeline
 
 pipeline = create_pipeline(pipeline="face_recognition")
 
-pipeline.build_index(data_root="face_demo_gallery", index_dir="face_gallery_index")
+index_data = pipeline.build_index(gallery_imgs="face_demo_gallery", gallery_label="face_demo_gallery/gallery.txt")
+index_data.save("face_index")
 
-output = pipeline.predict("friends1.jpg", index_dir="face_gallery_index")
+output = pipeline.predict("friends1.jpg", index=index_data)
 for res in output:
     res.print()
     res.save_to_img("./output/")
@@ -171,8 +170,8 @@ for res in output:
 <td>无</td>
 </tr>
 <tr>
-<td><code>index_dir</code></td>
-<td>产线推理预测所用的检索库文件所在的目录，如不传入该参数，则需要在<code>predict()</code>中指定<code>index_dir</code>。</td>
+<td><code>index</code></td>
+<td>产线推理预测所用的特征库，支持：1. <code>str</code>类型表示的目录（该目录下需要包含索引库文件，包括<code>vector.index</code>和<code>index_info.yaml</code>）；2. <code>IndexData</code>对象。如不传入该参数，则需要在<code>predict()</code>中指定<code>index</code>。</td>
 <td><code>str</code></td>
 <td>None</td>
 </tr>
@@ -203,19 +202,41 @@ for res in output:
 </thead>
 <tbody>
 <tr>
-<td><code>data_root</code></td>
-<td>数据集的根目录，数据组织方式参考<a href="#2.3-构建特征库的数据组织方式">2.3节 构建特征库的数据组织方式</a></td>
-<td><code>str</code></td>
+<td><code>gallery_imgs</code></td>
+<td>要添加的底库图片，支持：1. <code>str</code>类型表示的图片根目录，数据组织方式与构建索引库时相同，参考<a href="#2.3-构建特征库的数据组织方式">2.3节 构建特征库的数据组织方式</a>；2. <code>[numpy.ndarray, numpy.ndarray, ..]</code>类型的底库图片数据。</td>
+<td><code>str</code>|<code>list</code></td>
 <td>无</td>
 </tr>
 <tr>
-<td><code>index_dir</code></td>
-<td>特征库的保存路径。成功调用<code>build_index</code>方法后会在改路径下生成两个文件：<br> <code>"id_map.pkl"</code> 保存了图像ID与图像特征标签之间的映射关系；<br> <code>“vector.index”</code>存储了每张图像的特征向量</td>
+<td><code>gallery_label</code></td>
+<td>底库图片的标注信息，支持：1. <code>str</code>类型表示的标注文件的路径，数据组织方式与构建特征库时相同，参考<a href="#2.3-构建特征库的数据组织方式">2.3节 构建特征库的数据组织方式</a>；2. <code>[str, str, ..]</code>类型表示的底库图片标注。</td>
 <td><code>str</code></td>
 <td>无</td>
 </tr>
 </tbody>
 </table>
+
+特征库对象 `index` 支持 `save` 方法，用于将特征库保存到磁盘：
+
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>参数说明</th>
+<th>参数类型</th>
+<th>默认值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>save_path</code></td>
+<td>特征库文件的保存目录，如<code>drink_index</code>。</td>
+<td><code>str</code></td>
+<td>无</td>
+</tr>
+</tbody>
+</table>
+
 （3）调用人脸识别产线对象的 `predict` 方法进行推理预测：`predict` 方法参数为`input`，用于输入待预测数据，支持多种输入方式，具体示例如下：
 
 <table>
@@ -236,7 +257,7 @@ for res in output:
 </tr>
 <tr>
 <td>str</td>
-<td>支持传入待预测数据文件URL，如图像文件的网络URL：<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/general_ocr_001.png">示例</a>。</td>
+<td>支持传入待预测数据文件URL，如图像文件的网络URL：<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/friends1.jpg">示例</a>。</td>
 </tr>
 <tr>
 <td>str</td>
@@ -252,7 +273,7 @@ for res in output:
 </tr>
 </tbody>
 </table>
-另外，`predict`方法支持参数`index_dir`用于设置检索库：
+另外，`predict`方法支持参数`index`用于设置索引库：
 <table>
 <thead>
 <tr>
@@ -262,8 +283,8 @@ for res in output:
 </thead>
 <tbody>
 <tr>
-<td><code>index_dir</code></td>
-<td>产线推理预测所用的检索库文件所在的目录，如不传入该参数，则默认使用在<code>create_pipeline()</code>中通过参数<code>index_dir</code>指定的检索库。</td>
+<td><code>index</code></td>
+<td>产线推理预测所用的特征库，支持：1. <code>str</code>类型表示的目录（该目录下需要包含特征库文件，包括<code>vector.index</code>和<code>index_info.yaml</code>）；2. <code>IndexData</code>对象。如不传入该参数，则默认使用在<code>create_pipeline()</code>中通过参数<code>index</code>指定的特征库。</td>
 </tr>
 </tbody>
 </table>
@@ -283,12 +304,12 @@ for res in output:
 <tr>
 <td>print</td>
 <td>打印结果到终端</td>
-<td><code>- format_json</code>：bool类型，是否对输出内容进行使用json缩进格式化，默认为True；<br><code>- indent</code>：int类型，json格式化设置，仅当format_json为True时有效，默认为4；<br><code>- ensure_ascii</code>：bool类型，json格式化设置，仅当format_json为True时有效，默认为False；</td>
+<td><code>- format_json</code>：bool类型，是否对输出内容进行使用json缩进格式化，默认为True；<br/><code>- indent</code>：int类型，json格式化设置，仅当format_json为True时有效，默认为4；<br/><code>- ensure_ascii</code>：bool类型，json格式化设置，仅当format_json为True时有效，默认为False；</td>
 </tr>
 <tr>
 <td>save_to_json</td>
 <td>将结果保存为json格式的文件</td>
-<td><code>- save_path</code>：str类型，保存的文件路径，当为目录时，保存文件命名与输入文件类型命名一致；<br><code>- indent</code>：int类型，json格式化设置，默认为4；<br><code>- ensure_ascii</code>：bool类型，json格式化设置，默认为False；</td>
+<td><code>- save_path</code>：str类型，保存的文件路径，当为目录时，保存文件命名与输入文件类型命名一致；<br/><code>- indent</code>：int类型，json格式化设置，默认为4；<br/><code>- ensure_ascii</code>：bool类型，json格式化设置，默认为False；</td>
 </tr>
 <tr>
 <td>save_to_img</td>
@@ -303,7 +324,7 @@ for res in output:
 
 ```python
 from paddlex import create_pipeline
-pipeline = create_pipeline(pipeline="./my_path/face_recognition.yaml", index_dir="face_gallery_index")
+pipeline = create_pipeline(pipeline="./my_path/face_recognition.yaml", index="face_index")
 
 output = pipeline.predict("friends1.jpg")
 for res in output:
@@ -319,9 +340,11 @@ for res in output:
 from paddlex import create_pipeline
 
 pipeline = create_pipeline(pipeline="face_recognition")
-pipeline.buile_index(data_root="face_demo_gallery", index_dir="face_gallery_index", index_type="IVF")
-pipeline.append_index(data_root="face_demo_gallery", index_dir="face_gallery_index", index_type="IVF")
-pipeline.remove_index(data_root="face_demo_gallery", index_dir="face_gallery_index", index_type="IVF")
+
+index_data = pipeline.build_index(gallery_imgs="face_demo_gallery", gallery_label="face_demo_gallery/gallery.txt", index_type="IVF", metric_type="IP")
+index_data = pipeline.append_index(gallery_imgs="face_demo_gallery", gallery_label="face_demo_gallery/gallery.txt", index=index_data)
+index_data = pipeline.remove_index(remove_ids="face_demo_gallery/remove_ids.txt", index=index_data)
+index_data.save("face_index")
 ```
 
 上述方法参数说明如下：
@@ -336,15 +359,27 @@ pipeline.remove_index(data_root="face_demo_gallery", index_dir="face_gallery_ind
 </thead>
 <tbody>
 <tr>
-<td><code>data_root</code></td>
-<td>要添加的数据集的根目录。数据组织方式与构建特征库时相同，参考<a href="#2.3-构建特征库的数据组织方式">2.3节 构建特征库的数据组织方式</a></td>
-<td><code>str</code></td>
+<td><code>gallery_imgs</code></td>
+<td>要添加的底库图片，支持：1. <code>str</code>类型表示的图片根目录，数据组织方式与构建索引库时相同，参考<a href="#2.3-构建特征库的数据组织方式">2.3节 构建特征库的数据组织方式</a>；2. <code>[numpy.ndarray, numpy.ndarray, ..]</code>类型的底库图片数据。</td>
+<td><code>str</code>|<code>list</code></td>
 <td>无</td>
 </tr>
 <tr>
-<td><code>index_dir</code></td>
-<td>特征库的存储目录，在 <code>append_index</code> 和 <code>remove_index</code> 中，同时也是被修改（或删除）的特征库的路径，</td>
-<td><code>str</code></td>
+<td><code>gallery_label</code></td>
+<td>底库图片的标注信息，支持：1. <code>str</code>类型表示的标注文件的路径，数据组织方式与构建特征库时相同，参考<a href="#2.3-构建特征库的数据组织方式">2.3节 构建特征库的数据组织方式</a>；2. <code>[str, str, ..]</code>类型表示的底库图片标注。</td>
+<td><code>str</code>|<code>list</code></td>
+<td>无</td>
+</tr>
+<tr>
+<td><code>remove_ids</code></td>
+<td>待删除的索引序号，支持：1. <code>str</code>类型表示的txt文件的路径，内容为待删除的索引id，每行一个“id”；2. <code>[int, int, ..]</code>类型表示的待删除的索引序号。仅在 <code>remove_index</code> 中有效。</td>
+<td><code>str</code>|<code>list</code></td>
+<td>无</td>
+</tr>
+<tr>
+<td><code>index</code></td>
+<td>特征库，支持：1. 特征库文件（<code>vector.index</code>和<code>index_info.yaml</code>）所在目录的路径；2. <code>IndexData</code>类型的特征库对象，仅在 <code>append_index</code> 和 <code>remove_index</code> 中有效，表示待修改的特征库。</td>
+<td><code>str</code>|<code>IndexData</code></td>
 <td>无</td>
 </tr>
 <tr>
@@ -373,8 +408,11 @@ data_root             # 数据集根目录，目录名称可以改变
 │   │   ├── xxx.jpg   # 图片，此处支持层级嵌套
 │   │       ...
 │   ├── ID1           # 身份ID名字，最好是有意义的名字，比如人名
-│   │   ...
-└── gallery.txt       # 特征库数据集标注文件，文件名称不可改变。每行给出待检索人脸图像路径和图像特征标签，使用空格分隔，内容举例：images/Chandler/Chandler00037.jpg Chandler
+│   │   ├── xxx.jpg   # 图片，此处支持层级嵌套
+│   │   ├── xxx.jpg   # 图片，此处支持层级嵌套
+│   │       ...
+│       ...
+└── gallery.txt       # 特征库数据集标注文件，文件名称可以改变。每行给出待检索人脸图像路径和图像标签，使用空格分隔，内容举例：images/Chandler/Chandler00037.jpg Chandler
 ```
 ## 3. 开发集成/部署
 如果人脸识别产线可以达到您对产线推理速度和精度的要求，您可以直接进行开发集成/部署。
@@ -391,10 +429,57 @@ data_root             # 数据集根目录，目录名称可以改变
 
 <details><summary>API参考</summary>
 
-<p>对于服务提供的所有操作：</p>
+<p>服务提供的主要操作如下：</p>
 <ul>
-<li>响应体以及POST请求的请求体均为JSON数据（JSON对象）。</li>
-<li>当请求处理成功时，响应状态码为<code>200</code>，响应体的属性如下：</li>
+<li><b><code>buildIndex</code></b></li>
+</ul>
+<p>构建特征向量索引。</p>
+<p><code>POST /face-recognition-index-build</code></p>
+<ul>
+<li>请求体的属性如下：</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>类型</th>
+<th>含义</th>
+<th>是否必填</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>imageLabelPairs</code></td>
+<td><code>array</code></td>
+<td>用于构建索引的图像-标签对。</td>
+<td>是</td>
+</tr>
+</tbody>
+</table>
+<p><code>imageLabelPairs</code>中的每个元素为一个<code>object</code>，具有如下属性：</p>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>类型</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>image</code></td>
+<td><code>string</code></td>
+<td>服务可访问的图像文件的URL或图像文件内容的Base64编码结果。</td>
+</tr>
+<tr>
+<td><code>label</code></td>
+<td><code>string</code></td>
+<td>标签。</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>请求处理成功时，响应体的<code>result</code>具有如下属性：</li>
 </ul>
 <table>
 <thead>
@@ -406,20 +491,73 @@ data_root             # 数据集根目录，目录名称可以改变
 </thead>
 <tbody>
 <tr>
-<td><code>errorCode</code></td>
-<td><code>integer</code></td>
-<td>错误码。固定为<code>0</code>。</td>
+<td><code>indexKey</code></td>
+<td><code>string</code></td>
+<td>索引对应的键，用于标识建立的索引。可用作其他操作的输入。</td>
 </tr>
 <tr>
-<td><code>errorMsg</code></td>
-<td><code>string</code></td>
-<td>错误说明。固定为<code>"Success"</code>。</td>
+<td><code>idMap</code></td>
+<td><code>object</code></td>
+<td>向量ID到标签的映射。</td>
 </tr>
 </tbody>
 </table>
-<p>响应体还可能有<code>result</code>属性，类型为<code>object</code>，其中存储操作结果信息。</p>
 <ul>
-<li>当请求处理未成功时，响应体的属性如下：</li>
+<li><b><code>addImagesToIndex</code></b></li>
+</ul>
+<p>将图像（对应的特征向量）加入索引。</p>
+<p><code>POST /face-recognition-index-add</code></p>
+<ul>
+<li>请求体的属性如下：</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>类型</th>
+<th>含义</th>
+<th>是否必填</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>imageLabelPairs</code></td>
+<td><code>array</code></td>
+<td>用于构建索引的图像-标签对。</td>
+<td>是</td>
+</tr>
+<tr>
+<td><code>indexKey</code></td>
+<td><code>string</code></td>
+<td>索引对应的键。由<code>buildIndex</code>操作提供。</td>
+<td>是</td>
+</tr>
+</tbody>
+</table>
+<p><code>imageLabelPairs</code>中的每个元素为一个<code>object</code>，具有如下属性：</p>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>类型</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>image</code></td>
+<td><code>string</code></td>
+<td>服务可访问的图像文件的URL或图像文件内容的Base64编码结果。</td>
+</tr>
+<tr>
+<td><code>label</code></td>
+<td><code>string</code></td>
+<td>标签。</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>请求处理成功时，响应体的<code>result</code>具有如下属性：</li>
 </ul>
 <table>
 <thead>
@@ -431,23 +569,68 @@ data_root             # 数据集根目录，目录名称可以改变
 </thead>
 <tbody>
 <tr>
-<td><code>errorCode</code></td>
-<td><code>integer</code></td>
-<td>错误码。与响应状态码相同。</td>
-</tr>
-<tr>
-<td><code>errorMsg</code></td>
-<td><code>string</code></td>
-<td>错误说明。</td>
+<td><code>idMap</code></td>
+<td><code>object</code></td>
+<td>向量ID到标签的映射。</td>
 </tr>
 </tbody>
 </table>
-<p>服务提供的操作如下：</p>
+<ul>
+<li><b><code>removeImagesFromIndex</code></b></li>
+</ul>
+<p>从索引中移除图像（对应的特征向量）。</p>
+<p><code>POST /face-recognition-index-remove</code></p>
+<ul>
+<li>请求体的属性如下：</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>类型</th>
+<th>含义</th>
+<th>是否必填</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ids</code></td>
+<td><code>array</code></td>
+<td>需要从索引中移除的向量的ID。</td>
+<td>是</td>
+</tr>
+<tr>
+<td><code>indexKey</code></td>
+<td><code>string</code></td>
+<td>索引对应的键。由<code>buildIndex</code>操作提供。</td>
+<td>是</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>请求处理成功时，响应体的<code>result</code>具有如下属性：</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>类型</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>idMap</code></td>
+<td><code>object</code></td>
+<td>向量ID到标签的映射。</td>
+</tr>
+</tbody>
+</table>
 <ul>
 <li><b><code>infer</code></b></li>
 </ul>
-<p>获取图像OCR结果。</p>
-<p><code>POST /ocr</code></p>
+<p>进行图像识别。</p>
+<p><code>POST /face-recognition-infer</code></p>
 <ul>
 <li>请求体的属性如下：</li>
 </ul>
@@ -468,28 +651,9 @@ data_root             # 数据集根目录，目录名称可以改变
 <td>是</td>
 </tr>
 <tr>
-<td><code>inferenceParams</code></td>
-<td><code>object</code></td>
-<td>推理参数。</td>
-<td>否</td>
-</tr>
-</tbody>
-</table>
-<p><code>inferenceParams</code>的属性如下：</p>
-<table>
-<thead>
-<tr>
-<th>名称</th>
-<th>类型</th>
-<th>含义</th>
-<th>是否必填</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>maxLongSide</code></td>
-<td><code>integer</code></td>
-<td>推理时，若文本检测模型的输入图像较长边的长度大于<code>maxLongSide</code>，则将对图像进行缩放，使其较长边的长度等于<code>maxLongSide</code>。</td>
+<td><code>indexKey</code></td>
+<td><code>string</code></td>
+<td>索引对应的键。由<code>buildIndex</code>操作提供。</td>
 <td>否</td>
 </tr>
 </tbody>
@@ -507,18 +671,18 @@ data_root             # 数据集根目录，目录名称可以改变
 </thead>
 <tbody>
 <tr>
-<td><code>texts</code></td>
+<td><code>faces</code></td>
 <td><code>array</code></td>
-<td>文本位置、内容和得分。</td>
+<td>检测到的人脸的信息。</td>
 </tr>
 <tr>
 <td><code>image</code></td>
 <td><code>string</code></td>
-<td>OCR结果图，其中标注检测到的文本位置。图像为JPEG格式，使用Base64编码。</td>
+<td>识别结果图。图像为JPEG格式，使用Base64编码。</td>
 </tr>
 </tbody>
 </table>
-<p><code>texts</code>中的每个元素为一个<code>object</code>，具有如下属性：</p>
+<p><code>faces</code>中的每个元素为一个<code>object</code>，具有如下属性：</p>
 <table>
 <thead>
 <tr>
@@ -529,73 +693,45 @@ data_root             # 数据集根目录，目录名称可以改变
 </thead>
 <tbody>
 <tr>
-<td><code>poly</code></td>
+<td><code>bbox</code></td>
 <td><code>array</code></td>
-<td>文本位置。数组中元素依次为包围文本的多边形的顶点坐标。</td>
+<td>人脸目标位置。数组中元素依次为边界框左上角x坐标、左上角y坐标、右下角x坐标以及右下角y坐标。</td>
 </tr>
 <tr>
-<td><code>text</code></td>
-<td><code>string</code></td>
-<td>文本内容。</td>
+<td><code>recResults</code></td>
+<td><code>array</code></td>
+<td>识别结果。</td>
 </tr>
 <tr>
 <td><code>score</code></td>
 <td><code>number</code></td>
-<td>文本识别得分。</td>
+<td>检测得分。</td>
 </tr>
 </tbody>
 </table>
-<p><code>result</code>示例如下：</p>
-<pre><code class="language-json">{
-&quot;texts&quot;: [
-{
-&quot;poly&quot;: [
-[
-444,
-244
-],
-[
-705,
-244
-],
-[
-705,
-311
-],
-[
-444,
-311
-]
-],
-&quot;text&quot;: &quot;北京南站&quot;,
-&quot;score&quot;: 0.9
-},
-{
-&quot;poly&quot;: [
-[
-992,
-248
-],
-[
-1263,
-251
-],
-[
-1263,
-318
-],
-[
-992,
-315
-]
-],
-&quot;text&quot;: &quot;天津站&quot;,
-&quot;score&quot;: 0.5
-}
-],
-&quot;image&quot;: &quot;xxxxxx&quot;
-}
-</code></pre></details>
+<p><code>recResults</code>中的每个元素为一个<code>object</code>，具有如下属性：</p>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>类型</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>label</code></td>
+<td><code>string</code></td>
+<td>标签。</td>
+</tr>
+<tr>
+<td><code>score</code></td>
+<td><code>number</code></td>
+<td>识别得分。</td>
+</tr>
+</tbody>
+</table>
+</details>
 
 <details><summary>多语言调用服务示例</summary>
 
@@ -604,359 +740,83 @@ data_root             # 数据集根目录，目录名称可以改变
 
 
 <pre><code class="language-python">import base64
+import pprint
+import sys
+
 import requests
 
-API_URL = &quot;http://localhost:8080/ocr&quot; # 服务URL
-image_path = &quot;./demo.jpg&quot;
+API_BASE_URL = &quot;http://0.0.0.0:8080&quot;
+
+base_image_label_pairs = [
+    {&quot;image&quot;: &quot;./demo0.jpg&quot;, &quot;label&quot;: &quot;ID0&quot;},
+    {&quot;image&quot;: &quot;./demo1.jpg&quot;, &quot;label&quot;: &quot;ID1&quot;},
+    {&quot;image&quot;: &quot;./demo2.jpg&quot;, &quot;label&quot;: &quot;ID2&quot;},
+]
+image_label_pairs_to_add = [
+    {&quot;image&quot;: &quot;./demo3.jpg&quot;, &quot;label&quot;: &quot;ID2&quot;},
+]
+ids_to_remove = [1]
+infer_image_path = &quot;./demo4.jpg&quot;
 output_image_path = &quot;./out.jpg&quot;
 
-# 对本地图像进行Base64编码
-with open(image_path, &quot;rb&quot;) as file:
+for pair in base_image_label_pairs:
+    with open(pair[&quot;image&quot;], &quot;rb&quot;) as file:
+        image_bytes = file.read()
+        image_data = base64.b64encode(image_bytes).decode(&quot;ascii&quot;)
+    pair[&quot;image&quot;] = image_data
+
+payload = {&quot;imageLabelPairs&quot;: base_image_label_pairs}
+resp_index_build = requests.post(f&quot;{API_BASE_URL}/face-recognition-index-build&quot;, json=payload)
+if resp_index_build.status_code != 200:
+    print(f&quot;Request to face-recognition-index-build failed with status code {resp_index_build}.&quot;)
+    pprint.pp(resp_index_build.json())
+    sys.exit(1)
+result_index_build = resp_index_build.json()[&quot;result&quot;]
+print(f&quot;Number of images indexed: {len(result_index_build['idMap'])}&quot;)
+
+for pair in image_label_pairs_to_add:
+    with open(pair[&quot;image&quot;], &quot;rb&quot;) as file:
+        image_bytes = file.read()
+        image_data = base64.b64encode(image_bytes).decode(&quot;ascii&quot;)
+    pair[&quot;image&quot;] = image_data
+
+payload = {&quot;imageLabelPairs&quot;: image_label_pairs_to_add, &quot;indexKey&quot;: result_index_build[&quot;indexKey&quot;]}
+resp_index_add = requests.post(f&quot;{API_BASE_URL}/face-recognition-index-add&quot;, json=payload)
+if resp_index_add.status_code != 200:
+    print(f&quot;Request to face-recognition-index-add failed with status code {resp_index_add}.&quot;)
+    pprint.pp(resp_index_add.json())
+    sys.exit(1)
+result_index_add = resp_index_add.json()[&quot;result&quot;]
+print(f&quot;Number of images indexed: {len(result_index_add['idMap'])}&quot;)
+
+payload = {&quot;ids&quot;: ids_to_remove, &quot;indexKey&quot;: result_index_build[&quot;indexKey&quot;]}
+resp_index_remove = requests.post(f&quot;{API_BASE_URL}/face-recognition-index-remove&quot;, json=payload)
+if resp_index_remove.status_code != 200:
+    print(f&quot;Request to face-recognition-index-remove failed with status code {resp_index_remove}.&quot;)
+    pprint.pp(resp_index_remove.json())
+    sys.exit(1)
+result_index_remove = resp_index_remove.json()[&quot;result&quot;]
+print(f&quot;Number of images indexed: {len(result_index_remove['idMap'])}&quot;)
+
+with open(infer_image_path, &quot;rb&quot;) as file:
     image_bytes = file.read()
     image_data = base64.b64encode(image_bytes).decode(&quot;ascii&quot;)
 
-payload = {&quot;image&quot;: image_data}  # Base64编码的文件内容或者图像URL
+payload = {&quot;image&quot;: image_data, &quot;indexKey&quot;: result_index_build[&quot;indexKey&quot;]}
+resp_infer = requests.post(f&quot;{API_BASE_URL}/face-recognition-infer&quot;, json=payload)
+if resp_infer.status_code != 200:
+    print(f&quot;Request to face-recogntion-infer failed with status code {resp_infer}.&quot;)
+    pprint.pp(resp_infer.json())
+    sys.exit(1)
+result_infer = resp_infer.json()[&quot;result&quot;]
 
-# 调用API
-response = requests.post(API_URL, json=payload)
-
-# 处理接口返回数据
-assert response.status_code == 200
-result = response.json()[&quot;result&quot;]
 with open(output_image_path, &quot;wb&quot;) as file:
-    file.write(base64.b64decode(result[&quot;image&quot;]))
+    file.write(base64.b64decode(result_infer[&quot;image&quot;]))
 print(f&quot;Output image saved at {output_image_path}&quot;)
-print(&quot;\nDetected texts:&quot;)
-print(result[&quot;texts&quot;])
-</code></pre></details>
-
-<details><summary>C++</summary>
-
-<pre><code class="language-cpp">#include &lt;iostream&gt;
-#include &quot;cpp-httplib/httplib.h&quot; // https://github.com/Huiyicc/cpp-httplib
-#include &quot;nlohmann/json.hpp&quot; // https://github.com/nlohmann/json
-#include &quot;base64.hpp&quot; // https://github.com/tobiaslocker/base64
-
-int main() {
-    httplib::Client client(&quot;localhost:8080&quot;);
-    const std::string imagePath = &quot;./demo.jpg&quot;;
-    const std::string outputImagePath = &quot;./out.jpg&quot;;
-
-    httplib::Headers headers = {
-        {&quot;Content-Type&quot;, &quot;application/json&quot;}
-    };
-
-    // 对本地图像进行Base64编码
-    std::ifstream file(imagePath, std::ios::binary | std::ios::ate);
-    std::streamsize size = file.tellg();
-    file.seekg(0, std::ios::beg);
-
-    std::vector&lt;char&gt; buffer(size);
-    if (!file.read(buffer.data(), size)) {
-        std::cerr &lt;&lt; &quot;Error reading file.&quot; &lt;&lt; std::endl;
-        return 1;
-    }
-    std::string bufferStr(reinterpret_cast&lt;const char*&gt;(buffer.data()), buffer.size());
-    std::string encodedImage = base64::to_base64(bufferStr);
-
-    nlohmann::json jsonObj;
-    jsonObj[&quot;image&quot;] = encodedImage;
-    std::string body = jsonObj.dump();
-
-    // 调用API
-    auto response = client.Post(&quot;/ocr&quot;, headers, body, &quot;application/json&quot;);
-    // 处理接口返回数据
-    if (response &amp;&amp; response-&gt;status == 200) {
-        nlohmann::json jsonResponse = nlohmann::json::parse(response-&gt;body);
-        auto result = jsonResponse[&quot;result&quot;];
-
-        encodedImage = result[&quot;image&quot;];
-        std::string decodedString = base64::from_base64(encodedImage);
-        std::vector&lt;unsigned char&gt; decodedImage(decodedString.begin(), decodedString.end());
-        std::ofstream outputImage(outPutImagePath, std::ios::binary | std::ios::out);
-        if (outputImage.is_open()) {
-            outputImage.write(reinterpret_cast&lt;char*&gt;(decodedImage.data()), decodedImage.size());
-            outputImage.close();
-            std::cout &lt;&lt; &quot;Output image saved at &quot; &lt;&lt; outPutImagePath &lt;&lt; std::endl;
-        } else {
-            std::cerr &lt;&lt; &quot;Unable to open file for writing: &quot; &lt;&lt; outPutImagePath &lt;&lt; std::endl;
-        }
-
-        auto texts = result[&quot;texts&quot;];
-        std::cout &lt;&lt; &quot;\nDetected texts:&quot; &lt;&lt; std::endl;
-        for (const auto&amp; text : texts) {
-            std::cout &lt;&lt; text &lt;&lt; std::endl;
-        }
-    } else {
-        std::cout &lt;&lt; &quot;Failed to send HTTP request.&quot; &lt;&lt; std::endl;
-        return 1;
-    }
-
-    return 0;
-}
-</code></pre></details>
-
-<details><summary>Java</summary>
-
-<pre><code class="language-java">import okhttp3.*;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.Base64;
-
-public class Main {
-    public static void main(String[] args) throws IOException {
-        String API_URL = &quot;http://localhost:8080/ocr&quot;; // 服务URL
-        String imagePath = &quot;./demo.jpg&quot;; // 本地图像
-        String outputImagePath = &quot;./out.jpg&quot;; // 输出图像
-
-        // 对本地图像进行Base64编码
-        File file = new File(imagePath);
-        byte[] fileContent = java.nio.file.Files.readAllBytes(file.toPath());
-        String imageData = Base64.getEncoder().encodeToString(fileContent);
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        ObjectNode params = objectMapper.createObjectNode();
-        params.put(&quot;image&quot;, imageData); // Base64编码的文件内容或者图像URL
-
-        // 创建 OkHttpClient 实例
-        OkHttpClient client = new OkHttpClient();
-        MediaType JSON = MediaType.Companion.get(&quot;application/json; charset=utf-8&quot;);
-        RequestBody body = RequestBody.Companion.create(params.toString(), JSON);
-        Request request = new Request.Builder()
-                .url(API_URL)
-                .post(body)
-                .build();
-
-        // 调用API并处理接口返回数据
-        try (Response response = client.newCall(request).execute()) {
-            if (response.isSuccessful()) {
-                String responseBody = response.body().string();
-                JsonNode resultNode = objectMapper.readTree(responseBody);
-                JsonNode result = resultNode.get(&quot;result&quot;);
-                String base64Image = result.get(&quot;image&quot;).asText();
-                JsonNode texts = result.get(&quot;texts&quot;);
-
-                byte[] imageBytes = Base64.getDecoder().decode(base64Image);
-                try (FileOutputStream fos = new FileOutputStream(outputImagePath)) {
-                    fos.write(imageBytes);
-                }
-                System.out.println(&quot;Output image saved at &quot; + outputImagePath);
-                System.out.println(&quot;\nDetected texts: &quot; + texts.toString());
-            } else {
-                System.err.println(&quot;Request failed with code: &quot; + response.code());
-            }
-        }
-    }
-}
-</code></pre></details>
-
-<details><summary>Go</summary>
-
-<pre><code class="language-go">package main
-
-import (
-    &quot;bytes&quot;
-    &quot;encoding/base64&quot;
-    &quot;encoding/json&quot;
-    &quot;fmt&quot;
-    &quot;io/ioutil&quot;
-    &quot;net/http&quot;
-)
-
-func main() {
-    API_URL := &quot;http://localhost:8080/ocr&quot;
-    imagePath := &quot;./demo.jpg&quot;
-    outputImagePath := &quot;./out.jpg&quot;
-
-    // 对本地图像进行Base64编码
-    imageBytes, err := ioutil.ReadFile(imagePath)
-    if err != nil {
-        fmt.Println(&quot;Error reading image file:&quot;, err)
-        return
-    }
-    imageData := base64.StdEncoding.EncodeToString(imageBytes)
-
-    payload := map[string]string{&quot;image&quot;: imageData} // Base64编码的文件内容或者图像URL
-    payloadBytes, err := json.Marshal(payload)
-    if err != nil {
-        fmt.Println(&quot;Error marshaling payload:&quot;, err)
-        return
-    }
-
-    // 调用API
-    client := &amp;http.Client{}
-    req, err := http.NewRequest(&quot;POST&quot;, API_URL, bytes.NewBuffer(payloadBytes))
-    if err != nil {
-        fmt.Println(&quot;Error creating request:&quot;, err)
-        return
-    }
-
-    res, err := client.Do(req)
-    if err != nil {
-        fmt.Println(&quot;Error sending request:&quot;, err)
-        return
-    }
-    defer res.Body.Close()
-
-    // 处理接口返回数据
-    body, err := ioutil.ReadAll(res.Body)
-    if err != nil {
-        fmt.Println(&quot;Error reading response body:&quot;, err)
-        return
-    }
-    type Response struct {
-        Result struct {
-            Image      string   `json:&quot;image&quot;`
-            Texts []map[string]interface{} `json:&quot;texts&quot;`
-        } `json:&quot;result&quot;`
-    }
-    var respData Response
-    err = json.Unmarshal([]byte(string(body)), &amp;respData)
-    if err != nil {
-        fmt.Println(&quot;Error unmarshaling response body:&quot;, err)
-        return
-    }
-
-    outputImageData, err := base64.StdEncoding.DecodeString(respData.Result.Image)
-    if err != nil {
-        fmt.Println(&quot;Error decoding base64 image data:&quot;, err)
-        return
-    }
-    err = ioutil.WriteFile(outputImagePath, outputImageData, 0644)
-    if err != nil {
-        fmt.Println(&quot;Error writing image to file:&quot;, err)
-        return
-    }
-    fmt.Printf(&quot;Image saved at %s.jpg\n&quot;, outputImagePath)
-    fmt.Println(&quot;\nDetected texts:&quot;)
-    for _, text := range respData.Result.Texts {
-        fmt.Println(text)
-    }
-}
-</code></pre></details>
-
-<details><summary>C#</summary>
-
-<pre><code class="language-csharp">using System;
-using System.IO;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json.Linq;
-
-class Program
-{
-    static readonly string API_URL = &quot;http://localhost:8080/ocr&quot;;
-    static readonly string imagePath = &quot;./demo.jpg&quot;;
-    static readonly string outputImagePath = &quot;./out.jpg&quot;;
-
-    static async Task Main(string[] args)
-    {
-        var httpClient = new HttpClient();
-
-        // 对本地图像进行Base64编码
-        byte[] imageBytes = File.ReadAllBytes(imagePath);
-        string image_data = Convert.ToBase64String(imageBytes);
-
-        var payload = new JObject{ { &quot;image&quot;, image_data } }; // Base64编码的文件内容或者图像URL
-        var content = new StringContent(payload.ToString(), Encoding.UTF8, &quot;application/json&quot;);
-
-        // 调用API
-        HttpResponseMessage response = await httpClient.PostAsync(API_URL, content);
-        response.EnsureSuccessStatusCode();
-
-        // 处理接口返回数据
-        string responseBody = await response.Content.ReadAsStringAsync();
-        JObject jsonResponse = JObject.Parse(responseBody);
-
-        string base64Image = jsonResponse[&quot;result&quot;][&quot;image&quot;].ToString();
-        byte[] outputImageBytes = Convert.FromBase64String(base64Image);
-
-        File.WriteAllBytes(outputImagePath, outputImageBytes);
-        Console.WriteLine($&quot;Output image saved at {outputImagePath}&quot;);
-        Console.WriteLine(&quot;\nDetected texts:&quot;);
-        Console.WriteLine(jsonResponse[&quot;result&quot;][&quot;texts&quot;].ToString());
-    }
-}
-</code></pre></details>
-
-<details><summary>Node.js</summary>
-
-<pre><code class="language-js">const axios = require('axios');
-const fs = require('fs');
-
-const API_URL = 'http://localhost:8080/ocr'
-const imagePath = './demo.jpg'
-const outputImagePath = &quot;./out.jpg&quot;;
-
-let config = {
-   method: 'POST',
-   maxBodyLength: Infinity,
-   url: API_URL,
-   data: JSON.stringify({
-    'image': encodeImageToBase64(imagePath)  // Base64编码的文件内容或者图像URL
-  })
-};
-
-// 对本地图像进行Base64编码
-function encodeImageToBase64(filePath) {
-  const bitmap = fs.readFileSync(filePath);
-  return Buffer.from(bitmap).toString('base64');
-}
-
-// 调用API
-axios.request(config)
-.then((response) =&gt; {
-    // 处理接口返回数据
-    const result = response.data[&quot;result&quot;];
-    const imageBuffer = Buffer.from(result[&quot;image&quot;], 'base64');
-    fs.writeFile(outputImagePath, imageBuffer, (err) =&gt; {
-      if (err) throw err;
-      console.log(`Output image saved at ${outputImagePath}`);
-    });
-    console.log(&quot;\nDetected texts:&quot;);
-    console.log(result[&quot;texts&quot;]);
-})
-.catch((error) =&gt; {
-  console.log(error);
-});
-</code></pre></details>
-
-<details><summary>PHP</summary>
-
-<pre><code class="language-php">&lt;?php
-
-$API_URL = &quot;http://localhost:8080/ocr&quot;; // 服务URL
-$image_path = &quot;./demo.jpg&quot;;
-$output_image_path = &quot;./out.jpg&quot;;
-
-// 对本地图像进行Base64编码
-$image_data = base64_encode(file_get_contents($image_path));
-$payload = array(&quot;image&quot; =&gt; $image_data); // Base64编码的文件内容或者图像URL
-
-// 调用API
-$ch = curl_init($API_URL);
-curl_setopt($ch, CURLOPT_POST, true);
-curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-$response = curl_exec($ch);
-curl_close($ch);
-
-// 处理接口返回数据
-$result = json_decode($response, true)[&quot;result&quot;];
-file_put_contents($output_image_path, base64_decode($result[&quot;image&quot;]));
-echo &quot;Output image saved at &quot; . $output_image_path . &quot;\n&quot;;
-echo &quot;\nDetected texts:\n&quot;;
-print_r($result[&quot;texts&quot;]);
-
-?&gt;
-</code></pre></details>
+print(&quot;\nDetected faces:&quot;)
+pprint.pp(result_infer[&quot;faces&quot;])
+</code></pre>
+</details>
 </details>
 <br/>
 

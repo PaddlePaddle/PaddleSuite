@@ -71,6 +71,26 @@ class BaseTSConfig(BaseConfig):
         """
         self.update({"epoch": epochs})
 
+    def update_to_static(self, dy2st: bool):
+        """update config to set dynamic to static mode
+
+        Args:
+            dy2st (bool): whether or not to use the dynamic to static mode.
+        """
+        self.update({"to_static_train": dy2st})
+
+    def update_amp(self, amp: str = "O2"):
+        """update AMP settings
+
+        Args:
+            amp (None | str): the AMP level if it is not None or `OFF`.
+        """
+        _cfg = {
+            "use_amp": True if amp is not None else False,
+            "amp_level": amp,
+        }
+        self.update(_cfg)
+
     def update_weights(self, weight_path: str):
         """update weight path
 
@@ -160,6 +180,7 @@ class BaseTSConfig(BaseConfig):
             log_interval (int): the log interval value to set.
         """
         self.update({"log_interval": log_interval})
+
 
     def update_dataset(self, dataset_dir: str, dataset_type: str = None):
         """update dataset settings"""

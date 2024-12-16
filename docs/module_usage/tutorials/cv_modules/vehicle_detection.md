@@ -11,29 +11,29 @@ comments: true
 
 
 <table>
-  <tr>
-    <th>模型</th>
-    <th>mAP 0.5:0.95</th>
-    <th>GPU推理耗时（ms）</th>
-    <th>CPU推理耗时 (ms)</th>
-    <th>模型存储大小（M）</th>
-    <th>介绍</th>
-  </tr>
-  <tr>
-    <td>PP-YOLOE-S_vehicle</td>
-    <td>61.3</td>
-    <td>15.4</td>
-    <td>178.4</td>
-    <td>28.79</td>
-    <td rowspan="2">基于PP-YOLOE的行人检测模型</td>
-  </tr>
-  <tr>
-    <td>PP-YOLOE-L_vehicle</td>
-    <td>63.9</td>
-    <td>32.6</td>
-    <td>775.6</td>
-    <td>196.02</td>
-  </tr>
+<tr>
+<th>模型</th><th>模型下载链接</th>
+<th>mAP 0.5:0.95</th>
+<th>GPU推理耗时（ms）</th>
+<th>CPU推理耗时 (ms)</th>
+<th>模型存储大小（M）</th>
+<th>介绍</th>
+</tr>
+<tr>
+<td>PP-YOLOE-S_vehicle</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-YOLOE-S_vehicle_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-YOLOE-S_vehicle_pretrained.pdparams">训练模型</a></td>
+<td>61.3</td>
+<td>15.4</td>
+<td>178.4</td>
+<td>28.79</td>
+<td rowspan="2">基于PP-YOLOE的行人检测模型</td>
+</tr>
+<tr>
+<td>PP-YOLOE-L_vehicle</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-YOLOE-L_vehicle_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-YOLOE-L_vehicle_pretrained.pdparams">训练模型</a></td>
+<td>63.9</td>
+<td>32.6</td>
+<td>775.6</td>
+<td>196.02</td>
+</tr>
 </table>
 
 <b>注：以上精度指标为PPVehicle 验证集 mAP(0.5:0.95)。所有模型 GPU 推理耗时基于 NVIDIA Tesla T4 机器，精度类型为 FP32， CPU 推理速度基于 Intel(R) Xeon(R) Gold 5117 CPU @ 2.00GHz，线程数为8，精度类型为 FP32。</b>

@@ -14,7 +14,7 @@ comments: true
 <table>
 <thead>
 <tr>
-<th>模型</th>
+<th>模型</th><th>模型下载链接</th>
 <th>MS-SSIM （%）</th>
 <th>模型存储大小（M)</th>
 <th>介绍</th>
@@ -22,7 +22,7 @@ comments: true
 </thead>
 <tbody>
 <tr>
-<td>UVDoc</td>
+<td>UVDoc</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/UVDoc_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/UVDoc_pretrained.pdparams">训练模型</a></td>
 <td>54.40</td>
 <td>30.3 M</td>
 <td>高精度文本图像矫正模型</td>

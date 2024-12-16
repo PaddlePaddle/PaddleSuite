@@ -85,10 +85,12 @@ def create_pipeline_app(pipeline: TableRecPipeline, app_config: AppConfig) -> Fa
                         html=item["html"],
                     )
                 )
-            layout_image_base64 = serving_utils.image_to_base64(
-                result["layout_result"].img
+            layout_image_base64 = serving_utils.base64_encode(
+                serving_utils.image_to_bytes(result["layout_result"].img)
             )
-            ocr_iamge_base64 = serving_utils.image_to_base64(result["ocr_result"].img)
+            ocr_image_base64 = serving_utils.base64_encode(
+                serving_utils.image_to_bytes(result["ocr_result"].img)
+            )
 
             return ResultResponse(
                 logId=serving_utils.generate_log_id(),
@@ -97,7 +99,7 @@ def create_pipeline_app(pipeline: TableRecPipeline, app_config: AppConfig) -> Fa
                 result=InferResult(
                     tables=tables,
                     layoutImage=layout_image_base64,
-                    ocrImage=ocr_iamge_base64,
+                    ocrImage=ocr_image_base64,
                 ),
             )
 

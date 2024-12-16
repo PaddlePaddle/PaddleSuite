@@ -49,7 +49,9 @@ def create_pipeline_app(pipeline: SmallObjDet, app_config: AppConfig) -> FastAPI
     )
 
     @app.post(
-        "/object-detection", operation_id="infer", responses={422: {"model": Response}}
+        "/small-object-detection",
+        operation_id="infer",
+        responses={422: {"model": Response}},
     )
     async def _infer(request: InferRequest) -> ResultResponse[InferResult]:
         pipeline = ctx.pipeline
@@ -72,7 +74,9 @@ def create_pipeline_app(pipeline: SmallObjDet, app_config: AppConfig) -> FastAPI
                         score=obj["score"],
                     )
                 )
-            output_image_base64 = serving_utils.image_to_base64(result.img)
+            output_image_base64 = serving_utils.base64_encode(
+                serving_utils.image_to_bytes(result.img)
+            )
 
             return ResultResponse(
                 logId=serving_utils.generate_log_id(),

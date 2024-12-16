@@ -11,23 +11,22 @@ The formula recognition module is a crucial component of OCR (Optical Character 
 
 
 <table>
-  <tr>
-    <th>Model</th>
-    <th>Normed Edit Distance</th>
-    <th>BLEU Score</th>
-    <th>ExpRate (%)</th>
-    <th>Model Size (M)</th>
-    <th>Description</th>
-  </tr>
-  <tr>
-    <td>LaTeX_OCR_rec</td>
-    <td>0.8821</td>
-    <td>0.0823</td>
-    <td>40.01</td>
-    <td>89.7 M</td>
-    <td>LaTeX-OCR is a formula recognition algorithm based on an autoregressive large model. By adopting Hybrid ViT as the backbone network and transformer as the decoder, it significantly improves the accuracy of formula recognition.</td>
-  </tr>
-
+<tr>
+<th>Model</th><th>Model Download Link</th>
+<th>Normed Edit Distance</th>
+<th>BLEU Score</th>
+<th>ExpRate (%)</th>
+<th>Model Size (M)</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>LaTeX_OCR_rec</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/LaTeX_OCR_rec_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/LaTeX_OCR_rec_pretrained.pdparams">Trained Model</a></td>
+<td>0.8821</td>
+<td>0.0823</td>
+<td>40.01</td>
+<td>89.7 M</td>
+<td>LaTeX-OCR is a formula recognition algorithm based on an autoregressive large model. By adopting Hybrid ViT as the backbone network and transformer as the decoder, it significantly improves the accuracy of formula recognition.</td>
+</tr>
 </table>
 
 <b>Note: The above accuracy metrics are measured on the LaTeX-OCR formula recognition test set.</b>

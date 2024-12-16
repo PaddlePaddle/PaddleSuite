@@ -19,7 +19,7 @@ Train:
   batch_size_train: 30
   batch_size_val: 10
   learning_rate: 0.0001
-  pretrain_weight_path: null
+  pretrain_weight_path: https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/LaTeX_OCR_rec_pretrained.pdparams
   resume_path: null
   log_interval: 20
   eval_interval: 1
@@ -30,7 +30,7 @@ Evaluate:
   log_interval: 1
 
 Export:
-  weight_path: https://paddle-model-ecology.bj.bcebos.com/pretrained/rec_latex_ocr_trained.pdparams
+  weight_path: https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/LaTeX_OCR_rec_pretrained.pdparams
 
 Predict:
   batch_size: 1

@@ -19,7 +19,7 @@ Train:
   epochs_iters: 20
   batch_size: 128
   learning_rate: 3e-3
-  pretrain_weight_path: null
+  pretrain_weight_path: https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/FasterNet-T0_pretrained.pdparams
   warmup_steps: 5
   resume_path: null
   log_interval: 1
@@ -30,7 +30,7 @@ Evaluate:
   weight_path: "output/best_model/best_model.pdparams"
   log_interval: 1
 Export:
-  weight_path: https://paddle-imagenet-models-name.bj.bcebos.com/dygraph/legendary_models/FasterNet_T0_pretrained.pdparams
+  weight_path: https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/FasterNet-T0_pretrained.pdparams
 
 Predict:
   batch_size: 1

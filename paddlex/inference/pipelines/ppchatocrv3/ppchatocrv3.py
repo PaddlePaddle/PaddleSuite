@@ -240,7 +240,7 @@ class PPChatOCRPipeline(_TableRecPipeline):
             img_info_list = list(self.img_reader(inputs))[0]
         elif isinstance(inputs, list):
             assert not any(
-                s.endswith(".pdf") for s in inputs
+                isinstance(s, str) and s.endswith(".pdf") for s in inputs
             ), "List containing pdf is not supported; only a list of images or a single PDF is supported."
             img_info_list = [x[0] for x in list(self.img_reader(inputs))]
 

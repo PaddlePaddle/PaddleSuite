@@ -14,31 +14,31 @@ comments: true
 <table>
 <thead>
 <tr>
-<th>模型</th>
+<th>模型</th><th>模型下载链接</th>
 <th>输出特征维度</th>
-<th>AP (%)<br>AgeDB-30/CFP-FP/LFW</th>
+<th>Acc (%)<br/>AgeDB-30/CFP-FP/LFW</th>
 <th>GPU推理耗时 (ms)</th>
-<th>CPU推理耗时</th>
+<th>CPU推理耗时 (ms)</th>
 <th>模型存储大小 (M)</th>
 <th>介绍</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>MobileFaceNet</td>
+<td>MobileFaceNet</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/MobileFaceNet_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/MobileFaceNet_pretrained.pdparams">训练模型</a></td>
 <td>128</td>
 <td>96.28/96.71/99.58</td>
-<td></td>
-<td></td>
+<td>5.7</td>
+<td>101.6</td>
 <td>4.1</td>
 <td>基于MobileFaceNet在MS1Mv3数据集上训练的人脸特征提取模型</td>
 </tr>
 <tr>
-<td>ResNet50_face</td>
+<td>ResNet50_face</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/ResNet50_face_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/ResNet50_face_pretrained.pdparams">训练模型</a></td>
 <td>512</td>
 <td>98.12/98.56/99.77</td>
-<td></td>
-<td></td>
+<td>8.7</td>
+<td>200.7</td>
 <td>87.2</td>
 <td>基于ResNet50在MS1Mv3数据集上训练的人脸特征提取模型</td>
 </tr>
@@ -83,7 +83,7 @@ tar -xf ./dataset/face_rec_examples.tar -C ./dataset/
 一行命令即可完成数据校验：
 
 ```bash
-python main.py -c paddlex/configs/face_recognition/MobileFaceNet.yaml \
+python main.py -c paddlex/configs/face_feature/MobileFaceNet.yaml \
     -o Global.mode=check_dataset \
     -o Global.dataset_dir=./dataset/face_rec_examples
 ```
@@ -184,7 +184,7 @@ images/Miyako_Miyazaki_0002.jpg images/Munir_Akram_0002.jpg 0
 一条命令即可完成模型的训练，以此处MobileFaceNet的训练为例：
 
 ```bash
-python main.py -c paddlex/configs/face_recognition/MobileFaceNet.yaml \
+python main.py -c paddlex/configs/face_feature/MobileFaceNet.yaml \
     -o Global.mode=train \
     -o Global.dataset_dir=./dataset/face_rec_examples
 ```
@@ -216,7 +216,7 @@ python main.py -c paddlex/configs/face_recognition/MobileFaceNet.yaml \
 在完成模型训练后，可以对指定的模型权重文件在验证集上进行评估，验证模型精度。使用 PaddleX 进行模型评估，一条命令即可完成模型的评估：
 
 ```bash
-python main.py -c paddlex/configs/face_recognition/MobileFaceNet.yaml \
+python main.py -c paddlex/configs/face_feature/MobileFaceNet.yaml \
     -o Global.mode=evaluate \
     -o Global.dataset_dir=./dataset/face_rec_examples
 ```
@@ -238,7 +238,7 @@ python main.py -c paddlex/configs/face_recognition/MobileFaceNet.yaml \
 #### 4.4.1 模型推理
 * 通过命令行的方式进行推理预测，只需如下一条命令，运行以下代码前，请您下载[示例图片](https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/face_recognition_001.jpg)到本地。
 ```bash
-python main.py -c paddlex/configs/face_recognition/MobileFaceNet.yaml \
+python main.py -c paddlex/configs/face_feature/MobileFaceNet.yaml \
     -o Global.mode=predict \
     -o Predict.model_dir="./output/best_model/inference" \
     -o Predict.input="face_recognition_001.jpg"

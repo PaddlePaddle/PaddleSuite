@@ -13,7 +13,7 @@ comments: true
 <table>
 <thead>
 <tr>
-<th>模型名称</th>
+<th>模型名称</th><th>模型下载链接</th>
 <th>mse</th>
 <th>mae</th>
 <th>模型存储大小（M)</th>
@@ -22,35 +22,35 @@ comments: true
 </thead>
 <tbody>
 <tr>
-<td>DLinear</td>
+<td>DLinear</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/DLinear_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/DLinear_pretrained.pdparams">训练模型</a></td>
 <td>0.382</td>
 <td>0.394</td>
 <td>76k</td>
 <td>DLinear结构简单，效率高且易用的时序预测模型</td>
 </tr>
 <tr>
-<td>Nonstationary</td>
+<td>Nonstationary</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/Nonstationary_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/Nonstationary_pretrained.pdparams">训练模型</a></td>
 <td>0.600</td>
 <td>0.515</td>
 <td>60.3M</td>
 <td>基于transformer结构，针对性优化非平稳时间序列的长时序预测模型</td>
 </tr>
 <tr>
-<td>PatchTST</td>
+<td>PatchTST</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PatchTST_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PatchTST_pretrained.pdparams">训练模型</a></td>
 <td>0.385</td>
 <td>0.397</td>
 <td>2.2M</td>
 <td>PatchTST是兼顾局部模式和全局依赖关系的高精度长时序预测模型</td>
 </tr>
 <tr>
-<td>TiDE</td>
+<td>TiDE</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/TiDE_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/TiDE_pretrained.pdparams">训练模型</a></td>
 <td>0.405</td>
 <td>0.412</td>
 <td>34.9M</td>
 <td>TiDE是适用于处理多变量、长期的时间序列预测问题的高精度模型</td>
 </tr>
 <tr>
-<td>TimesNet</td>
+<td>TimesNet</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/TimesNet_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/TimesNet_pretrained.pdparams">训练模型</a></td>
 <td>0.417</td>
 <td>0.431</td>
 <td>5.2M</td>

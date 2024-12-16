@@ -131,6 +131,7 @@ def create_app(
 
     app = fastapi.FastAPI(lifespan=_app_lifespan)
     ctx = AppContext[_PipelineT](config=app_config)
+    app.state.context = ctx
 
     @app.get("/health", operation_id="checkHealth")
     async def _check_health() -> Response:

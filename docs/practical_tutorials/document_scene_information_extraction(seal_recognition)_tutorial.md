@@ -105,7 +105,7 @@ PaddleX 提供了 2 个端到端的印章文本检测模型，具体可参考 [�
 <td>10.5878</td>
 <td>131.813</td>
 <td>4.7M</td>
-<td><a href="../../paddlex/configs/text_detection_seal/PP-OCRv4_mobile_seal_det.yaml">PP-OCRv4_mobile_seal_det.yaml</a></td>
+<td><a href="../../paddlex/configs/seal_text_detection/PP-OCRv4_mobile_seal_det.yaml">PP-OCRv4_mobile_seal_det.yaml</a></td>
 </tr>
 <tr>
 <td>PP-OCRv4_server_seal_det</td>
@@ -113,7 +113,7 @@ PaddleX 提供了 2 个端到端的印章文本检测模型，具体可参考 [�
 <td>84.341</td>
 <td>2425.06</td>
 <td>108.3 M</td>
-<td><a href="../../paddlex/configs/text_detection_seal/PP-OCRv4_server_seal_det.yaml">PP-OCRv4_server_seal_det.yaml</a></td>
+<td><a href="../../paddlex/configs/seal_text_detection/PP-OCRv4_server_seal_det.yaml">PP-OCRv4_server_seal_det.yaml</a></td>
 </tr>
 </tbody>
 </table>
@@ -137,7 +137,7 @@ tar -xf ./dataset/practical_seal.tar -C ./dataset/
 在对数据集校验时，只需一行命令：
 
 ```bash
-python main.py -c paddlex/configs/text_detection_seal/PP-OCRv4_server_seal_det.yaml \
+python main.py -c paddlex/configs/seal_text_detection/PP-OCRv4_server_seal_det.yaml \
     -o Global.mode=check_dataset \
     -o Global.dataset_dir=./dataset/practical_seal/
 ```
@@ -222,7 +222,7 @@ python main.py -c paddlex/configs/text_detection_seal/PP-OCRv4_server_seal_det.y
 在训练之前，请确保您已经对数据集进行了校验。完成 PaddleX 模型的训练，只需如下一条命令：
 
 ```bash
-python main.py -c paddlex/configs/text_detection_seal/PP-OCRv4_server_seal_det.yaml \
+python main.py -c paddlex/configs/seal_text_detection/PP-OCRv4_server_seal_det.yaml \
     -o Global.mode=train \
     -o Global.dataset_dir=./dataset/practical_seal \
     -o Train.epochs_iters=30 \
@@ -263,7 +263,7 @@ PaddleX 中每个模型都提供了模型开发的配置文件，用于设置相
 在完成模型训练后，可以对指定的模型权重文件在验证集上进行评估，验证模型精度。使用 PaddleX 进行模型评估，只需一行命令：
 
 ```bash
-python main.py -c paddlex/configs/text_detection_seal/PP-OCRv4_server_seal_det.yaml \
+python main.py -c paddlex/configs/seal_text_detection/PP-OCRv4_server_seal_det.yaml \
     -o Global.mode=evaluate \
     -o Global.dataset_dir=./dataset/practical_seal
 ```
@@ -348,7 +348,7 @@ python main.py -c paddlex/configs/text_detection_seal/PP-OCRv4_server_seal_det.y
 调整不同参数执行训练的命令可以参考：
 
 ```bash
-python main.py -c paddlex/configs/text_detection_seal/PP-OCRv4_server_seal_det.yaml \
+python main.py -c paddlex/configs/seal_text_detection/PP-OCRv4_server_seal_det.yaml \
     -o Global.mode=train \
     -o Global.dataset_dir=./dataset/practical_seal \
     -o Train.learning_rate=0.0001 \

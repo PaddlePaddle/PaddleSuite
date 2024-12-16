@@ -33,6 +33,7 @@ from .utils import (
     switch_working_dir,
     to_dep_spec_pep508,
     env_marker_ast2expr,
+    install_external_deps,
 )
 
 __all__ = ["build_repo_instance", "build_repo_group_installer"]
@@ -123,6 +124,7 @@ class PPRepository(object):
         with switch_working_dir(self.root_dir):
             try:
                 install_packages_using_pip(["."], editable=editable, no_deps=no_deps)
+                install_external_deps(self.name, self.root_dir)
             finally:
                 if clean:
                     # Clean build artifacts

@@ -54,8 +54,7 @@ def debug(msg, *args, **kwargs):
         else:
             caller_info = f"{caller_func_name}"
         msg = f"【{caller_info}】{msg}"
-
-    _logger.debug(msg, *args, **kwargs)
+        _logger.debug(msg, *args, **kwargs)
 
 
 def info(msg, *args, **kwargs):

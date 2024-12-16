@@ -51,7 +51,9 @@ class BaseEvaluator(ABC, metaclass=AutoRegisterABCMetaClass):
         self.global_config = config.Global
         self.eval_config = config.Evaluate
 
-        config_path = self.get_config_path(self.eval_config.weight_path)
+        config_path = self.eval_config.get("basic_config_path", None)
+        if not config_path:
+            config_path = self.get_config_path(self.eval_config.weight_path)
 
         self.pdx_config, self.pdx_model = build_model(
             self.global_config.model, config_path=config_path

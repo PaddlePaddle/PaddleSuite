@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import pickle
 from pathlib import Path
 import numpy as np
 
@@ -33,8 +34,7 @@ class ShiTuV2Pipeline(BasePipeline):
         rec_model,
         det_batch_size=1,
         rec_batch_size=1,
-        index_dir=None,
-        metric_type="IP",
+        index=None,
         score_thres=None,
         hamming_radius=None,
         return_k=5,
@@ -44,21 +44,19 @@ class ShiTuV2Pipeline(BasePipeline):
         super().__init__(device, predictor_kwargs)
         self._build_predictor(det_model, rec_model)
         self.set_predictor(det_batch_size, rec_batch_size, device)
-        self._metric_type, self._return_k, self._score_thres, self._hamming_radius = (
-            metric_type,
+        self._return_k, self._score_thres, self._hamming_radius = (
             return_k,
             score_thres,
             hamming_radius,
         )
-        self._indexer = self._build_indexer(index_dir) if index_dir else None
+        self._indexer = self._build_indexer(index=index) if index else None
 
-    def _build_indexer(self, index_dir):
+    def _build_indexer(self, index):
         return FaissIndexer(
-            index_dir,
-            self._metric_type,
-            self._return_k,
-            self._score_thres,
-            self._hamming_radius,
+            index=index,
+            return_k=self._return_k,
+            score_thres=self._score_thres,
+            hamming_radius=self._hamming_radius,
         )
 
     def _build_predictor(self, det_model, rec_model):
@@ -76,8 +74,8 @@ class ShiTuV2Pipeline(BasePipeline):
             self.det_model.set_predictor(device=device)
             self.rec_model.set_predictor(device=device)
 
-    def predict(self, input, index_dir=None, **kwargs):
-        indexer = self._build_indexer(index_dir) if index_dir else self._indexer
+    def predict(self, input, index=None, **kwargs):
+        indexer = self._build_indexer(index) if index is not None else self._indexer
         assert indexer
         self.set_predictor(**kwargs)
         for det_res in self.det_model(input):
@@ -85,11 +83,17 @@ class ShiTuV2Pipeline(BasePipeline):
             yield self.get_final_result(det_res, rec_res)
 
     def get_rec_result(self, det_res, indexer):
-        full_img = self._img_reader.read(det_res["input_path"])
-        w, h = full_img.shape[:2]
-        det_res["boxes"].append(
-            {"cls_id": 0, "label": "full_img", "score": 0, "coordinate": [0, 0, h, w]}
-        )
+        if len(det_res["boxes"]) == 0:
+            full_img = self._img_reader.read(det_res["input_path"])
+            w, h = full_img.shape[:2]
+            det_res["boxes"].append(
+                {
+                    "cls_id": 0,
+                    "label": "full_img",
+                    "score": 0,
+                    "coordinate": [0, 0, h, w],
+                }
+            )
         subs_of_img = list(self._crop_by_boxes(det_res))
         img_list = [img["img"] for img in subs_of_img]
         all_rec_res = list(self.rec_model(img_list))
@@ -115,64 +119,34 @@ class ShiTuV2Pipeline(BasePipeline):
             )
         return ShiTuResult(single_img_res)
 
-    def _build_index(
+    def build_index(
         self,
-        data_root,
-        index_dir,
-        mode="new",
+        gallery_imgs,
+        gallery_label,
         metric_type="IP",
         index_type="HNSW32",
-        **kwargs,
+        **kwargs
     ):
-        self.set_predictor(**kwargs)
-        self._metric_type = metric_type if metric_type else self._metric_type
-        builder = FaissBuilder(
+        return FaissBuilder.build(
+            gallery_imgs,
+            gallery_label,
             self.rec_model.predict,
-            mode=mode,
-            metric_type=self._metric_type,
-            index_type=index_type,
-        )
-        if mode == "new":
-            builder.build(Path(data_root) / "gallery.txt", data_root, index_dir)
-        elif mode == "remove":
-            builder.remove(Path(data_root) / "gallery.txt", data_root, index_dir)
-        elif mode == "append":
-            builder.append(Path(data_root) / "gallery.txt", data_root, index_dir)
-        else:
-            raise Exception("`mode` only support `new`, `remove` and `append`.")
-
-    def build_index(
-        self, data_root, index_dir, metric_type="IP", index_type="HNSW32", **kwargs
-    ):
-        self._build_index(
-            data_root=data_root,
-            index_dir=index_dir,
-            mode="new",
             metric_type=metric_type,
             index_type=index_type,
-            **kwargs,
         )
 
-    def remove_index(
-        self, data_root, index_dir, metric_type="IP", index_type="HNSW32", **kwargs
-    ):
-        self._build_index(
-            data_root=data_root,
-            index_dir=index_dir,
-            mode="remove",
-            metric_type=metric_type,
-            index_type=index_type,
-            **kwargs,
-        )
+    def remove_index(self, remove_ids, index):
+        return FaissBuilder.remove(remove_ids, index)
 
     def append_index(
-        self, data_root, index_dir, metric_type="IP", index_type="HNSW32", **kwargs
+        self,
+        gallery_imgs,
+        gallery_label,
+        index,
     ):
-        self._build_index(
-            data_root=data_root,
-            index_dir=index_dir,
-            mode="append",
-            metric_type=metric_type,
-            index_type=index_type,
-            **kwargs,
+        return FaissBuilder.append(
+            gallery_imgs,
+            gallery_label,
+            self.rec_model.predict,
+            index,
         )

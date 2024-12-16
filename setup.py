@@ -34,6 +34,11 @@ def dependencies():
         return file.read()
 
 
+def serving_dependencies():
+    with open(os.path.join("paddlex", "serving_requirements.txt"), "r") as file:
+        return file.read()
+
+
 def version():
     """get version"""
     with open(os.path.join("paddlex", ".version"), "r") as file:
@@ -70,6 +75,7 @@ def packages_and_package_data():
     pkg_data.append(".version")
     pkg_data.append("utils/fonts/PingFang-SC-Regular.ttf")
     pkg_data.append("repo_manager/requirements.txt")
+    pkg_data.append("serving_requirements.txt")
     return pkgs, {"paddlex": pkg_data}
 
 
@@ -84,6 +90,9 @@ if __name__ == "__main__":
         author="PaddlePaddle Authors",
         author_email="",
         install_requires=dependencies(),
+        extras_require={
+            "serving": serving_dependencies(),
+        },
         packages=pkgs,
         package_data=pkg_data,
         entry_points={

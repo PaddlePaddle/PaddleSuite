@@ -20,25 +20,29 @@ from pathlib import Path
 import numpy as np
 from prettytable import PrettyTable
 
-from ...utils.flags import INFER_BENCHMARK_OUTPUT
+from ...utils.flags import INFER_BENCHMARK, INFER_BENCHMARK_OUTPUT
+from ...utils.misc import Singleton
 from ...utils import logging
 
 
-class Benchmark:
-    def __init__(self, components):
-        self._components = components
+class Benchmark(metaclass=Singleton):
+    def __init__(self):
+        self._components = {}
         self._warmup_start = None
         self._warmup_elapse = None
         self._warmup_num = None
         self._e2e_tic = None
         self._e2e_elapse = None
 
+    def attach(self, component):
+        self._components[component.name] = component
+
     def start(self):
         self._warmup_start = time.time()
         self._reset()
 
     def warmup_stop(self, warmup_num):
-        self._warmup_elapse = time.time() - self._warmup_start
+        self._warmup_elapse = (time.time() - self._warmup_start) * 1000
         self._warmup_num = warmup_num
         self._reset()
 
@@ -51,13 +55,18 @@ class Benchmark:
         if cmps is None:
             return
         for name, cmp in cmps.items():
-            if cmp.sub_cmps is not None:
-                yield from self.iterate_cmp(cmp.sub_cmps)
+            if hasattr(cmp, "benchmark"):
+                yield from self.iterate_cmp(cmp.benchmark)
             yield name, cmp
 
     def gather(self, e2e_num):
         # lazy import for avoiding circular import
-        from ..components.paddle_predictor import BasePaddlePredictor
+        from ...utils.flags import NEW_PREDICTOR
+
+        if NEW_PREDICTOR:
+            from ..new_models.base import BasePaddlePredictor
+        else:
+            from ..models.common_components.paddle_predictor import BasePaddlePredictor
 
         detail = []
         summary = {"preprocess": 0, "inference": 0, "postprocess": 0}
@@ -65,19 +74,21 @@ class Benchmark:
         for name, cmp in self._components.items():
             if isinstance(cmp, BasePaddlePredictor):
                 # TODO(gaotingquan): show by hierarchy. Now dont show xxxPredictor benchmark info to ensure mutual exclusivity between components.
-                for name, sub_cmp in cmp.sub_cmps.items():
+                for name, sub_cmp in cmp.benchmark.items():
                     times = sub_cmp.timer.logs
                     counts = len(times)
-                    avg = np.mean(times)
-                    total = np.sum(times)
+                    avg = np.mean(times) * 1000
+                    total = np.sum(times) * 1000
                     detail.append((name, total, counts, avg))
                     summary["inference"] += total
                 op_tag = "postprocess"
             else:
+                # TODO(gaotingquan): support sub_cmps for others
+                # if hasattr(cmp, "benchmark"):
                 times = cmp.timer.logs
                 counts = len(times)
-                avg = np.mean(times)
-                total = np.sum(times)
+                avg = np.mean(times) * 1000
+                total = np.sum(times) * 1000
                 detail.append((name, total, counts, avg))
                 summary[op_tag] += total
 
@@ -103,18 +114,25 @@ class Benchmark:
             ("End2End", self._e2e_elapse, e2e_num, self._e2e_elapse / e2e_num),
         ]
         if self._warmup_elapse:
-            summary.append(
-                (
-                    "WarmUp",
-                    self._warmup_elapse,
-                    self._warmup_num,
-                    self._warmup_elapse / self._warmup_num,
-                )
+            warmup_elapse, warmup_num, warmup_avg = (
+                self._warmup_elapse,
+                self._warmup_num,
+                self._warmup_elapse / self._warmup_num,
             )
+        else:
+            warmup_elapse, warmup_num, warmup_avg = 0, 0, 0
+        summary.append(
+            (
+                "WarmUp",
+                warmup_elapse,
+                warmup_num,
+                warmup_avg,
+            )
+        )
         return detail, summary
 
     def collect(self, e2e_num):
-        self._e2e_elapse = time.time() - self._e2e_tic
+        self._e2e_elapse = (time.time() - self._e2e_tic) * 1000
         detail, summary = self.gather(e2e_num)
 
         detail_head = [
@@ -126,7 +144,7 @@ class Benchmark:
         table = PrettyTable(detail_head)
         table.add_rows(
             [
-                (name, f"{total * 1000:.8f}", cnts, f"{avg * 1000:.8f}")
+                (name, f"{total:.8f}", cnts, f"{avg:.8f}")
                 for name, total, cnts, avg in detail
             ]
         )
@@ -141,7 +159,7 @@ class Benchmark:
         table = PrettyTable(summary_head)
         table.add_rows(
             [
-                (name, f"{total * 1000:.8f}", cnts, f"{avg * 1000:.8f}")
+                (name, f"{total:.8f}", cnts, f"{avg:.8f}")
                 for name, total, cnts, avg in summary
             ]
         )
@@ -151,20 +169,23 @@ class Benchmark:
             save_dir = Path(INFER_BENCHMARK_OUTPUT)
             save_dir.mkdir(parents=True, exist_ok=True)
             csv_data = [detail_head, *detail]
-            # csv_data.extend(detail)
             with open(Path(save_dir) / "detail.csv", "w", newline="") as file:
                 writer = csv.writer(file)
                 writer.writerows(csv_data)
 
             csv_data = [summary_head, *summary]
-            # csv_data.extend(summary)
             with open(Path(save_dir) / "summary.csv", "w", newline="") as file:
                 writer = csv.writer(file)
                 writer.writerows(csv_data)
 
 
 class Timer:
-    def __init__(self):
+    def __init__(self, component):
+        from ..new_models.base import BaseComponent
+
+        assert isinstance(component, BaseComponent)
+        benchmark.attach(component)
+        component.apply = self.watch_func(component.apply)
         self._tic = None
         self._elapses = []
 
@@ -205,3 +226,6 @@ class Timer:
     @property
     def logs(self):
         return self._elapses
+
+
+benchmark = Benchmark() if INFER_BENCHMARK else None

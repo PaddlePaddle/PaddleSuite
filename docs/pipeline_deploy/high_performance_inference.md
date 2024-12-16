@@ -178,147 +178,247 @@ PaddleX 结合模型信息与运行环境信息为每个模型提供默认的高
   <tr>
     <th>模型产线</th>
     <th>产线模块</th>
-    <th>具体模型</th>
-  </tr>
-  <tr>
-    <td>通用图像分类</td>
-    <td>图像分类</td>
-    <td>ResNet18<br/>ResNet34<details>
-    <summary><b>more</b></summary>ResNet50<br/>ResNet101<br/>ResNet152<br/>ResNet18_vd<br/>ResNet34_vd<br/>ResNet50_vd<br/>ResNet101_vd<br/>ResNet152_vd<br/>ResNet200_vd<br/>PP-LCNet_x0_25<br/>PP-LCNet_x0_35<br/>PP-LCNet_x0_5<br/>PP-LCNet_x0_75<br/>PP-LCNet_x1_0<br/>PP-LCNet_x1_5<br/>PP-LCNet_x2_0<br/>PP-LCNet_x2_5<br/>PP-LCNetV2_small<br/>PP-LCNetV2_base<br/>PP-LCNetV2_large<br/>MobileNetV3_large_x0_35<br/>MobileNetV3_large_x0_5<br/>MobileNetV3_large_x0_75<br/>MobileNetV3_large_x1_0<br/>MobileNetV3_large_x1_25<br/>MobileNetV3_small_x0_35<br/>MobileNetV3_small_x0_5<br/>MobileNetV3_small_x0_75<br/>MobileNetV3_small_x1_0<br/>MobileNetV3_small_x1_25<br/>ConvNeXt_tiny<br/>ConvNeXt_small<br/>ConvNeXt_base_224<br/>ConvNeXt_base_384<br/>ConvNeXt_large_224<br/>ConvNeXt_large_384<br/>MobileNetV1_x0_25<br/>MobileNetV1_x0_5<br/>MobileNetV1_x0_75<br/>MobileNetV1_x1_0<br/>MobileNetV2_x0_25<br/>MobileNetV2_x0_5<br/>MobileNetV2_x1_0<br/>MobileNetV2_x1_5<br/>MobileNetV2_x2_0<br/>SwinTransformer_tiny_patch4_window7_224<br/>SwinTransformer_small_patch4_window7_224<br/>SwinTransformer_base_patch4_window7_224<br/>SwinTransformer_base_patch4_window12_384<br/>SwinTransformer_large_patch4_window7_224<br/>SwinTransformer_large_patch4_window12_384<br/>PP-HGNet_small<br/>PP-HGNet_tiny<br/>PP-HGNet_base<br/>PP-HGNetV2-B0<br/>PP-HGNetV2-B1<br/>PP-HGNetV2-B2<br/>PP-HGNetV2-B3<br/>PP-HGNetV2-B4<br/>PP-HGNetV2-B5<br/>PP-HGNetV2-B6<br/>CLIP_vit_base_patch16_224<br/>CLIP_vit_large_patch14_224</details></td>
-  </tr>
-
-
-  <tr>
-    <td>通用目标检测</td>
-    <td>目标检测</td>
-    <td>PP-YOLOE_plus-S<br/>PP-YOLOE_plus-M<details>
-        <summary><b>more</b></summary>PP-YOLOE_plus-L<br/>PP-YOLOE_plus-X<br/>YOLOX-N<br/>YOLOX-T<br/>YOLOX-S<br/>YOLOX-M<br/>YOLOX-L<br/>YOLOX-X<br/>YOLOv3-DarkNet53<br/>YOLOv3-ResNet50_vd_DCN<br/>YOLOv3-MobileNetV3<br/>RT-DETR-R18<br/>RT-DETR-R50<br/>RT-DETR-L<br/>RT-DETR-H<br/>RT-DETR-X<br/>PicoDet-S<br/>PicoDet-L</details></td>
-  </tr>
-
-  <tr>
-    <td>通用语义分割</td>
-    <td>语义分割</td>
-    <td>Deeplabv3-R50<br/>Deeplabv3-R101<details>
-    <summary><b>more</b></summary>Deeplabv3_Plus-R50<br/>Deeplabv3_Plus-R101<br/>PP-LiteSeg-T<br/>OCRNet_HRNet-W48<br/>OCRNet_HRNet-W18<br/>SeaFormer_tiny<br/>SeaFormer_small<br/>SeaFormer_base<br/>SeaFormer_large<br/>SegFormer-B0<br/>SegFormer-B1<br/>SegFormer-B2<br/>SegFormer-B3<br/>SegFormer-B4<br/>SegFormer-B5</details></td>
-  </tr>
-
-  <tr>
-    <td>通用实例分割</td>
-    <td>实例分割</td>
-    <td>Mask-RT-DETR-L<br/>Mask-RT-DETR-H</td>
+    <th>模型支持情况</th>
   </tr>
 
   <tr>
     <td rowspan="2">通用OCR</td>
     <td>文本检测</td>
-    <td>PP-OCRv4_server_det<br/>PP-OCRv4_mobile_det</td>
+    <td>✅</td>
   </tr>
 
   <tr>
     <td>文本识别</td>
-    <td>PP-OCRv4_server_rec<br/>PP-OCRv4_mobile_rec<br/>ch_RepSVTR_rec<br/>ch_SVTRv2_rec</td>
+    <td>✅</td>
+  </tr>
+
+  <tr>
+    <td rowspan="7">文档场景信息抽取v3</td>
+    <td>表格识别</td>
+    <td>✅</td>
+  </tr>
+
+  <tr>
+    <td>版面区域检测</td>
+    <td>✅</td>
+  </tr>
+
+  <tr>
+    <td>文本检测</td>
+    <td>✅</td>
+  </tr>
+
+  <tr>
+    <td>文本识别</td>
+    <td>✅</td>
+  </tr>
+
+  <tr>
+    <td>印章文本检测</td>
+    <td>✅</td>
+  </tr>
+
+  <tr>
+    <td>文本图像矫正</td>
+    <td>✅</td>
+  </tr>
+
+  <tr>
+    <td>文档图像方向分类</td>
+    <td>✅</td>
+  </tr>
+
+  <tr>
+    <td rowspan="4">通用表格识别</td>
+    <td>版面区域检测</td>
+    <td>✅</td>
+  </tr>
+
+  <tr>
+    <td>表格识别</td>
+    <td>✅</td>
+  </tr>
+
+  <tr>
+    <td>文本检测</td>
+    <td>✅</td>
+  </tr>
+
+  <tr>
+    <td>文本识别</td>
+    <td>✅</td>
+  </tr>
+
+  <tr>
+    <td>通用目标检测</td>
+    <td>目标检测</td>
+    <td>FasterRCNN-Swin-Tiny-FPN ❌</br>CenterNet-DLA-34 ❌ </br>CenterNet-ResNet50 ❌</td>
+  </tr>
+
+  <tr>
+    <td>通用实例分割</td>
+    <td>实例分割</td>
+    <td>Mask-RT-DETR-S ❌</td>
+  </tr>
+
+  <tr>
+    <td>通用图像分类</td>
+    <td>图像分类</td>
+    <td>✅</td>
+  </tr>
+
+  <tr>
+    <td>通用语义分割</td>
+    <td>语义分割</td>
+    <td>✅</td>
+  </tr>
+
+  <tr>
+    <td>时序预测</td>
+    <td>时序预测</td>
+    <td>❌</td>
+  </tr>
+
+  <tr>
+    <td>时序异常检测</td>
+    <td>时序异常预测</td>
+    <td>❌</td>
+  </tr>
+
+  <tr>
+    <td>时序分类</td>
+    <td>时序分类</td>
+    <td>❌</td>
+  </tr>
+
+  <tr>
+    <td>小目标检测</td>
+    <td>小目标检测</td>
+    <td>✅</td>
+  </tr>
+
+  <tr>
+    <td>图像多标签分类</td>
+    <td>图像多标签分类</td>
+    <td>✅</td>
+  </tr>
+
+  <tr>
+    <td>图像异常检测</td>
+    <td>无监督异常检测</td>
+    <td>✅</td>
+  </tr>
+
+  <tr>
+    <td rowspan="8">通用版面解析</td>
+    <td>表格结构识别</td>
+    <td>✅</td>
+  </tr>
+
+  <tr>
+    <td>版面区域分析</td>
+    <td>✅</td>
+  </tr>
+
+  <tr>
+    <td>文本检测</td>
+    <td>✅</td>
+  </tr>
+
+  <tr>
+    <td>文本识别</td>
+    <td>✅</td>
+  </tr>
+
+  <tr>
+    <td>公式识别</td>
+    <td>✅</td>
+  </tr>
+
+  <tr>
+    <td>印章文本检测</td>
+    <td>✅</td>
+  </tr>
+
+  <tr>
+    <td>文本图像矫正</td>
+    <td>✅</td>
+  </tr>
+
+  <tr>
+    <td>文档图像方向分类</td>
+    <td>✅</td>
+  </tr>
+
+  <tr>
+    <td rowspan="2">公式识别</td>
+    <td>版面区域检测</td>
+    <td>✅</td>
+  </tr>
+
+  <tr>
+    <td>公式识别</td>
+    <td>✅</td>
   </tr>
 
   <tr>
     <td rowspan="3">印章文本识别</td>
     <td>版面区域分析</td>
-    <td>PicoDet-S_layout_3cls<br/>PicoDet-S_layout_17cls<details>
-    <summary><b>more</b></summary>PicoDet-L_layout_3cls<br/>PicoDet-L_layout_17cls<br/>RT-DETR-H_layout_3cls<br/>RT-DETR-H_layout_17cls</details></td>
+    <td>✅</td>
   </tr>
 
   <tr>
     <td>印章文本检测</td>
-    <td>PP-OCRv4_server_seal_det<br/>PP-OCRv4_mobile_seal_det</td>
+    <td>✅</td>
   </tr>
 
   <tr>
     <td>文本识别</td>
-    <td>PP-OCRv4_mobile_rec<br/>PP-OCRv4_server_rec</td>
-  </tr>
-
-
-  <tr>
-    <td rowspan="5">通用表格识别</td>
-    <td>版面区域检测</td>
-    <td>PicoDet_layout_1x</td>
+    <td>✅</td>
   </tr>
 
   <tr>
-    <td rowspan="2">表格识别</td>
-    <td>SLANet</td>
+    <td rowspan="2">通用图像识别</td>
+    <td>主体检测</td>
+    <td>✅</td>
   </tr>
 
   <tr>
-    <td>SLANet_plus</td>
+    <td>图像特征</td>
+    <td>✅</td>
   </tr>
 
   <tr>
-    <td>文本检测</td>
-    <td>PP-OCRv4_server_det<br/>PP-OCRv4_mobile_det</td>
+    <td rowspan="2">行人属性识别</td>
+    <td>行人检测</td>
+    <td>❌</td>
   </tr>
 
   <tr>
-    <td>文本识别</td>
-    <td>PP-OCRv4_server_rec<br/>PP-OCRv4_mobile_rec<br/>ch_RepSVTR_rec<br/>ch_SVTRv2_rec</td>
+    <td>行人属性识别</td>
+    <td>❌</td>
   </tr>
 
   <tr>
-    <td rowspan="15">文档场景信息抽取v3</td>
-    <td rowspan="2">表格识别</td>
-    <td>SLANet</td>
+    <td rowspan="2">车辆属性识别</td>
+    <td>车辆检测</td>
+    <td>❌</td>
   </tr>
 
   <tr>
-    <td>SLANet_plus</td>
+    <td>车辆属性识别</td>
+    <td>❌</td>
   </tr>
 
   <tr>
-    <td>版面区域检测</td>
-    <td>PicoDet_layout_1x</td>
+    <td rowspan="2">人脸识别</td>
+    <td>人脸检测</td>
+    <td>✅</td>
   </tr>
 
   <tr>
-    <td rowspan="2">文本检测</td>
-    <td>PP-OCRv4_server_det</td>
+    <td>人脸特征</td>
+    <td>✅</td>
   </tr>
 
-  <tr>
-    <td>PP-OCRv4_mobile_det</td>
-  </tr>
-
-  <tr>
-    <td rowspan="4">文本识别</td>
-    <td>PP-OCRv4_server_rec</td>
-  </tr>
-
-  <tr>
-    <td>PP-OCRv4_mobile_rec</td>
-  </tr>
-
-  <tr>
-    <td>ch_RepSVTR_rec</td>
-  </tr>
-
-  <tr>
-    <td>ch_SVTRv2_rec</td>
-  </tr>
-
-  <tr>
-    <td rowspan="2">印章文本检测</td>
-    <td>PP-OCRv4_server_seal_det</td>
-  </tr>
-
-  <tr>
-    <td>PP-OCRv4_mobile_seal_det</td>
-  </tr>
-
-  <tr>
-    <td>文本图像矫正</td>
-    <td>UVDoc</td>
-  </tr>
-
-  <tr>
-    <td>文档图像方向分类</td>
-    <td>PP-LCNet_x1_0_doc_ori</td>
-  </tr>
 </table>

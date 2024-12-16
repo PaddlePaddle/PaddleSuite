@@ -13,7 +13,7 @@ The seal text detection module typically outputs multi-point bounding boxes arou
 <table>
 <thead>
 <tr>
-<th>Model Name</th>
+<th>Model Name</th><th>Model Download Link</th>
 <th>Hmean（%）</th>
 <th>GPU Inference Time (ms)</th>
 <th>CPU Inference Time (ms)</th>
@@ -23,7 +23,7 @@ The seal text detection module typically outputs multi-point bounding boxes arou
 </thead>
 <tbody>
 <tr>
-<td>PP-OCRv4_server_seal_det</td>
+<td>PP-OCRv4_server_seal_det</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-OCRv4_server_seal_det_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-OCRv4_server_seal_det_pretrained.pdparams">Trained Model</a></td>
 <td>98.21</td>
 <td>84.341</td>
 <td>2425.06</td>
@@ -31,7 +31,7 @@ The seal text detection module typically outputs multi-point bounding boxes arou
 <td>The server-side seal text detection model of PP-OCRv4 boasts higher accuracy and is suitable for deployment on better-equipped servers.</td>
 </tr>
 <tr>
-<td>PP-OCRv4_mobile_seal_det</td>
+<td>PP-OCRv4_mobile_seal_det</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-OCRv4_mobile_seal_det_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-OCRv4_mobile_seal_det_pretrained.pdparams">Trained Model</a></td>
 <td>96.47</td>
 <td>10.5878</td>
 <td>131.813</td>
@@ -82,7 +82,7 @@ tar -xf ./dataset/ocr_curve_det_dataset_examples.tar -C ./dataset/
 Data validation can be completed with a single command:
 
 ```bash
-python main.py -c paddlex/configs/text_detection_seal/PP-OCRv4_server_seal_det.yaml \
+python main.py -c paddlex/configs/seal_text_detection/PP-OCRv4_server_seal_det.yaml \
     -o Global.mode=check_dataset \
     -o Global.dataset_dir=./dataset/ocr_curve_det_dataset_examples
 ```
@@ -167,13 +167,13 @@ CheckDataset:
   ......
 </code></pre>
 <p>Then execute the command:</p>
-<pre><code class="language-bash">python main.py -c paddlex/configs/text_detection_seal/PP-OCRv4_server_seal_det.yaml \
+<pre><code class="language-bash">python main.py -c paddlex/configs/seal_text_detection/PP-OCRv4_server_seal_det.yaml \
     -o Global.mode=check_dataset \
     -o Global.dataset_dir=./dataset/ocr_curve_det_dataset_examples
 </code></pre>
 <p>After dataset splitting, the original annotation files will be renamed to <code>xxx.bak</code> in the original path.</p>
 <p>The above parameters also support setting through appending command line arguments:</p>
-<pre><code class="language-bash">python main.py -c paddlex/configs/text_detection_seal/PP-OCRv4_server_seal_det.yaml  \
+<pre><code class="language-bash">python main.py -c paddlex/configs/seal_text_detection/PP-OCRv4_server_seal_det.yaml  \
     -o Global.mode=check_dataset \
     -o Global.dataset_dir=./dataset/ocr_curve_det_dataset_examples \
     -o CheckDataset.split.enable=True \
@@ -186,7 +186,7 @@ CheckDataset:
 Model training can be completed with just one command. Here, we use the Seal Text Detection model (PP-OCRv4_server_seal_det) as an example:
 
 ```bash
-python main.py -c paddlex/configs/text_detection_seal/PP-OCRv4_server_seal_det.yaml \
+python main.py -c paddlex/configs/seal_text_detection/PP-OCRv4_server_seal_det.yaml \
     -o Global.mode=train \
     -o Global.dataset_dir=./dataset/ocr_curve_det_dataset_examples
 ```
@@ -220,7 +220,7 @@ Other related parameters can be set by modifying the `Global` and `Train` fields
 After model training, you can evaluate the specified model weights on the validation set to verify model accuracy. Using PaddleX for model evaluation requires just one command:
 
 ```bash
-python main.py -c paddlex/configs/text_detection_seal/PP-OCRv4_server_seal_det.yaml \
+python main.py -c paddlex/configs/seal_text_detection/PP-OCRv4_server_seal_det.yaml \
     -o Global.mode=evaluate \
     -o Global.dataset_dir=./dataset/ocr_curve_det_dataset_examples
 ```
@@ -249,7 +249,7 @@ To perform inference predictions via the command line, use the following command
 
 
 ```bash
-python main.py -c paddlex/configs/text_detection_seal/PP-OCRv4_server_seal_det.yaml \
+python main.py -c paddlex/configs/seal_text_detection/PP-OCRv4_server_seal_det.yaml \
     -o Global.mode=predict \
     -o Predict.model_dir="./output/best_accuracy/inference" \
     -o Predict.input="seal_text_det.png"

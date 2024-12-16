@@ -13,7 +13,7 @@ The core task of structure analysis is to parse and segment the content of input
 <table>
 <thead>
 <tr>
-<th>Model</th>
+<th>Model</th><th>Model Download Link</th>
 <th>mAP(0.5) (%)</th>
 <th>GPU Inference Time (ms)</th>
 <th>CPU Inference Time (ms)</th>
@@ -23,7 +23,7 @@ The core task of structure analysis is to parse and segment the content of input
 </thead>
 <tbody>
 <tr>
-<td>PicoDet_layout_1x</td>
+<td>PicoDet_layout_1x</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PicoDet_layout_1x_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PicoDet_layout_1x_pretrained.pdparams">Trained Model</a></td>
 <td>86.8</td>
 <td>13.0</td>
 <td>91.3</td>
@@ -31,7 +31,15 @@ The core task of structure analysis is to parse and segment the content of input
 <td>An efficient layout area localization model trained on the PubLayNet dataset based on PicoDet-1x can locate five types of areas, including text, titles, tables, images, and lists.</td>
 </tr>
 <tr>
-<td>PicoDet-S_layout_3cls</td>
+<td>PicoDet_layout_1x_table</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PicoDet_layout_1x_table_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PicoDet_layout_1x_table_pretrained.pdparams">Trained Model</a></td>
+<td>95.7</td>
+<td>12.623</td>
+<td>90.8934</td>
+<td>7.4 M</td>
+<td>An efficient layout area localization model trained on the PubLayNet dataset based on PicoDet-1x can locate one type of tables.</td>
+</tr>
+<tr>
+<td>PicoDet-S_layout_3cls</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PicoDet-S_layout_3cls_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PicoDet-S_layout_3cls_pretrained.pdparams">Trained Model</a></td>
 <td>87.1</td>
 <td>13.5</td>
 <td>45.8</td>
@@ -39,7 +47,7 @@ The core task of structure analysis is to parse and segment the content of input
 <td>An high-efficient layout area localization model trained on a self-constructed dataset based on PicoDet-S for scenarios such as Chinese and English papers, magazines, and research reports includes three categories: tables, images, and seals.</td>
 </tr>
 <tr>
-<td>PicoDet-S_layout_17cls</td>
+<td>PicoDet-S_layout_17cls</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PicoDet-S_layout_17cls_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PicoDet-S_layout_17cls_pretrained.pdparams">Trained Model</a></td>
 <td>70.3</td>
 <td>13.6</td>
 <td>46.2</td>
@@ -47,7 +55,7 @@ The core task of structure analysis is to parse and segment the content of input
 <td>A high-efficient layout area localization model trained on a self-constructed dataset based on PicoDet-S_layout_17cls for scenarios such as Chinese and English papers, magazines, and research reports includes 17 common layout categories, namely: paragraph titles, images, text, numbers, abstracts, content, chart titles, formulas, tables, table titles, references, document titles, footnotes, headers, algorithms, footers, and seals.</td>
 </tr>
 <tr>
-<td>PicoDet-L_layout_3cls</td>
+<td>PicoDet-L_layout_3cls</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PicoDet-L_layout_3cls_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PicoDet-L_layout_3cls_pretrained.pdparams">Trained Model</a></td>
 <td>89.3</td>
 <td>15.7</td>
 <td>159.8</td>
@@ -55,7 +63,7 @@ The core task of structure analysis is to parse and segment the content of input
 <td>An efficient layout area localization model trained on a self-constructed dataset based on PicoDet-L for scenarios such as Chinese and English papers, magazines, and research reports includes three categories: tables, images, and seals.</td>
 </tr>
 <tr>
-<td>PicoDet-L_layout_17cls</td>
+<td>PicoDet-L_layout_17cls</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PicoDet-L_layout_17cls_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PicoDet-L_layout_17cls_pretrained.pdparams">Trained Model</a></td>
 <td>79.9</td>
 <td>17.2</td>
 <td>160.2</td>
@@ -63,7 +71,7 @@ The core task of structure analysis is to parse and segment the content of input
 <td>A efficient layout area localization model trained on a self-constructed dataset based on PicoDet-L_layout_17cls for scenarios such as Chinese and English papers, magazines, and research reports includes 17 common layout categories, namely: paragraph titles, images, text, numbers, abstracts, content, chart titles, formulas, tables, table titles, references, document titles, footnotes, headers, algorithms, footers, and seals.</td>
 </tr>
 <tr>
-<td>RT-DETR-H_layout_3cls</td>
+<td>RT-DETR-H_layout_3cls</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/RT-DETR-H_layout_3cls_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/RT-DETR-H_layout_3cls_pretrained.pdparams">Trained Model</a></td>
 <td>95.9</td>
 <td>114.6</td>
 <td>3832.6</td>
@@ -71,7 +79,7 @@ The core task of structure analysis is to parse and segment the content of input
 <td>A high-precision layout area localization model trained on a self-constructed dataset based on RT-DETR-H for scenarios such as Chinese and English papers, magazines, and research reports includes three categories: tables, images, and seals.</td>
 </tr>
 <tr>
-<td>RT-DETR-H_layout_17cls</td>
+<td>RT-DETR-H_layout_17cls</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/RT-DETR-H_layout_17cls_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/RT-DETR-H_layout_17cls_pretrained.pdparams">Trained Model</a></td>
 <td>92.6</td>
 <td>115.1</td>
 <td>3827.2</td>
@@ -123,7 +131,7 @@ tar -xf ./dataset/det_layout_examples.tar -C ./dataset/
 A single command can complete data validation:
 
 ```bash
-python main.py -c paddlex/configs/structure_analysis/PicoDet-L_layout_3cls.yaml \
+python main.py -c paddlex/configs/layout_detection/PicoDet-L_layout_3cls.yaml \
     -o Global.mode=check_dataset \
     -o Global.dataset_dir=./dataset/det_layout_examples
 ```
@@ -197,13 +205,13 @@ CheckDataset:
   ......
 </code></pre>
 <p>Then execute the command:</p>
-<pre><code class="language-bash">python main.py -c paddlex/configs/structure_analysis/PicoDet-L_layout_3cls.yaml \
+<pre><code class="language-bash">python main.py -c paddlex/configs/layout_detection/PicoDet-L_layout_3cls.yaml \
     -o Global.mode=check_dataset \
     -o Global.dataset_dir=./dataset/det_layout_examples
 </code></pre>
 <p>After dataset splitting, the original annotation files will be renamed to <code>xxx.bak</code> in the original path.</p>
 <p>The above parameters can also be set by appending command-line arguments:</p>
-<pre><code class="language-bash">python main.py -c paddlex/configs/structure_analysis/PicoDet-L_layout_3cls.yaml  \
+<pre><code class="language-bash">python main.py -c paddlex/configs/layout_detection/PicoDet-L_layout_3cls.yaml  \
     -o Global.mode=check_dataset \
     -o Global.dataset_dir=./dataset/det_layout_examples \
     -o CheckDataset.split.enable=True \
@@ -216,7 +224,7 @@ CheckDataset:
 A single command is sufficient to complete model training, taking the training of PicoDet-L_layout_3cls as an example:
 
 ```bash
-python main.py -c paddlex/configs/structure_analysis/PicoDet-L_layout_3cls.yaml \
+python main.py -c paddlex/configs/layout_detection/PicoDet-L_layout_3cls.yaml \
     -o Global.mode=train \
     -o Global.dataset_dir=./dataset/det_layout_examples
 ```
@@ -248,7 +256,7 @@ Other related parameters can be set by modifying the `Global` and `Train` fields
 After completing model training, you can evaluate the specified model weight file on the validation set to verify the model's accuracy. Using PaddleX for model evaluation, you can complete the evaluation with a single command:
 
 ```bash
-python main.py -c paddlex/configs/structure_analysis/PicoDet-L_layout_3cls.yaml \
+python main.py -c paddlex/configs/layout_detection/PicoDet-L_layout_3cls.yaml \
     -o Global.mode=evaluate \
     -o Global.dataset_dir=./dataset/det_layout_examples
 ```
@@ -270,7 +278,7 @@ After completing model training and evaluation, you can use the trained model we
 #### 4.4.1 Model Inference
 * To perform inference predictions through the command line, simply use the following command. Before running the following code, please download the [demo image](https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/layout.jpg) to your local machine.
 ```bash
-python main.py -c paddlex/configs/structure_analysis/PicoDet-L_layout_3cls.yaml \
+python main.py -c paddlex/configs/layout_detection/PicoDet-L_layout_3cls.yaml \
     -o Global.mode=predict \
     -o Predict.model_dir="./output/best_model/inference" \
     -o Predict.input="layout.jpg"

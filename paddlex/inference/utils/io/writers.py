@@ -22,6 +22,7 @@ import cv2
 import numpy as np
 from PIL import Image
 import pandas as pd
+import yaml
 from .tablepyxl import document_to_xl
 
 
@@ -33,6 +34,7 @@ __all__ = [
     "CSVWriter",
     "HtmlWriter",
     "XlsxWriter",
+    "YAMLWriter",
 ]
 
 
@@ -46,6 +48,7 @@ class WriterType(enum.Enum):
     HTML = 5
     XLSX = 6
     CSV = 7
+    YAML = 8
 
 
 class _BaseWriter(object):
@@ -189,15 +192,33 @@ class XlsxWriter(_BaseWriter):
         return WriterType.XLSX
 
 
+class YAMLWriter(_BaseWriter):
+    def __init__(self, backend="PyYAML", **bk_args):
+        super().__init__(backend=backend, **bk_args)
+
+    def write(self, out_path, obj, **bk_args):
+        return self._backend.write_obj(str(out_path), obj, **bk_args)
+
+    def _init_backend(self, bk_type, bk_args):
+        if bk_type == "PyYAML":
+            return YAMLWriterBackend(**bk_args)
+        else:
+            raise ValueError("Unsupported backend type")
+
+    def get_type(self):
+        """get type"""
+        return WriterType.YAML
+
+
 class _BaseWriterBackend(object):
     """_BaseWriterBackend"""
 
-    def write_obj(self, out_path, obj):
+    def write_obj(self, out_path, obj, **bk_args):
         """write object"""
         Path(out_path).parent.mkdir(parents=True, exist_ok=True)
-        return self._write_obj(out_path, obj)
+        return self._write_obj(out_path, obj, **bk_args)
 
-    def _write_obj(self, out_path, obj):
+    def _write_obj(self, out_path, obj, **bk_args):
         """write object"""
         raise NotImplementedError
 
@@ -297,6 +318,19 @@ class UJsonWriterBackend(_BaseJsonWriterBackend):
     # TODO
     def _write_obj(self, out_path, obj, **bk_args):
         raise NotImplementedError
+
+
+class YAMLWriterBackend(_BaseWriterBackend):
+
+    def __init__(self, mode="w", encoding="utf-8"):
+        super().__init__()
+        self.mode = mode
+        self.encoding = encoding
+
+    def _write_obj(self, out_path, obj, **bk_args):
+        """write text object"""
+        with open(out_path, mode=self.mode, encoding=self.encoding) as f:
+            yaml.dump(obj, f, **bk_args)
 
 
 class CSVWriter(_BaseWriter):

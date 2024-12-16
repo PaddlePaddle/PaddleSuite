@@ -19,7 +19,7 @@ Train:
   epochs_iters: 10
   batch_size: 8
   learning_rate: 0.01
-  pretrain_weight_path: null
+  pretrain_weight_path: https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/YOLOX-L_pretrained.pdparams
   warmup_steps: 100
   resume_path: null
   log_interval: 10
@@ -30,7 +30,7 @@ Evaluate:
   log_interval: 10
 
 Export:
-  weight_path: https://paddledet.bj.bcebos.com/models/yolox_l_300e_coco.pdparams
+  weight_path: https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/YOLOX-L_pretrained.pdparams
 
 Predict:
   batch_size: 1

@@ -21,9 +21,11 @@ from ...attribute_recognition import (
     VehicleAttributeRecPipeline,
 )
 from ...base import BasePipeline
+from ...face_recognition import FaceRecPipeline
 from ...formula_recognition import FormulaRecognitionPipeline
 from ...layout_parsing import LayoutParsingPipeline
 from ...ocr import OCRPipeline
+from ...pp_shitu_v2 import ShiTuV2Pipeline
 from ...ppchatocrv3 import PPChatOCRPipeline
 from ...seal_recognition import SealOCRPipeline
 from ...single_model_pipeline import (
@@ -41,6 +43,7 @@ from ...single_model_pipeline import (
 from ...table_recognition import TableRecPipeline
 from ..app import create_app_config
 from .anomaly_detection import create_pipeline_app as create_anomaly_detection_app
+from .face_recognition import create_pipeline_app as create_face_recognition_app
 from .formula_recognition import create_pipeline_app as create_formula_recognition_app
 from .layout_parsing import create_pipeline_app as create_layout_parsing_app
 from .image_classification import create_pipeline_app as create_image_classification_app
@@ -58,6 +61,7 @@ from .pedestrian_attribute_recognition import (
 from .vehicle_attribute_recognition import (
     create_pipeline_app as create_vehicle_attribute_recognition_app,
 )
+from .pp_shitu_v2 import create_pipeline_app as create_pp_shitu_v2_app
 from .ppchatocrv3 import create_pipeline_app as create_ppchatocrv3_app
 from .seal_recognition import create_pipeline_app as create_seal_recognition_app
 from .semantic_segmentation import (
@@ -180,6 +184,18 @@ def create_pipeline_app(
                 "Expected `pipeline` to be an instance of `VehicleAttributeRecPipeline`."
             )
         return create_vehicle_attribute_recognition_app(pipeline, app_config)
+    elif pipeline_name == "PP-ShiTuV2":
+        if not isinstance(pipeline, ShiTuV2Pipeline):
+            raise TypeError(
+                "Expected `pipeline` to be an instance of `ShiTuV2Pipeline`."
+            )
+        return create_pp_shitu_v2_app(pipeline, app_config)
+    elif pipeline_name == "face_recognition":
+        if not isinstance(pipeline, FaceRecPipeline):
+            raise TypeError(
+                "Expected `pipeline` to be an instance of `FaceRecPipeline`."
+            )
+        return create_face_recognition_app(pipeline, app_config)
     else:
         if BasePipeline.get(pipeline_name):
             raise ValueError(

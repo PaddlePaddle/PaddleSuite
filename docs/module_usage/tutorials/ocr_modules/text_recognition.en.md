@@ -10,29 +10,29 @@ The text recognition module is the core component of an OCR (Optical Character R
 ## II. Supported Model List
 
 <table>
-  <tr>
-    <th>Model</th>
-    <th>Recognition Avg Accuracy(%)</th>
-    <th>GPU Inference Time (ms)</th>
-    <th>CPU Inference Time (ms)</th>
-    <th>Model Size (M)</th>
-    <th>Description</th>
-  </tr>
-   <tr>
-        <td>PP-OCRv4_mobile_rec</td>
-        <td>78.20</td>
-        <td>7.95018</td>
-        <td>46.7868</td>
-        <td>10.6 M</td>
-        <td rowspan="2">PP-OCRv4, developed by Baidu's PaddlePaddle Vision Team, is the next version of the PP-OCRv3 text recognition model. By introducing data augmentation schemes, GTC-NRTR guidance branches, and other strategies, it further improves text recognition accuracy without compromising model inference speed. The model offers both server and mobile versions to meet industrial needs in different scenarios.</td>
-    </tr>
-    <tr>
-        <td>PP-OCRv4_server_rec </td>
-        <td>79.20</td>
-        <td>7.19439</td>
-        <td>140.179</td>
-        <td>71.2 M</td>
-    </tr>
+<tr>
+<th>Model</th><th>Model Download Link</th>
+<th>Recognition Avg Accuracy(%)</th>
+<th>GPU Inference Time (ms)</th>
+<th>CPU Inference Time (ms)</th>
+<th>Model Size (M)</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>PP-OCRv4_mobile_rec</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-OCRv4_mobile_rec_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-OCRv4_mobile_rec_pretrained.pdparams">Trained Model</a></td>
+<td>78.20</td>
+<td>7.95018</td>
+<td>46.7868</td>
+<td>10.6 M</td>
+<td rowspan="2">PP-OCRv4, developed by Baidu's PaddlePaddle Vision Team, is the next version of the PP-OCRv3 text recognition model. By introducing data augmentation schemes, GTC-NRTR guidance branches, and other strategies, it further improves text recognition accuracy without compromising model inference speed. The model offers both server and mobile versions to meet industrial needs in different scenarios.</td>
+</tr>
+<tr>
+<td>PP-OCRv4_server_rec </td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-OCRv4_server_rec_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-OCRv4_server_rec_pretrained.pdparams">Trained Model</a></td>
+<td>79.20</td>
+<td>7.19439</td>
+<td>140.179</td>
+<td>71.2 M</td>
+</tr>
 </table>
 
 <b>Note: The evaluation set for the above accuracy metrics is PaddleOCR's self-built Chinese dataset, covering street scenes, web images, documents, handwriting, and more, with 1.1w images for text recognition. GPU inference time for all models is based on an NVIDIA Tesla T4 machine with FP32 precision. CPU inference speed is based on an Intel(R) Xeon(R) Gold 5117 CPU @ 2.00GHz with 8 threads and FP32 precision.</b>
@@ -43,7 +43,7 @@ The text recognition module is the core component of an OCR (Optical Character R
 
 <table>
 <tr>
-<th>Model</th>
+<th>Model</th><th>Model Download Link</th>
 <th>Recognition Avg Accuracy(%)</th>
 <th>GPU Inference Time (ms)</th>
 <th>CPU Inference Time (ms)</th>
@@ -51,7 +51,7 @@ The text recognition module is the core component of an OCR (Optical Character R
 <th>Description</th>
 </tr>
 <tr>
-<td>PP-OCRv4_mobile_rec</td>
+<td>PP-OCRv4_mobile_rec</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-OCRv4_mobile_rec_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-OCRv4_mobile_rec_pretrained.pdparams">Trained Model</a></td>
 <td>78.20</td>
 <td>7.95018</td>
 <td>46.7868</td>
@@ -59,7 +59,7 @@ The text recognition module is the core component of an OCR (Optical Character R
 <td rowspan="2">PP-OCRv4, developed by Baidu's PaddlePaddle Vision Team, is the next version of the PP-OCRv3 text recognition model. By introducing data augmentation schemes, GTC-NRTR guidance branches, and other strategies, it further improves text recognition accuracy without compromising model inference speed. The model offers both server and mobile versions to meet industrial needs in different scenarios.</td>
 </tr>
 <tr>
-<td>PP-OCRv4_server_rec </td>
+<td>PP-OCRv4_server_rec </td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-OCRv4_server_rec_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-OCRv4_server_rec_pretrained.pdparams">Trained Model</a></td>
 <td>79.20</td>
 <td>7.19439</td>
 <td>140.179</td>
@@ -70,7 +70,7 @@ The text recognition module is the core component of an OCR (Optical Character R
 <p><b>Note: The evaluation set for the above accuracy metrics is PaddleOCR's self-built Chinese dataset, covering street scenes, web images, documents, handwriting, and more, with 1.1w images for text recognition. GPU inference time for all models is based on an NVIDIA Tesla T4 machine with FP32 precision. CPU inference speed is based on an Intel(R) Xeon(R) Gold 5117 CPU @ 2.00GHz with 8 threads and FP32 precision.</b></p>
 <table>
 <tr>
-<th>Model</th>
+<th>Model</th><th>Model Download Link</th>
 <th>Recognition Avg Accuracy(%)</th>
 <th>GPU Inference Time (ms)</th>
 <th>CPU Inference Time</th>
@@ -78,7 +78,7 @@ The text recognition module is the core component of an OCR (Optical Character R
 <th>Description</th>
 </tr>
 <tr>
-<td>ch_SVTRv2_rec</td>
+<td>ch_SVTRv2_rec</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/ch_SVTRv2_rec_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/ch_SVTRv2_rec_pretrained.pdparams">Trained Model</a></td>
 <td>68.81</td>
 <td>8.36801</td>
 <td>165.706</td>
@@ -91,7 +91,7 @@ The text recognition module is the core component of an OCR (Optical Character R
 <p><b>Note: The evaluation set for the above accuracy metrics is the <a href="https://aistudio.baidu.com/competition/detail/1131/0/introduction">OCR End-to-End Recognition Task of the PaddleOCR Algorithm Model Challenge - Track 1</a> A-rank. GPU inference time for all models is based on an NVIDIA Tesla T4 machine with FP32 precision. CPU inference speed is based on an Intel(R) Xeon(R) Gold 5117 CPU @ 2.00GHz with 8 threads and FP32 precision.</b></p>
 <table>
 <tr>
-<th>Model</th>
+<th>Model</th><th>Model Download Link</th>
 <th>Recognition Avg Accuracy(%)</th>
 <th>GPU Inference Time (ms)</th>
 <th>CPU Inference Time</th>
@@ -99,7 +99,7 @@ The text recognition module is the core component of an OCR (Optical Character R
 <th>Description</th>
 </tr>
 <tr>
-<td>ch_RepSVTR_rec</td>
+<td>ch_RepSVTR_rec</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/ch_RepSVTR_rec_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/ch_RepSVTR_rec_pretrained.pdparams">Trained Model</a></td>
 <td>65.07</td>
 <td>10.5047</td>
 <td>51.5647</td>

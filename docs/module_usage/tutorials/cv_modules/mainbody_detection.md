@@ -11,24 +11,24 @@ comments: true
 
 
 <table>
-  <tr>
-    <th>模型</th>
-    <th>mAP(0.5:0.95)</th>
-    <th>mAP(0.5)</th>
-    <th>GPU推理耗时（ms）</th>
-    <th>CPU推理耗时 (ms)</th>
-    <th>模型存储大小（M）</th>
-    <th>介绍</th>
-  </tr>
-  <tr>
-    <td>PP-ShiTuV2_det</td>
-    <td>41.5</td>
-    <td>62.0</td>
-    <td>33.7</td>
-    <td>537.0</td>
-    <td>27.54</td>
-    <td>基于PicoDet_LCNet_x2_5的主体检测模型，模型可能会同时检测出多个常见主体。</td>
-  </tr>
+<tr>
+<th>模型</th><th>模型下载链接</th>
+<th>mAP(0.5:0.95)</th>
+<th>mAP(0.5)</th>
+<th>GPU推理耗时（ms）</th>
+<th>CPU推理耗时 (ms)</th>
+<th>模型存储大小（M）</th>
+<th>介绍</th>
+</tr>
+<tr>
+<td>PP-ShiTuV2_det</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-ShiTuV2_det_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-ShiTuV2_det_pretrained.pdparams">训练模型</a></td>
+<td>41.5</td>
+<td>62.0</td>
+<td>33.7</td>
+<td>537.0</td>
+<td>27.54</td>
+<td>基于PicoDet_LCNet_x2_5的主体检测模型，模型可能会同时检测出多个常见主体。</td>
+</tr>
 </table>
 
 注：以上精度指标为 PaddleClas主体检测数据集  mAP(0.5:0.95)。

@@ -11,32 +11,32 @@ Human detection is a subtask of object detection, which utilizes computer vision
 
 
 <table>
-  <tr>
-    <th >Model</th>
-    <th >mAP(0.5:0.95)</th>
-    <th >mAP(0.5)</th>
-    <th >GPU Inference Time (ms)</th>
-    <th >CPU Inference Time (ms)</th>
-    <th >Model Size (M)</th>
-    <th >Description</th>
-  </tr>
-  <tr>
-    <td>PP-YOLOE-L_human</td>
-    <td>48.0</td>
-    <td>81.9</td>
-    <td>32.8</td>
-    <td>777.7</td>
-    <td>196.02</td>
-    <td rowspan="2">Human detection model based on PP-YOLOE</td>
-  </tr>
-  <tr>
-    <td>PP-YOLOE-S_human</td>
-    <td>42.5</td>
-    <td>77.9</td>
-    <td>15.0</td>
-    <td>179.3</td>
-    <td>28.79</td>
-  </tr>
+<tr>
+<th>Model</th><th>Model Download Link</th>
+<th>mAP(0.5:0.95)</th>
+<th>mAP(0.5)</th>
+<th>GPU Inference Time (ms)</th>
+<th>CPU Inference Time (ms)</th>
+<th>Model Size (M)</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>PP-YOLOE-L_human</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-YOLOE-L_human_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-YOLOE-L_human_pretrained.pdparams">Trained Model</a></td>
+<td>48.0</td>
+<td>81.9</td>
+<td>32.8</td>
+<td>777.7</td>
+<td>196.02</td>
+<td rowspan="2">Human detection model based on PP-YOLOE</td>
+</tr>
+<tr>
+<td>PP-YOLOE-S_human</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-YOLOE-S_human_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-YOLOE-S_human_pretrained.pdparams">Trained Model</a></td>
+<td>42.5</td>
+<td>77.9</td>
+<td>15.0</td>
+<td>179.3</td>
+<td>28.79</td>
+</tr>
 </table>
 
 <b>Note: The evaluation set for the above accuracy metrics is CrowdHuman dataset mAP(0.5:0.95). GPU inference time is based on an NVIDIA Tesla T4 machine with FP32 precision. CPU inference speed is based on an Intel(R) Xeon(R) Gold 5117 CPU @ 2.00GHz with 8 threads and FP32 precision.</b>

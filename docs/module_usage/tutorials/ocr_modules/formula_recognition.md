@@ -11,23 +11,22 @@ comments: true
 
 
 <table>
-  <tr>
-    <th>模型</th>
-    <th>normed edit distance</th>
-    <th>BLEU score</th>
-    <th>ExpRate （%）</th>
-    <th>模型存储大小 (M)</th>
-    <th>介绍</th>
-  </tr>
-  <tr>
-    <td>LaTeX_OCR_rec</td>
-    <td>0.8821</td>
-    <td>0.0823</td>
-    <td>40.01</td>
-    <td>89.7 M</td>
-    <td>LaTeX-OCR是一种基于自回归大模型的公式识别算法，通过采用 Hybrid ViT 作为骨干网络，transformer作为解码器，显著提升了公式识别的准确性</td>
-  </tr>
-
+<tr>
+<th>模型</th><th>模型下载链接</th>
+<th>normed edit distance</th>
+<th>BLEU score</th>
+<th>ExpRate （%）</th>
+<th>模型存储大小 (M)</th>
+<th>介绍</th>
+</tr>
+<tr>
+<td>LaTeX_OCR_rec</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/LaTeX_OCR_rec_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/LaTeX_OCR_rec_pretrained.pdparams">训练模型</a></td>
+<td>0.8821</td>
+<td>0.0823</td>
+<td>40.01</td>
+<td>89.7 M</td>
+<td>LaTeX-OCR是一种基于自回归大模型的公式识别算法，通过采用 Hybrid ViT 作为骨干网络，transformer作为解码器，显著提升了公式识别的准确性</td>
+</tr>
 </table>
 
 <b>注：以上精度指标测量自 LaTeX-OCR公式识别测试集。</b>

@@ -5,6 +5,36 @@ comments: true
 # Version Update Information
 
 ## Latest Version Information
+### PaddleX v3.0.0beta2 (11.15/2024)
+
+PaddleX 3.0 Beta2 is fully compatible with the PaddlePaddle 3.0b2 version. <b>This update introduces new pipelines for general image recognition, face recognition, vehicle attribute recognition, and pedestrian attribute recognition. We have also developed 42 new models to fully support the Ascend 910B, with extensive documentation available on [GitHub Pages](https://paddlepaddle.github.io/PaddleX/latest/en/index.html).</b> Here’s a detailed look at the new features and improvements:
+
+- <b>New Pipelines:</b>
+  - <b>[General Image Recognition](https://github.com/PaddlePaddle/PaddleX/blob/release/3.0-beta2/docs/pipeline_usage/tutorials/cv_pipelines/general_image_recognition.en.md):</b> Introducing a powerful pipeline with enhanced feature extraction models. This allows for user-defined image database recognition of unknown categories, providing more customizable recognition options compared to existing open-domain object detection. Supports high-performance inference and service deployment.
+  - <b>[Face Recognition](https://github.com/PaddlePaddle/PaddleX/blob/release/3.0-beta2/docs/pipeline_usage/tutorials/cv_pipelines/face_recognition.en.md):</b> This new pipeline enables the addition and removal of entries in the face database, with robust support for high-performance inference and service deployment.
+  - <b>[Vehicle Attribute Recognition](https://github.com/PaddlePaddle/PaddleX/blob/release/3.0-beta2/docs/pipeline_usage/tutorials/cv_pipelines/vehicle_attribute_recognition.md):</b> Detect and recognize vehicle attributes such as color and model in images. Supports high-performance inference and service deployment.
+  - <b>[Pedestrian Attribute Recognition](https://github.com/PaddlePaddle/PaddleX/blob/release/3.0-beta2/docs/pipeline_usage/tutorials/cv_pipelines/pedestrian_attribute_recognition.en.md):</b> Detect and recognize pedestrian attributes such as age, gender, and clothing in images. Supports high-performance inference and service deployment.
+
+- <b>New Capabilities:</b>
+  - <b>Documentation Support:</b> Comprehensive [GitHub Pages](https://paddlepaddle.github.io/PaddleX/latest/en/index.html) is available, featuring search functionality and user commentary.
+  - <b>Benchmarking:</b> Print model inference benchmark information with related [documentation](https://github.com/PaddlePaddle/PaddleX/blob/release/3.0-beta2/docs/module_usage/instructions/benchmark.en.md).
+  - <b>Model Development:</b> We have introduced 42 new model development processes specifically adapted for Ascend 910B. Check out the [model list](https://github.com/PaddlePaddle/PaddleX/blob/release/3.0-beta2/docs/support_list/model_list_npu.en.md).
+
+- <b>Optimizations:</b>
+  - <b>Formula Recognition:</b> Now supports PDF input and visualization of results.
+  - <b>Seal Recognition:</b> Supports PDF format input.
+  - <b>Layout Parsing:</b> Improved the naming convention for saved images.
+  - <b>Pretrained Models:</b> Unified management of pretrained models, integrated into the default configuration file.
+  - <b>Model Saving:</b> Upgraded format to ensure high-performance inference.
+  - <b>Parameter Tuning:</b> Optimized default parameters for certain models to enable higher accuracy training.
+
+- <b>Bug Fixes:</b>
+  - Addressed inaccuracies and inappropriate expressions in documentation, and fixed some invalid URLs.
+  - Resolved issues with the PP-LCNet_x1_0_doc_ori inference model.
+  - Fixed bugs related to high-performance inference and service deployment.
+  - Corrected training configuration issues in SLANet and SLANet_plus that led to low accuracy.
+
+
 ### PaddleX v3.0.0beta1 (9.30/2024)
 PaddleX 3.0 Beta1 offers over 200 models accessible through a streamlined Python API for one-click deployment; realizes full-process model development based on unified commands, and opens source the foundational capabilities of the PP-ChatOCRv3 special model pipeline; supports high-performance inference and service-oriented deployment for over 100 models, as well as edge deployment for 7 key vision models; and fully adapts the development process of over 70 models to Huawei Ascend 910B, and over 15 models to XPU and MLU.
 

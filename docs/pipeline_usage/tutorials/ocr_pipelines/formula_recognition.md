@@ -14,13 +14,12 @@ comments: true
 
 <b>如您更考虑模型精度，请选择精度较高的模型，如您更考虑模型推理速度，请选择推理速度较快的模型，如您更考虑模型存储大小，请选择存储大小较小的模型</b>。
 
-<details><summary> 👉模型列表详情</summary>
 
 <p><b>版面区域检测模块模型：</b></p>
 <table>
 <thead>
 <tr>
-<th>模型名称</th>
+<th>模型</th><th>模型下载链接</th>
 <th>mAP（%）</th>
 <th>GPU推理耗时（ms）</th>
 <th>CPU推理耗时（ms）</th>
@@ -29,7 +28,7 @@ comments: true
 </thead>
 <tbody>
 <tr>
-<td>RT-DETR-H_layout_17cls</td>
+<td>RT-DETR-H_layout_17cls</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/RT-DETR-H_layout_17cls_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/RT-DETR-H_layout_17cls_pretrained.pdparams">训练模型</a></td>
 <td>92.6</td>
 <td>115.126</td>
 <td>3827.25</td>
@@ -42,7 +41,7 @@ comments: true
 <table>
 <thead>
 <tr>
-<th>模型名称</th>
+<th>模型</th><th>模型下载链接</th>
 <th>BLEU score</th>
 <th>normed edit distance</th>
 <th>ExpRate （%）</th>
@@ -53,7 +52,7 @@ comments: true
 </thead>
 <tbody>
 <tr>
-<td>LaTeX_OCR_rec</td>
+<td>LaTeX_OCR_rec</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/LaTeX_OCR_rec_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/LaTeX_OCR_rec_pretrained.pdparams">训练模型</a></td>
 <td>0.8821</td>
 <td>0.0823</td>
 <td>40.01</td>
@@ -63,7 +62,7 @@ comments: true
 </tr>
 </tbody>
 </table>
-<p><b>注：以上精度指标测量自 <a href="https://drive.google.com/drive/folders/13CA4vAmOmD_I_dSbvLp-Lf0s6KiaNfuO">LaTeX-OCR公式识别测试集</a>。以上所有模型 GPU 推理耗时基于 NVIDIA Tesla T4 机器，精度类型为 FP32， CPU 推理速度基于 Intel(R) Xeon(R) Gold 5117 CPU @ 2.00GHz，线程数为8，精度类型为 FP32。</b></p></details>
+<p><b>注：以上精度指标测量自 <a href="https://drive.google.com/drive/folders/13CA4vAmOmD_I_dSbvLp-Lf0s6KiaNfuO">LaTeX-OCR公式识别测试集</a>。以上所有模型 GPU 推理耗时基于 NVIDIA Tesla T4 机器，精度类型为 FP32， CPU 推理速度基于 Intel(R) Xeon(R) Gold 5117 CPU @ 2.00GHz，线程数为8，精度类型为 FP32。</b></p>
 
 ## 2. 快速开始
 PaddleX 支持在本地使用命令行或 Python 体验公式识别产线的效果。
@@ -229,12 +228,12 @@ for res in output:
 <tr>
 <td>print</td>
 <td>打印结果到终端</td>
-<td><code>- format_json</code>：bool类型，是否对输出内容进行使用json缩进格式化，默认为True；<br><code>- indent</code>：int类型，json格式化设置，仅当format_json为True时有效，默认为4；<br><code>- ensure_ascii</code>：bool类型，json格式化设置，仅当format_json为True时有效，默认为False；</td>
+<td><code>- format_json</code>：bool类型，是否对输出内容进行使用json缩进格式化，默认为True；<br/><code>- indent</code>：int类型，json格式化设置，仅当format_json为True时有效，默认为4；<br/><code>- ensure_ascii</code>：bool类型，json格式化设置，仅当format_json为True时有效，默认为False；</td>
 </tr>
 <tr>
 <td>save_to_json</td>
 <td>将结果保存为json格式的文件</td>
-<td><code>- save_path</code>：str类型，保存的文件路径，当为目录时，保存文件命名与输入文件类型命名一致；<br><code>- indent</code>：int类型，json格式化设置，默认为4；<br><code>- ensure_ascii</code>：bool类型，json格式化设置，默认为False；</td>
+<td><code>- save_path</code>：str类型，保存的文件路径，当为目录时，保存文件命名与输入文件类型命名一致；<br/><code>- indent</code>：int类型，json格式化设置，默认为4；<br/><code>- ensure_ascii</code>：bool类型，json格式化设置，默认为False；</td>
 </tr>
 <tr>
 <td>save_to_img</td>
@@ -291,9 +290,10 @@ for res in output:
 
 <details><summary>API参考</summary>
 
-<p>对于服务提供的所有操作：</p>
+<p>对于服务提供的主要操作：</p>
 <ul>
-<li>响应体以及POST请求的请求体均为JSON数据（JSON对象）。</li>
+<li>HTTP请求方法为POST。</li>
+<li>请求体和响应体均为JSON数据（JSON对象）。</li>
 <li>当请求处理成功时，响应状态码为<code>200</code>，响应体的属性如下：</li>
 </ul>
 <table>
@@ -342,7 +342,7 @@ for res in output:
 </tr>
 </tbody>
 </table>
-<p>服务提供的操作如下：</p>
+<p>服务提供的主要操作如下：</p>
 <ul>
 <li><b><code>infer</code></b></li>
 </ul>
@@ -412,9 +412,14 @@ for res in output:
 <td>公式位置和内容。</td>
 </tr>
 <tr>
-<td><code>image</code></td>
+<td><code>layoutImage</code></td>
 <td><code>string</code></td>
-<td>公式识别结果图，其中标注检测到的公式位置。图像为JPEG格式，使用Base64编码。</td>
+<td>版面区域检测结果图。图像为JPEG格式，使用Base64编码。</td>
+</tr>
+<tr>
+<td><code>ocrImage</code></td>
+<td><code>string</code></td>
+<td>OCR结果图。图像为JPEG格式，使用Base64编码。</td>
 </tr>
 </tbody>
 </table>
@@ -465,7 +470,8 @@ for res in output:
 &quot;latex&quot;: &quot;F({\bf x})=C(F_{1}(x_{1}),\cdot\cdot\cdot,F_{N}(x_{N})).\qquad\qquad\qquad(1)&quot;
 }
 ],
-&quot;image&quot;: &quot;xxxxxx&quot;
+&quot;layoutImage&quot;: &quot;xxxxxx&quot;,
+&quot;ocrImage&quot;: &quot;xxxxxx&quot;
 }
 </code></pre></details>
 
@@ -480,7 +486,7 @@ import requests
 
 API_URL = &quot;http://localhost:8080/formula-recognition&quot; # 服务URL
 image_path = &quot;./demo.jpg&quot;
-output_image_path = &quot;./out.jpg&quot;
+layout_image_path = &quot;./layout.jpg&quot;
 
 # 对本地图像进行Base64编码
 with open(image_path, &quot;rb&quot;) as file:
@@ -495,9 +501,9 @@ response = requests.post(API_URL, json=payload)
 # 处理接口返回数据
 assert response.status_code == 200
 result = response.json()[&quot;result&quot;]
-with open(output_image_path, &quot;wb&quot;) as file:
-    file.write(base64.b64decode(result[&quot;image&quot;]))
-print(f&quot;Output image saved at {output_image_path}&quot;)
+with open(layout_image_path, &quot;wb&quot;) as file:
+    file.write(base64.b64decode(result[&quot;layoutImage&quot;]))
+print(f&quot;Output image saved at {layout_image_path}&quot;)
 print(&quot;\nDetected formulas:&quot;)
 print(result[&quot;formulas&quot;])
 </code></pre></details>
@@ -512,7 +518,7 @@ print(result[&quot;formulas&quot;])
 int main() {
     httplib::Client client(&quot;localhost:8080&quot;);
     const std::string imagePath = &quot;./demo.jpg&quot;;
-    const std::string outputImagePath = &quot;./out.jpg&quot;;
+    const std::string layoutImagePath = &quot;./layout.jpg&quot;;
 
     httplib::Headers headers = {
         {&quot;Content-Type&quot;, &quot;application/json&quot;}
@@ -542,16 +548,16 @@ int main() {
         nlohmann::json jsonResponse = nlohmann::json::parse(response-&gt;body);
         auto result = jsonResponse[&quot;result&quot;];
 
-        encodedImage = result[&quot;image&quot;];
-        std::string decodedString = base64::from_base64(encodedImage);
-        std::vector&lt;unsigned char&gt; decodedImage(decodedString.begin(), decodedString.end());
-        std::ofstream outputImage(outPutImagePath, std::ios::binary | std::ios::out);
-        if (outputImage.is_open()) {
-            outputImage.write(reinterpret_cast&lt;char*&gt;(decodedImage.data()), decodedImage.size());
-            outputImage.close();
-            std::cout &lt;&lt; &quot;Output image saved at &quot; &lt;&lt; outPutImagePath &lt;&lt; std::endl;
+        encodedImage = result[&quot;layoutImage&quot;];
+        decodedString = base64::from_base64(encodedImage);
+        std::vector&lt;unsigned char&gt; decodedLayoutImage(decodedString.begin(), decodedString.end());
+        std::ofstream outputLayoutFile(layoutImagePath, std::ios::binary | std::ios::out);
+        if (outputLayoutFile.is_open()) {
+            outputLayoutFile.write(reinterpret_cast&lt;char*&gt;(decodedLayoutImage.data()), decodedLayoutImage.size());
+            outputLayoutFile.close();
+            std::cout &lt;&lt; &quot;Output image saved at &quot; &lt;&lt; layoutImagePath &lt;&lt; std::endl;
         } else {
-            std::cerr &lt;&lt; &quot;Unable to open file for writing: &quot; &lt;&lt; outPutImagePath &lt;&lt; std::endl;
+            std::cerr &lt;&lt; &quot;Unable to open file for writing: &quot; &lt;&lt; layoutImagePath &lt;&lt; std::endl;
         }
 
         auto formulas = result[&quot;formulas&quot;];
@@ -584,7 +590,7 @@ public class Main {
     public static void main(String[] args) throws IOException {
         String API_URL = &quot;http://localhost:8080/formula-recognition&quot;; // 服务URL
         String imagePath = &quot;./demo.jpg&quot;; // 本地图像
-        String outputImagePath = &quot;./out.jpg&quot;; // 输出图像
+        String layoutImagePath = &quot;./layout.jpg&quot;;
 
         // 对本地图像进行Base64编码
         File file = new File(imagePath);
@@ -610,14 +616,15 @@ public class Main {
                 String responseBody = response.body().string();
                 JsonNode resultNode = objectMapper.readTree(responseBody);
                 JsonNode result = resultNode.get(&quot;result&quot;);
-                String base64Image = result.get(&quot;image&quot;).asText();
+                String layoutBase64Image = result.get(&quot;layoutImage&quot;).asText();
                 JsonNode formulas = result.get(&quot;formulas&quot;);
 
-                byte[] imageBytes = Base64.getDecoder().decode(base64Image);
-                try (FileOutputStream fos = new FileOutputStream(outputImagePath)) {
+                imageBytes = Base64.getDecoder().decode(layoutBase64Image);
+                try (FileOutputStream fos = new FileOutputStream(layoutImagePath)) {
                     fos.write(imageBytes);
                 }
-                System.out.println(&quot;Output image saved at &quot; + outputImagePath);
+                System.out.println(&quot;Output image saved at &quot; + layoutImagePath);
+
                 System.out.println(&quot;\nDetected formulas: &quot; + formulas.toString());
             } else {
                 System.err.println(&quot;Request failed with code: &quot; + response.code());
@@ -643,7 +650,7 @@ import (
 func main() {
     API_URL := &quot;http://localhost:8080/formula-recognition&quot;
     imagePath := &quot;./demo.jpg&quot;
-    outputImagePath := &quot;./out.jpg&quot;
+    layoutImagePath := &quot;./layout.jpg&quot;
 
     // 对本地图像进行Base64编码
     imageBytes, err := ioutil.ReadFile(imagePath)
@@ -683,7 +690,7 @@ func main() {
     }
     type Response struct {
         Result struct {
-            Image      string   `json:&quot;image&quot;`
+            LayoutImage      string   `json:&quot;layoutImage&quot;`
             Formulas []map[string]interface{} `json:&quot;formulas&quot;`
         } `json:&quot;result&quot;`
     }
@@ -694,17 +701,18 @@ func main() {
         return
     }
 
-    outputImageData, err := base64.StdEncoding.DecodeString(respData.Result.Image)
+    layoutImageData, err := base64.StdEncoding.DecodeString(respData.Result.LayoutImage)
     if err != nil {
         fmt.Println(&quot;Error decoding base64 image data:&quot;, err)
         return
     }
-    err = ioutil.WriteFile(outputImagePath, outputImageData, 0644)
+    err = ioutil.WriteFile(layoutImagePath, layoutImageData, 0644)
     if err != nil {
         fmt.Println(&quot;Error writing image to file:&quot;, err)
         return
     }
-    fmt.Printf(&quot;Image saved at %s.jpg\n&quot;, outputImagePath)
+    fmt.Printf(&quot;Image saved at %s.jpg\n&quot;, layoutImagePath)
+
     fmt.Println(&quot;\nDetected formulas:&quot;)
     for _, formula := range respData.Result.Formulas {
         fmt.Println(formula)
@@ -726,7 +734,7 @@ class Program
 {
     static readonly string API_URL = &quot;http://localhost:8080/formula-recognition&quot;;
     static readonly string imagePath = &quot;./demo.jpg&quot;;
-    static readonly string outputImagePath = &quot;./out.jpg&quot;;
+    static readonly string layoutImagePath = &quot;./layout.jpg&quot;;
 
     static async Task Main(string[] args)
     {
@@ -747,11 +755,11 @@ class Program
         string responseBody = await response.Content.ReadAsStringAsync();
         JObject jsonResponse = JObject.Parse(responseBody);
 
-        string base64Image = jsonResponse[&quot;result&quot;][&quot;image&quot;].ToString();
-        byte[] outputImageBytes = Convert.FromBase64String(base64Image);
+        string layoutBase64Image = jsonResponse[&quot;result&quot;][&quot;layoutImage&quot;].ToString();
+        byte[] layoutImageBytes = Convert.FromBase64String(layoutBase64Image);
+        File.WriteAllBytes(layoutImagePath, layoutImageBytes);
+        Console.WriteLine($&quot;Output image saved at {layoutImagePath}&quot;);
 
-        File.WriteAllBytes(outputImagePath, outputImageBytes);
-        Console.WriteLine($&quot;Output image saved at {outputImagePath}&quot;);
         Console.WriteLine(&quot;\nDetected formulas:&quot;);
         Console.WriteLine(jsonResponse[&quot;result&quot;][&quot;formulas&quot;].ToString());
     }
@@ -765,7 +773,7 @@ const fs = require('fs');
 
 const API_URL = 'http://localhost:8080/formula-recognition'
 const imagePath = './demo.jpg'
-const outputImagePath = &quot;./out.jpg&quot;;
+const layoutImagePath = &quot;./layout.jpg&quot;;
 
 let config = {
    method: 'POST',
@@ -787,11 +795,13 @@ axios.request(config)
 .then((response) =&gt; {
     // 处理接口返回数据
     const result = response.data[&quot;result&quot;];
-    const imageBuffer = Buffer.from(result[&quot;image&quot;], 'base64');
-    fs.writeFile(outputImagePath, imageBuffer, (err) =&gt; {
+
+    imageBuffer = Buffer.from(result[&quot;layoutImage&quot;], 'base64');
+    fs.writeFile(layoutImagePath, imageBuffer, (err) =&gt; {
       if (err) throw err;
-      console.log(`Output image saved at ${outputImagePath}`);
+      console.log(`Output image saved at ${layoutImagePath}`);
     });
+
     console.log(&quot;\nDetected formulas:&quot;);
     console.log(result[&quot;formulas&quot;]);
 })
@@ -806,7 +816,7 @@ axios.request(config)
 
 $API_URL = &quot;http://localhost:8080/formula-recognition&quot;; // 服务URL
 $image_path = &quot;./demo.jpg&quot;;
-$output_image_path = &quot;./out.jpg&quot;;
+$layout_image_path = &quot;./layout.jpg&quot;;
 
 // 对本地图像进行Base64编码
 $image_data = base64_encode(file_get_contents($image_path));
@@ -816,14 +826,17 @@ $payload = array(&quot;image&quot; =&gt; $image_data); // Base64编码的文件�
 $ch = curl_init($API_URL);
 curl_setopt($ch, CURLOPT_POST, true);
 curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
+curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 $response = curl_exec($ch);
 curl_close($ch);
 
 // 处理接口返回数据
 $result = json_decode($response, true)[&quot;result&quot;];
-file_put_contents($output_image_path, base64_decode($result[&quot;image&quot;]));
-echo &quot;Output image saved at &quot; . $output_image_path . &quot;\n&quot;;
+
+file_put_contents($layout_image_path, base64_decode($result[&quot;layoutImage&quot;]));
+echo &quot;Output image saved at &quot; . $layout_image_path . &quot;\n&quot;;
+
 echo &quot;\nDetected formulas:\n&quot;;
 print_r($result[&quot;formulas&quot;]);
 

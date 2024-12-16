@@ -50,7 +50,9 @@ def create_pipeline_app(pipeline: TSAd, app_config: AppConfig) -> FastAPI:
 
             result = (await pipeline.infer(df))[0]
 
-            output_csv = serving_utils.data_frame_to_base64(result["anomaly"])
+            output_csv = serving_utils.base64_encode(
+                serving_utils.data_frame_to_bytes(result["anomaly"])
+            )
 
             return ResultResponse(
                 logId=serving_utils.generate_log_id(),
