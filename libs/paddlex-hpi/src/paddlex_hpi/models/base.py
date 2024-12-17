@@ -86,7 +86,7 @@ class HPPredictor(BasePredictor, metaclass=AutoRegisterABCMetaClass):
             self.batch_sampler.batch_size = kwargs.pop("batch_size")
         if kwargs:
             raise TypeError(f"Unexpected arguments: {kwargs}")
-    
+
     def build_ui_model(self) -> BaseUltraInferModel:
         option = self._create_ui_option()
         return self._build_ui_model(option)
@@ -138,11 +138,11 @@ class HPPredictor(BasePredictor, metaclass=AutoRegisterABCMetaClass):
     @abc.abstractmethod
     def _build_ui_model(self, option: ui.RuntimeOption) -> BaseUltraInferModel:
         raise NotImplementedError
-    
+
     @abc.abstractmethod
     def _build_data_reader(self):
         raise NotImplementedError
-    
+
 
 class CVPredictor(HPPredictor):
     def _build_data_reader(self):

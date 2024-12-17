@@ -54,7 +54,7 @@ class ClasPredictor(CVPredictor):
 
     def _get_result_class(self) -> type:
         return TopkResult
-    
+
     def _build_ui_model(
         self, option: ui.RuntimeOption
     ) -> ui.vision.classification.PaddleClasModel:
@@ -78,7 +78,9 @@ class ClasPredictor(CVPredictor):
             class_ids_list.append(ui_result.label_ids)
             scores_list.append(np.around(ui_result.scores, decimals=5).tolist())
             if self._pp_params.label_list is not None:
-                label_names_list.append([self._pp_params.label_list[i] for i in ui_result.label_ids])
+                label_names_list.append(
+                    [self._pp_params.label_list[i] for i in ui_result.label_ids]
+                )
 
         return {
             "input_path": batch_data,
