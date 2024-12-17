@@ -349,5 +349,5 @@ class YAMLReaderBackend(_BaseReaderBackend):
 
     def read_file(self, in_path, **kwargs):
         with open(in_path, "r", encoding="utf-8", **kwargs) as yaml_file:
-            data = yaml.safe_load(yaml_file)
+            data = yaml.load(yaml_file, Loader=yaml.FullLoader)
         return data
