@@ -20,7 +20,6 @@ from typing import (
     Dict,
     Final,
     Iterator,
-    List,
     Optional,
     TypedDict,
     Union,
@@ -37,7 +36,7 @@ from paddlex.utils.subclass_register import AutoRegisterABCMetaClass
 from typing_extensions import assert_never
 
 from paddlex_hpi._config import HPIConfig
-from paddlex_hpi._utils.typing import Backend, BatchData
+from paddlex_hpi._utils.typing import Backend
 
 HPI_CONFIG_KEY: Final[str] = "Hpi"
 
@@ -92,10 +91,6 @@ class HPPredictor(BasePredictor, metaclass=AutoRegisterABCMetaClass):
         option = self._create_ui_option()
         return self._build_ui_model(option)
 
-    @abc.abstractmethod
-    def _build_ui_model(self, option: ui.RuntimeOption) -> BaseUltraInferModel:
-        raise NotImplementedError
-
     def _get_hpi_config(self) -> HPIConfig:
         if HPI_CONFIG_KEY not in self.config:
             logging.debug("Key %r not found in the config", HPI_CONFIG_KEY)
@@ -140,6 +135,10 @@ class HPPredictor(BasePredictor, metaclass=AutoRegisterABCMetaClass):
         backend_config.update_ui_option(option, self.model_dir)
         return option
 
+    @abc.abstractmethod
+    def _build_ui_model(self, option: ui.RuntimeOption) -> BaseUltraInferModel:
+        raise NotImplementedError
+    
     @abc.abstractmethod
     def _build_data_reader(self):
         raise NotImplementedError

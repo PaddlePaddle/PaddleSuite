@@ -22,7 +22,6 @@ from paddlex.inference.results import TopkResult
 from paddlex.modules.image_classification.model_list import MODELS
 from pydantic import BaseModel
 
-from paddlex_hpi._utils.typing import BatchData, Data
 from paddlex_hpi.models.base import CVPredictor, HPIParams
 
 
@@ -51,19 +50,9 @@ class ClasPredictor(CVPredictor):
         self._ui_model.postprocessor.topk = self._pp_params.topk
 
     def _build_batch_sampler(self) -> ImageBatchSampler:
-        """Builds and returns an ImageBatchSampler instance.
-
-        Returns:
-            ImageBatchSampler: An instance of ImageBatchSampler.
-        """
         return ImageBatchSampler()
 
     def _get_result_class(self) -> type:
-        """Returns the result class, TopkResult.
-
-        Returns:
-            type: The TopkResult class.
-        """
         return TopkResult
     
     def _build_ui_model(
@@ -82,21 +71,21 @@ class ClasPredictor(CVPredictor):
         imgs = [np.ascontiguousarray(img) for img in batch_raw_imgs]
         ui_results = self._ui_model.batch_predict(imgs)
 
-        class_ids = []
-        scores = []
-        label_names = []
+        class_ids_list = []
+        scores_list = []
+        label_names_list = []
         for ui_result in ui_results:
-            class_ids.append(ui_result.label_ids)
-            scores.append(np.around(ui_result.scores, decimals=5).tolist())
+            class_ids_list.append(ui_result.label_ids)
+            scores_list.append(np.around(ui_result.scores, decimals=5).tolist())
             if self._pp_params.label_list is not None:
-                label_names.append([self._pp_params.label_list[i] for i in ui_result.label_ids])
+                label_names_list.append([self._pp_params.label_list[i] for i in ui_result.label_ids])
 
         return {
             "input_path": batch_data,
             "input_img": batch_raw_imgs,
-            "class_ids": class_ids,
-            "scores": scores,
-            "label_names": label_names,
+            "class_ids": class_ids_list,
+            "scores": scores_list,
+            "label_names": label_names_list,
         }
 
     def _get_pp_params(self) -> _ClasPPParams:
