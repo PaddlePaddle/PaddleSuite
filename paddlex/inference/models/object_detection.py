@@ -67,6 +67,7 @@ class DetPredictor(BasicPredictor):
                 DetPostProcess(
                     threshold=self.config["draw_threshold"],
                     labels=self.config["label_list"],
+                    layout_postprocess=self.config.get("layout_postprocess", False),
                 ),
             ]
         )

@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import os
 import re
 import sys
 
@@ -40,9 +41,12 @@ def check(file_path):
     if not content.startswith(LICENSE_TEXT):
         print(f"License header missing in {file_path}")
         return False
-    if "import paddle" in content or "from paddle import " in content:
-        print(f"Please use `lazy_paddle` instead `paddle` when import in {file_path}")
-        return False
+    if "paddlex" in file_path.split(os.sep):
+        if "import paddle" in content or "from paddle import " in content:
+            print(
+                f"Please use `lazy_paddle` instead `paddle` when import in {file_path}"
+            )
+            return False
     return True
 
 

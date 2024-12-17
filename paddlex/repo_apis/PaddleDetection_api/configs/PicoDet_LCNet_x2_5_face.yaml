@@ -136,7 +136,7 @@ TestReader:
   batch_size: 1
 
 
-metric: WiderFace
+metric: COCO
 num_classes: 1
 
 TrainDataset:
