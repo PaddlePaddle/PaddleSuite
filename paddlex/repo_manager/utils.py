@@ -111,7 +111,8 @@ def install_external_deps(repo_name, repo_root):
         if os.path.exists(os.path.join(repo_root, "ppdet", "ext_op")):
             """Install custom op for rotated object detection"""
             if (
-                _compare_version(gcc_version, "8.2.0") >= 0
+                PLATFORM == "Linux"
+                and _compare_version(gcc_version, "8.2.0") >= 0
                 and "gpu" in get_device_type()
                 and (
                     paddle.is_compiled_with_cuda()
