@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import List, Optional
+from typing import Final, List, Literal, Optional, Tuple
 
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
@@ -24,13 +24,19 @@ from .. import utils as serving_utils
 from ..app import AppConfig, create_app
 from ..models import NoResultResponse, ResultResponse
 
+_DEFAULT_MAX_IMG_SIZE: Final[Tuple[int, int]] = (2000, 2000)
+_DEFAULT_MAX_NUM_IMGS: Final[int] = 10
+
+FileType: TypeAlias = Literal[0, 1]
+
 
 class InferenceParams(BaseModel):
     maxLongSide: Optional[Annotated[int, Field(gt=0)]] = None
 
 
 class InferRequest(BaseModel):
-    image: str
+    file: str
+    fileType: Optional[FileType] = None
     inferenceParams: Optional[InferenceParams] = None
 
 
@@ -43,10 +49,14 @@ class Formula(BaseModel):
     latex: str
 
 
-class InferResult(BaseModel):
+class FormulaRecResult(BaseModel):
     formulas: List[Formula]
     layoutImage: str
     ocrImage: Optional[str] = None
+
+
+class InferResult(BaseModel):
+    formulaRecResults: List[FormulaRecResult]
 
 
 def create_pipeline_app(
@@ -55,6 +65,17 @@ def create_pipeline_app(
     app, ctx = create_app(
         pipeline=pipeline, app_config=app_config, app_aiohttp_session=True
     )
+
+    ctx.extra["return_ocr_images"] = False
+    ctx.extra["max_img_size"] = _DEFAULT_MAX_IMG_SIZE
+    ctx.extra["max_num_imgs"] = _DEFAULT_MAX_NUM_IMGS
+    if ctx.config.extra:
+        if "return_ocr_images" in ctx.config.extra:
+            ctx.extra["return_ocr_images"] = ctx.config.extra["return_ocr_images"]
+        if "max_img_size" in ctx.config.extra:
+            ctx.extra["max_img_size"] = ctx.config.extra["max_img_size"]
+        if "max_num_imgs" in ctx.config.extra:
+            ctx.extra["max_num_imgs"] = ctx.config.extra["max_num_imgs"]
 
     @app.post(
         "/formula-recognition",
@@ -66,47 +87,67 @@ def create_pipeline_app(
         pipeline = ctx.pipeline
         aiohttp_session = ctx.aiohttp_session
 
-        if request.inferenceParams:
-            max_long_side = request.inferenceParams.maxLongSide
-            if max_long_side:
-                raise HTTPException(
-                    status_code=422,
-                    detail="`max_long_side` is currently not supported.",
-                )
+        if request.fileType is None:
+            if serving_utils.is_url(request.file):
+                try:
+                    file_type = serving_utils.infer_file_type(request.file)
+                except Exception:
+                    logging.exception("Failed to infer the file type")
+                    raise HTTPException(
+                        status_code=422,
+                        detail="The file type cannot be inferred from the URL. Please specify the file type explicitly.",
+                    )
+            else:
+                raise HTTPException(status_code=422, detail="Unknown file type")
+        else:
+            file_type = "PDF" if request.fileType == 0 else "IMAGE"
 
         try:
             file_bytes = await serving_utils.get_raw_bytes(
-                request.image, aiohttp_session
+                request.file, aiohttp_session
             )
-            image = serving_utils.image_bytes_to_array(file_bytes)
+            images = await serving_utils.call_async(
+                serving_utils.file_to_images,
+                file_bytes,
+                file_type,
+                max_img_size=ctx.extra["max_img_size"],
+                max_num_imgs=ctx.extra["max_num_imgs"],
+            )
 
-            result = (await pipeline.infer(image))[0]
+            result = await pipeline.infer(images)
 
-            formulas: List[Formula] = []
-            for poly, latex in zip(result["dt_polys"], result["rec_formula"]):
-                formulas.append(
-                    Formula(
-                        poly=poly,
-                        latex=latex,
+            formula_rec_results: List[FormulaRecResult] = []
+            for item in result:
+                formulas: List[Formula] = []
+                for poly, latex in zip(item["dt_polys"], item["rec_formula"]):
+                    formulas.append(
+                        Formula(
+                            poly=poly,
+                            latex=latex,
+                        )
+                    )
+                layout_image_base64 = serving_utils.base64_encode(
+                    serving_utils.image_to_bytes(item["layout_result"].img)
+                )
+                if ctx.extra["return_ocr_images"]:
+                    ocr_image = item["formula_result"].img
+                    ocr_image_base64 = serving_utils.base64_encode(
+                        serving_utils.image_to_bytes(ocr_image)
+                    )
+                else:
+                    ocr_image_base64 = None
+                formula_rec_results.append(
+                    FormulaRecResult(
+                        formulas=formulas,
+                        layoutImage=layout_image_base64,
+                        ocrImage=ocr_image_base64,
                     )
                 )
-            layout_image_base64 = serving_utils.base64_encode(
-                serving_utils.image_to_bytes(result["layout_result"].img)
-            )
-            ocr_image = result["formula_result"].img
-            if ocr_image is not None:
-                ocr_image_base64 = serving_utils.base64_encode(
-                    serving_utils.image_to_bytes(ocr_image)
-                )
-            else:
-                ocr_image_base64 = None
 
             return ResultResponse[InferResult](
                 logId=serving_utils.generate_log_id(),
                 result=InferResult(
-                    formulas=formulas,
-                    layoutImage=layout_image_base64,
-                    ocrImage=ocr_image_base64,
+                    formulaRecResults=formula_rec_results,
                 ),
             )
 
