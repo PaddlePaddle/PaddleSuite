@@ -90,9 +90,12 @@ class TextDetPredictor(BasicPredictor):
     @register("DetResizeForTest")
     def build_resize(self, **kwargs):
         # TODO: align to PaddleOCR
-        assert self.model_name in ("PP-OCRv4_server_det", "PP-OCRv4_mobile_det")
-        resize_long = kwargs.get("resize_long", 960)
-        return "Resize", DetResizeForTest(limit_side_len=resize_long, limit_type="max")
+        if self.model_name in ("PP-OCRv4_server_det", "PP-OCRv4_mobile_det"):
+            resize_long = kwargs.get("resize_long", 960)
+            return "Resize", DetResizeForTest(
+                limit_side_len=resize_long, limit_type="max"
+            )
+        return "Resize", DetResizeForTest(**kwargs)
 
     @register("NormalizeImage")
     def build_normalize(
