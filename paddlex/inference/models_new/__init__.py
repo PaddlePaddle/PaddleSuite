@@ -31,9 +31,10 @@ from .text_recognition import TextRecPredictor
 from .semantic_segmentation import SegPredictor
 
 # from .general_recognition import ShiTuRecPredictor
-# from .ts_fc import TSFcPredictor
-# from .ts_ad import TSAdPredictor
-# from .ts_cls import TSClsPredictor
+
+from .ts_forecast import TSFcPredictor
+from .ts_anomaly import TSAdPredictor
+from .ts_classify import TSClsPredictor
 from .image_unwarping import WarpPredictor
 
 # from .multilabel_classification import MLClasPredictor

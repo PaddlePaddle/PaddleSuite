@@ -12,5 +12,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .image_reader import ReadImage
-from .ts_reader import ReadTS
+from typing import Any
+from ...common.result import BaseTSResult
+
+
+class TSClsResult(BaseTSResult):
+    """A class representing the result of a time series classification task."""
+
+    def _to_csv(self) -> Any:
+        """
+        Converts the classification results to a CSV format.
+
+        Returns:
+            Any: The classification data formatted for CSV output, typically a DataFrame or similar structure.
+        """
+        return self["classification"]
