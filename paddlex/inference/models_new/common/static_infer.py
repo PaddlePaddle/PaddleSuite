@@ -87,8 +87,6 @@ class StaticInfer:
             self._update_option(option)
 
     def _reset(self) -> None:
-        if not self.option:
-            self.option = PaddlePredictorOption()
         logging.debug(f"Env: {self.option}")
         (
             predictor,
