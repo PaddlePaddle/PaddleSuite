@@ -12,32 +12,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Final, List, Literal, Optional, Tuple
+from typing import List, Optional, Type
 
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 from typing_extensions import Annotated, TypeAlias
 
+from ._common import ocr as ocr_common
 from .....utils import logging
 from ...formula_recognition import FormulaRecognitionPipeline
 from .. import utils as serving_utils
 from ..app import AppConfig, create_app
 from ..models import NoResultResponse, ResultResponse
 
-_DEFAULT_MAX_IMG_SIZE: Final[Tuple[int, int]] = (2000, 2000)
-_DEFAULT_MAX_NUM_IMGS: Final[int] = 10
-
-FileType: TypeAlias = Literal[0, 1]
-
-
-class InferenceParams(BaseModel):
-    maxLongSide: Optional[Annotated[int, Field(gt=0)]] = None
-
-
-class InferRequest(BaseModel):
-    file: str
-    fileType: Optional[FileType] = None
-    inferenceParams: Optional[InferenceParams] = None
+InferRequest: Type[ocr_common.InferRequest] = ocr_common.InferRequest
 
 
 Point: TypeAlias = Annotated[List[float], Field(min_length=2, max_length=2)]
@@ -66,16 +54,11 @@ def create_pipeline_app(
         pipeline=pipeline, app_config=app_config, app_aiohttp_session=True
     )
 
+    ocr_common.update_app_context(ctx)
     ctx.extra["return_ocr_imgs"] = False
-    ctx.extra["max_img_size"] = _DEFAULT_MAX_IMG_SIZE
-    ctx.extra["max_num_imgs"] = _DEFAULT_MAX_NUM_IMGS
     if ctx.config.extra:
         if "return_ocr_imgs" in ctx.config.extra:
             ctx.extra["return_ocr_imgs"] = ctx.config.extra["return_ocr_imgs"]
-        if "max_img_size" in ctx.config.extra:
-            ctx.extra["max_img_size"] = ctx.config.extra["max_img_size"]
-        if "max_num_imgs" in ctx.config.extra:
-            ctx.extra["max_num_imgs"] = ctx.config.extra["max_num_imgs"]
 
     @app.post(
         "/formula-recognition",
@@ -85,35 +68,18 @@ def create_pipeline_app(
     )
     async def _infer(request: InferRequest) -> ResultResponse[InferResult]:
         pipeline = ctx.pipeline
-        aiohttp_session = ctx.aiohttp_session
 
-        if request.fileType is None:
-            if serving_utils.is_url(request.file):
-                try:
-                    file_type = serving_utils.infer_file_type(request.file)
-                except Exception:
-                    logging.exception("Failed to infer the file type")
-                    raise HTTPException(
-                        status_code=422,
-                        detail="The file type cannot be inferred from the URL. Please specify the file type explicitly.",
-                    )
-            else:
-                raise HTTPException(status_code=422, detail="Unknown file type")
-        else:
-            file_type = "PDF" if request.fileType == 0 else "IMAGE"
+        if request.inferenceParams:
+            max_long_side = request.inferenceParams.maxLongSide
+            if max_long_side:
+                raise HTTPException(
+                    status_code=422,
+                    detail="`max_long_side` is currently not supported.",
+                )
+
+        images = await ocr_common.get_images(request, ctx)
 
         try:
-            file_bytes = await serving_utils.get_raw_bytes(
-                request.file, aiohttp_session
-            )
-            images = await serving_utils.call_async(
-                serving_utils.file_to_images,
-                file_bytes,
-                file_type,
-                max_img_size=ctx.extra["max_img_size"],
-                max_num_imgs=ctx.extra["max_num_imgs"],
-            )
-
             result = await pipeline.infer(images)
 
             formula_rec_results: List[FormulaRecResult] = []

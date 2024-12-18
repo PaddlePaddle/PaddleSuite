@@ -14,7 +14,7 @@
 
 import asyncio
 import os
-from typing import Awaitable, Final, List, Literal, Optional, Tuple, Union
+from typing import Awaitable, List, Literal, Optional, Union
 
 import numpy as np
 from fastapi import FastAPI, HTTPException
@@ -29,25 +29,13 @@ from ..storage import SupportsGetURL, Storage, create_storage
 from .. import utils as serving_utils
 from ..app import AppConfig, create_app
 from ..models import NoResultResponse, ResultResponse
-
-_DEFAULT_MAX_IMG_SIZE: Final[Tuple[int, int]] = (2000, 2000)
-_DEFAULT_MAX_NUM_IMGS: Final[int] = 10
+from ._common import ocr as ocr_common
 
 
-FileType: TypeAlias = Literal[0, 1]
-
-
-class InferenceParams(BaseModel):
-    maxLongSide: Optional[Annotated[int, Field(gt=0)]] = None
-
-
-class AnalyzeImagesRequest(BaseModel):
-    file: str
-    fileType: Optional[FileType] = None
+class AnalyzeImagesRequest(ocr_common.InferRequest):
     useImgOrientationCls: bool = True
     useImgUnwarping: bool = True
     useSealTextDet: bool = True
-    inferenceParams: Optional[InferenceParams] = None
 
 
 Point: TypeAlias = Annotated[List[int], Field(min_length=2, max_length=2)]
@@ -186,16 +174,11 @@ def create_pipeline_app(pipeline: PPChatOCRPipeline, app_config: AppConfig) -> F
         pipeline=pipeline, app_config=app_config, app_aiohttp_session=True
     )
 
+    ocr_common.update_app_context(ctx)
     ctx.extra["file_storage"] = None
-    ctx.extra["max_img_size"] = _DEFAULT_MAX_IMG_SIZE
-    ctx.extra["max_num_imgs"] = _DEFAULT_MAX_NUM_IMGS
     if ctx.config.extra:
         if "file_storage" in ctx.config.extra:
             ctx.extra["file_storage"] = create_storage(ctx.config.extra["file_storage"])
-        if "max_img_size" in ctx.config.extra:
-            ctx.extra["max_img_size"] = ctx.config.extra["max_img_size"]
-        if "max_num_imgs" in ctx.config.extra:
-            ctx.extra["max_num_imgs"] = ctx.config.extra["max_num_imgs"]
 
     @app.post(
         "/chatocr-vision",
@@ -206,24 +189,8 @@ def create_pipeline_app(pipeline: PPChatOCRPipeline, app_config: AppConfig) -> F
         request: AnalyzeImagesRequest,
     ) -> ResultResponse[AnalyzeImagesResult]:
         pipeline = ctx.pipeline
-        aiohttp_session = ctx.aiohttp_session
 
         request_id = serving_utils.generate_request_id()
-
-        if request.fileType is None:
-            if serving_utils.is_url(request.file):
-                try:
-                    file_type = serving_utils.infer_file_type(request.file)
-                except Exception:
-                    logging.exception("Failed to infer the file type")
-                    raise HTTPException(
-                        status_code=422,
-                        detail="The file type cannot be inferred from the URL. Please specify the file type explicitly.",
-                    )
-            else:
-                raise HTTPException(status_code=422, detail="Unknown file type")
-        else:
-            file_type = "PDF" if request.fileType == 0 else "IMAGE"
 
         if request.inferenceParams:
             max_long_side = request.inferenceParams.maxLongSide
@@ -233,18 +200,9 @@ def create_pipeline_app(pipeline: PPChatOCRPipeline, app_config: AppConfig) -> F
                     detail="`max_long_side` is currently not supported.",
                 )
 
-        try:
-            file_bytes = await serving_utils.get_raw_bytes(
-                request.file, aiohttp_session
-            )
-            images = await serving_utils.call_async(
-                serving_utils.file_to_images,
-                file_bytes,
-                file_type,
-                max_img_size=ctx.extra["max_img_size"],
-                max_num_imgs=ctx.extra["max_num_imgs"],
-            )
+        images = await ocr_common.get_images(request, ctx)
 
+        try:
             result = await pipeline.call(
                 pipeline.pipeline.visual_predict,
                 images,

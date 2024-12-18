@@ -352,9 +352,9 @@ Below are the API references and multi-language service invocation examples:
 </thead>
 <tbody>
 <tr>
-<td><code>topK</code></td>
-<td><code>integer</code></td>
-<td>Only the top <code>topK</code> categories with the highest scores will be retained in the result.</td>
+<td><code>threshold</code></td>
+<td><code>number</code></td>
+<td>Category score threshold.</td>
 <td>No</td>
 </tr>
 </tbody>

@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import List
+from typing import List, Optional
 
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
@@ -24,8 +24,13 @@ from ..app import AppConfig, create_app
 from ..models import NoResultResponse, ResultResponse
 
 
+class InferenceParams(BaseModel):
+    threshold: Optional[float] = None
+
+
 class InferRequest(BaseModel):
     image: str
+    inferenceParams: Optional[InferenceParams] = None
 
 
 class Category(BaseModel):
@@ -54,6 +59,14 @@ def create_pipeline_app(
     async def _infer(request: InferRequest) -> ResultResponse[InferResult]:
         pipeline = ctx.pipeline
         aiohttp_session = ctx.aiohttp_session
+
+        if request.inferenceParams:
+            threshold = request.inferenceParams.threshold
+            if threshold is not None:
+                raise HTTPException(
+                    status_code=422,
+                    detail="`threshold` is currently not supported.",
+                )
 
         try:
             file_bytes = await serving_utils.get_raw_bytes(

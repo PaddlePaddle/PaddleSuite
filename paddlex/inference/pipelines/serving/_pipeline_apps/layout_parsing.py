@@ -13,7 +13,7 @@
 # limitations under the License.
 
 import os
-from typing import Final, List, Literal, Optional, Tuple
+from typing import List, Literal, Optional
 
 import numpy as np
 from fastapi import FastAPI, HTTPException
@@ -21,6 +21,7 @@ from numpy.typing import ArrayLike
 from pydantic import BaseModel, Field
 from typing_extensions import Annotated, TypeAlias
 
+from ._common import ocr as ocr_common
 from .....utils import logging
 from ...layout_parsing import LayoutParsingPipeline
 from ..storage import SupportsGetURL, Storage, create_storage
@@ -28,24 +29,11 @@ from .. import utils as serving_utils
 from ..app import AppConfig, create_app
 from ..models import NoResultResponse, ResultResponse
 
-_DEFAULT_MAX_IMG_SIZE: Final[Tuple[int, int]] = (2000, 2000)
-_DEFAULT_MAX_NUM_IMGS: Final[int] = 10
 
-
-FileType: TypeAlias = Literal[0, 1]
-
-
-class InferenceParams(BaseModel):
-    maxLongSide: Optional[Annotated[int, Field(gt=0)]] = None
-
-
-class InferRequest(BaseModel):
-    file: str
-    fileType: Optional[FileType] = None
+class InferRequest(ocr_common.InferRequest):
     useImgOrientationCls: bool = True
     useImgUnwarping: bool = True
     useSealTextDet: bool = True
-    inferenceParams: Optional[InferenceParams] = None
 
 
 BoundingBox: TypeAlias = Annotated[List[float], Field(min_length=4, max_length=4)]
@@ -91,16 +79,11 @@ def create_pipeline_app(
         pipeline=pipeline, app_config=app_config, app_aiohttp_session=True
     )
 
+    ocr_common.update_app_context(ctx)
     ctx.extra["file_storage"] = None
-    ctx.extra["max_img_size"] = _DEFAULT_MAX_IMG_SIZE
-    ctx.extra["max_num_imgs"] = _DEFAULT_MAX_NUM_IMGS
     if ctx.config.extra:
         if "file_storage" in ctx.config.extra:
             ctx.extra["file_storage"] = create_storage(ctx.config.extra["file_storage"])
-        if "max_img_size" in ctx.config.extra:
-            ctx.extra["max_img_size"] = ctx.config.extra["max_img_size"]
-        if "max_num_imgs" in ctx.config.extra:
-            ctx.extra["max_num_imgs"] = ctx.config.extra["max_num_imgs"]
 
     @app.post(
         "/layout-parsing",
@@ -112,24 +95,8 @@ def create_pipeline_app(
         request: InferRequest,
     ) -> ResultResponse[InferResult]:
         pipeline = ctx.pipeline
-        aiohttp_session = ctx.aiohttp_session
 
         request_id = serving_utils.generate_request_id()
-
-        if request.fileType is None:
-            if serving_utils.is_url(request.file):
-                try:
-                    file_type = serving_utils.infer_file_type(request.file)
-                except Exception:
-                    logging.exception("Failed to infer the file type")
-                    raise HTTPException(
-                        status_code=422,
-                        detail="The file type cannot be inferred from the URL. Please specify the file type explicitly.",
-                    )
-            else:
-                raise HTTPException(status_code=422, detail="Unknown file type")
-        else:
-            file_type = "PDF" if request.fileType == 0 else "IMAGE"
 
         if request.inferenceParams:
             max_long_side = request.inferenceParams.maxLongSide
@@ -139,18 +106,9 @@ def create_pipeline_app(
                     detail="`max_long_side` is currently not supported.",
                 )
 
-        try:
-            file_bytes = await serving_utils.get_raw_bytes(
-                request.file, aiohttp_session
-            )
-            images = await serving_utils.call_async(
-                serving_utils.file_to_images,
-                file_bytes,
-                file_type,
-                max_img_size=ctx.extra["max_img_size"],
-                max_num_imgs=ctx.extra["max_num_imgs"],
-            )
+        images = await ocr_common.get_images(request, ctx)
 
+        try:
             result = await pipeline.infer(
                 images,
                 use_doc_image_ori_cls_model=request.useImgOrientationCls,

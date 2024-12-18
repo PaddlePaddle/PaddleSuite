@@ -353,9 +353,9 @@ for res in output:
 </thead>
 <tbody>
 <tr>
-<td><code>topK</code></td>
-<td><code>integer</code></td>
-<td>结果中将只保留得分最高的<code>topK</code>个类别。</td>
+<td><code>threshold</code></td>
+<td><code>number</code></td>
+<td>类别得分阈值。</td>
 <td>否</td>
 </tr>
 </tbody>
