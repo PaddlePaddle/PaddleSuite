@@ -68,7 +68,7 @@ class BasePredictor(ABC):
         self.config = config if config else self.load_config(self.model_dir)
         self.batch_sampler = self._build_batch_sampler()
         self.result_class = self._get_result_class()
-        
+
         # alias predict() to the __call__()
         self.predict = self.__call__
         self.benchmark = None
@@ -128,7 +128,7 @@ class BasePredictor(ABC):
         """Sets up the predictor."""
         raise NotImplementedError
 
-    def apply(self, input: Any) -> Iterator[Any]:
+    def apply(self, input: Any, **kwargs) -> Iterator[Any]:
         """
         Do predicting with the input data and yields predictions.
 
@@ -139,7 +139,7 @@ class BasePredictor(ABC):
             Iterator[Any]: An iterator yielding prediction results.
         """
         for batch_data in self.batch_sampler(input):
-            prediction = self.process(batch_data)
+            prediction = self.process(batch_data, **kwargs)
             prediction = PredictionWrap(prediction, len(batch_data))
             for idx in range(len(batch_data)):
                 yield self.result_class(prediction.get_by_idx(idx))
