@@ -193,6 +193,34 @@ PP-OCRv4_server_rec_infer.tar",
     "Cascade-MaskRCNN-ResNet50-FPN": "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/Cascade-MaskRCNN-ResNet50-FPN_infer.tar",
     "Cascade-MaskRCNN-ResNet50-vd-SSLDv2-FPN": "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/Cascade-MaskRCNN-ResNet50-vd-SSLDv2-FPN_infer.tar",
     "PP-YOLOE_seg-S": "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-YOLOE_seg-S_infer.tar",
+    "PP-OCRv3_mobile_rec": "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/\
+PP-OCRv3_mobile_rec_infer.tar",
+    "en_PP-OCRv3_mobile_rec": "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/\
+en_PP-OCRv3_mobile_rec_infer.tar",
+    "korean_PP-OCRv3_mobile_rec": "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/\
+korean_PP-OCRv3_mobile_rec_infer.tar",
+    "japan_PP-OCRv3_mobile_rec": "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/\
+japan_PP-OCRv3_mobile_rec_infer.tar",
+    "chinese_cht_PP-OCRv3_mobile_rec": "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/\
+chinese_cht_PP-OCRv3_mobile_rec_infer.tar",
+    "te_PP-OCRv3_mobile_rec": "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/\
+te_PP-OCRv3_mobile_rec_infer.tar",
+    "ka_PP-OCRv3_mobile_rec": "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/\
+ka_PP-OCRv3_mobile_rec_infer.tar",
+    "ta_PP-OCRv3_mobile_rec": "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/\
+ta_PP-OCRv3_mobile_rec_infer.tar",
+    "latin_PP-OCRv3_mobile_rec": "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/\
+latin_PP-OCRv3_mobile_rec_infer.tar",
+    "arabic_PP-OCRv3_mobile_rec": "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/\
+arabic_PP-OCRv3_mobile_rec_infer.tar",
+    "cyrillic_PP-OCRv3_mobile_rec": "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/\
+cyrillic_PP-OCRv3_mobile_rec_infer.tar",
+    "devanagari_PP-OCRv3_mobile_rec": "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/\
+devanagari_PP-OCRv3_mobile_rec_infer.tar",
+    "en_PP-OCRv4_mobile_rec": "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/\
+en_PP-OCRv4_mobile_rec_infer.tar",
+    "PP-OCRv4_server_rec_doc": "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/\
+PP-OCRv4_server_rec_doc_infer.tar",
     "PP-OCRv4_mobile_rec": "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/\
 PP-OCRv4_mobile_rec_infer.tar",
     "PP-OCRv4_server_det": "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/\
