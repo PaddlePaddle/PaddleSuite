@@ -66,12 +66,12 @@ def create_pipeline_app(
         pipeline=pipeline, app_config=app_config, app_aiohttp_session=True
     )
 
-    ctx.extra["return_ocr_images"] = False
+    ctx.extra["return_ocr_imgs"] = False
     ctx.extra["max_img_size"] = _DEFAULT_MAX_IMG_SIZE
     ctx.extra["max_num_imgs"] = _DEFAULT_MAX_NUM_IMGS
     if ctx.config.extra:
-        if "return_ocr_images" in ctx.config.extra:
-            ctx.extra["return_ocr_images"] = ctx.config.extra["return_ocr_images"]
+        if "return_ocr_imgs" in ctx.config.extra:
+            ctx.extra["return_ocr_imgs"] = ctx.config.extra["return_ocr_imgs"]
         if "max_img_size" in ctx.config.extra:
             ctx.extra["max_img_size"] = ctx.config.extra["max_img_size"]
         if "max_num_imgs" in ctx.config.extra:
@@ -129,7 +129,7 @@ def create_pipeline_app(
                 layout_image_base64 = serving_utils.base64_encode(
                     serving_utils.image_to_bytes(item["layout_result"].img)
                 )
-                if ctx.extra["return_ocr_images"]:
+                if ctx.extra["return_ocr_imgs"]:
                     ocr_image = item["formula_result"].img
                     ocr_image_base64 = serving_utils.base64_encode(
                         serving_utils.image_to_bytes(ocr_image)
