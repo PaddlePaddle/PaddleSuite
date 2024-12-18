@@ -15,7 +15,7 @@
 import tempfile
 from typing import Any, List
 
-import ultra_infer as ui
+import ultrainfer as ui
 import numpy as np
 from paddlex.inference.results import TableRecResult
 from paddlex.modules.table_recognition.model_list import MODELS

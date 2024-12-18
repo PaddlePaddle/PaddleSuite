@@ -15,7 +15,7 @@
 import os
 from typing import Any, Dict, List, Optional, Union
 
-import ultra_infer as ui
+import ultrainfer as ui
 import numpy as np
 from paddlex.inference.results import TextDetResult
 from paddlex.modules.text_detection.model_list import CURVE_MODELS, MODELS

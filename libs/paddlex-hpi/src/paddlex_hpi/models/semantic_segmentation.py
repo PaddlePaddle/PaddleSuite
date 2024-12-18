@@ -14,7 +14,7 @@
 
 from typing import Any, List
 
-import ultra_infer as ui
+import ultrainfer as ui
 import numpy as np
 from paddlex.inference.results import SegResult
 from paddlex.modules.semantic_segmentation.model_list import MODELS

@@ -15,7 +15,7 @@
 import os
 from typing import Any, Dict, List, Optional, Union
 
-import ultra_infer as ui
+import ultrainfer as ui
 import numpy as np
 from paddlex.inference.results import MLClassResult
 from paddlex.modules.multilabel_classification.model_list import MODELS

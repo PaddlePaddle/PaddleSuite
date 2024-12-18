@@ -1,4 +1,4 @@
-# ultra_infer
+# ultrainfer
 # paddlex
 importlib-resources >= 6.4
 numpy >= 1.21
