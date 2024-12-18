@@ -105,7 +105,7 @@ PaddleX 提供了 2 个端到端的印章文本检测模型，具体可参考 [�
 <td>10.5878</td>
 <td>131.813</td>
 <td>4.7M</td>
-<td><a href="../../paddlex/configs/seal_text_detection/PP-OCRv4_mobile_seal_det.yaml">PP-OCRv4_mobile_seal_det.yaml</a></td>
+<td><a href="../../paddlex/configs/modules/seal_text_detection/PP-OCRv4_mobile_seal_det.yaml">PP-OCRv4_mobile_seal_det.yaml</a></td>
 </tr>
 <tr>
 <td>PP-OCRv4_server_seal_det</td>
@@ -113,7 +113,7 @@ PaddleX 提供了 2 个端到端的印章文本检测模型，具体可参考 [�
 <td>84.341</td>
 <td>2425.06</td>
 <td>108.3 M</td>
-<td><a href="../../paddlex/configs/seal_text_detection/PP-OCRv4_server_seal_det.yaml">PP-OCRv4_server_seal_det.yaml</a></td>
+<td><a href="../../paddlex/configs/modules/seal_text_detection/PP-OCRv4_server_seal_det.yaml">PP-OCRv4_server_seal_det.yaml</a></td>
 </tr>
 </tbody>
 </table>
