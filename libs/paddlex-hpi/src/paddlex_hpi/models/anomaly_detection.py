@@ -14,7 +14,7 @@
 
 from typing import Any, List
 
-import ultrainfer as ui
+import ultra_infer as ui
 import numpy as np
 from paddlex.inference.results import SegResult
 from paddlex.modules.anomaly_detection.model_list import MODELS

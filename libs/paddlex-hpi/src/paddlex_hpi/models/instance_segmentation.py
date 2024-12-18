@@ -15,7 +15,7 @@
 import os
 from typing import Any, Dict, List, Optional, Union
 
-import ultrainfer as ui
+import ultra_infer as ui
 import numpy as np
 from paddlex.inference.results import InstanceSegResult
 from paddlex.modules.instance_segmentation.model_list import MODELS

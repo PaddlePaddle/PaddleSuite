@@ -14,7 +14,7 @@
 
 from typing import Any, List
 
-import ultrainfer as ui
+import ultra_infer as ui
 import numpy as np
 from paddlex.inference.results import DocTrResult
 from paddlex.modules.image_unwarping.model_list import MODELS
