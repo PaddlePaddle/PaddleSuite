@@ -228,6 +228,7 @@ class TextRecConfig(BaseConfig):
             "Global.use_xpu": False,
             "Global.use_npu": False,
             "Global.use_mlu": False,
+            "Global.use_gcu": False,
         }
 
         device_cfg = {
@@ -236,6 +237,7 @@ class TextRecConfig(BaseConfig):
             "xpu": {"Global.use_xpu": True},
             "mlu": {"Global.use_mlu": True},
             "npu": {"Global.use_npu": True},
+            "gcu": {"Global.use_gcu": True},
         }
         default_cfg.update(device_cfg[device])
         self.update(default_cfg)

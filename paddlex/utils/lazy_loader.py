@@ -44,12 +44,12 @@ class LazyLoader(types.ModuleType):
         return self._module is not None
 
     def _load(self):
-        module = importlib.import_module(self.__name__)
-        self._parent_module_globals[self._local_name] = module
-        self._module = module
         # TODO(gaotingquan): disable PIR using Flag
         if self.__name__ == "paddle":
             disable_pir_bydefault()
+        module = importlib.import_module(self.__name__)
+        self._parent_module_globals[self._local_name] = module
+        self._module = module
 
     def __getattr__(self, item):
         if not self.loaded:

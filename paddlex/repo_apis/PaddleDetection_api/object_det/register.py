@@ -219,6 +219,21 @@ register_model_info(
 
 register_model_info(
     {
+        "model_name": "PicoDet_layout_1x_table",
+        "suite": "Det",
+        "config_path": osp.join(PDX_CONFIG_DIR, "PicoDet_layout_1x_table.yaml"),
+        "supported_apis": ["train", "evaluate", "predict", "export"],
+        "supported_dataset_types": ["COCODetDataset"],
+        "supported_train_opts": {
+            "device": ["cpu", "gpu_nxcx", "xpu", "npu", "mlu"],
+            "dy2st": False,
+            "amp": ["OFF"],
+        },
+    }
+)
+
+register_model_info(
+    {
         "model_name": "YOLOv3-DarkNet53",
         "suite": "Det",
         "config_path": osp.join(PDX_CONFIG_DIR, "YOLOv3-DarkNet53.yaml"),

@@ -1,4 +1,6 @@
-[简体中文](anomaly_detection_tutorial.md) | English
+---
+comments: true
+---
 
 # PaddleX 3.0 Image Anomaly Detection Pipeline — Food Appearance Quality Inspection Tutorial
 
@@ -35,7 +37,7 @@ PaddleX provides 1 end-to-end anomaly detection models. For details, refer to th
 
 | Model List          | Avg (%) | GPU Inference Time (ms) | CPU Inference Time (ms) | Model Size (M) | yaml file |
 |-|-|-|-|-|-|
-|STFPM|96.2|-|-|21.5 M|[STFPM.yaml](../../paddlex/configs/anomaly_detection/STFPM.yaml)|
+|STFPM|96.2|-|-|21.5 M|[STFPM.yaml](../../paddlex/configs/image_anomaly_detection/STFPM.yaml)|
 
 > **Note: The above accuracy metrics are measured on the [MVTec AD](https://www.mvtec.com/company/research/datasets/mvtec-ad) dataset.**
 
@@ -56,7 +58,7 @@ tar -xf ./dataset/anomaly_detection_hazelnut.tar -C ./dataset/
 To verify the dataset, simply use the following command:
 
 ```bash
-python main.py -c paddlex/configs/anomaly_detection/STFPM.yaml \
+python main.py -c paddlex/configs/image_anomaly_detection/STFPM.yaml \
     -o Global.mode=check_dataset \
     -o Global.dataset_dir=./dataset/anomaly_detection_hazelnut
 ```
@@ -147,7 +149,7 @@ Data conversion and splitting can be enabled simultaneously. For data splitting,
 Before training, ensure that you have validated your dataset. To complete the training of a PaddleX model, simply use the following command:
 
 ```bash
-python main.py -c paddlex/configs/anomaly_detection/STFPM.yaml \
+python main.py -c paddlex/configs/image_anomaly_detection/STFPM.yaml \
     -o Global.mode=train \
     -o Global.dataset_dir=./dataset/anomaly_detection_hazelnut \
     -o Train.epochs_iters=4000
@@ -185,7 +187,7 @@ After completing model training, all outputs are saved in the specified output d
 After completing model training, you can evaluate the specified model weight file on the validation set to verify the model's accuracy. To evaluate a model using PaddleX, simply use the following command:
 
 ```bash
-python main.py -c paddlex/configs/anomaly_detection/STFPM.yaml \
+python main.py -c paddlex/configs/image_anomaly_detection/STFPM.yaml \
     -o Global.mode=evaluate \
     -o Global.dataset_dir=./dataset/anomaly_detection_hazelnut
 ```
@@ -232,7 +234,7 @@ Changing Epoch Results:
 Replace the model in the production line with the fine-tuned model for testing, for example:
 
 ```bash
-python main.py -c paddlex/configs/anomaly_detection/STFPM.yaml \
+python main.py -c paddlex/configs/image_anomaly_detection/STFPM.yaml \
     -o Global.mode=predict \
     -o Predict.model_dir="output/best_model/inference" \
     -o Predict.input="https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/uad_hazelnut.png"

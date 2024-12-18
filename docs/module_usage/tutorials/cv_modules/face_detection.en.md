@@ -25,38 +25,38 @@ Face detection is a fundamental task in object detection, aiming to automaticall
 <tr>
 <td style="text-align: center;">BlazeFace</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/BlazeFace_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/BlazeFace_pretrained.pdparams">Trained Model</a></td>
 <td style="text-align: center;">77.7/73.4/49.5</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
+<td style="text-align: center;">49.9</td>
+<td style="text-align: center;">68.2</td>
 <td style="text-align: center;">0.447</td>
 <td style="text-align: center;">A lightweight and efficient face detection model</td>
 </tr>
 <tr>
 <td style="text-align: center;">BlazeFace-FPN-SSH</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/BlazeFace-FPN-SSH_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/BlazeFace-FPN-SSH_pretrained.pdparams">Trained Model</a></td>
 <td style="text-align: center;">83.2/80.5/60.5</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
+<td style="text-align: center;">52.4</td>
+<td style="text-align: center;">73.2</td>
 <td style="text-align: center;">0.606</td>
 <td style="text-align: center;">An improved model of BlazeFace, incorporating FPN and SSH structures</td>
 </tr>
 <tr>
 <td style="text-align: center;">PicoDet_LCNet_x2_5_face</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PicoDet_LCNet_x2_5_face_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PicoDet_LCNet_x2_5_face_pretrained.pdparams">Trained Model</a></td>
 <td style="text-align: center;">93.7/90.7/68.1</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
+<td style="text-align: center;">33.7</td>
+<td style="text-align: center;">185.1</td>
 <td style="text-align: center;">28.9</td>
 <td style="text-align: center;">Face Detection model based on PicoDet_LCNet_x2_5</td>
 </tr>
 <tr>
 <td style="text-align: center;">PP-YOLOE_plus-S_face</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-YOLOE_plus-S_face_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-YOLOE_plus-S_face_pretrained.pdparams">Trained Model</a></td>
 <td style="text-align: center;">93.9/91.8/79.8</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
+<td style="text-align: center;">25.8</td>
+<td style="text-align: center;">159.9</td>
 <td style="text-align: center;">26.5</td>
 <td style="text-align: center;">Face Detection model based on PP-YOLOE_plus-S</td>
 </tr>
 </tbody>
 </table>
-<b>Note: The above accuracy metrics are evaluated on the WIDER-FACE validation set with an input size of 640*640. GPU inference time is based on an NVIDIA Tesla T4 machine with FP32 precision. CPU inference speed is based on an Intel(R) Xeon(R) Gold 5117 CPU @ 2.00GHz with 8 threads and FP32 precision.</b>
+<b>Note: The above accuracy metrics are evaluated on the WIDER-FACE validation set with an input size of 640*640. GPU inference time is based on an NVIDIA V100 machine with FP32 precision. CPU inference speed is based on an Intel(R) Xeon(R) Gold 6271C CPU @ 2.60GHz and FP32 precision.</b>
 </details>
 
 ## III. Quick Integration  <a id="quick"> </a>
