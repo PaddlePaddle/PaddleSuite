@@ -117,6 +117,7 @@ class ImageFeaturePredictor(BasicPredictor):
         return {
             "input_path": batch_data,
             "input_img": batch_raw_imgs,
+            "features": features,
         }
 
     @register("ResizeImage")
