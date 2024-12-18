@@ -15,7 +15,7 @@
 import tempfile
 from typing import Any, Dict, List
 
-import ultrainfer as ui
+import ultra_infer as ui
 import numpy as np
 from paddlex.inference.common.batch_sampler import ImageBatchSampler
 from paddlex.inference.results import TableRecResult
@@ -55,7 +55,7 @@ class TablePredictor(CVPredictor):
 
     def _get_result_class(self) -> type:
         return TableRecResult
-    
+
     def process(self, batch_data: List[Any]) -> Dict[str, List[Any]]:
         batch_raw_imgs = self._data_reader(imgs=batch_data)
         imgs = [np.ascontiguousarray(img) for img in batch_raw_imgs]
@@ -66,7 +66,7 @@ class TablePredictor(CVPredictor):
         for ui_result in ui_results:
             bbox_list.append(ui_result.table_boxes)
             structure_list.append(ui_result.table_structure)
-        
+
         return {
             "input_path": batch_data,
             "input_img": batch_raw_imgs,

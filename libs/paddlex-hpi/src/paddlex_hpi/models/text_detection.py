@@ -15,7 +15,7 @@
 import os
 from typing import Any, Dict, List, Optional, Union
 
-import ultrainfer as ui
+import ultra_infer as ui
 import numpy as np
 from paddlex.inference.common.batch_sampler import ImageBatchSampler
 from paddlex.inference.results import TextDetResult
@@ -47,7 +47,7 @@ class TextDetPredictor(CVPredictor):
 
     def _get_result_class(self) -> type:
         return TextDetResult
-    
+
     # HACK
     @property
     def _is_curve_model(self) -> bool:

@@ -14,7 +14,7 @@
 
 from typing import Any, Dict, List
 
-import ultrainfer as ui
+import ultra_infer as ui
 import numpy as np
 from paddlex.inference.common.batch_sampler import ImageBatchSampler
 from paddlex.inference.results import DocTrResult
@@ -34,7 +34,6 @@ class WarpPredictor(CVPredictor):
         )
         return model
 
-
     def _build_batch_sampler(self) -> ImageBatchSampler:
         return ImageBatchSampler()
 
@@ -45,7 +44,7 @@ class WarpPredictor(CVPredictor):
         batch_raw_imgs = self._data_reader(imgs=batch_data)
         imgs = [np.ascontiguousarray(img) for img in batch_raw_imgs]
         ui_results = self._ui_model.batch_predict(imgs)
-        
+
         doctr_img_list = []
         for ui_result in ui_results:
             img = ui_result.numpy()

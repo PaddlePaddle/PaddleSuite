@@ -15,7 +15,7 @@
 import os
 from typing import Any, Dict, List, Optional, Union
 
-import ultrainfer as ui
+import ultra_infer as ui
 import numpy as np
 from paddlex.inference.common.batch_sampler import ImageBatchSampler
 from paddlex.inference.results import MLClassResult
@@ -71,7 +71,9 @@ class MLClasPredictor(CVPredictor):
             class_ids_list.append(ui_result.label_ids)
             scores_list.append(np.around(ui_result.scores, decimals=5).tolist())
             if self._label_list is not None:
-                label_names_list.append([self._label_list[i] for i in ui_result.label_ids])
+                label_names_list.append(
+                    [self._label_list[i] for i in ui_result.label_ids]
+                )
 
         return {
             "input_path": batch_data,

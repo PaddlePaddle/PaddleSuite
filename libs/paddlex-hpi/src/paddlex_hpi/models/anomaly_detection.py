@@ -14,7 +14,7 @@
 
 from typing import Any, Dict, List
 
-import ultrainfer as ui
+import ultra_infer as ui
 import numpy as np
 from paddlex.inference.common.batch_sampler import ImageBatchSampler
 from paddlex.inference.results import SegResult
@@ -36,7 +36,7 @@ class UadPredictor(CVPredictor):
             runtime_option=option,
         )
         return model
-    
+
     def _build_batch_sampler(self) -> ImageBatchSampler:
         return ImageBatchSampler()
 
@@ -49,8 +49,10 @@ class UadPredictor(CVPredictor):
         ui_results = self._ui_model.batch_predict(imgs)
 
         preds_list = []
-        for ui_result in  ui_results:
-            pred = np.array(ui_result.label_map, dtype=np.int32).reshape(ui_result.shape)
+        for ui_result in ui_results:
+            pred = np.array(ui_result.label_map, dtype=np.int32).reshape(
+                ui_result.shape
+            )
             pred = pred[np.newaxis]
             preds_list.append(pred)
 

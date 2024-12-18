@@ -25,8 +25,8 @@ from typing import (
     Union,
 )
 
-import ultrainfer as ui
-from ultrainfer.model import BaseUltraInferModel
+import ultra_infer as ui
+from ultra_infer.model import BaseUltraInferModel
 from paddlex.inference.common.reader import ReadImage
 from paddlex.inference.models_new import BasePredictor
 from paddlex.inference.utils.new_ir_blacklist import NEWIR_BLOCKLIST

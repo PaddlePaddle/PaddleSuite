@@ -14,7 +14,7 @@
 
 from typing import Any, Dict, List
 
-import ultrainfer as ui
+import ultra_infer as ui
 import numpy as np
 from paddlex.inference.common.batch_sampler import ImageBatchSampler
 from paddlex.inference.results import FormulaRecResult
@@ -36,7 +36,7 @@ class LaTeXOCRPredictor(CVPredictor):
             runtime_option=option,
         )
         return model
-    
+
     def _build_batch_sampler(self) -> ImageBatchSampler:
         return ImageBatchSampler()
 

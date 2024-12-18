@@ -15,7 +15,7 @@
 import os
 from typing import Any, Dict, List, Optional, Union
 
-import ultrainfer as ui
+import ultra_infer as ui
 import numpy as np
 from paddlex.inference.common.batch_sampler import ImageBatchSampler
 from paddlex.inference.results import DetResult
@@ -73,7 +73,9 @@ class DetPredictor(CVPredictor):
         boxes_list = []
         for ui_result in ui_results:
             inds = sorted(
-                range(len(ui_result.scores)), key=ui_result.scores.__getitem__, reverse=True
+                range(len(ui_result.scores)),
+                key=ui_result.scores.__getitem__,
+                reverse=True,
             )
             inds = [i for i in inds if ui_result.scores[i] > self._pp_params.threshold]
             inds = [i for i in inds if ui_result.label_ids[i] > -1]

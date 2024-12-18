@@ -15,7 +15,7 @@
 import tempfile
 from typing import Any, Dict, List
 
-import ultrainfer as ui
+import ultra_infer as ui
 import numpy as np
 from paddlex.inference.common.batch_sampler import ImageBatchSampler
 from paddlex.inference.results import TextRecResult
@@ -32,7 +32,7 @@ class TextRecPredictor(CVPredictor):
 
     def _get_result_class(self) -> type:
         return TextRecResult
-    
+
     def _build_ui_model(self, option: ui.RuntimeOption) -> ui.vision.ocr.Recognizer:
         with tempfile.NamedTemporaryFile("w", encoding="utf-8", suffix=".txt") as f:
             pp_config = self.config["PostProcess"]
