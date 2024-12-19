@@ -340,6 +340,8 @@ The parameter descriptions for the above methods are as follows:
 </tbody>
 </table>
 
+<b>Notice</b>: There may be some compatibility errors when <code>HNSW32</code> is used to build or predict on Windows.
+
 ### 2.3 Data Organization for Building the Feature Library
 
 The PaddleX general image recognition pipeline requires a pre-built feature library for feature retrieval. If you want to build a feature vector library with private data, you need to organize the data as follows:

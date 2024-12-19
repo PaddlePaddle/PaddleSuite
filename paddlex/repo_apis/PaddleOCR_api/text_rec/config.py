@@ -91,6 +91,17 @@ class TextRecConfig(BaseConfig):
                 "Global.character_dict_path": os.path.join(dataset_path, "dict.txt"),
             }
             self.update(_cfg)
+        elif dataset_type == "SimpleDataSet":
+            _cfg = {
+                "Train.dataset.name": dataset_type,
+                "Train.dataset.data_dir": dataset_path,
+                "Train.dataset.label_file_list": [train_list_path],
+                "Eval.dataset.name": "SimpleDataSet",
+                "Eval.dataset.data_dir": dataset_path,
+                "Eval.dataset.label_file_list": [os.path.join(dataset_path, "val.txt")],
+                "Global.character_dict_path": os.path.join(dataset_path, "dict.txt"),
+            }
+            self.update(_cfg)
         elif dataset_type == "LaTeXOCRDataSet":
             _cfg = {
                 "Train.dataset.name": dataset_type,

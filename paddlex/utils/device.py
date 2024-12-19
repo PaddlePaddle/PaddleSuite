@@ -96,6 +96,7 @@ def set_env_for_device(device):
                 "BKCL_FORCE_SYNC": "1",
                 "BKCL_TIMEOUT": "1800",
                 "FLAGS_use_stride_kernel": "0",
+                "XPU_BLACK_LIST": "pad3d",
             }
             _set(envs)
         if device_type.lower() == "mlu":

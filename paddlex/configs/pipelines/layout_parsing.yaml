@@ -1,6 +1,6 @@
 
 pipeline_name: layout_parsing
-input: https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/demo_paper.png
+
 use_doc_preprocessor: True
 use_general_ocr: True
 use_seal_recognition: True
