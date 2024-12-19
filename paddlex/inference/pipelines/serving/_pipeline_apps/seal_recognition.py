@@ -23,7 +23,7 @@ from .....utils import logging
 from ...seal_recognition import SealOCRPipeline
 from .. import utils as serving_utils
 from ..app import AppConfig, create_app
-from ..models import NoResultResponse, ResultResponse
+from ..models import NoResultResponse, ResultResponse, DataInfo
 
 InferRequest: Type[ocr_common.InferRequest] = ocr_common.InferRequest
 
@@ -39,12 +39,14 @@ class Text(BaseModel):
 
 class SealRecResult(BaseModel):
     texts: List[Text]
+    inputImage: str
     layoutImage: str
     ocrImage: str
 
 
 class InferResult(BaseModel):
     sealRecResults: List[SealRecResult]
+    dataInfo: DataInfo
 
 
 def create_pipeline_app(pipeline: SealOCRPipeline, app_config: AppConfig) -> FastAPI:
@@ -58,9 +60,12 @@ def create_pipeline_app(pipeline: SealOCRPipeline, app_config: AppConfig) -> Fas
         "/seal-recognition",
         operation_id="infer",
         responses={422: {"model": NoResultResponse}},
+        response_model_exclude_none=True,
     )
     async def _infer(request: InferRequest) -> ResultResponse[InferResult]:
         pipeline = ctx.pipeline
+
+        log_id = serving_utils.generate_log_id()
 
         if request.inferenceParams:
             max_long_side = request.inferenceParams.maxLongSide
@@ -70,13 +75,13 @@ def create_pipeline_app(pipeline: SealOCRPipeline, app_config: AppConfig) -> Fas
                     detail="`max_long_side` is currently not supported.",
                 )
 
-        images = await ocr_common.get_images(request, ctx)
+        images, data_info = await ocr_common.get_images(request, ctx)
 
         try:
             result = await pipeline.infer(images)
 
             seal_rec_results: List[SealRecResult] = []
-            for item in result:
+            for i, (img, item) in enumerate(zip(images, result)):
                 texts: List[Text] = []
                 for poly, text, score in zip(
                     item["ocr_result"]["dt_polys"],
@@ -84,24 +89,28 @@ def create_pipeline_app(pipeline: SealOCRPipeline, app_config: AppConfig) -> Fas
                     item["ocr_result"]["rec_score"],
                 ):
                     texts.append(Text(poly=poly, text=text, score=score))
-                layout_image_base64 = serving_utils.base64_encode(
-                    serving_utils.image_to_bytes(item["layout_result"].img)
-                )
-                ocr_image_base64 = serving_utils.base64_encode(
-                    serving_utils.image_to_bytes(item["ocr_result"].img)
+                input_img, ocr_img, layout_img = await ocr_common.postprocess_images(
+                    log_id=log_id,
+                    index=i,
+                    app_context=ctx,
+                    input_image=img,
+                    ocr_image=item["ocr_result"].img,
+                    layout_image=item["layout_result"].img,
                 )
                 seal_rec_results.append(
                     SealRecResult(
                         texts=texts,
-                        layoutImage=layout_image_base64,
-                        ocrImage=ocr_image_base64,
+                        inputImage=input_img,
+                        layoutImage=layout_img,
+                        ocrImage=ocr_img,
                     )
                 )
 
             return ResultResponse[InferResult](
-                logId=serving_utils.generate_log_id(),
+                logId=log_id,
                 result=InferResult(
                     sealRecResults=seal_rec_results,
+                    dataInfo=data_info,
                 ),
             )
 

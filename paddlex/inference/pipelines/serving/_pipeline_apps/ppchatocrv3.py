@@ -12,23 +12,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import asyncio
-import os
-from typing import Awaitable, List, Literal, Optional, Union
+from typing import List, Literal, Optional, Union
 
-import numpy as np
 from fastapi import FastAPI, HTTPException
-from numpy.typing import ArrayLike
 from pydantic import BaseModel, Field
 from typing_extensions import Annotated, TypeAlias, assert_never
 
 from .....utils import logging
 from .... import results
 from ...ppchatocrv3 import PPChatOCRPipeline
-from ..storage import SupportsGetURL, Storage, create_storage
 from .. import utils as serving_utils
 from ..app import AppConfig, create_app
-from ..models import NoResultResponse, ResultResponse
+from ..models import NoResultResponse, ResultResponse, DataInfo
 from ._common import ocr as ocr_common
 
 
@@ -65,6 +60,7 @@ class VisionResult(BaseModel):
 class AnalyzeImagesResult(BaseModel):
     visionResults: List[VisionResult]
     visionInfo: dict
+    dataInfo: DataInfo
 
 
 class QianfanParams(BaseModel):
@@ -152,45 +148,25 @@ def _llm_params_to_dict(llm_params: LLMParams) -> dict:
         assert_never(llm_params.apiType)
 
 
-def _postprocess_image(
-    img: ArrayLike,
-    request_id: str,
-    filename: str,
-    file_storage: Optional[Storage],
-) -> str:
-    key = f"{request_id}/{filename}"
-    ext = os.path.splitext(filename)[1]
-    img = np.asarray(img)
-    img_bytes = serving_utils.image_array_to_bytes(img, ext=ext)
-    if file_storage is not None:
-        file_storage.set(key, img_bytes)
-        if isinstance(file_storage, SupportsGetURL):
-            return file_storage.get_url(key)
-    return serving_utils.base64_encode(img_bytes)
-
-
 def create_pipeline_app(pipeline: PPChatOCRPipeline, app_config: AppConfig) -> FastAPI:
     app, ctx = create_app(
         pipeline=pipeline, app_config=app_config, app_aiohttp_session=True
     )
 
     ocr_common.update_app_context(ctx)
-    ctx.extra["file_storage"] = None
-    if ctx.config.extra:
-        if "file_storage" in ctx.config.extra:
-            ctx.extra["file_storage"] = create_storage(ctx.config.extra["file_storage"])
 
     @app.post(
         "/chatocr-vision",
         operation_id="analyzeImages",
         responses={422: {"model": NoResultResponse}},
+        response_model_exclude_none=True,
     )
     async def _analyze_images(
         request: AnalyzeImagesRequest,
     ) -> ResultResponse[AnalyzeImagesResult]:
         pipeline = ctx.pipeline
 
-        request_id = serving_utils.generate_request_id()
+        log_id = serving_utils.generate_log_id()
 
         if request.inferenceParams:
             max_long_side = request.inferenceParams.maxLongSide
@@ -200,7 +176,7 @@ def create_pipeline_app(pipeline: PPChatOCRPipeline, app_config: AppConfig) -> F
                     detail="`max_long_side` is currently not supported.",
                 )
 
-        images = await ocr_common.get_images(request, ctx)
+        images, data_info = await ocr_common.get_images(request, ctx)
 
         try:
             result = await pipeline.call(
@@ -213,31 +189,6 @@ def create_pipeline_app(pipeline: PPChatOCRPipeline, app_config: AppConfig) -> F
 
             vision_results: List[VisionResult] = []
             for i, (img, item) in enumerate(zip(images, result[0])):
-                pp_img_futures: List[Awaitable] = []
-                future = serving_utils.call_async(
-                    _postprocess_image,
-                    img,
-                    request_id=request_id,
-                    filename=f"input_image_{i}.jpg",
-                    file_storage=ctx.extra["file_storage"],
-                )
-                pp_img_futures.append(future)
-                future = serving_utils.call_async(
-                    _postprocess_image,
-                    item["ocr_result"].img,
-                    request_id=request_id,
-                    filename=f"ocr_image_{i}.jpg",
-                    file_storage=ctx.extra["file_storage"],
-                )
-                pp_img_futures.append(future)
-                future = serving_utils.call_async(
-                    _postprocess_image,
-                    item["layout_result"].img,
-                    request_id=request_id,
-                    filename=f"layout_image_{i}.jpg",
-                    file_storage=ctx.extra["file_storage"],
-                )
-                pp_img_futures.append(future)
                 texts: List[Text] = []
                 for poly, text, score in zip(
                     item["ocr_result"]["dt_polys"],
@@ -249,7 +200,14 @@ def create_pipeline_app(pipeline: PPChatOCRPipeline, app_config: AppConfig) -> F
                     Table(bbox=r["layout_bbox"], html=r["html"])
                     for r in item["table_result"]
                 ]
-                input_img, ocr_img, layout_img = await asyncio.gather(*pp_img_futures)
+                input_img, ocr_img, layout_img = await ocr_common.postprocess_images(
+                    log_id=log_id,
+                    index=i,
+                    app_context=ctx,
+                    input_image=img,
+                    ocr_image=item["ocr_result"].img,
+                    layout_image=item["layout_result"].img,
+                )
                 vision_result = VisionResult(
                     texts=texts,
                     tables=tables,
@@ -260,10 +218,11 @@ def create_pipeline_app(pipeline: PPChatOCRPipeline, app_config: AppConfig) -> F
                 vision_results.append(vision_result)
 
             return ResultResponse[AnalyzeImagesResult](
-                logId=serving_utils.generate_log_id(),
+                logId=log_id,
                 result=AnalyzeImagesResult(
                     visionResults=vision_results,
                     visionInfo=result[1],
+                    dataInfo=data_info,
                 ),
             )
 
@@ -275,6 +234,7 @@ def create_pipeline_app(pipeline: PPChatOCRPipeline, app_config: AppConfig) -> F
         "/chatocr-vector",
         operation_id="buildVectorStore",
         responses={422: {"model": NoResultResponse}},
+        response_model_exclude_none=True,
     )
     async def _build_vector_store(
         request: BuildVectorStoreRequest,
@@ -309,6 +269,7 @@ def create_pipeline_app(pipeline: PPChatOCRPipeline, app_config: AppConfig) -> F
         "/chatocr-retrieval",
         operation_id="retrieveKnowledge",
         responses={422: {"model": NoResultResponse}},
+        response_model_exclude_none=True,
     )
     async def _retrieve_knowledge(
         request: RetrieveKnowledgeRequest,

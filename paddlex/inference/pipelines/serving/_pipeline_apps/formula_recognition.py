@@ -23,7 +23,7 @@ from .....utils import logging
 from ...formula_recognition import FormulaRecognitionPipeline
 from .. import utils as serving_utils
 from ..app import AppConfig, create_app
-from ..models import NoResultResponse, ResultResponse
+from ..models import NoResultResponse, ResultResponse, DataInfo
 
 InferRequest: Type[ocr_common.InferRequest] = ocr_common.InferRequest
 
@@ -39,12 +39,14 @@ class Formula(BaseModel):
 
 class FormulaRecResult(BaseModel):
     formulas: List[Formula]
+    inputImage: str
     layoutImage: str
     ocrImage: Optional[str] = None
 
 
 class InferResult(BaseModel):
     formulaRecResults: List[FormulaRecResult]
+    dataInfo: DataInfo
 
 
 def create_pipeline_app(
@@ -69,6 +71,8 @@ def create_pipeline_app(
     async def _infer(request: InferRequest) -> ResultResponse[InferResult]:
         pipeline = ctx.pipeline
 
+        log_id = serving_utils.generate_log_id()
+
         if request.inferenceParams:
             max_long_side = request.inferenceParams.maxLongSide
             if max_long_side:
@@ -77,13 +81,13 @@ def create_pipeline_app(
                     detail="`max_long_side` is currently not supported.",
                 )
 
-        images = await ocr_common.get_images(request, ctx)
+        images, data_info = await ocr_common.get_images(request, ctx)
 
         try:
             result = await pipeline.infer(images)
 
             formula_rec_results: List[FormulaRecResult] = []
-            for item in result:
+            for i, (img, item) in enumerate(zip(images, result)):
                 formulas: List[Formula] = []
                 for poly, latex in zip(item["dt_polys"], item["rec_formula"]):
                     formulas.append(
@@ -92,28 +96,39 @@ def create_pipeline_app(
                             latex=latex,
                         )
                     )
-                layout_image_base64 = serving_utils.base64_encode(
-                    serving_utils.image_to_bytes(item["layout_result"].img)
-                )
+                layout_img = item["layout_result"].img
                 if ctx.extra["return_ocr_imgs"]:
-                    ocr_image = item["formula_result"].img
-                    ocr_image_base64 = serving_utils.base64_encode(
-                        serving_utils.image_to_bytes(ocr_image)
-                    )
+                    ocr_img = item["formula_result"].img
+                    if ocr_img is None:
+                        raise RuntimeError("Failed to get the OCR image")
                 else:
-                    ocr_image_base64 = None
+                    ocr_img = None
+                output_imgs = await ocr_common.postprocess_images(
+                    log_id=log_id,
+                    index=i,
+                    app_context=ctx,
+                    input_image=img,
+                    ocr_image=ocr_img,
+                    layout_image=layout_img,
+                )
+                if ocr_img is not None:
+                    input_img, layout_img, ocr_img = output_imgs
+                else:
+                    input_img, layout_img = output_imgs
                 formula_rec_results.append(
                     FormulaRecResult(
                         formulas=formulas,
-                        layoutImage=layout_image_base64,
-                        ocrImage=ocr_image_base64,
+                        inputImage=input_img,
+                        layoutImage=layout_img,
+                        ocrImage=ocr_img,
                     )
                 )
 
             return ResultResponse[InferResult](
-                logId=serving_utils.generate_log_id(),
+                logId=log_id,
                 result=InferResult(
                     formulaRecResults=formula_rec_results,
+                    dataInfo=data_info,
                 ),
             )
 

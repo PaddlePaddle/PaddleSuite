@@ -14,6 +14,7 @@
 
 import asyncio
 import pickle
+import uuid
 from typing import Dict, List, Optional
 
 import faiss
@@ -113,14 +114,13 @@ def create_pipeline_app(pipeline: ShiTuV2Pipeline, app_config: AppConfig) -> Fas
         "/shitu-index-build",
         operation_id="buildIndex",
         responses={422: {"model": NoResultResponse}},
+        response_model_exclude_none=True,
     )
     async def _build_index(
         request: BuildIndexRequest,
     ) -> ResultResponse[BuildIndexResult]:
         pipeline = ctx.pipeline
         aiohttp_session = ctx.aiohttp_session
-
-        request_id = serving_utils.generate_request_id()
 
         try:
             images = [pair.image for pair in request.imageLabelPairs]
@@ -143,7 +143,7 @@ def create_pipeline_app(pipeline: ShiTuV2Pipeline, app_config: AppConfig) -> Fas
             )
 
             index_storage = ctx.extra["index_storage"]
-            index_key = request_id
+            index_key = str(uuid.uuid4())
             index_data_bytes = await serving_utils.call_async(
                 _serialize_index_data, index_data
             )
@@ -164,6 +164,7 @@ def create_pipeline_app(pipeline: ShiTuV2Pipeline, app_config: AppConfig) -> Fas
         "/shitu-index-add",
         operation_id="buildIndex",
         responses={422: {"model": NoResultResponse}},
+        response_model_exclude_none=True,
     )
     async def _add_images_to_index(
         request: AddImagesToIndexRequest,
@@ -212,6 +213,7 @@ def create_pipeline_app(pipeline: ShiTuV2Pipeline, app_config: AppConfig) -> Fas
         "/shitu-index-remove",
         operation_id="buildIndex",
         responses={422: {"model": NoResultResponse}},
+        response_model_exclude_none=True,
     )
     async def _remove_images_from_index(
         request: RemoveImagesFromIndexRequest,
@@ -251,6 +253,7 @@ def create_pipeline_app(pipeline: ShiTuV2Pipeline, app_config: AppConfig) -> Fas
         "/shitu-infer",
         operation_id="infer",
         responses={422: {"model": NoResultResponse}},
+        response_model_exclude_none=True,
     )
     async def _infer(request: InferRequest) -> ResultResponse[InferResult]:
         pipeline = ctx.pipeline

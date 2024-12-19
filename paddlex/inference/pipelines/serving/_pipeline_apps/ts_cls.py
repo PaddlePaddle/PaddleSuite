@@ -40,6 +40,7 @@ def create_pipeline_app(pipeline: TSCls, app_config: AppConfig) -> FastAPI:
         "/time-series-classification",
         operation_id="infer",
         responses={422: {"model": NoResultResponse}},
+        response_model_exclude_none=True,
     )
     async def _infer(request: InferRequest) -> ResultResponse[InferResult]:
         pipeline = ctx.pipeline

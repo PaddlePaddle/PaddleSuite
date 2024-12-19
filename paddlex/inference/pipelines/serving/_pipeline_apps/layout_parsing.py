@@ -12,22 +12,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import os
 from typing import List, Literal, Optional
 
-import numpy as np
 from fastapi import FastAPI, HTTPException
-from numpy.typing import ArrayLike
 from pydantic import BaseModel, Field
 from typing_extensions import Annotated, TypeAlias
 
-from ._common import ocr as ocr_common
+from ._common import cv as cv_common, ocr as ocr_common
 from .....utils import logging
 from ...layout_parsing import LayoutParsingPipeline
-from ..storage import SupportsGetURL, Storage, create_storage
 from .. import utils as serving_utils
 from ..app import AppConfig, create_app
-from ..models import NoResultResponse, ResultResponse
+from ..models import NoResultResponse, ResultResponse, DataInfo
 
 
 class InferRequest(ocr_common.InferRequest):
@@ -53,23 +49,7 @@ class LayoutParsingResult(BaseModel):
 
 class InferResult(BaseModel):
     layoutParsingResults: List[LayoutParsingResult]
-
-
-def _postprocess_image(
-    img: ArrayLike,
-    request_id: str,
-    filename: str,
-    file_storage: Optional[Storage],
-) -> str:
-    key = f"{request_id}/{filename}"
-    ext = os.path.splitext(filename)[1]
-    img = np.asarray(img)
-    img_bytes = serving_utils.image_array_to_bytes(img, ext=ext)
-    if file_storage is not None:
-        file_storage.set(key, img_bytes)
-        if isinstance(file_storage, SupportsGetURL):
-            return file_storage.get_url(key)
-    return serving_utils.base64_encode(img_bytes)
+    dataInfo: DataInfo
 
 
 def create_pipeline_app(
@@ -80,10 +60,6 @@ def create_pipeline_app(
     )
 
     ocr_common.update_app_context(ctx)
-    ctx.extra["file_storage"] = None
-    if ctx.config.extra:
-        if "file_storage" in ctx.config.extra:
-            ctx.extra["file_storage"] = create_storage(ctx.config.extra["file_storage"])
 
     @app.post(
         "/layout-parsing",
@@ -96,7 +72,7 @@ def create_pipeline_app(
     ) -> ResultResponse[InferResult]:
         pipeline = ctx.pipeline
 
-        request_id = serving_utils.generate_request_id()
+        log_id = serving_utils.generate_log_id()
 
         if request.inferenceParams:
             max_long_side = request.inferenceParams.maxLongSide
@@ -106,7 +82,7 @@ def create_pipeline_app(
                     detail="`max_long_side` is currently not supported.",
                 )
 
-        images = await ocr_common.get_images(request, ctx)
+        images, data_info = await ocr_common.get_images(request, ctx)
 
         try:
             result = await pipeline.infer(
@@ -128,11 +104,12 @@ def create_pipeline_app(
                     label = next(iter(dyn_keys))
                     if label in ("image", "figure", "img", "fig"):
                         image_ = await serving_utils.call_async(
-                            _postprocess_image,
+                            cv_common.postprocess_image,
                             subitem[label]["img"],
-                            request_id=request_id,
+                            log_id=log_id,
                             filename=f"image_{i}_{j}.jpg",
                             file_storage=ctx.extra["file_storage"],
+                            max_img_size=ctx.extra["max_output_img_size"],
                         )
                         text = subitem[label]["image_text"]
                     else:
@@ -152,9 +129,10 @@ def create_pipeline_app(
                 )
 
             return ResultResponse[InferResult](
-                logId=serving_utils.generate_log_id(),
+                logId=log_id,
                 result=InferResult(
                     layoutParsingResults=layout_parsing_results,
+                    dataInfo=data_info,
                 ),
             )
 

@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Generic, TypeVar, Union, Literal
+from typing import Generic, TypeVar, Union, Literal, List, Optional
 
 from pydantic import BaseModel
 
@@ -34,3 +34,25 @@ class ResultResponse(BaseModel, Generic[ResultT]):
 
 
 Response = Union[ResultResponse, NoResultResponse]
+
+
+class ImageInfo(BaseModel):
+    width: int
+    height: int
+
+
+class PDFPageInfo(BaseModel):
+    width: int
+    height: int
+
+
+class PDFInfo(BaseModel):
+    numPages: int
+    pages: List[PDFPageInfo]
+
+
+class DataInfo(BaseModel):
+    image: Optional[ImageInfo] = None
+    pdf: Optional[PDFInfo] = None
+
+    # TODO: Validate that only one field is set
