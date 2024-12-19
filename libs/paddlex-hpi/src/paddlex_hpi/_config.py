@@ -16,7 +16,7 @@ import warnings
 from pathlib import Path
 from typing import Any, Dict, List, Mapping, Optional, Tuple, Type, Union
 
-import ultrainfer as ui
+import ultra_infer as ui
 from paddlex.utils import logging
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 from typing_extensions import Annotated, TypeAlias, TypedDict, assert_never

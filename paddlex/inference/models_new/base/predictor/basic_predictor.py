@@ -59,22 +59,32 @@ class BasicPredictor(
         logging.debug(f"{self.__class__.__name__}: {self.model_dir}")
         self.benchmark = benchmark
 
-    def __call__(self, input: Any, **kwargs: Dict[str, Any]) -> Iterator[Any]:
+    def __call__(
+        self,
+        input: Any,
+        batch_size: int = None,
+        device: str = None,
+        pp_option: PaddlePredictorOption = None,
+        **kwargs: Dict[str, Any],
+    ) -> Iterator[Any]:
         """
         Predict with the input data.
 
         Args:
             input (Any): The input data to be predicted.
+            batch_size (int, optional): The batch size to use. Defaults to None.
+            device (str, optional): The device to run the predictor on. Defaults to None.
+            pp_option (PaddlePredictorOption, optional): The predictor options to set. Defaults to None.
             **kwargs (Dict[str, Any]): Additional keyword arguments to set up predictor.
 
         Returns:
             Iterator[Any]: An iterator yielding the prediction output.
         """
-        self.set_predictor(**kwargs)
+        self.set_predictor(batch_size, device, pp_option)
         if self.benchmark:
             self.benchmark.start()
             if INFER_BENCHMARK_WARMUP > 0:
-                output = self.apply(input)
+                output = self.apply(input, **kwargs)
                 warmup_num = 0
                 for _ in range(INFER_BENCHMARK_WARMUP):
                     try:
@@ -86,10 +96,10 @@ class BasicPredictor(
                         )
                         break
                 self.benchmark.warmup_stop(warmup_num)
-            output = list(self.apply(input))
+            output = list(self.apply(input, **kwargs))
             self.benchmark.collect(len(output))
         else:
-            yield from self.apply(input)
+            yield from self.apply(input, **kwargs)
 
     def set_predictor(
         self,

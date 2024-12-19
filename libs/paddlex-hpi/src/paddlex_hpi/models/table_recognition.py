@@ -13,15 +13,15 @@
 # limitations under the License.
 
 import tempfile
-from typing import Any, List
+from typing import Any, Dict, List
 
-import ultrainfer as ui
+import ultra_infer as ui
 import numpy as np
+from paddlex.inference.common.batch_sampler import ImageBatchSampler
 from paddlex.inference.results import TableRecResult
 from paddlex.modules.table_recognition.model_list import MODELS
 
 from paddlex_hpi._utils.compat import get_compat_version
-from paddlex_hpi._utils.typing import BatchData, Data
 from paddlex_hpi.models.base import CVPredictor
 
 
@@ -50,19 +50,26 @@ class TablePredictor(CVPredictor):
             )
         return model
 
-    def _predict(self, batch_data: BatchData) -> BatchData:
-        imgs = [np.ascontiguousarray(data["img"]) for data in batch_data]
-        ui_results = self._ui_model.batch_predict(imgs)
-        results: BatchData = []
-        for data, ui_result in zip(batch_data, ui_results):
-            table_result = self._create_table_result(data, ui_result)
-            results.append({"result": table_result})
-        return results
+    def _build_batch_sampler(self) -> ImageBatchSampler:
+        return ImageBatchSampler()
 
-    def _create_table_result(self, data: Data, ui_result: Any) -> TableRecResult:
-        dic = {
-            "input_path": data["input_path"],
-            "bbox": ui_result.table_boxes,
-            "structure": ui_result.table_structure,
+    def _get_result_class(self) -> type:
+        return TableRecResult
+
+    def process(self, batch_data: List[Any]) -> Dict[str, List[Any]]:
+        batch_raw_imgs = self._data_reader(imgs=batch_data)
+        imgs = [np.ascontiguousarray(img) for img in batch_raw_imgs]
+        ui_results = self._ui_model.batch_predict(imgs)
+
+        bbox_list = []
+        structure_list = []
+        for ui_result in ui_results:
+            bbox_list.append(ui_result.table_boxes)
+            structure_list.append(ui_result.table_structure)
+
+        return {
+            "input_path": batch_data,
+            "input_img": batch_raw_imgs,
+            "bbox": bbox_list,
+            "structure": structure_list,
         }
-        return TableRecResult(dic)

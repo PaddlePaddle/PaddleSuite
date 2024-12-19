@@ -12,14 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Any, List
+from typing import Any, Dict, List
 
-import ultrainfer as ui
+import ultra_infer as ui
 import numpy as np
+from paddlex.inference.common.batch_sampler import ImageBatchSampler
 from paddlex.inference.results import SegResult
 from paddlex.modules.anomaly_detection.model_list import MODELS
 
-from paddlex_hpi._utils.typing import BatchData, Data
 from paddlex_hpi.models.base import CVPredictor
 
 
@@ -37,20 +37,27 @@ class UadPredictor(CVPredictor):
         )
         return model
 
-    def _predict(self, batch_data: BatchData) -> BatchData:
-        imgs = [np.ascontiguousarray(data["img"]) for data in batch_data]
-        ui_results = self._ui_model.batch_predict(imgs)
-        results: BatchData = []
-        for data, ui_result in zip(batch_data, ui_results):
-            uad_result = self._create_uad_result(data, ui_result)
-            results.append({"result": uad_result})
-        return results
+    def _build_batch_sampler(self) -> ImageBatchSampler:
+        return ImageBatchSampler()
 
-    def _create_uad_result(self, data: Data, ui_result: Any) -> SegResult:
-        pred = np.array(ui_result.label_map, dtype=np.int32).reshape(ui_result.shape)
-        pred = pred[np.newaxis]
-        dic = {
-            "input_path": data["input_path"],
-            "pred": pred,
+    def _get_result_class(self) -> type:
+        return SegResult
+
+    def process(self, batch_data: List[Any]) -> Dict[str, List[Any]]:
+        batch_raw_imgs = self._data_reader(imgs=batch_data)
+        imgs = [np.ascontiguousarray(img) for img in batch_raw_imgs]
+        ui_results = self._ui_model.batch_predict(imgs)
+
+        preds_list = []
+        for ui_result in ui_results:
+            pred = np.array(ui_result.label_map, dtype=np.int32).reshape(
+                ui_result.shape
+            )
+            pred = pred[np.newaxis]
+            preds_list.append(pred)
+
+        return {
+            "input_path": batch_data,
+            "input_img": batch_raw_imgs,
+            "pred": preds_list,
         }
-        return SegResult(dic)

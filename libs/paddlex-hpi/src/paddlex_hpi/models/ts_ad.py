@@ -14,7 +14,7 @@
 
 from typing import Any, List
 
-import ultrainfer as ui
+import ultra_infer as ui
 import pandas as pd
 from paddlex.inference.results import TSAdResult
 from paddlex.modules.ts_anomaly_detection.model_list import MODELS

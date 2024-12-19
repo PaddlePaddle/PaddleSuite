@@ -38,7 +38,7 @@ PaddleX 提供了 1 个端到端的高精度异常检测模型，具体可参考
 
 |模型名称|Avg（%）|GPU推理耗时（ms）|CPU推理耗时（ms）|模型存储大小|yaml 文件|
 |-|-|-|-|-|-|
-|STFPM|96.2|-|-|21.5 M|[STFPM.yaml](../../paddlex/configs/image_anomaly_detection/STFPM.yaml)|
+|STFPM|96.2|-|-|21.5 M|[STFPM.yaml](../../paddlex/configs/modules/image_anomaly_detection/STFPM.yaml)|
 
 **注：以上精度指标为 **[MVTec AD](https://www.mvtec.com/company/research/datasets/mvtec-ad)** 验证集 平均异常分数。**
 

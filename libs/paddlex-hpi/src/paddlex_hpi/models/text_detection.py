@@ -15,13 +15,13 @@
 import os
 from typing import Any, Dict, List, Optional, Union
 
-import ultrainfer as ui
+import ultra_infer as ui
 import numpy as np
+from paddlex.inference.common.batch_sampler import ImageBatchSampler
 from paddlex.inference.results import TextDetResult
 from paddlex.modules.text_detection.model_list import CURVE_MODELS, MODELS
 
 from paddlex_hpi._utils.misc import parse_scale
-from paddlex_hpi._utils.typing import BatchData, Data
 from paddlex_hpi.models.base import CVPredictor, HPIParams
 
 
@@ -41,6 +41,12 @@ class TextDetPredictor(CVPredictor):
             device=device,
             hpi_params=hpi_params,
         )
+
+    def _build_batch_sampler(self) -> ImageBatchSampler:
+        return ImageBatchSampler()
+
+    def _get_result_class(self) -> type:
+        return TextDetResult
 
     # HACK
     @property
@@ -66,14 +72,27 @@ class TextDetPredictor(CVPredictor):
         self._config_ui_postprocessor(model)
         return model
 
-    def _predict(self, batch_data: BatchData) -> BatchData:
-        imgs = [np.ascontiguousarray(data["img"]) for data in batch_data]
+    def process(self, batch_data: List[Any]) -> Dict[str, List[Any]]:
+        batch_raw_imgs = self._data_reader(imgs=batch_data)
+        imgs = [np.ascontiguousarray(img) for img in batch_raw_imgs]
         ui_results = self._ui_model.batch_predict(imgs)
-        results: BatchData = []
-        for data, ui_result in zip(batch_data, ui_results):
-            text_det_result = self._create_text_det_result(data, ui_result)
-            results.append({"result": text_det_result})
-        return results
+
+        dt_polys_list = []
+        dt_scores_list = []
+        for ui_result in ui_results:
+            polys = [list(zip(*([iter(box)] * 2))) for box in ui_result.boxes]
+            dt_polys_list.append(polys)
+            # XXX: Currently, we cannot get scores from `ui_result`, so we
+            # temporarily use dummy scores here.
+            dummy_scores = [0.0 for _ in ui_result.boxes]
+            dt_scores_list.append(dummy_scores)
+
+        return {
+            "input_path": batch_data,
+            "input_img": batch_raw_imgs,
+            "dt_polys": dt_polys_list,
+            "dt_scores": dt_scores_list,
+        }
 
     def _config_ui_preprocessor(self, model: ui.vision.ocr.DBDetector) -> None:
         pp_config = self.config["PreProcess"]
@@ -153,15 +172,3 @@ class TextDetPredictor(CVPredictor):
                 postprocessor.det_db_box_type = "bbox"
             else:
                 postprocessor.det_db_box_type = "poly"
-
-    def _create_text_det_result(self, data: Data, ui_result: Any) -> TextDetResult:
-        polys = [list(zip(*([iter(box)] * 2))) for box in ui_result.boxes]
-        # XXX: Currently, we cannot get scores from `ui_result`, so we
-        # temporarily use dummy scores here.
-        dummy_scores = [0.0 for _ in ui_result.boxes]
-        dic = {
-            "input_path": data["input_path"],
-            "dt_polys": polys,
-            "dt_scores": dummy_scores,
-        }
-        return TextDetResult(dic)
