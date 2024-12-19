@@ -789,6 +789,11 @@ Below are the API references and multi-language service invocation examples:
 <td><code>object</code></td>
 <td>Key information in the image, which can be used as input for other operations.</td>
 </tr>
+<tr>
+<td><code>dataInfo</code></td>
+<td><code>object</code></td>
+<td>Information about the input data.</td>
+</tr>
 </tbody>
 </table>
 <p>Each element in <code>visionResults</code> is an <code>object</code> with the following properties:</p>

@@ -431,6 +431,11 @@ for res in output:
 <td><code>object</code></td>
 <td>公式识别结果。数组长度为1（对于图像输入）或文档页数与10中的较小者（对于PDF输入）。对于PDF输入，数组中的每个元素依次表示PDF文件中每一页的处理结果。</td>
 </tr>
+<tr>
+<td><code>dataInfo</code></td>
+<td><code>object</code></td>
+<td>输入数据信息。</td>
+</tr>
 </tbody>
 </table>
 <p><code>formulaRecResults</code>中的每个元素为一个<code>object</code>，具有如下属性：</p>
@@ -447,6 +452,11 @@ for res in output:
 <td><code>formulas</code></td>
 <td><code>array</code></td>
 <td>公式位置和内容。</td>
+</tr>
+<tr>
+<td><code>inputImage</code></td>
+<td><code>string</code></td>
+<td>输入图像。图像为JPEG格式，使用Base64编码。</td>
 </tr>
 <tr>
 <td><code>layoutImage</code></td>

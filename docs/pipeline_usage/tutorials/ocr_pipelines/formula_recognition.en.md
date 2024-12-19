@@ -430,6 +430,11 @@ Below are the API references and multi-language service invocation examples:
 <td><code>array</code></td>
 <td>Formula recognition results. The array length is 1 (for image input) or the smaller of the number of document pages and 10 (for PDF input). For PDF input, each element in the array represents the processing result of each page in the PDF file.</td>
 </tr>
+<tr>
+<td><code>dataInfo</code></td>
+<td><code>object</code></td>
+<td>Information about the input data.</td>
+</tr>
 </tbody>
 </table>
 <p>Each element in <code>formulaRecResults</code> is an <code>object</code> with the following properties:</p>
@@ -446,6 +451,11 @@ Below are the API references and multi-language service invocation examples:
 <td><code>formulas</code></td>
 <td><code>array</code></td>
 <td>Positions and contents of formulas.</td>
+</tr>
+<tr>
+<td><code>inputImage</code></td>
+<td><code>string</code></td>
+<td>Input image. The image is in JPEG format and encoded using Base64.</td>
 </tr>
 <tr>
 <td><code>layoutImage</code></td>

@@ -758,6 +758,11 @@ chat_result.print()
 <td><code>object</code></td>
 <td>图像中的关键信息，可用作其他操作的输入。</td>
 </tr>
+<tr>
+<td><code>dataInfo</code></td>
+<td><code>object</code></td>
+<td>输入数据信息。</td>
+</tr>
 </tbody>
 </table>
 <p><code>visionResults</code>中的每个元素为一个<code>object</code>，具有如下属性：</p>
