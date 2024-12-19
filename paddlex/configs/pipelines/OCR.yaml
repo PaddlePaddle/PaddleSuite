@@ -5,7 +5,6 @@ pipeline_name: OCR
 ####### Config for Common OCR
 ##############################################
 
-input: https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/general_ocr_001.png
 text_type: general
 
 SubModules:
@@ -24,7 +23,6 @@ SubModules:
 ####### Config for Seal OCR
 ##############################################
 
-# input: https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/seal_text_det.png
 # text_type: seal
 
 # SubModules:
