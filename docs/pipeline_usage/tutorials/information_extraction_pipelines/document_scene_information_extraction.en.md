@@ -1166,18 +1166,18 @@ Below are the API references and multi-language service invocation examples:
 <tbody>
 <tr>
 <td><code>ocr</code></td>
-<td><code>string</code></td>
-<td>OCR prompt.</td>
+<td><code>array</code></td>
+<td>OCR prompts.</td>
 </tr>
 <tr>
 <td><code>table</code></td>
-<td><code>string</code></td>
-<td>Table prompt.</td>
+<td><code>array</code></td>
+<td>Table prompts.</td>
 </tr>
 <tr>
 <td><code>html</code></td>
-<td><code>string</code></td>
-<td>HTML prompt.</td>
+<td><code>array</code></td>
+<td>HTML prompts.</td>
 </tr>
 </tbody>
 </table></details>

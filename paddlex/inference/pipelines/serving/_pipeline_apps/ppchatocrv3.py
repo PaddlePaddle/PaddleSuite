@@ -125,9 +125,9 @@ class ChatRequest(BaseModel):
 
 
 class Prompts(BaseModel):
-    ocr: str
-    table: Optional[str] = None
-    html: Optional[str] = None
+    ocr: List[str]
+    table: Optional[List[str]] = None
+    html: Optional[List[str]] = None
 
 
 class ChatResult(BaseModel):
