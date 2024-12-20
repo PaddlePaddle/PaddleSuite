@@ -121,7 +121,7 @@ def image_to_bytes(image: Image.Image, format: str = "JPEG") -> bytes:
     return img_bytes
 
 
-def image_array_to_bytes(image: np.ndarray, ext: str = ".jpg") -> str:
+def image_array_to_bytes(image: np.ndarray, ext: str = ".jpg") -> bytes:
     image = cv2.imencode(ext, image)[1]
     return image.tobytes()
 
