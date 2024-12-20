@@ -49,10 +49,7 @@ class InstanceSegPredictor(DetPredictor):
             "Cascade-MaskRCNN-ResNet50-vd-SSLDv2-FPN",
             "Cascade-MaskRCNN-ResNet50-FPN",
         }
-        if (
-            self.config["Global"]["model_name"]
-            in self.model_names_only_supports_batchsize_of_one
-        ):
+        if self.model_name in self.model_names_only_supports_batchsize_of_one:
             logging.warning(
                 f"Instance Segmentation Models: \"{', '.join(list(self.model_names_only_supports_batchsize_of_one))}\" only supports prediction with a batch_size of one, "
                 "if you set the predictor with a batch_size larger than one, no error will occur, however, it will actually inference with a batch_size of one, "
@@ -129,10 +126,7 @@ class InstanceSegPredictor(DetPredictor):
         batch_inputs = self.pre_ops[-1](datas)
 
         # do infer
-        if (
-            self.config["Global"]["model_name"]
-            in self.model_names_only_supports_batchsize_of_one
-        ):
+        if self.model_name in self.model_names_only_supports_batchsize_of_one:
             batch_preds = []
             for i in range(batch_inputs[0].shape[0]):
                 batch_inputs_ = [
