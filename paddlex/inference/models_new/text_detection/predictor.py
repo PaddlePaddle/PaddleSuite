@@ -49,8 +49,6 @@ class TextDetPredictor(BasicPredictor):
         max_candidates: Union[int, None] = None,
         unclip_ratio: Union[float, None] = None,
         use_dilation: Union[bool, None] = None,
-        score_mode: Union[str, None] = None,
-        box_type: Union[str, None] = None,
         *args,
         **kwargs
     ):
@@ -63,8 +61,6 @@ class TextDetPredictor(BasicPredictor):
         self.max_candidates = max_candidates
         self.unclip_ratio = unclip_ratio
         self.use_dilation = use_dilation
-        self.score_mode = score_mode
-        self.box_type = box_type
         self.pre_tfs, self.infer, self.post_op = self._build()
 
     def _build_batch_sampler(self):
@@ -99,7 +95,6 @@ class TextDetPredictor(BasicPredictor):
         batch_data: List[Union[str, np.ndarray]],
         limit_side_len: Union[int, None] = None,
         limit_type: Union[str, None] = None,
-        limit_side_len: Union[int, None] = None,
         thresh: Union[float, None] = None,
         box_thresh: Union[float, None] = None,
         max_candidates: Union[int, None] = None,
@@ -124,6 +119,7 @@ class TextDetPredictor(BasicPredictor):
             box_thresh=box_thresh or self.box_thresh,
             max_candidates=max_candidates or self.max_candidates,
             unclip_ratio=unclip_ratio or self.unclip_ratio,
+            use_dilation=use_dilation or self.use_dilation,
         )
         return {
             "input_path": batch_data,
@@ -177,11 +173,12 @@ class TextDetPredictor(BasicPredictor):
     def build_postprocess(self, **kwargs):
         if kwargs.get("name") == "DBPostProcess":
             return DBPostProcess(
-                thresh=kwargs.get("thresh", 0.3),
-                box_thresh=kwargs.get("box_thresh", 0.6),
-                max_candidates=kwargs.get("max_candidates", 1000),
-                unclip_ratio=kwargs.get("unclip_ratio", 2.0),
-                use_dilation=kwargs.get("use_dilation", False),
+                thresh=self.thesh or kwargs.get("thresh", 0.3),
+                box_thresh=self.box_thresh or kwargs.get("box_thresh", 0.6),
+                max_candidates=self.max_candidates
+                or kwargs.get("max_candidates", 1000),
+                unclip_ratio=self.unclip_ratio or kwargs.get("unclip_ratio", 2.0),
+                use_dilation=self.use_dilation or kwargs.get("use_dilation", False),
                 score_mode=kwargs.get("score_mode", "fast"),
                 box_type=kwargs.get("box_type", "quad"),
             )
