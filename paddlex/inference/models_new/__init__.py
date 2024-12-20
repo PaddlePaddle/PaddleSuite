@@ -29,6 +29,7 @@ from .text_recognition import TextRecPredictor
 # from .object_detection import DetPredictor
 # from .instance_segmentation import InstanceSegPredictor
 from .semantic_segmentation import SegPredictor
+from .image_feature import ImageFeaturePredictor
 
 # from .general_recognition import ShiTuRecPredictor
 

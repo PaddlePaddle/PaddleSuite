@@ -12,19 +12,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from paddlex import create_pipeline
+import numpy as np
 
-pipeline = create_pipeline(pipeline="layout_parsing")
 
-output = pipeline.predict(
-    "./test_samples/test_layout_parsing.jpg",
-    use_doc_orientation_classify=True,
-    use_doc_unwarping=True,
-    use_common_ocr=True,
-    use_seal_recognition=True,
-    use_table_recognition=True,
-)
+class NormalizeFeatures:
+    """Normalize Features Transform"""
 
-for res in output:
-    print(res)
-    res.save_results("./output")
+    def _normalize(self, preds):
+        """normalize"""
+        feas_norm = np.sqrt(np.sum(np.square(preds[0]), axis=0, keepdims=True))
+        features = np.divide(preds[0], feas_norm)
+        return features
+
+    def __call__(self, preds):
+        normalized_features = [self._normalize(feature) for feature in preds]
+        return normalized_features

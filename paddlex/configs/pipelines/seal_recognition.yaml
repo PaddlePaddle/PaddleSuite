@@ -1,21 +1,12 @@
 
-pipeline_name: layout_parsing
+pipeline_name: seal_recognition
 
 use_doc_preprocessor: True
-use_general_ocr: True
-use_seal_recognition: True
-use_table_recognition: True
 
 SubModules:
   LayoutDetection:
     module_name: layout_detection
     model_name: RT-DETR-H_layout_3cls
-    model_dir: null
-    batch_size: 1
-
-  TableStructureRecognition:
-    module_name: table_structure_recognition
-    model_name: SLANet_plus
     model_dir: null
     batch_size: 1
 
@@ -33,20 +24,6 @@ SubPipelines:
       DocUnwarping:
         module_name: image_unwarping
         model_name: UVDoc
-        model_dir: null
-        batch_size: 1
-  GeneralOCR:
-    pipeline_name: OCR
-    text_type: general
-    SubModules:
-      TextDetection:
-        module_name: text_detection
-        model_name: PP-OCRv4_server_det
-        model_dir: null
-        batch_size: 1    
-      TextRecognition:
-        module_name: text_recognition
-        model_name: PP-OCRv4_server_rec
         model_dir: null
         batch_size: 1
   SealOCR:

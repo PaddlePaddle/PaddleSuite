@@ -14,17 +14,11 @@
 
 from paddlex import create_pipeline
 
-pipeline = create_pipeline(pipeline="layout_parsing")
+pipeline = create_pipeline(pipeline="image_classification")
 
-output = pipeline.predict(
-    "./test_samples/test_layout_parsing.jpg",
-    use_doc_orientation_classify=True,
-    use_doc_unwarping=True,
-    use_common_ocr=True,
-    use_seal_recognition=True,
-    use_table_recognition=True,
-)
-
+output = pipeline.predict("./test_samples/general_image_classification_001.jpg")
 for res in output:
     print(res)
-    res.save_results("./output")
+    res.print()  ## 打印预测的结构化输出
+    res.save_to_img("./output/")  ## 保存结果可视化图像
+    res.save_to_json("./output/")  ## 保存预测的结构化输出
