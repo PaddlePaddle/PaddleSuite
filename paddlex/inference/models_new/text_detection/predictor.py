@@ -43,7 +43,6 @@ class TextDetPredictor(BasicPredictor):
         self,
         limit_side_len: Union[int, None] = None,
         limit_type: Union[str, None] = None,
-        limit_side_len: Union[int, None] = None,
         thresh: Union[float, None] = None,
         box_thresh: Union[float, None] = None,
         max_candidates: Union[int, None] = None,
@@ -178,7 +177,7 @@ class TextDetPredictor(BasicPredictor):
     def build_postprocess(self, **kwargs):
         if kwargs.get("name") == "DBPostProcess":
             return DBPostProcess(
-                thresh=self.thesh or kwargs.get("thresh", 0.3),
+                thresh=self.thresh or kwargs.get("thresh", 0.3),
                 box_thresh=self.box_thresh or kwargs.get("box_thresh", 0.6),
                 max_candidates=self.max_candidates
                 or kwargs.get("max_candidates", 1000),
