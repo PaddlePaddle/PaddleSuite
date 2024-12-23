@@ -227,6 +227,10 @@ PP-OCRv4_mobile_rec_infer.tar",
 PP-OCRv4_server_det_infer.tar",
     "PP-OCRv4_mobile_det": "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/\
 PP-OCRv4_mobile_det_infer.tar",
+    "PP-OCRv3_server_det": "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/\
+PP-OCRv3_server_det_infer.tar",
+    "PP-OCRv3_mobile_det": "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/\
+PP-OCRv3_mobile_det_infer.tar",
     "PP-OCRv4_server_seal_det": "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/\
 PP-OCRv4_server_seal_det_infer.tar",
     "PP-OCRv4_mobile_seal_det": "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/\
