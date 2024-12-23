@@ -142,7 +142,12 @@ class TextDetPredictor(BasicPredictor):
     ):
         # TODO: align to PaddleOCR
 
-        if self.model_name in ("PP-OCRv4_server_det", "PP-OCRv4_mobile_det"):
+        if self.model_name in (
+            "PP-OCRv4_server_det",
+            "PP-OCRv4_mobile_det",
+            "PP-OCRv3_server_det",
+            "PP-OCRv3_mobile_det",
+        ):
             limit_side_len = self.limit_side_len or kwargs.get("resize_long", 960)
             limit_type = self.limit_type or kwargs.get("limit_type", "max")
         else:
