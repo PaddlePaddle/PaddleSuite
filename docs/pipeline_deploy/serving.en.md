@@ -314,6 +314,7 @@ docker run \
     - Online activation: Add `-e PADDLEX_HPS_UPDATE_LICENSE=1` to the command to enable the program to complete activation automatically.
     - Offline Activation: Follow the instructions in the serial number management section to obtain the machine’s device fingerprint. Bind the serial number with the device fingerprint to obtain the certificate and complete the activation. For this activation method, you need to manually place the certificate in the `${HOME}/.baidu/paddlex/licenses` directory on the machine (if the directory does not exist, you will need to create it).
 
+- It is necessary to ensure that the `/dev/disk/by-uuid` directory on the host machine exists and is not empty, and that this directory is correctly mounted in order to perform activation properly.
 - If you need to enter the container for debugging, you can replace ``./server.sh` in the command with `/bin/bash`. Then execute `./server.sh` inside the container.
 - If you want the server to run in the background, you can replace `-it` in the command with `-d`. After the container starts, you can view the container logs with `docker logs -f {container ID}`.
 
