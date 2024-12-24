@@ -15,6 +15,7 @@
 
 import os
 import os.path as osp
+from pathlib import Path
 
 from ...base import BaseDatasetChecker
 from .dataset_src import check_dataset, convert_dataset, split_dataset, anaylse_dataset
@@ -27,6 +28,20 @@ class SegDatasetChecker(BaseDatasetChecker):
 
     entities = MODELS
     sample_num = 10
+
+    def get_dataset_root(self, dataset_dir: str) -> str:
+        """find the dataset root dir
+
+        Args:
+            dataset_dir (str): the directory that contain dataset.
+
+        Returns:
+            str: the root directory of dataset.
+        """
+        anno_dirs = list(Path(dataset_dir).glob("**/images"))
+        assert len(anno_dirs) == 1
+        dataset_dir = anno_dirs[0].parent.as_posix()
+        return dataset_dir
 
     def convert_dataset(self, src_dataset_dir: str) -> str:
         """convert the dataset from other type to specified type

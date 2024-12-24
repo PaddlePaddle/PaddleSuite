@@ -32,6 +32,13 @@ def build_dataset_checker(config: AttrDict) -> "BaseDatasetChecker":
         BaseDatasetChecker: the dataset checker, which is subclass of BaseDatasetChecker.
     """
     model_name = config.Global.model
+    try:
+        import feature_line_modules
+    except ModuleNotFoundError:
+        info(
+            "The PaddleX FeaTure Line plugin is not installed, but continuing execution."
+        )
+
     return BaseDatasetChecker.get(model_name)(config)
 
 
@@ -77,7 +84,7 @@ class BaseDatasetChecker(ABC, metaclass=AutoRegisterABCMetaClass):
         check_result = build_res_dict(True)
         check_result["attributes"] = attrs
         check_result["analysis"] = analysis
-        check_result["dataset_path"] = self.global_config.dataset_dir
+        check_result["dataset_path"] = os.path.basename(dataset_dir)
         check_result["show_type"] = self.get_show_type()
         check_result["dataset_type"] = self.get_dataset_type()
         info("Check dataset passed !")

@@ -12,14 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Any, List
+from typing import Any, Dict, List
 
-import ultrainfer as ui
+import ultra_infer as ui
 import numpy as np
+from paddlex.inference.common.batch_sampler import ImageBatchSampler
 from paddlex.inference.results import DocTrResult
 from paddlex.modules.image_unwarping.model_list import MODELS
 
-from paddlex_hpi._utils.typing import BatchData, Data
 from paddlex_hpi.models.base import CVPredictor
 
 
@@ -34,23 +34,28 @@ class WarpPredictor(CVPredictor):
         )
         return model
 
-    def _predict(self, batch_data: BatchData) -> BatchData:
-        imgs = [np.ascontiguousarray(data["img"]) for data in batch_data]
-        ui_results = self._ui_model.batch_predict(imgs)
-        results: BatchData = []
-        for data, ui_result in zip(batch_data, ui_results):
-            warp_result = self._create_warp_result(data, ui_result)
-            results.append({"result": warp_result})
-        return results
+    def _build_batch_sampler(self) -> ImageBatchSampler:
+        return ImageBatchSampler()
 
-    def _create_warp_result(self, data: Data, ui_result: Any) -> DocTrResult:
-        img = ui_result.numpy()
-        img = np.moveaxis(img[0], 0, 2)
-        img *= 255
-        img = img[:, :, ::-1]
-        img = img.astype("uint8")
-        dic = {
-            "input_path": data["input_path"],
-            "doctr_img": img,
+    def _get_result_class(self) -> type:
+        return DocTrResult
+
+    def process(self, batch_data: List[Any]) -> Dict[str, List[Any]]:
+        batch_raw_imgs = self._data_reader(imgs=batch_data)
+        imgs = [np.ascontiguousarray(img) for img in batch_raw_imgs]
+        ui_results = self._ui_model.batch_predict(imgs)
+
+        doctr_img_list = []
+        for ui_result in ui_results:
+            img = ui_result.numpy()
+            img = np.moveaxis(img[0], 0, 2)
+            img *= 255
+            img = img[:, :, ::-1]
+            img = img.astype("uint8")
+            doctr_img_list.append(img)
+
+        return {
+            "input_path": batch_data,
+            "input_img": batch_raw_imgs,
+            "doctr_img": doctr_img_list,
         }
-        return DocTrResult(dic)

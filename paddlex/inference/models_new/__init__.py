@@ -21,18 +21,23 @@ from ..utils.official_models import official_models
 from .base import BasePredictor, BasicPredictor
 
 from .image_classification import ClasPredictor
+from .object_detection import DetPredictor
 from .text_detection import TextDetPredictor
 from .text_recognition import TextRecPredictor
 
 # from .table_recognition import TablePredictor
 # from .object_detection import DetPredictor
 # from .instance_segmentation import InstanceSegPredictor
-# from .semantic_segmentation import SegPredictor
+from .semantic_segmentation import SegPredictor
+from .image_feature import ImageFeaturePredictor
+
 # from .general_recognition import ShiTuRecPredictor
-# from .ts_fc import TSFcPredictor
-# from .ts_ad import TSAdPredictor
-# from .ts_cls import TSClsPredictor
-# from .image_unwarping import WarpPredictor
+
+from .ts_forecast import TSFcPredictor
+from .ts_anomaly import TSAdPredictor
+from .ts_classify import TSClsPredictor
+from .image_unwarping import WarpPredictor
+
 # from .multilabel_classification import MLClasPredictor
 # from .anomaly_detection import UadPredictor
 # from .formula_recognition import LaTeXOCRPredictor
