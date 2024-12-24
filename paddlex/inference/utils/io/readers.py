@@ -90,7 +90,7 @@ class PDFReader(_BaseReader):
         super().__init__(backend, **bk_args)
 
     def read(self, in_path):
-        return self._backend.read_file(str(in_path))
+        yield from self._backend.read_file(str(in_path))
 
     def _init_backend(self, bk_type, bk_args):
         return PDFReaderBackend(**bk_args)
@@ -233,15 +233,13 @@ class PDFReaderBackend(_BaseReaderBackend):
         self.mat = fitz.Matrix(zoom_x, zoom_y).prerotate(rotate)
 
     def read_file(self, in_path):
-        images = []
         for page in fitz.open(in_path):
             pix = page.get_pixmap(matrix=self.mat, alpha=False)
             getpngdata = pix.tobytes(output="png")
             # decode as np.uint8
             image_array = np.frombuffer(getpngdata, dtype=np.uint8)
             img_cv = cv2.imdecode(image_array, cv2.IMREAD_ANYCOLOR)
-            images.append(img_cv)
-        return images
+            yield img_cv
 
 
 class _VideoReaderBackend(_BaseReaderBackend):

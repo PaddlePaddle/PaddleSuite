@@ -101,9 +101,9 @@ class SegPredictor(BasicPredictor):
             option=self.pp_option,
         )
 
-        postprocessers = SegPostProcess()
+        postprocessors = {}  # Empty for Semantic Segmentation for now
 
-        return preprocessors, infer, postprocessers
+        return preprocessors, infer, postprocessors
 
     def process(
         self,
@@ -130,11 +130,7 @@ class SegPredictor(BasicPredictor):
         batch_preds = self.infer(x=x)
         if len(batch_data) > 1:
             batch_preds = np.split(batch_preds[0], len(batch_data), axis=0)
-
-        # postprocess
-        src_image_sizes = [image.shape[:2][::-1] for image in batch_raw_imgs]
-        batch_preds = self.postprocessers(batch_preds, src_image_sizes)
-
+        # postprocessors is empty for static infer of semantic segmentation
         return {
             "input_path": batch_data,
             "input_img": batch_raw_imgs,
