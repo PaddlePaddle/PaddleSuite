@@ -64,28 +64,35 @@ class HPPredictor(BasePredictor, metaclass=AutoRegisterABCMetaClass):
         self._ui_model = self.build_ui_model()
         self._data_reader = self._build_data_reader()
 
-    def __call__(self, input: Any, **kwargs: dict[str, Any]) -> Iterator[Any]:
-        self.set_predictor(**kwargs)
-        yield from self.apply(input)
+    def __call__(
+        self,
+        input: Any,
+        batch_size: int = None,
+        device: str = None,
+        **kwargs: dict[str, Any],
+    ) -> Iterator[Any]:
+        self.set_predictor(batch_size, device)
+        yield from self.apply(input, **kwargs)
 
     @property
     def model_path(self) -> Path:
-        return self.model_dir / f"{self.MODEL_FILE_PREFIX}.pdmodel"
+        if self._onnx_format:
+            return self.model_dir / f"{self.MODEL_FILE_PREFIX}.onnx"
+        else:
+            return self.model_dir / f"{self.MODEL_FILE_PREFIX}.pdmodel"
 
     @property
-    def params_path(self) -> Path:
-        return self.model_dir / f"{self.MODEL_FILE_PREFIX}.pdiparams"
+    def params_path(self) -> Union[Path, None]:
+        if self._onnx_format:
+            return None
+        else:
+            return self.model_dir / f"{self.MODEL_FILE_PREFIX}.pdiparams"
 
-    def set_predictor(self, **kwargs: Any) -> None:
-        if "device" in kwargs:
-            device = kwargs.pop("device")
-            if device is not None:
-                if device != self._device:
-                    raise RuntimeError("Currently, changing devices is not supported.")
-        if "batch_size" in kwargs:
-            self.batch_sampler.batch_size = kwargs.pop("batch_size")
-        if kwargs:
-            raise TypeError(f"Unexpected arguments: {kwargs}")
+    def set_predictor(self, batch_size: int = None, device: str = None) -> None:
+        if device and device != self._device:
+            raise RuntimeError("Currently, changing devices is not supported.")
+        if batch_size:
+            self.batch_sampler.batch_size = batch_size
 
     def build_ui_model(self) -> BaseUltraInferModel:
         option = self._create_ui_option()
