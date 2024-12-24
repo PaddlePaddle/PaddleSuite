@@ -55,10 +55,13 @@ class HPPredictor(BasePredictor, metaclass=AutoRegisterABCMetaClass):
         model_dir: Union[str, PathLike],
         config: Optional[Dict[str, Any]] = None,
         device: Optional[str] = None,
+        use_onnx_model: Optional[bool] = None,
         hpi_params: Optional[HPIParams] = None,
     ) -> None:
         super().__init__(model_dir=model_dir, config=config)
         self._device = device or device_helper.get_default_device()
+        self._onnx_format = use_onnx_model
+        self._check_and_choose_model_format()
         self._hpi_params = hpi_params or {}
         self._hpi_config = self._get_hpi_config()
         self._ui_model = self.build_ui_model()
@@ -141,6 +144,38 @@ class HPPredictor(BasePredictor, metaclass=AutoRegisterABCMetaClass):
         logging.info("Backend config: %s", backend_config)
         backend_config.update_ui_option(option, self.model_dir)
         return option
+
+    def _check_and_choose_model_format(self) -> None:
+        has_onnx_model = any(self.model_dir.glob(f"{self.MODEL_FILE_PREFIX}.onnx"))
+        has_pd_model = any(self.model_dir.glob(f"{self.MODEL_FILE_PREFIX}.pdmodel"))
+        if self._onnx_format is None:
+            if has_onnx_model and has_pd_model:
+                logging.warning(
+                    "Both ONNX and Paddle models are detected, but no preference is set. Default model (.pdmodel) will be used."
+                )
+            elif has_pd_model:
+                logging.warning(
+                    "Only Paddle model is detected. Paddle model will be used by default."
+                )
+            elif has_onnx_model:
+                self._onnx_format = True
+                logging.warning(
+                    "Only ONNX model is detected. ONNX model will be used by default."
+                )
+            else:
+                raise RuntimeError(
+                    "No models are detected. Please ensure the model file exists."
+                )
+        elif self._onnx_format:
+            if not has_onnx_model:
+                raise RuntimeError(
+                    "ONNX model is specified but not detected. Please ensure the ONNX model file exists."
+                )
+        else:
+            if not has_pd_model:
+                raise RuntimeError(
+                    "Paddle model is specified but not detected. Please ensure the Paddle model file exists."
+                )
 
     @abc.abstractmethod
     def _build_ui_model(self, option: ui.RuntimeOption) -> BaseUltraInferModel:

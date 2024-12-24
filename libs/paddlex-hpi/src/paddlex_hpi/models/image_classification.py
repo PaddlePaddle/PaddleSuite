@@ -38,15 +38,15 @@ class ClasPredictor(CVPredictor):
         model_dir: Union[str, os.PathLike],
         config: Optional[Dict[str, Any]] = None,
         device: Optional[str] = None,
-        use_onnx_model: Optional[bool] = False,
+        use_onnx_model: Optional[bool] = None,
         hpi_params: Optional[HPIParams] = None,
         topk: Union[int, None] = None,
     ) -> None:
-        self._onnx_format = use_onnx_model
         super().__init__(
             model_dir=model_dir,
             config=config,
             device=device,
+            use_onnx_model=use_onnx_model,
             hpi_params=hpi_params,
         )
         self._pp_params = self._get_pp_params()

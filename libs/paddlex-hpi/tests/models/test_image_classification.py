@@ -68,6 +68,7 @@ class TestClasPredictor(BaseTestPredictor):
 
     def _check_result(self, result, expected_result):
         assert isinstance(result, TopkResult)
+        assert "input_img" in result
         result.pop("input_img")
         assert set(result) == set(expected_result)
         assert result["class_ids"] == expected_result["class_ids"]
