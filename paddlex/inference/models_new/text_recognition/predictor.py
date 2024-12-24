@@ -21,11 +21,10 @@ from ..common import (
     ResizeByShort,
     Normalize,
     ToCHWImage,
-    ToBatch,
     StaticInfer,
 )
 from ..base import BasicPredictor
-from .processors import OCRReisizeNormImg, CTCLabelDecode
+from .processors import OCRReisizeNormImg, CTCLabelDecode, ToBatch
 from .result import TextRecResult
 
 
