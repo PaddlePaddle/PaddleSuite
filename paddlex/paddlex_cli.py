@@ -154,7 +154,7 @@ def main():
     if len(sys.argv) == 1:
         logging.warning("No arguments provided. Displaying help information:")
         args_cfg().print_help()
-        return
+        sys.exit(1)
 
     if args.install:
         install(args)
@@ -172,7 +172,7 @@ def main():
         if args.get_pipeline_config is not None:
             interactive_get_pipeline(args.get_pipeline_config, args.save_path)
         else:
-            return pipeline_predict(
+            pipeline_predict(
                 args.pipeline,
                 args.input,
                 args.device,
