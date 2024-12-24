@@ -12,9 +12,5 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-MODELS = [
-    "LaTeX_OCR_rec",
-    "UniMERNet_rec",
-    "PP-FormulaNet-S_rec",
-    "PP-FormulaNet-L_rec",
-]
+
+from . import register
