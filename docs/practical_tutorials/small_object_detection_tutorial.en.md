@@ -237,7 +237,7 @@ After learning model training and evaluation, we can improve the model accuracy 
 It is recommended to follow the controlled variable method when debugging parameters:
 
 1. First, fix the number of training iterations to 40, and batch size to 1.
-2. Start three experiments based on the STFPM model, with learning rates of 0.000625, 0.00125, and 0.0125 respectively.
+2. Start three experiments based on the PP-YOLOE+ SOD model, with learning rates of 0.000625, 0.00125, and 0.0125 respectively.
 3. It can be found that the configuration with the highest accuracy in Experiment Three is the learning rate of 0.0125. Based on this training hyperparameter, increasing the number of training epochs to 80 can see better accuracy.
 
 Learning rate exploration experiment results:
