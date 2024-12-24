@@ -14,7 +14,7 @@
 
 import warnings
 from pathlib import Path
-from typing import Any, Dict, List, Mapping, Optional, Tuple, Type, Union
+from typing import Any, Dict, Literal, List, Mapping, Optional, Tuple, Type, Union
 
 import ultra_infer as ui
 from paddlex.utils import logging
@@ -33,6 +33,7 @@ class _BackendConfig(BaseModel):
 class PaddleInferConfig(_BackendConfig):
     cpu_num_threads: int = 8
     enable_mkldnn: bool = True
+    precision: Literal["FP32", "FP16"] = "FP32"
     enable_trt: bool = False
     trt_dynamic_shapes: Optional[Dict[str, List[List[int]]]] = None
     trt_dynamic_shape_input_data: Optional[Dict[str, List[List[float]]]] = None
@@ -53,6 +54,8 @@ class PaddleInferConfig(_BackendConfig):
         if self.enable_trt:
             option.paddle_infer_option.collect_trt_shape = True
             option.paddle_infer_option.collect_trt_shape_by_device = True
+            if self.precision == "FP16":
+                option.trt_option.enable_fp16 = True
         option.paddle_infer_option.enable_log_info = self.enable_log_info
 
 
@@ -73,6 +76,7 @@ class ONNXRuntimeConfig(_BackendConfig):
 
 
 class TensorRTConfig(_BackendConfig):
+    precision: Literal["FP32", "FP16"] = "FP32"
     dynamic_shapes: Optional[Dict[str, List[List[int]]]] = None
 
     def update_ui_option(self, option: ui.RuntimeOption, model_dir: Path) -> None:
@@ -81,6 +85,8 @@ class TensorRTConfig(_BackendConfig):
         if self.dynamic_shapes is not None:
             for name, shapes in self.dynamic_shapes.items():
                 option.trt_option.set_shape(name, *shapes)
+        if self.precision == "FP16":
+            option.trt_option.enable_fp16 = True
 
 
 class PaddleTensorRTConfig(_BackendConfig):
