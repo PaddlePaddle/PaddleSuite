@@ -40,14 +40,18 @@ class ClasPredictor(BasicPredictor):
     _FUNC_MAP = {}
     register = FuncRegister(_FUNC_MAP)
 
-    def __init__(self, *args: List, **kwargs: Dict) -> None:
+    def __init__(
+        self, topk: Union[int, None] = None, *args: List, **kwargs: Dict
+    ) -> None:
         """Initializes ClasPredictor.
 
         Args:
+            topk (int, optional): The number of top-k predictions to return. If None, it will be depending on config of inference or predict. Defaults to None.
             *args: Arbitrary positional arguments passed to the superclass.
             **kwargs: Arbitrary keyword arguments passed to the superclass.
         """
         super().__init__(*args, **kwargs)
+        self.topk = topk
         self.preprocessors, self.infer, self.postprocessors = self._build()
 
     def _build_batch_sampler(self) -> ImageBatchSampler:
@@ -95,12 +99,15 @@ class ClasPredictor(BasicPredictor):
             postprocessors[name] = op
         return preprocessors, infer, postprocessors
 
-    def process(self, batch_data: List[Union[str, np.ndarray]]) -> Dict[str, Any]:
+    def process(
+        self, batch_data: List[Union[str, np.ndarray]], topk: Union[int, None] = None
+    ) -> Dict[str, Any]:
         """
         Process a batch of data through the preprocessing, inference, and postprocessing.
 
         Args:
             batch_data (List[Union[str, np.ndarray], ...]): A batch of input data (e.g., image file paths).
+            topk: The number of top predictions to keep. If None, it will be depending on `self.topk`. Defaults to None.
 
         Returns:
             dict: A dictionary containing the input path, raw image, class IDs, scores, and label names for every instance of the batch. Keys include 'input_path', 'input_img', 'class_ids', 'scores', and 'label_names'.
@@ -113,7 +120,7 @@ class ClasPredictor(BasicPredictor):
         x = self.preprocessors["ToBatch"](imgs=batch_imgs)
         batch_preds = self.infer(x=x)
         batch_class_ids, batch_scores, batch_label_names = self.postprocessors["Topk"](
-            batch_preds
+            batch_preds, topk=topk or self.topk
         )
         return {
             "input_path": batch_data,
@@ -160,4 +167,6 @@ class ClasPredictor(BasicPredictor):
 
     @register("Topk")
     def build_topk(self, topk, label_list=None):
-        return "Topk", Topk(topk=int(topk), class_ids=label_list)
+        if not self.topk:
+            self.topk = int(topk)
+        return "Topk", Topk(class_ids=label_list)
