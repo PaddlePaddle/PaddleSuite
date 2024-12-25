@@ -32,6 +32,14 @@ class FormulaRecEvaluator(BaseEvaluator):
             self.pdx_config.update_dataset(
                 self.global_config.dataset_dir, "LaTeXOCRDataSet"
             )
+        elif self.global_config["model"] in (
+            "UniMERNet",
+            "PP-FormulaNet-L",
+            "PP-FormulaNet-S",
+        ):
+            self.pdx_config.update_dataset(
+                self.global_config.dataset_dir, "SimpleDataSet"
+            )
         label_dict_path = None
         if self.eval_config.get("label_dict_path"):
             label_dict_path = self.eval_config.label_dict_path

@@ -81,11 +81,11 @@ class FormulaRecPredictor(BasicPredictor):
             batch_imgs = self.pre_tfs["LatexTestTransform"](imgs=batch_imgs)
             batch_imgs = self.pre_tfs["NormalizeImage"](imgs=batch_imgs)
             batch_imgs = self.pre_tfs["LatexImageFormat"](imgs=batch_imgs)
-        elif self.model_name in ("UniMERNet_rec"):
+        elif self.model_name in ("UniMERNet"):
             batch_imgs = self.pre_tfs["UniMERNetImgDecode"](imgs=batch_raw_imgs)
             batch_imgs = self.pre_tfs["UniMERNetTestTransform"](imgs=batch_imgs)
             batch_imgs = self.pre_tfs["UniMERNetImageFormat"](imgs=batch_imgs)
-        elif self.model_name in ("PP-FormulaNet-S_rec", "PP-FormulaNet-L_rec"):
+        elif self.model_name in ("PP-FormulaNet-S", "PP-FormulaNet-L"):
             batch_imgs = self.pre_tfs["UniMERNetImgDecode"](imgs=batch_raw_imgs)
             batch_imgs = self.pre_tfs["UniMERNetTestTransform"](imgs=batch_imgs)
             batch_imgs = self.pre_tfs["LatexImageFormat"](imgs=batch_imgs)

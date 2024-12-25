@@ -12,22 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import PIL
-from PIL import Image, ImageDraw, ImageFont
-
-from ....utils.fonts import PINGFANG_FONT_FILE_PATH
-from ...common.result import BaseCVResult
-
 import os
 import sys
 import cv2
+import PIL
 import math
 import random
 import tempfile
 import subprocess
 import numpy as np
 from pathlib import Path
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFont
 
 from ...common.result import BaseCVResult
 from ....utils import logging

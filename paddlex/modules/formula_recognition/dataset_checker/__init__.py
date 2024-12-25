@@ -13,13 +13,6 @@
 # limitations under the License.
 
 
-import os
-import os.path as osp
-from collections import defaultdict, Counter
-
-from PIL import Image
-import json
-
 from ...base import BaseDatasetChecker
 from .dataset_src import check, split_dataset, deep_analyse, convert
 
@@ -102,5 +95,4 @@ class FormulaRecDatasetChecker(BaseDatasetChecker):
         Returns:
             str: dataset type
         """
-        if self.global_config["model"] in ["LaTeX_OCR_rec"]:
-            return "FormulaRecDataset"
+        return "FormulaRecDataset"

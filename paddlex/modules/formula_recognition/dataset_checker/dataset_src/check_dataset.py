@@ -48,7 +48,6 @@ def check(
                         solution=f"Ensure that both `train.txt` and `val.txt` exist in {dataset_dir}",
                     )
                 else:
-                    # tag == 'test'
                     continue
             else:
                 with open(file_list, "r", encoding="utf-8") as f:
@@ -77,7 +76,5 @@ def check(
 
         meta["val_samples"] = sample_cnts["val"]
         meta["val_sample_paths"] = sample_paths["val"][:sample_num]
-
-        # meta['dict_file'] = dict_file
 
         return meta

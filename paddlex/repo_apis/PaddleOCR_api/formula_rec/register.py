@@ -46,9 +46,9 @@ register_model_info(
 
 register_model_info(
     {
-        "model_name": "UniMERNet_rec",
+        "model_name": "UniMERNet",
         "suite": "FormulaRec",
-        "config_path": osp.join(PDX_CONFIG_DIR, "UniMERNet_rec.yaml"),
+        "config_path": osp.join(PDX_CONFIG_DIR, "UniMERNet.yaml"),
         "supported_apis": ["train", "evaluate", "predict", "export", "infer"],
     }
 )
@@ -56,18 +56,18 @@ register_model_info(
 
 register_model_info(
     {
-        "model_name": "PP-FormulaNet-S_rec",
+        "model_name": "PP-FormulaNet-S",
         "suite": "FormulaRec",
-        "config_path": osp.join(PDX_CONFIG_DIR, "PP-FormulaNet-S_rec.yaml"),
+        "config_path": osp.join(PDX_CONFIG_DIR, "PP-FormulaNet-S.yaml"),
         "supported_apis": ["train", "evaluate", "predict", "export", "infer"],
     }
 )
 
 register_model_info(
     {
-        "model_name": "PP-FormulaNet-L_rec",
+        "model_name": "PP-FormulaNet-L",
         "suite": "FormulaRec",
-        "config_path": osp.join(PDX_CONFIG_DIR, "PP-FormulaNet-L_rec.yaml"),
+        "config_path": osp.join(PDX_CONFIG_DIR, "PP-FormulaNet-L.yaml"),
         "supported_apis": ["train", "evaluate", "predict", "export", "infer"],
     }
 )

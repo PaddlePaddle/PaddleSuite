@@ -14,7 +14,7 @@
 
 MODELS = [
     "LaTeX_OCR_rec",
-    "UniMERNet_rec",
-    "PP-FormulaNet-S_rec",
-    "PP-FormulaNet-L_rec",
+    "UniMERNet",
+    "PP-FormulaNet-S",
+    "PP-FormulaNet-L",
 ]
