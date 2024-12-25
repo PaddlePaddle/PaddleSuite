@@ -37,15 +37,15 @@ class FormulaRecResult(BaseCVResult):
         self,
     ):
         """Draw formula on image"""
+        image = Image.fromarray(self._input_img)
         try:
             env_valid()
         except subprocess.CalledProcessError as e:
             logging.warning(
                 "Please refer to 2.3 Formula Recognition Pipeline Visualization in Formula Recognition Pipeline Tutorial to install the LaTeX rendering engine at first."
             )
-            return None
+            return image
 
-        image = Image.fromarray(self._input_img)
         rec_formula = str(self["rec_formula"])
         image = np.array(image.convert("RGB"))
         xywh = crop_white_area(image)
@@ -74,7 +74,7 @@ class FormulaRecResult(BaseCVResult):
             return new_image
         except subprocess.CalledProcessError as e:
             logging.warning("Syntax error detected in formula, rendering failed.")
-            return None
+            return image
 
 
 def get_align_equation(equation):
