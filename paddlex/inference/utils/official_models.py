@@ -301,6 +301,9 @@ PP-LCNet_x1_0_vehicle_attribute_infer.tar",
     "MobileFaceNet": "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/MobileFaceNet_infer.tar",
     "ResNet50_face": "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/ResNet50_face_infer.tar",
     "PP-YOLOE-R_L": "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-YOLOE-R_L_infer.tar",
+    "PPTSM_ResNet50_k400_8frames_uniform": "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PPTSM_ResNet50_k400_8frames_uniform_infer.tar",
+    "PPTSMv2_LCNet_k400_8frames_uniform": "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PPTSMv2_LCNet_k400_8frames_uniform_infer.tar",
+    "PPTSMv2_LCNet_k400_16frames_uniform": "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PPTSMv2_LCNet_k400_16frames_uniform_infer.tar",
 }
 
 

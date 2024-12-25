@@ -42,6 +42,7 @@ from .image_unwarping import WarpPredictor
 # from .anomaly_detection import UadPredictor
 # from .formula_recognition import LaTeXOCRPredictor
 # from .face_recognition import FaceRecPredictor
+from .video_classification import VideoClasPredictor
 
 
 def _create_hp_predictor(
