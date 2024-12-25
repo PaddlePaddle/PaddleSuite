@@ -78,6 +78,4 @@ def check(
         meta["val_samples"] = sample_cnts["val"]
         meta["val_sample_paths"] = sample_paths["val"][:sample_num]
 
-        # meta['dict_file'] = dict_file
-
         return meta

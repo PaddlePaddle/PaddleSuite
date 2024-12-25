@@ -83,6 +83,11 @@ class PPChatOCRPipeline(_TableRecPipeline):
                 doc_image_unwarp_batch_size=doc_image_unwarp_batch_size,
                 seal_text_det_batch_size=seal_text_det_batch_size,
             )
+        else:
+            self.llm_api = create_llm_api(
+                llm_name,
+                llm_params,
+            )
 
         # get base prompt from yaml info
         if task_prompt_yaml:

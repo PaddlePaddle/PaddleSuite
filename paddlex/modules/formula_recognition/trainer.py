@@ -52,9 +52,9 @@ class FormulaRecTrainer(BaseTrainer):
                 self.global_config.dataset_dir, "LaTeXOCRDataSet"
             )
         elif self.global_config["model"] in (
-            "UniMERNet_rec",
-            "PP-FormulaNet-L_rec",
-            "PP-FormulaNet-S_rec",
+            "UniMERNet",
+            "PP-FormulaNet-L",
+            "PP-FormulaNet-S",
         ):
             self.pdx_config.update_dataset(
                 self.global_config.dataset_dir, "SimpleDataSet"
