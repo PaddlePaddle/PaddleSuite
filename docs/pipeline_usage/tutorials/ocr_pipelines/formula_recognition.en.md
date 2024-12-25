@@ -462,11 +462,6 @@ Below are the API reference and multi-language service invocation examples for t
 <td><code>string</code></td>
 <td>Layout area detection result image. The image is in JPEG format and encoded using Base64.</td>
 </tr>
-<tr>
-<td><code>ocrImage</code></td>
-<td><code>string</code></td>
-<td>OCR result image. The image is in JPEG format and encoded using Base64.</td>
-</tr>
 </tbody>
 </table>
 <p>Each element in <code>formulas</code> is an <code>object</code> with the following properties:</p>

@@ -463,11 +463,6 @@ for res in output:
 <td><code>string</code></td>
 <td>版面区域检测结果图。图像为JPEG格式，使用Base64编码。</td>
 </tr>
-<tr>
-<td><code>ocrImage</code></td>
-<td><code>string</code></td>
-<td>OCR结果图。图像为JPEG格式，使用Base64编码。</td>
-</tr>
 </tbody>
 </table>
 <p><code>formulas</code>中的每个元素为一个<code>object</code>，具有如下属性：</p>
