@@ -88,9 +88,10 @@ class SegPostProcess:
     restoring the prediction segmentation map to the original image size for now.
     """
 
-    def __call__(self, imgs, src_sizes):
-        assert len(imgs) == len(src_sizes)
+    def __call__(self, imgs, src_images):
+        assert len(imgs) == len(src_images)
 
+        src_sizes = [src_image.shape[:2][::-1] for src_image in src_images]
         return [
             self.reverse_resize(img, src_size) for img, src_size in zip(imgs, src_sizes)
         ]

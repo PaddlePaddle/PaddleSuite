@@ -132,8 +132,7 @@ class SegPredictor(BasicPredictor):
             batch_preds = np.split(batch_preds[0], len(batch_data), axis=0)
 
         # postprocess
-        src_image_sizes = [image.shape[:2][::-1] for image in batch_raw_imgs]
-        batch_preds = self.postprocessers(batch_preds, src_image_sizes)
+        batch_preds = self.postprocessers(batch_preds, batch_raw_imgs)
 
         return {
             "input_path": batch_data,
