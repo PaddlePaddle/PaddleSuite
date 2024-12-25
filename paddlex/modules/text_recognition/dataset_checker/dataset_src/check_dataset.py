@@ -17,7 +17,7 @@ import os
 import os.path as osp
 from collections import defaultdict
 
-from PIL import Image
+from PIL import Image, ImageOps
 import json
 import numpy as np
 
@@ -79,11 +79,21 @@ def check(
                             )
                         file_name = substr[0]
                         img_path = osp.join(dataset_dir, file_name)
-                        if len(sample_paths[tag]) < max_recorded_sample_cnts:
-                            sample_paths[tag].append(os.path.relpath(img_path, output))
 
                         if not os.path.exists(img_path):
                             raise DatasetFileNotFoundError(file_path=img_path)
+                        vis_save_dir = osp.join(output, "demo_img")
+                        if not osp.exists(vis_save_dir):
+                            os.makedirs(vis_save_dir)
+                        if len(sample_paths[tag]) < sample_num:
+                            img = Image.open(img_path)
+                            img = ImageOps.exif_transpose(img)
+                            vis_path = osp.join(vis_save_dir, osp.basename(file_name))
+                            img.save(vis_path)
+                            sample_path = osp.join(
+                                "check_dataset", os.path.relpath(vis_path, output)
+                            )
+                            sample_paths[tag].append(sample_path)
 
         meta = {}
         meta["train_samples"] = sample_cnts["train"]

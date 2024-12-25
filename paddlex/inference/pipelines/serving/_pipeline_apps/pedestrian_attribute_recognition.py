@@ -22,7 +22,7 @@ from .....utils import logging
 from ...attribute_recognition import PedestrianAttributeRecPipeline
 from .. import utils as serving_utils
 from ..app import AppConfig, create_app
-from ..models import Response, ResultResponse
+from ..models import NoResultResponse, ResultResponse
 
 
 class InferRequest(BaseModel):
@@ -58,7 +58,8 @@ def create_pipeline_app(
     @app.post(
         "/pedestrian-attribute-recognition",
         operation_id="infer",
-        responses={422: {"model": Response}},
+        responses={422: {"model": NoResultResponse}},
+        response_model_exclude_none=True,
     )
     async def _infer(request: InferRequest) -> ResultResponse[InferResult]:
         pipeline = ctx.pipeline
@@ -88,15 +89,13 @@ def create_pipeline_app(
                 serving_utils.image_to_bytes(result.img)
             )
 
-            return ResultResponse(
+            return ResultResponse[InferResult](
                 logId=serving_utils.generate_log_id(),
-                errorCode=0,
-                errorMsg="Success",
                 result=InferResult(pedestrians=pedestrians, image=output_image_base64),
             )
 
-        except Exception as e:
-            logging.exception(e)
+        except Exception:
+            logging.exception("Unexpected exception")
             raise HTTPException(status_code=500, detail="Internal server error")
 
     return app

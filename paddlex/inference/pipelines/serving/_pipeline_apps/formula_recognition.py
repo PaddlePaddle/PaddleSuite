@@ -12,26 +12,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import List, Optional
+from typing import List, Optional, Type
 
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 from typing_extensions import Annotated, TypeAlias
 
+from ._common import ocr as ocr_common
 from .....utils import logging
 from ...formula_recognition import FormulaRecognitionPipeline
 from .. import utils as serving_utils
 from ..app import AppConfig, create_app
-from ..models import Response, ResultResponse
+from ..models import NoResultResponse, ResultResponse, DataInfo
 
-
-class InferenceParams(BaseModel):
-    maxLongSide: Optional[Annotated[int, Field(gt=0)]] = None
-
-
-class InferRequest(BaseModel):
-    image: str
-    inferenceParams: Optional[InferenceParams] = None
+InferRequest: Type[ocr_common.InferRequest] = ocr_common.InferRequest
 
 
 Point: TypeAlias = Annotated[List[float], Field(min_length=2, max_length=2)]
@@ -43,10 +37,16 @@ class Formula(BaseModel):
     latex: str
 
 
-class InferResult(BaseModel):
+class FormulaRecResult(BaseModel):
     formulas: List[Formula]
+    inputImage: str
     layoutImage: str
     ocrImage: Optional[str] = None
+
+
+class InferResult(BaseModel):
+    formulaRecResults: List[FormulaRecResult]
+    dataInfo: DataInfo
 
 
 def create_pipeline_app(
@@ -56,15 +56,22 @@ def create_pipeline_app(
         pipeline=pipeline, app_config=app_config, app_aiohttp_session=True
     )
 
+    ocr_common.update_app_context(ctx)
+    ctx.extra["return_ocr_imgs"] = False
+    if ctx.config.extra:
+        if "return_ocr_imgs" in ctx.config.extra:
+            ctx.extra["return_ocr_imgs"] = ctx.config.extra["return_ocr_imgs"]
+
     @app.post(
         "/formula-recognition",
         operation_id="infer",
-        responses={422: {"model": Response}},
+        responses={422: {"model": NoResultResponse}},
         response_model_exclude_none=True,
     )
     async def _infer(request: InferRequest) -> ResultResponse[InferResult]:
         pipeline = ctx.pipeline
-        aiohttp_session = ctx.aiohttp_session
+
+        log_id = serving_utils.generate_log_id()
 
         if request.inferenceParams:
             max_long_side = request.inferenceParams.maxLongSide
@@ -74,46 +81,59 @@ def create_pipeline_app(
                     detail="`max_long_side` is currently not supported.",
                 )
 
+        images, data_info = await ocr_common.get_images(request, ctx)
+
         try:
-            file_bytes = await serving_utils.get_raw_bytes(
-                request.image, aiohttp_session
-            )
-            image = serving_utils.image_bytes_to_array(file_bytes)
+            result = await pipeline.infer(images)
 
-            result = (await pipeline.infer(image))[0]
-
-            formulas: List[Formula] = []
-            for poly, latex in zip(result["dt_polys"], result["rec_formula"]):
-                formulas.append(
-                    Formula(
-                        poly=poly,
-                        latex=latex,
+            formula_rec_results: List[FormulaRecResult] = []
+            for i, (img, item) in enumerate(zip(images, result)):
+                formulas: List[Formula] = []
+                for poly, latex in zip(item["dt_polys"], item["rec_formula"]):
+                    formulas.append(
+                        Formula(
+                            poly=poly,
+                            latex=latex,
+                        )
+                    )
+                layout_img = item["layout_result"].img
+                if ctx.extra["return_ocr_imgs"]:
+                    ocr_img = item["formula_result"].img
+                    if ocr_img is None:
+                        raise RuntimeError("Failed to get the OCR image")
+                else:
+                    ocr_img = None
+                output_imgs = await ocr_common.postprocess_images(
+                    log_id=log_id,
+                    index=i,
+                    app_context=ctx,
+                    input_image=img,
+                    ocr_image=ocr_img,
+                    layout_image=layout_img,
+                )
+                if ocr_img is not None:
+                    input_img, layout_img, ocr_img = output_imgs
+                else:
+                    input_img, layout_img = output_imgs
+                formula_rec_results.append(
+                    FormulaRecResult(
+                        formulas=formulas,
+                        inputImage=input_img,
+                        layoutImage=layout_img,
+                        ocrImage=ocr_img,
                     )
                 )
-            layout_image_base64 = serving_utils.base64_encode(
-                serving_utils.image_to_bytes(result["layout_result"].img)
-            )
-            ocr_image = result["formula_result"].img
-            if ocr_image is not None:
-                ocr_image_base64 = serving_utils.base64_encode(
-                    serving_utils.image_to_bytes(ocr_image)
-                )
-            else:
-                ocr_image_base64 = None
 
-            return ResultResponse(
-                logId=serving_utils.generate_log_id(),
-                errorCode=0,
-                errorMsg="Success",
+            return ResultResponse[InferResult](
+                logId=log_id,
                 result=InferResult(
-                    formulas=formulas,
-                    layoutImage=layout_image_base64,
-                    ocrImage=ocr_image_base64,
+                    formulaRecResults=formula_rec_results,
+                    dataInfo=data_info,
                 ),
             )
 
-        except Exception as e:
-            logging.exception(e)
+        except Exception:
+            logging.exception("Unexpected exception")
             raise HTTPException(status_code=500, detail="Internal server error")
 
     return app

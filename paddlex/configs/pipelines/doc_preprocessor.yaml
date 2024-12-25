@@ -1,7 +1,6 @@
 
 pipeline_name: doc_preprocessor
-input: https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/img_rot180_demo.jpg
-#input: https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/doc_test.jpg
+
 use_doc_orientation_classify: True
 use_doc_unwarping: True
 

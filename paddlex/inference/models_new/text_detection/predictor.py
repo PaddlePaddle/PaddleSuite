@@ -12,6 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import numpy as np
+from typing import List, Union
+
 from ....utils.func_register import FuncRegister
 from ....modules.text_detection.model_list import MODELS
 from ...common.batch_sampler import ImageBatchSampler
@@ -36,8 +39,27 @@ class TextDetPredictor(BasicPredictor):
     _FUNC_MAP = {}
     register = FuncRegister(_FUNC_MAP)
 
-    def __init__(self, *args, **kwargs):
+    def __init__(
+        self,
+        limit_side_len: Union[int, None] = None,
+        limit_type: Union[str, None] = None,
+        thresh: Union[float, None] = None,
+        box_thresh: Union[float, None] = None,
+        max_candidates: Union[int, None] = None,
+        unclip_ratio: Union[float, None] = None,
+        use_dilation: Union[bool, None] = None,
+        *args,
+        **kwargs
+    ):
         super().__init__(*args, **kwargs)
+
+        self.limit_side_len = limit_side_len
+        self.limit_type = limit_type
+        self.thresh = thresh
+        self.box_thresh = box_thresh
+        self.max_candidates = max_candidates
+        self.unclip_ratio = unclip_ratio
+        self.use_dilation = use_dilation
         self.pre_tfs, self.infer, self.post_op = self._build()
 
     def _build_batch_sampler(self):
@@ -67,14 +89,37 @@ class TextDetPredictor(BasicPredictor):
         post_op = self.build_postprocess(**self.config["PostProcess"])
         return pre_tfs, infer, post_op
 
-    def process(self, batch_data):
+    def process(
+        self,
+        batch_data: List[Union[str, np.ndarray]],
+        limit_side_len: Union[int, None] = None,
+        limit_type: Union[str, None] = None,
+        thresh: Union[float, None] = None,
+        box_thresh: Union[float, None] = None,
+        max_candidates: Union[int, None] = None,
+        unclip_ratio: Union[float, None] = None,
+        use_dilation: Union[bool, None] = None,
+    ):
+
         batch_raw_imgs = self.pre_tfs["Read"](imgs=batch_data)
-        batch_imgs, batch_shapes = self.pre_tfs["Resize"](imgs=batch_raw_imgs)
+        batch_imgs, batch_shapes = self.pre_tfs["Resize"](
+            imgs=batch_raw_imgs,
+            limit_side_len=limit_side_len or self.limit_side_len,
+            limit_type=limit_type or self.limit_type,
+        )
         batch_imgs = self.pre_tfs["Normalize"](imgs=batch_imgs)
         batch_imgs = self.pre_tfs["ToCHW"](imgs=batch_imgs)
         x = self.pre_tfs["ToBatch"](imgs=batch_imgs)
         batch_preds = self.infer(x=x)
-        polys, scores = self.post_op(batch_preds, batch_shapes)
+        polys, scores = self.post_op(
+            batch_preds,
+            batch_shapes,
+            thresh=thresh or self.thresh,
+            box_thresh=box_thresh or self.box_thresh,
+            max_candidates=max_candidates or self.max_candidates,
+            unclip_ratio=unclip_ratio or self.unclip_ratio,
+            use_dilation=use_dilation or self.use_dilation,
+        )
         return {
             "input_path": batch_data,
             "input_img": batch_raw_imgs,
@@ -88,11 +133,29 @@ class TextDetPredictor(BasicPredictor):
         return "Read", ReadImage(format=img_mode)
 
     @register("DetResizeForTest")
-    def build_resize(self, **kwargs):
+    def build_resize(
+        self,
+        limit_side_len: Union[int, None] = None,
+        limit_type: Union[str, None] = None,
+        **kwargs
+    ):
         # TODO: align to PaddleOCR
-        assert self.model_name in ("PP-OCRv4_server_det", "PP-OCRv4_mobile_det")
-        resize_long = kwargs.get("resize_long", 960)
-        return "Resize", DetResizeForTest(limit_side_len=resize_long, limit_type="max")
+
+        if self.model_name in (
+            "PP-OCRv4_server_det",
+            "PP-OCRv4_mobile_det",
+            "PP-OCRv3_server_det",
+            "PP-OCRv3_mobile_det",
+        ):
+            limit_side_len = self.limit_side_len or kwargs.get("resize_long", 960)
+            limit_type = self.limit_type or kwargs.get("limit_type", "max")
+        else:
+            limit_side_len = self.limit_side_len or kwargs.get("resize_long", 736)
+            limit_type = self.limit_type or kwargs.get("limit_type", "min")
+
+        return "Resize", DetResizeForTest(
+            limit_side_len=limit_side_len, limit_type=limit_type, **kwargs
+        )
 
     @register("NormalizeImage")
     def build_normalize(
@@ -114,11 +177,12 @@ class TextDetPredictor(BasicPredictor):
     def build_postprocess(self, **kwargs):
         if kwargs.get("name") == "DBPostProcess":
             return DBPostProcess(
-                thresh=kwargs.get("thresh", 0.3),
-                box_thresh=kwargs.get("box_thresh", 0.7),
-                max_candidates=kwargs.get("max_candidates", 1000),
-                unclip_ratio=kwargs.get("unclip_ratio", 2.0),
-                use_dilation=kwargs.get("use_dilation", False),
+                thresh=self.thresh or kwargs.get("thresh", 0.3),
+                box_thresh=self.box_thresh or kwargs.get("box_thresh", 0.6),
+                max_candidates=self.max_candidates
+                or kwargs.get("max_candidates", 1000),
+                unclip_ratio=self.unclip_ratio or kwargs.get("unclip_ratio", 2.0),
+                use_dilation=self.use_dilation or kwargs.get("use_dilation", False),
                 score_mode=kwargs.get("score_mode", "fast"),
                 box_type=kwargs.get("box_type", "quad"),
             )

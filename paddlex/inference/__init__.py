@@ -12,14 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from ..utils import flags
+from ..utils import logging
 from ..utils.flags import USE_NEW_INFERENCE, NEW_PREDICTOR
 
 if USE_NEW_INFERENCE:
+    logging.warning("=" * 20 + " Using pipelines_new " + "=" * 20)
     from .pipelines_new import create_pipeline
 else:
     from .pipelines import create_pipeline
 if NEW_PREDICTOR:
+    logging.warning("=" * 20 + " Using models_new " + "=" * 20)
     from .models_new import create_predictor
 else:
     from .models import create_predictor

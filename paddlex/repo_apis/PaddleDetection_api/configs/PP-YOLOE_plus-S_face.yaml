@@ -13,7 +13,7 @@ print_flops: false
 print_params: false
 
 # Dataset
-metric: WiderFace
+metric: COCO
 num_classes: 1
 
 worker_num: 4

@@ -33,6 +33,12 @@ def build_exportor(config: AttrDict) -> "BaseExportor":
         BaseExportor: the exportor, which is subclass of BaseExportor.
     """
     model_name = config.Global.model
+    try:
+        import feature_line_modules
+    except ModuleNotFoundError:
+        logging.info(
+            "The PaddleX FeaTure Line plugin is not installed, but continuing execution."
+        )
     return BaseExportor.get(model_name)(config)
 
 
@@ -51,9 +57,9 @@ class BaseExportor(ABC, metaclass=AutoRegisterABCMetaClass):
         self.global_config = config.Global
         self.export_config = config.Export
 
-        config_path = self.export_config.get("basic_config_path", None)
-        if not config_path:
-            config_path = self.get_config_path(self.export_config.weight_path)
+        config_path = self.get_config_path(self.export_config.weight_path)
+        if self.export_config.get("basic_config_path", None):
+            config_path = self.export_config.get("basic_config_path", None)
 
         self.pdx_config, self.pdx_model = build_model(
             self.global_config.model, config_path=config_path
