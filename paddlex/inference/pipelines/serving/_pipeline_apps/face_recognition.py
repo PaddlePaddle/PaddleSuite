@@ -15,6 +15,7 @@
 import asyncio
 import faiss
 import pickle
+import uuid
 from typing import Dict, List, Optional
 
 from fastapi import FastAPI, HTTPException
@@ -27,7 +28,7 @@ from ...face_recognition import FaceRecPipeline
 from ..storage import create_storage
 from .. import utils as serving_utils
 from ..app import AppConfig, create_app
-from ..models import Response, ResultResponse
+from ..models import NoResultResponse, ResultResponse
 
 
 class ImageLabelPair(BaseModel):
@@ -110,15 +111,14 @@ def create_pipeline_app(pipeline: FaceRecPipeline, app_config: AppConfig) -> Fas
     @app.post(
         "/face-recognition-index-build",
         operation_id="buildIndex",
-        responses={422: {"model": Response}},
+        responses={422: {"model": NoResultResponse}},
+        response_model_exclude_none=True,
     )
     async def _build_index(
         request: BuildIndexRequest,
     ) -> ResultResponse[BuildIndexResult]:
         pipeline = ctx.pipeline
         aiohttp_session = ctx.aiohttp_session
-
-        request_id = serving_utils.generate_request_id()
 
         try:
             images = [pair.image for pair in request.imageLabelPairs]
@@ -141,7 +141,7 @@ def create_pipeline_app(pipeline: FaceRecPipeline, app_config: AppConfig) -> Fas
             )
 
             index_storage = ctx.extra["index_storage"]
-            index_key = request_id
+            index_key = str(uuid.uuid4())
             index_data_bytes = await serving_utils.call_async(
                 _serialize_index_data, index_data
             )
@@ -149,21 +149,20 @@ def create_pipeline_app(pipeline: FaceRecPipeline, app_config: AppConfig) -> Fas
                 index_storage.set, index_key, index_data_bytes
             )
 
-            return ResultResponse(
+            return ResultResponse[BuildIndexResult](
                 logId=serving_utils.generate_log_id(),
-                errorCode=0,
-                errorMsg="Success",
                 result=BuildIndexResult(indexKey=index_key, idMap=index_data.id_map),
             )
 
-        except Exception as e:
-            logging.exception(e)
+        except Exception:
+            logging.exception("Unexpected exception")
             raise HTTPException(status_code=500, detail="Internal server error")
 
     @app.post(
         "/face-recognition-index-add",
         operation_id="buildIndex",
-        responses={422: {"model": Response}},
+        responses={422: {"model": NoResultResponse}},
+        response_model_exclude_none=True,
     )
     async def _add_images_to_index(
         request: AddImagesToIndexRequest,
@@ -199,21 +198,20 @@ def create_pipeline_app(pipeline: FaceRecPipeline, app_config: AppConfig) -> Fas
                 index_storage.set, request.indexKey, index_data_bytes
             )
 
-            return ResultResponse(
+            return ResultResponse[AddImagesToIndexResult](
                 logId=serving_utils.generate_log_id(),
-                errorCode=0,
-                errorMsg="Success",
                 result=AddImagesToIndexResult(idMap=index_data.id_map),
             )
 
-        except Exception as e:
-            logging.exception(e)
+        except Exception:
+            logging.exception("Unexpected exception")
             raise HTTPException(status_code=500, detail="Internal server error")
 
     @app.post(
         "/face-recognition-index-remove",
         operation_id="buildIndex",
-        responses={422: {"model": Response}},
+        responses={422: {"model": NoResultResponse}},
+        response_model_exclude_none=True,
     )
     async def _remove_images_from_index(
         request: RemoveImagesFromIndexRequest,
@@ -240,21 +238,20 @@ def create_pipeline_app(pipeline: FaceRecPipeline, app_config: AppConfig) -> Fas
                 index_storage.set, request.indexKey, index_data_bytes
             )
 
-            return ResultResponse(
+            return ResultResponse[RemoveImagesFromIndexResult](
                 logId=serving_utils.generate_log_id(),
-                errorCode=0,
-                errorMsg="Success",
                 result=RemoveImagesFromIndexResult(idMap=index_data.id_map),
             )
 
-        except Exception as e:
-            logging.exception(e)
+        except Exception:
+            logging.exception("Unexpected exception")
             raise HTTPException(status_code=500, detail="Internal server error")
 
     @app.post(
         "/face-recognition-infer",
         operation_id="infer",
-        responses={422: {"model": Response}},
+        responses={422: {"model": NoResultResponse}},
+        response_model_exclude_none=True,
     )
     async def _infer(request: InferRequest) -> ResultResponse[InferResult]:
         pipeline = ctx.pipeline
@@ -303,15 +300,13 @@ def create_pipeline_app(pipeline: FaceRecPipeline, app_config: AppConfig) -> Fas
                 serving_utils.image_to_bytes(result.img)
             )
 
-            return ResultResponse(
+            return ResultResponse[InferResult](
                 logId=serving_utils.generate_log_id(),
-                errorCode=0,
-                errorMsg="Success",
                 result=InferResult(faces=faces, image=output_image_base64),
             )
 
-        except Exception as e:
-            logging.exception(e)
+        except Exception:
+            logging.exception("Unexpected exception")
             raise HTTPException(status_code=500, detail="Internal server error")
 
     return app

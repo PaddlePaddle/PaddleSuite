@@ -641,6 +641,11 @@ Below are the API references and multi-language service invocation examples:
 </thead>
 <tbody>
 <tr>
+<td><code>logId</code></td>
+<td><code>string</code></td>
+<td>UUID for the request.</td>
+</tr>
+<tr>
 <td><code>errorCode</code></td>
 <td><code>integer</code></td>
 <td>Error code. Fixed as <code>0</code>.</td>
@@ -650,9 +655,13 @@ Below are the API references and multi-language service invocation examples:
 <td><code>string</code></td>
 <td>Error description. Fixed as <code>"Success"</code>.</td>
 </tr>
+<tr>
+<td><code>result</code></td>
+<td><code>object</code></td>
+<td>Operation result.</td>
+</tr>
 </tbody>
 </table>
-<p>The response body may also have a <code>result</code> property of type <code>object</code>, which stores the operation result information.</p>
 <ul>
 <li>When the request is not processed successfully, the response body properties are as follows:</li>
 </ul>
@@ -665,6 +674,11 @@ Below are the API references and multi-language service invocation examples:
 </tr>
 </thead>
 <tbody>
+<tr>
+<td><code>logId</code></td>
+<td><code>string</code></td>
+<td>UUID for the request.</td>
+</tr>
 <tr>
 <td><code>errorCode</code></td>
 <td><code>integer</code></td>
@@ -715,7 +729,7 @@ Below are the API references and multi-language service invocation examples:
 <td>No</td>
 </tr>
 <tr>
-<td><code>useImgUnwrapping</code></td>
+<td><code>useImgUnwarping</code></td>
 <td><code>boolean</code></td>
 <td>Whether to enable text image correction. This feature is enabled by default.</td>
 <td>No</td>
@@ -774,6 +788,11 @@ Below are the API references and multi-language service invocation examples:
 <td><code>visionInfo</code></td>
 <td><code>object</code></td>
 <td>Key information in the image, which can be used as input for other operations.</td>
+</tr>
+<tr>
+<td><code>dataInfo</code></td>
+<td><code>object</code></td>
+<td>Information about the input data.</td>
 </tr>
 </tbody>
 </table>
@@ -1147,18 +1166,18 @@ Below are the API references and multi-language service invocation examples:
 <tbody>
 <tr>
 <td><code>ocr</code></td>
-<td><code>string</code></td>
-<td>OCR prompt.</td>
+<td><code>array</code></td>
+<td>OCR prompts.</td>
 </tr>
 <tr>
 <td><code>table</code></td>
-<td><code>string</code></td>
-<td>Table prompt.</td>
+<td><code>array</code></td>
+<td>Table prompts.</td>
 </tr>
 <tr>
 <td><code>html</code></td>
-<td><code>string</code></td>
-<td>HTML prompt.</td>
+<td><code>array</code></td>
+<td>HTML prompts.</td>
 </tr>
 </tbody>
 </table></details>
@@ -1196,7 +1215,7 @@ payload = {
     &quot;file&quot;: file_data,
     &quot;fileType&quot;: 1,
     &quot;useImgOrientationCls&quot;: True,
-    &quot;useImgUnwrapping&quot;: True,
+    &quot;useImgUnwarping&quot;: True,
     &quot;useSealTextDet&quot;: True,
 }
 resp_vision = requests.post(url=f&quot;{API_BASE_URL}/chatocr-vision&quot;, json=payload)

@@ -22,7 +22,7 @@ from .....utils import logging
 from ...single_model_pipeline import AnomalyDetection
 from .. import utils as serving_utils
 from ..app import AppConfig, create_app
-from ..models import Response, ResultResponse
+from ..models import NoResultResponse, ResultResponse
 
 
 class InferRequest(BaseModel):
@@ -43,7 +43,8 @@ def create_pipeline_app(pipeline: AnomalyDetection, app_config: AppConfig) -> Fa
     @app.post(
         "/image-anomaly-detection",
         operation_id="infer",
-        responses={422: {"model": Response}},
+        responses={422: {"model": NoResultResponse}},
+        response_model_exclude_none=True,
     )
     async def _infer(request: InferRequest) -> ResultResponse[InferResult]:
         pipeline = ctx.pipeline
@@ -64,17 +65,15 @@ def create_pipeline_app(pipeline: AnomalyDetection, app_config: AppConfig) -> Fa
                 serving_utils.image_to_bytes(result.img.convert("RGB"))
             )
 
-            return ResultResponse(
+            return ResultResponse[InferResult](
                 logId=serving_utils.generate_log_id(),
-                errorCode=0,
-                errorMsg="Success",
                 result=InferResult(
                     labelMap=label_map, size=size, image=output_image_base64
                 ),
             )
 
-        except Exception as e:
-            logging.exception(e)
+        except Exception:
+            logging.exception("Unexpected exception")
             raise HTTPException(status_code=500, detail="Internal server error")
 
     return app
