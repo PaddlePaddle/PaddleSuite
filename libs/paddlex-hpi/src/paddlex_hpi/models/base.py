@@ -112,11 +112,6 @@ class HPPredictor(BasePredictor, metaclass=AutoRegisterABCMetaClass):
         )
         return hpi_config
 
-    def _get_selected_backend(self) -> Backend:
-        device_type, _ = device_helper.parse_device(self._device)
-        backend = self._hpi_config.get_selected_backend(self.model_name, device_type)
-        return backend
-
     def _create_ui_option(self) -> ui.RuntimeOption:
         option = ui.RuntimeOption()
         # HACK: Disable new IR for models that are known to have issues with the
@@ -138,7 +133,9 @@ class HPPredictor(BasePredictor, metaclass=AutoRegisterABCMetaClass):
         else:
             assert_never(device_type)
         backend, backend_config = self._hpi_config.get_backend_and_config(
-            model_name=self.model_name, device_type=device_type
+            model_name=self.model_name,
+            device_type=device_type,
+            onnx_format=self._onnx_format,
         )
         logging.info("Backend: %s", backend)
         logging.info("Backend config: %s", backend_config)
