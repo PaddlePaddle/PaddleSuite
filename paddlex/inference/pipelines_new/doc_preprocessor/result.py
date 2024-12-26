@@ -22,6 +22,7 @@ from PIL import Image, ImageDraw, ImageFont
 from ....utils.fonts import PINGFANG_FONT_FILE_PATH, create_font
 from ...common.result import BaseCVResult
 
+from pathlib import Path
 
 class DocPreprocessorResult(BaseCVResult):
     """doc preprocessor result"""
@@ -42,7 +43,7 @@ class DocPreprocessorResult(BaseCVResult):
         """
         if not str(save_path).lower().endswith((".jpg", ".png")):
             img_id = self["img_id"]
-            save_path = save_path + "/res_doc_preprocess_%d.jpg" % img_id
+            save_path = Path(save_path) / f"res_doc_preprocess_{img_id}.jpg"
         super().save_to_img(save_path, *args, **kwargs)
 
     def _to_img(self) -> PIL.Image:

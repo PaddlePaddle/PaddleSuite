@@ -25,6 +25,7 @@ from ...common.result import BaseCVResult, HtmlMixin, XlsxMixin
 
 from typing import Any, Dict, Optional
 
+from pathlib import Path
 
 class TableRecognitionResult(BaseCVResult, HtmlMixin, XlsxMixin):
     """table recognition result"""
@@ -86,49 +87,37 @@ class LayoutParsingResult(dict):
         img_id = self["img_id"]
         layout_det_res = self["layout_det_res"]
         if not layout_det_res["layout_det_use_whole_image"]:
-            save_img_path = save_path + "/layout_det_result_img%d.jpg" % (img_id)
+            save_img_path = Path(save_path) / f"layout_det_result_img{img_id}.jpg"
             layout_det_res.save_to_img(save_img_path)
 
         input_params = self["input_params"]
         if input_params["use_doc_preprocessor"]:
-            save_img_path = save_path + "/doc_preprocessor_result_img%d.jpg" % (img_id)
+            save_img_path = Path(save_path) / f"doc_preprocessor_result_img{img_id}.jpg"
             self["doc_preprocessor_res"].save_to_img(save_img_path)
 
         if input_params["use_general_ocr"]:
-            save_img_path = save_path + "/text_paragraphs_ocr_result_img%d.jpg" % (
-                img_id
-            )
+            save_img_path = Path(save_path) / f"text_paragraphs_ocr_result_img{img_id}.jpg"
             self["text_paragraphs_ocr_res"].save_to_img(save_img_path)
 
         if input_params["use_general_ocr"] or input_params["use_table_recognition"]:
-            save_img_path = save_path + "/overall_ocr_result_img%d.jpg" % (img_id)
+            save_img_path = Path(save_path) / f"overall_ocr_result_img{img_id}.jpg"
             self["overall_ocr_res"].save_to_img(save_img_path)
 
         if input_params["use_table_recognition"]:
             for tno in range(len(self["table_res_list"])):
                 table_res = self["table_res_list"][tno]
-                save_img_path = save_path + "/table_res_cell_img%d_region%d.jpg" % (
-                    img_id,
-                    table_res["table_region_id"],
-                )
+                table_region_id = table_res["table_region_id"]
+                save_img_path = Path(save_path) / f"table_res_cell_img{img_id}_region{table_region_id}.jpg"
                 table_res.save_to_img(save_img_path)
-                save_html_path = save_path + "/table_res_img%d_region%d.html" % (
-                    img_id,
-                    table_res["table_region_id"],
-                )
+                save_html_path = Path(save_path) / f"table_res_img{img_id}_region{table_region_id}.html"
                 table_res.save_to_html(save_html_path)
-                save_xlsx_path = save_path + "/table_res_img%d_region%d.xlsx" % (
-                    img_id,
-                    table_res["table_region_id"],
-                )
+                save_xlsx_path = Path(save_path) / f"table_res_img{img_id}_region{table_region_id}.xlsx"
                 table_res.save_to_xlsx(save_xlsx_path)
 
         if input_params["use_seal_recognition"]:
             for sno in range(len(self["seal_res_list"])):
                 seal_res = self["seal_res_list"][sno]
-                save_img_path = save_path + "/seal_res_img%d_region%d.jpg" % (
-                    img_id,
-                    seal_res["seal_region_id"],
-                )
+                seal_region_id = seal_res["seal_region_id"]
+                save_img_path = Path(save_path) / f"seal_res_img{img_id}_region{seal_region_id}.jpg"
                 seal_res.save_to_img(save_img_path)
         return
