@@ -27,7 +27,7 @@ from .text_recognition import TextRecPredictor
 
 # from .table_recognition import TablePredictor
 # from .object_detection import DetPredictor
-# from .instance_segmentation import InstanceSegPredictor
+from .instance_segmentation import InstanceSegPredictor
 from .semantic_segmentation import SegPredictor
 from .image_feature import ImageFeaturePredictor
 
