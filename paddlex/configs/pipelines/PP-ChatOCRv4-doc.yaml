@@ -1,7 +1,7 @@
 
 pipeline_name: PP-ChatOCRv4-doc
 
-use_lmm_predict: True
+use_mllm_predict: True
 
 SubModules:
   LLM_Chat:
@@ -9,7 +9,7 @@ SubModules:
     model_name: ernie-3.5
     api_type: qianfan
     ak: "api_key" # Set this to a real API key
-    sk: "secret_key"  # Set this to a real secret key   
+    sk: "secret_key"  # Set this to a real secret key     
 
   LLM_Retriever:
     module_name: retriever
@@ -67,6 +67,8 @@ SubModules:
 SubPipelines:
   LayoutParser:
     pipeline_name: layout_parsing
+
+    use_layout_detection: True
     use_doc_preprocessor: True
     use_general_ocr: True
     use_seal_recognition: True

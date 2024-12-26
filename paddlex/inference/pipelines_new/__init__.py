@@ -22,7 +22,7 @@ from ...utils.config import parse_config
 from .ocr import OCRPipeline
 from .doc_preprocessor import DocPreprocessorPipeline
 from .layout_parsing import LayoutParsingPipeline
-from .pp_chatocrv3_doc import PP_ChatOCRv3_doc_Pipeline
+from .pp_chatocr import PP_ChatOCR_Pipeline
 from .image_classification import ImageClassificationPipeline
 
 

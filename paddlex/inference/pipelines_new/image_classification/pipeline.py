@@ -19,8 +19,9 @@ from ...common.reader import ReadImage
 from ...common.batch_sampler import ImageBatchSampler
 from ...utils.pp_option import PaddlePredictorOption
 from ..base import BasePipeline
+
+# [TODO] 待更新models_new到models
 from ...models_new.image_classification.result import TopkResult
-from ...results import TopkResult
 
 
 class ImageClassificationPipeline(BasePipeline):

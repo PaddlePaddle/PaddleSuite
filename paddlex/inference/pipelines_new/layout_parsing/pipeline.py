@@ -17,20 +17,29 @@ from typing import Any, Dict, Optional
 import numpy as np
 import cv2
 from ..components import CropByBoxes
-from .utils import convert_points_to_boxes, get_sub_regions_ocr_res
+from .utils import (
+    convert_points_to_boxes,
+    get_sub_regions_ocr_res,
+    get_neighbor_boxes_idx,
+)
 from .table_recognition_post_processing import get_table_recognition_res
 
-from .result import LayoutParsingResult
+from .result import LayoutParsingResult, TableRecognitionResult
 
 from ....utils import logging
 
 from ...utils.pp_option import PaddlePredictorOption
 
-########## [TODO]后续需要更新路径
-from ...components.transforms import ReadImage
+from ...common.reader import ReadImage
+from ...common.batch_sampler import ImageBatchSampler
 
 from ..ocr.result import OCRResult
-from ...results import DetResult
+from ..doc_preprocessor.result import DocPreprocessorResult
+
+# [TODO] 待更新models_new到models
+from ...models_new.object_detection.result import DetResult
+
+import os, sys
 
 
 class LayoutParsingPipeline(BasePipeline):
@@ -62,6 +71,7 @@ class LayoutParsingPipeline(BasePipeline):
 
         self.inintial_predictor(config)
 
+        self.batch_sampler = ImageBatchSampler(batch_size=1)
         self.img_reader = ReadImage(format="BGR")
 
         self._crop_by_boxes = CropByBoxes()
@@ -80,10 +90,14 @@ class LayoutParsingPipeline(BasePipeline):
 
         self.pipeline_name = pipeline_name
 
+        self.use_layout_detection = True
         self.use_doc_preprocessor = False
         self.use_general_ocr = False
         self.use_seal_recognition = False
         self.use_table_recognition = False
+
+        if "use_layout_detection" in config:
+            self.use_layout_detection = config["use_layout_detection"]
 
         if "use_doc_preprocessor" in config:
             self.use_doc_preprocessor = config["use_doc_preprocessor"]
@@ -114,8 +128,9 @@ class LayoutParsingPipeline(BasePipeline):
 
         self.set_used_models_flag(config)
 
-        layout_det_config = config["SubModules"]["LayoutDetection"]
-        self.layout_det_model = self.create_model(layout_det_config)
+        if self.use_layout_detection:
+            layout_det_config = config["SubModules"]["LayoutDetection"]
+            self.layout_det_model = self.create_model(layout_det_config)
 
         if self.use_doc_preprocessor:
             doc_preprocessor_config = config["SubPipelines"]["DocPreprocessor"]
@@ -214,9 +229,163 @@ class LayoutParsingPipeline(BasePipeline):
             input_params["use_seal_recognition"] = False
         return
 
+    def predict_doc_preprocessor_res(
+        self, image_array: np.ndarray, input_params: dict
+    ) -> tuple[DocPreprocessorResult, np.ndarray]:
+        """
+        Preprocess the document image based on input parameters.
+
+        Args:
+            image_array (np.ndarray): The input image array.
+            input_params (dict): Dictionary containing preprocessing parameters.
+
+        Returns:
+            tuple[DocPreprocessorResult, np.ndarray]: A tuple containing the preprocessing
+                                              result dictionary and the processed image array.
+        """
+        if input_params["use_doc_preprocessor"]:
+            use_doc_orientation_classify = input_params["use_doc_orientation_classify"]
+            use_doc_unwarping = input_params["use_doc_unwarping"]
+            doc_preprocessor_res = next(
+                self.doc_preprocessor_pipeline(
+                    image_array,
+                    use_doc_orientation_classify=use_doc_orientation_classify,
+                    use_doc_unwarping=use_doc_unwarping,
+                )
+            )
+            doc_preprocessor_image = doc_preprocessor_res["output_img"]
+        else:
+            doc_preprocessor_res = {}
+            doc_preprocessor_image = image_array
+        return doc_preprocessor_res, doc_preprocessor_image
+
+    def predict_layout_detection_res(
+        self, image_array: np.ndarray, input_params: dict
+    ) -> DetResult:
+        """Predict layout detection result based on input parameters.
+
+        Args:
+            image_array (np.ndarray): The input image array.
+            input_params (dict): The input parameters including use_layout_detection, use_table_recognition, and use_seal_recognition.
+
+        Returns:
+            DetResult: The predicted layout detection result.
+        """
+        if input_params["use_layout_detection"]:
+            ########## [TODO]RT-DETR 检测结果有重复
+            layout_det_res = next(self.layout_det_model(image_array))
+            layout_det_res["layout_det_use_whole_image"] = False
+        else:
+            layout_det_res = {}
+            layout_det_res["layout_det_use_whole_image"] = True
+            layout_det_res["boxes"] = []
+            img_height, img_width = image_array.shape[:2]
+            coordinate = [0, 0, img_width, img_height]
+            if input_params["use_table_recognition"]:
+                box_info = {"label": "table", "coordinate": coordinate}
+                layout_det_res["boxes"].append(box_info)
+            if input_params["use_seal_recognition"]:
+                box_info = {"label": "seal", "coordinate": coordinate}
+                layout_det_res["boxes"].append(box_info)
+        return layout_det_res
+
+    def predict_overall_ocr_res(self, image_array: np.ndarray) -> OCRResult:
+        """
+        Predict the overall OCR result for the given image array.
+
+        Args:
+            image_array (np.ndarray): The input image array to perform OCR on.
+
+        Returns:
+            OCRResult: The predicted OCR result with updated dt_boxes.
+        """
+        overall_ocr_res = next(self.general_ocr_pipeline(image_array))
+        dt_boxes = convert_points_to_boxes(overall_ocr_res["dt_polys"])
+        overall_ocr_res["dt_boxes"] = dt_boxes
+        return overall_ocr_res
+
+    def predict_table_recognition_res(
+        self,
+        image_array: np.ndarray,
+        layout_det_res: DetResult,
+        overall_ocr_res: OCRResult,
+    ) -> list[TableRecognitionResult]:
+        """
+        Predict table recognition results from an image array, layout detection results, and OCR results.
+
+        Args:
+            image_array (np.ndarray): The input image represented as a numpy array.
+            layout_det_res (DetResult): The layout detection results containing box information.
+            overall_ocr_res (OCRResult): The overall OCR results containing text recognition information.
+
+        Returns:
+            list[TableRecognitionResult]: A list of table recognition results.
+        """
+        table_res_list = []
+        table_region_id = 1
+        for box_info in layout_det_res["boxes"]:
+            if box_info["label"].lower() in ["table"]:
+                if layout_det_res["layout_det_use_whole_image"]:
+                    crop_img_info = {}
+                    crop_img_info["img"] = image_array
+                    crop_img_info["box"] = box_info["coordinate"]
+                else:
+                    crop_img_info = self._crop_by_boxes(image_array, [box_info])
+                    crop_img_info = crop_img_info[0]
+                table_structure_pred = next(
+                    self.table_structure_model(crop_img_info["img"])
+                )
+                table_recognition_res = get_table_recognition_res(
+                    crop_img_info, table_structure_pred, overall_ocr_res
+                )
+
+                neighbor_text = ""
+                match_idx_list = get_neighbor_boxes_idx(
+                    overall_ocr_res["dt_boxes"], box_info["coordinate"]
+                )
+                if len(match_idx_list) > 0:
+                    for idx in match_idx_list:
+                        neighbor_text += overall_ocr_res["rec_text"][idx] + "; "
+                table_recognition_res["neighbor_text"] = neighbor_text
+                table_recognition_res["table_region_id"] = table_region_id
+                table_region_id += 1
+                table_res_list.append(table_recognition_res)
+        return table_res_list
+
+    def predict_seal_recognition_res(
+        self, image_array: np.ndarray, layout_det_res: DetResult
+    ) -> list[OCRResult]:
+        """
+        Predict seal recognition results based on the input image and layout detection results.
+
+        Args:
+            image_array (np.ndarray): The input image represented as a NumPy array.
+            layout_det_res (DetResult): The layout detection results containing boxes and labels.
+
+        Returns:
+            list[OCRResult]: A list of OCR results for detected seal regions.
+        """
+        seal_res_list = []
+        seal_region_id = 1
+        for box_info in layout_det_res["boxes"]:
+            if box_info["label"].lower() in ["seal"]:
+                if layout_det_res["layout_det_use_whole_image"]:
+                    crop_img_info = {}
+                    crop_img_info["img"] = image_array
+                    crop_img_info["box"] = box_info["coordinate"]
+                else:
+                    crop_img_info = self._crop_by_boxes(image_array, [box_info])
+                    crop_img_info = crop_img_info[0]
+                seal_ocr_res = next(self.seal_ocr_pipeline(crop_img_info["img"]))
+                seal_ocr_res["seal_region_id"] = seal_region_id
+                seal_region_id += 1
+                seal_res_list.append(seal_ocr_res)
+        return seal_res_list
+
     def predict(
         self,
         input: str | list[str] | np.ndarray | list[np.ndarray],
+        use_layout_detection: bool = True,
         use_doc_orientation_classify: bool = False,
         use_doc_unwarping: bool = False,
         use_general_ocr: bool = True,
@@ -228,7 +397,8 @@ class LayoutParsingPipeline(BasePipeline):
         This function predicts the layout parsing result for the given input.
 
         Args:
-            input (str | list[str] | np.ndarray | list[np.ndarray]): The input image(s) to be processed.
+            input (str | list[str] | np.ndarray | list[np.ndarray]): The input image(s) of pdf(s) to be processed.
+            use_layout_detection (bool): Whether to use layout detection.
             use_doc_orientation_classify (bool): Whether to use document orientation classification.
             use_doc_unwarping (bool): Whether to use document unwarping.
             use_general_ocr (bool): Whether to use general OCR.
@@ -240,12 +410,8 @@ class LayoutParsingPipeline(BasePipeline):
             LayoutParsingResult: The predicted layout parsing result.
         """
 
-        if not isinstance(input, list):
-            input_list = [input]
-        else:
-            input_list = input
-
         input_params = {
+            "use_layout_detection": use_layout_detection,
             "use_doc_preprocessor": self.use_doc_preprocessor,
             "use_doc_orientation_classify": use_doc_orientation_classify,
             "use_doc_unwarping": use_doc_unwarping,
@@ -264,90 +430,52 @@ class LayoutParsingPipeline(BasePipeline):
         if not self.check_input_params_valid(input_params):
             yield {"error": "input params invalid"}
 
-        img_id = 1
-        for input in input_list:
-            if isinstance(input, str):
-                image_array = next(self.img_reader(input))[0]["img"]
-            else:
-                image_array = input
+        for img_id, batch_data in enumerate(self.batch_sampler(input)):
+            image_array = self.img_reader(batch_data)[0]
+            img_id += 1
 
-            assert len(image_array.shape) == 3
+            doc_preprocessor_res, doc_preprocessor_image = (
+                self.predict_doc_preprocessor_res(image_array, input_params)
+            )
 
-            if input_params["use_doc_preprocessor"]:
-                doc_preprocessor_res = next(
-                    self.doc_preprocessor_pipeline(
-                        image_array,
-                        use_doc_orientation_classify=use_doc_orientation_classify,
-                        use_doc_unwarping=use_doc_unwarping,
-                    )
-                )
-                doc_preprocessor_image = doc_preprocessor_res["output_img"]
-                doc_preprocessor_res["img_id"] = img_id
-            else:
-                doc_preprocessor_res = {}
-                doc_preprocessor_image = image_array
-
-            ########## [TODO]RT-DETR 检测结果有重复
-            layout_det_res = next(self.layout_det_model(doc_preprocessor_image))
+            layout_det_res = self.predict_layout_detection_res(
+                doc_preprocessor_image, input_params
+            )
 
             if input_params["use_general_ocr"] or input_params["use_table_recognition"]:
-                overall_ocr_res = next(
-                    self.general_ocr_pipeline(doc_preprocessor_image)
-                )
-                overall_ocr_res["img_id"] = img_id
-                dt_boxes = convert_points_to_boxes(overall_ocr_res["dt_polys"])
-                overall_ocr_res["dt_boxes"] = dt_boxes
+                overall_ocr_res = self.predict_overall_ocr_res(doc_preprocessor_image)
             else:
                 overall_ocr_res = {}
 
-            text_paragraphs_ocr_res = {}
             if input_params["use_general_ocr"]:
                 text_paragraphs_ocr_res = self.get_text_paragraphs_ocr_res(
                     overall_ocr_res, layout_det_res
                 )
-                text_paragraphs_ocr_res["img_id"] = img_id
+            else:
+                text_paragraphs_ocr_res = {}
 
-            table_res_list = []
             if input_params["use_table_recognition"]:
-                table_region_id = 1
-                for box_info in layout_det_res["boxes"]:
-                    if box_info["label"].lower() in ["table"]:
-                        crop_img_info = self._crop_by_boxes(
-                            doc_preprocessor_image, [box_info]
-                        )
-                        crop_img_info = crop_img_info[0]
-                        table_structure_pred = next(
-                            self.table_structure_model(crop_img_info["img"])
-                        )
-                        table_recognition_res = get_table_recognition_res(
-                            crop_img_info, table_structure_pred, overall_ocr_res
-                        )
-                        table_recognition_res["table_region_id"] = table_region_id
-                        table_region_id += 1
-                        table_res_list.append(table_recognition_res)
+                table_res_list = self.predict_table_recognition_res(
+                    doc_preprocessor_image, layout_det_res, overall_ocr_res
+                )
+            else:
+                table_res_list = []
 
-            seal_res_list = []
             if input_params["use_seal_recognition"]:
-                seal_region_id = 1
-                for box_info in layout_det_res["boxes"]:
-                    if box_info["label"].lower() in ["seal"]:
-                        crop_img_info = self._crop_by_boxes(
-                            doc_preprocessor_image, [box_info]
-                        )
-                        crop_img_info = crop_img_info[0]
-                        seal_ocr_res = next(
-                            self.seal_ocr_pipeline(crop_img_info["img"])
-                        )
-                        seal_ocr_res["seal_region_id"] = seal_region_id
-                        seal_region_id += 1
-                        seal_res_list.append(seal_ocr_res)
+                seal_res_list = self.predict_seal_recognition_res(
+                    doc_preprocessor_image, layout_det_res
+                )
+            else:
+                seal_res_list = []
 
             single_img_res = {
                 "layout_det_res": layout_det_res,
                 "doc_preprocessor_res": doc_preprocessor_res,
+                "overall_ocr_res": overall_ocr_res,
                 "text_paragraphs_ocr_res": text_paragraphs_ocr_res,
                 "table_res_list": table_res_list,
                 "seal_res_list": seal_res_list,
                 "input_params": input_params,
+                "img_id": img_id,
             }
             yield LayoutParsingResult(single_img_res)

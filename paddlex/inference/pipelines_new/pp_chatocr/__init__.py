@@ -12,4 +12,4 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .pipeline import PP_ChatOCRv3_doc_Pipeline
+from .pipeline import PP_ChatOCR_Pipeline

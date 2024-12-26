@@ -20,10 +20,10 @@ import PIL
 from PIL import Image, ImageDraw, ImageFont
 
 from ....utils.fonts import PINGFANG_FONT_FILE_PATH, create_font
-from ..components import CVResult
+from ...common.result import BaseCVResult
 
 
-class OCRResult(CVResult):
+class OCRResult(BaseCVResult):
     """OCR result"""
 
     def save_to_img(self, save_path: str, *args, **kwargs) -> None:

@@ -16,13 +16,13 @@ from .base import BaseGeneratePrompt
 from typing import Dict
 
 
-class GenerateKIEPrompt(BaseGeneratePrompt):
-    """Generate KIE Prompt"""
+class GenerateEnsemblePrompt(BaseGeneratePrompt):
+    """Generate Ensemble Prompt"""
 
-    entities = ["text_kie_prompt", "table_kie_prompt"]
+    entities = ["ensemble_prompt"]
 
     def __init__(self, config: Dict) -> None:
-        """Initializes the GenerateKIEPrompt instance with the given configuration.
+        """Initializes the GenerateEnsemblePrompt instance with the given configuration.
 
         Args:
             config (Dict): A dictionary containing configuration settings.
@@ -62,7 +62,7 @@ class GenerateKIEPrompt(BaseGeneratePrompt):
 
         if task_type not in self.entities:
             raise ValueError(
-                f"task type must be in {self.entities} of GenerateKIEPrompt."
+                f"task type must be in {self.entities} of GenerateEnsemblePrompt."
             )
 
         self.task_type = task_type
@@ -74,8 +74,9 @@ class GenerateKIEPrompt(BaseGeneratePrompt):
 
     def generate_prompt(
         self,
-        text_content: str,
-        key_list: list,
+        key: str,
+        result_methodA: str,
+        result_methodB: str,
         task_description: str = None,
         output_format: str = None,
         rules_str: str = None,
@@ -83,10 +84,10 @@ class GenerateKIEPrompt(BaseGeneratePrompt):
         few_shot_demo_key_value_list: str = None,
     ) -> str:
         """Generates a prompt based on the given parameters.
-
         Args:
-            text_content (str): The main text content to be used in the prompt.
-            key_list (list): A list of keywords for information extraction.
+            key (str): the input question.
+            result_methodA (str): the result of method A.
+            result_methodB (str): the result of method B.
             task_description (str, optional): A description of the task. Defaults to None.
             output_format (str, optional): The desired output format. Defaults to None.
             rules_str (str, optional): A string containing rules or instructions. Defaults to None.
@@ -115,18 +116,12 @@ class GenerateKIEPrompt(BaseGeneratePrompt):
 
         prompt = f"""{task_description}{rules_str}{output_format}{few_shot_demo_text_content}{few_shot_demo_key_value_list}"""
         task_type = self.task_type
-        if task_type == "table_kie_prompt":
-            prompt += f"""\n结合上面，下面正式开始：\
-                表格内容：```{text_content}```\
-                \n问题列表：{key_list}。""".replace(
-                "    ", ""
-            )
-        elif task_type == "text_kie_prompt":
-            prompt += f"""\n结合上面的例子，下面正式开始：\
-                OCR文字：```{text_content}```\
-                \n问题列表：{key_list}。""".replace(
-                "    ", ""
-            )
+        if task_type == "ensemble_prompt":
+            prompt += f"""下面正式开始:
+                \n问题：```{key}```
+                \n方法A的结果：{result_methodA}
+                \n方法B的结果：{result_methodB}
+                """
         else:
             raise ValueError(f"{self.task_type} is currently not supported.")
         return prompt

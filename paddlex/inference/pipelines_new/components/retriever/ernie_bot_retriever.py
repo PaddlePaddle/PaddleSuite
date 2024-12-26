@@ -112,7 +112,6 @@ class ErnieBotRetriever(BaseRetriever):
         )
         texts = text_splitter.split_text("\t".join(text_list))
         all_splits = [Document(page_content=text) for text in texts]
-
         api_type = self.config["api_type"]
         if api_type == "qianfan":
             os.environ["QIANFAN_AK"] = os.environ.get("EB_AK", self.config["ak"])
@@ -209,7 +208,7 @@ class ErnieBotRetriever(BaseRetriever):
         for query_text in query_text_list:
             QUESTION = query_text
             time.sleep(sleep_time)
-            docs = vectorstore.similarity_search_with_relevance_scores(QUESTION, k=2)
+            docs = vectorstore.similarity_search_with_relevance_scores(QUESTION, k=3)
             context = [(document.page_content, score) for document, score in docs]
             context = sorted(context, key=lambda x: x[1])
             C.extend([x[0] for x in context[::-1]])

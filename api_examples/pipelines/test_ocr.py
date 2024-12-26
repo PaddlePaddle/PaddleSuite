@@ -16,9 +16,9 @@ from paddlex import create_pipeline
 
 pipeline = create_pipeline(pipeline="OCR")
 
-# output = pipeline.predict("./test_samples/general_ocr_002.png")
+output = pipeline.predict("./test_samples/general_ocr_002.png")
 
-output = pipeline.predict("./test_samples/seal_text_det.png")
+# output = pipeline.predict("./test_samples/财报1.pdf")
 for res in output:
     print(res)
     res.save_to_img("./output")

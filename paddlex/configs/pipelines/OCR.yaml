@@ -1,10 +1,6 @@
 
 pipeline_name: OCR
 
-##############################################
-####### Config for Common OCR
-##############################################
-
 text_type: general
 
 SubModules:
@@ -18,21 +14,3 @@ SubModules:
     model_name: PP-OCRv4_mobile_rec
     model_dir: null
     batch_size: 1
-
-##############################################
-####### Config for Seal OCR
-##############################################
-
-# text_type: seal
-
-# SubModules:
-#   TextDetection:
-#     module_name: seal_text_detection
-#     model_name: PP-OCRv4_mobile_seal_det
-#     model_dir: null
-#     batch_size: 1    
-#   TextRecognition:
-#     module_name: text_recognition
-#     model_name: PP-OCRv4_mobile_rec
-#     model_dir: null
-#     batch_size: 1

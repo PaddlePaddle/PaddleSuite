@@ -248,6 +248,8 @@ class Base64Mixin:
         if not str(save_path).lower().endswith((".b64")):
             fp = Path(self["input_path"])
             save_path = Path(save_path) / f"{fp.stem}{fp.suffix}"
+        else:
+            save_path = Path(save_path)
         self._base64_writer.write(save_path.as_posix(), self.base64, *args, **kwargs)
 
 
@@ -352,6 +354,8 @@ class CSVMixin:
         """
         if not str(save_path).endswith(".csv"):
             save_path = Path(save_path) / f"{Path(self['input_path']).stem}.csv"
+        else:
+            save_path = Path(save_path)
         self._csv_writer.write(save_path.as_posix(), self.csv, *args, **kwargs)
 
 
@@ -397,6 +401,8 @@ class HtmlMixin:
         """
         if not str(save_path).endswith(".html"):
             save_path = Path(save_path) / f"{Path(self['input_path']).stem}.html"
+        else:
+            save_path = Path(save_path)
         self._html_writer.write(save_path.as_posix(), self.html, *args, **kwargs)
 
 
@@ -442,4 +448,6 @@ class XlsxMixin:
         """
         if not str(save_path).endswith(".xlsx"):
             save_path = Path(save_path) / f"{Path(self['input_path']).stem}.xlsx"
+        else:
+            save_path = Path(save_path)
         self._xlsx_writer.write(save_path.as_posix(), self.xlsx, *args, **kwargs)

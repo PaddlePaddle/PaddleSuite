@@ -51,6 +51,8 @@ SubModules:
 SubPipelines:
   LayoutParser:
     pipeline_name: layout_parsing
+
+    use_layout_detection: True
     use_doc_preprocessor: True
     use_general_ocr: True
     use_seal_recognition: True
