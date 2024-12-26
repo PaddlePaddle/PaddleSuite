@@ -1,43 +1,39 @@
 Global:
-  checkpoints: null
-  pretrained_model: https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PPTSM_ResNet50_k400_8frames_uniform_pretrained.pdparams
-  output_dir: ./output/
-  device: gpu
-  use_visualdl: False
-  save_inference_dir: ./inference
-  # training model under @to_static
-  to_static: False
-  algorithm: PPTSM_ResNet50_k400_8frames_uniform
+    checkpoints: null
+    pretrained_model: "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-TSMv2-LCNetV2_8frames_uniform_pretrained.pdparams"
+    output_dir: ./output/
+    device: gpu
+    use_visualdl: False
+    save_inference_dir: ./inference
+    # training model under @to_static
+    to_static: False
+    algorithm: PP-TSMv2-LCNetV2_8frames_uniform
 
 MODEL: #MODEL field
     framework: "Recognizer2D" #Mandatory, indicate the type of network, associate to the 'paddlevideo/modeling/framework/' .
     backbone: #Mandatory, indicate the type of backbone, associate to the 'paddlevideo/modeling/backbones/' .
-        name: "ResNetTweaksTSM" #Mandatory, The name of backbone.
-        pretrained: null
-        depth: 50 #Optional, the depth of backbone architecture.
+        name: "PPTSM_v2" #Mandatory, The name of backbone.
+        pretrained: null #Optional, pretrained model path.
+        num_seg: 8
+        class_num: 400
     head:
-        name: "ppTSMHead" #Mandatory, indicate the type of head, associate to the 'paddlevideo/modeling/heads'
-        num_classes: 400 #Optional, the number of classes to be classified.
-        in_channels: 2048 #input channel of the extracted feature.
-        drop_ratio: 0.5 #the ratio of dropout
-        std: 0.01 #std value in params initialization
-        ls_eps: 0.1 # label smooth factor
+        name: "MoViNetHead" #Mandatory, indicate the type of head, associate to the 'paddlevideo/modeling/heads'
+
 
 DATASET: #DATASET field
     batch_size: 16  #Mandatory, bacth size
     num_workers: 4 #Mandatory, the number of subprocess on each GPU.
-    # test_batch_size: 1
     train:
         format: "VideoDataset" #Mandatory, indicate the type of dataset, associate to the 'paddlevidel/loader/dateset'
-        data_prefix: "K400_dataset/K400/videos"  #Mandatory, train data root path
+        data_prefix: "K400_dataset/K400/videos" #Mandatory, train data root path
         file_path: "K400_dataset/K400/train.txt" #Mandatory, train data index file path
     valid:
         format: "VideoDataset" #Mandatory, indicate the type of dataset, associate to the 'paddlevidel/loader/dateset'
-        data_prefix: "K400_dataset/K400/videos"  #Mandatory, train data root path
+        data_prefix: "K400_dataset/K400/videos" #Mandatory, valid data root path
         file_path: "K400_dataset/K400/val.txt" #Mandatory, valid data index file path
     test:
         format: "VideoDataset" #Mandatory, indicate the type of dataset, associate to the 'paddlevidel/loader/dateset'
-        data_prefix: "K400_dataset/K400/videos"  #Mandatory, train data root path
+        data_prefix: "K400_dataset/K400/videos" #Mandatory, valid data root path
         file_path: "K400_dataset/K400/val.txt" #Mandatory, valid data index file path
 
 PIPELINE: #PIPELINE field
@@ -105,7 +101,7 @@ OPTIMIZER: #OPTIMIZER field
   learning_rate:
     iter_step: True
     name: 'CustomWarmupCosineDecay'
-    max_epoch: 80
+    max_epoch: 120
     warmup_epochs: 10
     warmup_start_lr: 0.005
     cosine_base_lr: 0.01
@@ -117,10 +113,6 @@ OPTIMIZER: #OPTIMIZER field
 MIX:
     name: "Mixup"
     alpha: 0.2
-
-PRECISEBN:
-  preciseBN_interval: 5     # epoch interval to do preciseBN, default 1.
-  num_iters_preciseBN: 200  # how many batches used to do preciseBN, default 200.
 
 
 METRIC:
@@ -150,7 +142,7 @@ Infer:
         topk: 1
         class_id_map_file: data/k400/Kinetics-400_label_list.txt     
 
-model_name: "ppTSM"
+model_name: "ppTSMv2"
 log_interval: 10 #Optional, the interal of logger, default:10
-epochs: 80 #Mandatory, total epoch
+epochs: 120  #Mandatory, total epoch
 log_level: "INFO" #Optional, the logger level. default: "INFO"

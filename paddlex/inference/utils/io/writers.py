@@ -333,7 +333,7 @@ class OpenCVVideoWriterBackend(_VideoWriterBackend):
         if isinstance(obj, np.ndarray):
             vr = obj
             width, height = vr[0].shape[1], vr[0].shape[0]
-            fourcc = cv2.VideoWriter_fourcc(*"mp4v")  # 或者使用 'XVID'
+            fourcc = cv2.VideoWriter_fourcc(*"mp4v")  # Alternatively, use 'XVID'
             out = cv2.VideoWriter(out_path, fourcc, fps, (width, height))
             for frame in vr:
                 out.write(frame)

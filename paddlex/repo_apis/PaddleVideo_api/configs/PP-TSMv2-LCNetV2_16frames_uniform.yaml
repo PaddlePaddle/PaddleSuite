@@ -1,20 +1,20 @@
 Global:
     checkpoints: null
-    pretrained_model: "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PPTSMv2_LCNet_k400_8frames_uniform_pretrained.pdparams"
+    pretrained_model: "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-TSMv2-LCNetV2_16frames_uniform_pretrained.pdparams"
     output_dir: ./output/
     device: gpu
     use_visualdl: False
     save_inference_dir: ./inference
     # training model under @to_static
     to_static: False
-    algorithm: PPTSMv2_LCNet_k400_8frames_uniform
+    algorithm: PP-TSMv2-LCNetV2_16frames_uniform
 
 MODEL: #MODEL field
     framework: "Recognizer2D" #Mandatory, indicate the type of network, associate to the 'paddlevideo/modeling/framework/' .
     backbone: #Mandatory, indicate the type of backbone, associate to the 'paddlevideo/modeling/backbones/' .
         name: "PPTSM_v2" #Mandatory, The name of backbone.
         pretrained: null #Optional, pretrained model path.
-        num_seg: 8
+        num_seg: 16
         class_num: 400
     head:
         name: "MoViNetHead" #Mandatory, indicate the type of head, associate to the 'paddlevideo/modeling/heads'
@@ -27,14 +27,17 @@ DATASET: #DATASET field
         format: "VideoDataset" #Mandatory, indicate the type of dataset, associate to the 'paddlevidel/loader/dateset'
         data_prefix: "K400_dataset/K400/videos" #Mandatory, train data root path
         file_path: "K400_dataset/K400/train.txt" #Mandatory, train data index file path
+
     valid:
         format: "VideoDataset" #Mandatory, indicate the type of dataset, associate to the 'paddlevidel/loader/dateset'
         data_prefix: "K400_dataset/K400/videos" #Mandatory, valid data root path
         file_path: "K400_dataset/K400/val.txt" #Mandatory, valid data index file path
+
     test:
         format: "VideoDataset" #Mandatory, indicate the type of dataset, associate to the 'paddlevidel/loader/dateset'
         data_prefix: "K400_dataset/K400/videos" #Mandatory, valid data root path
         file_path: "K400_dataset/K400/val.txt" #Mandatory, valid data index file path
+
 
 PIPELINE: #PIPELINE field
     train: #Mandotary, indicate the pipeline to deal with the training data, associate to the 'paddlevideo/loader/pipelines/'
@@ -43,7 +46,7 @@ PIPELINE: #PIPELINE field
             backend: "decord"
         sample:
             name: "Sampler"
-            num_seg: 8
+            num_seg: 16
             seg_len: 1
             valid_mode: False
         transform: #Mandotary, image transfrom operator
@@ -64,7 +67,7 @@ PIPELINE: #PIPELINE field
             backend: "decord"
         sample:
             name: "Sampler"
-            num_seg: 8
+            num_seg: 16
             seg_len: 1
             valid_mode: True
         transform:
@@ -82,7 +85,7 @@ PIPELINE: #PIPELINE field
             backend: "decord"
         sample:
             name: "Sampler"
-            num_seg: 8
+            num_seg: 16
             seg_len: 1
             valid_mode: True
         transform:
@@ -120,13 +123,13 @@ METRIC:
 
 INFERENCE:
     name: 'ppTSM_Inference_helper'
-    num_seg: 8
+    num_seg: 16
     target_size: 224
 
 Infer:
     transforms:
         - ReadVideo:
-            num_seg: 8
+            num_seg: 16
             sample_type: 'uniform'
         - Scale:
             short_size: 256
@@ -140,7 +143,7 @@ Infer:
     PostProcess:
         name: Topk
         topk: 1
-        class_id_map_file: data/k400/Kinetics-400_label_list.txt     
+        class_id_map_file: data/k400/Kinetics-400_label_list.txt      
 
 model_name: "ppTSMv2"
 log_interval: 10 #Optional, the interal of logger, default:10

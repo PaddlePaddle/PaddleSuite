@@ -19,7 +19,6 @@ from typing import List, Sequence, Union, Optional, Tuple
 
 import re
 import numpy as np
-from PIL import Image
 import cv2
 import math
 import json
@@ -36,7 +35,6 @@ class Scale:
         fixed_ratio: bool = True,
         keep_ratio: Union[bool, None] = None,
         do_round: bool = False,
-        backend: str = "pillow",
     ) -> None:
         """
         Initializes the Scale class.
@@ -46,7 +44,6 @@ class Scale:
             fixed_ratio (bool): Whether to maintain a fixed aspect ratio of 4:3.
             keep_ratio (Union[bool, None]): Whether to keep the aspect ratio. Cannot be True if fixed_ratio is True.
             do_round (bool): Whether to round the scaling factor.
-            backend (str): The backend to use for resizing, either 'pillow' or 'cv2'.
         """
         super().__init__()
         self.short_size = short_size
@@ -56,36 +53,29 @@ class Scale:
         self.fixed_ratio = fixed_ratio
         self.keep_ratio = keep_ratio
         self.do_round = do_round
-        self.backend = backend
 
-    def scale(
-        self, video: Sequence[Union[Image.Image, np.ndarray]]
-    ) -> List[Image.Image]:
+    def scale(self, video: List[np.ndarray]) -> List[np.ndarray]:
         """
         Performs resize operations on a sequence of images.
 
         Args:
-            video (Sequence[Union[PIL.Image.Image, np.ndarray]]): List where each item is an image, either as a PIL.Image
-            or a numpy array. For example, [PIL.Image0, PIL.Image1, PIL.Image2, ...]
+            video (List[np.ndarray]): List where each item is an image,  as a numpy array.
+             For example, [np.ndarray0, np.ndarray1, np.ndarray2, ...]
 
         Returns:
-            List[PIL.Image.Image]: List where each item is a PIL.Image after scaling.
+            List[np.ndarray]: List where each item is a np.ndarray after scaling.
         """
 
         imgs = video
 
         resized_imgs = []
         for i in range(len(imgs)):
-            img = imgs[i]
+            img = np.array(imgs[i])
             if isinstance(img, np.ndarray):
                 h, w, _ = img.shape
-            elif isinstance(img, Image.Image):
-                w, h = img.size
             else:
                 raise NotImplementedError
             if (w <= h and w == self.short_size) or (h <= w and h == self.short_size):
-                if self.backend == "pillow" and not isinstance(img, Image.Image):
-                    img = Image.fromarray(img)
                 resized_imgs.append(img)
                 continue
 
@@ -125,35 +115,23 @@ class Scale:
                         if self.do_round
                         else int(w * self.short_size / h)
                     )
-            if self.backend == "pillow":
-                resized_imgs.append(img.resize((ow, oh), Image.BILINEAR))
-            elif self.backend == "cv2" and (self.keep_ratio is not None):
+            if self.keep_ratio is not None:
                 resized_imgs.append(
                     cv2.resize(img, (ow, oh), interpolation=cv2.INTER_LINEAR)
-                )
-            else:
-                resized_imgs.append(
-                    Image.fromarray(
-                        cv2.resize(
-                            np.asarray(img), (ow, oh), interpolation=cv2.INTER_LINEAR
-                        )
-                    )
                 )
         imgs = resized_imgs
         return imgs
 
-    def __call__(
-        self, videos: List[Sequence[Union[Image.Image, np.ndarray]]]
-    ) -> List[List[Image.Image]]:
+    def __call__(self, videos: List[np.ndarray]) -> List[np.ndarray]:
         """
         Apply the scaling operation to a list of videos.
 
         Args:
-            videos (List[Sequence[Union[PIL.Image.Image, np.ndarray]]]): A list of videos, where each video is a sequence
+            videos (List[np.ndarray]): A list of videos, where each video is a sequence
             of images.
 
         Returns:
-            List[List[PIL.Image.Image]]: A list of videos after scaling, where each video is a list of images.
+            List[np.ndarray]: A list of videos after scaling, where each video is a list of images.
         """
         return [self.scale(video) for video in videos]
 
@@ -161,33 +139,27 @@ class Scale:
 class CenterCrop:
     """Center crop images."""
 
-    def __init__(
-        self, target_size: int, do_round: bool = True, backend: str = "pillow"
-    ) -> None:
+    def __init__(self, target_size: int, do_round: bool = True) -> None:
         """
         Initializes the CenterCrop class.
 
         Args:
             target_size (int): The size of the cropped area.
             do_round (bool): Whether to round the crop coordinates.
-            backend (str): The backend to use for cropping, either 'pillow' or 'cv2'.
         """
         super().__init__()
         self.target_size = target_size
         self.do_round = do_round
-        self.backend = backend
 
-    def center_crop(
-        self, imgs: Union[Sequence[Image.Image], np.ndarray]
-    ) -> Union[List[Image.Image], np.ndarray]:
+    def center_crop(self, imgs: List[np.ndarray]) -> List[np.ndarray]:
         """
         Performs center crop operations on images.
 
         Args:
-            imgs (Union[Sequence[PIL.Image.Image], np.ndarray]): A sequence of images (either PIL.Image or a numpy array).
+            imgs (List[np.ndarray]): A sequence of images (a numpy array).
 
         Returns:
-            Union[List[PIL.Image.Image], np.ndarray]: A list of images after center cropping or a cropped numpy array.
+            List[np.ndarray]: A list of images after center cropping or a cropped numpy array.
         """
 
         crop_imgs = []
@@ -199,12 +171,7 @@ class CenterCrop:
             crop_imgs = imgs[:, :, y1 : y1 + th, x1 : x1 + tw]
         else:
             for img in imgs:
-                if self.backend == "pillow":
-                    w, h = img.size
-                elif self.backend == "cv2":
-                    h, w, _ = img.shape
-                else:
-                    raise NotImplementedError
+                h, w, _ = img.shape
                 assert (w >= self.target_size) and (
                     h >= self.target_size
                 ), "image width({}) and height({}) should be larger than crop size".format(
@@ -212,23 +179,18 @@ class CenterCrop:
                 )
                 x1 = int(round((w - tw) / 2.0)) if self.do_round else (w - tw) // 2
                 y1 = int(round((h - th) / 2.0)) if self.do_round else (h - th) // 2
-                if self.backend == "cv2":
-                    crop_imgs.append(img[y1 : y1 + th, x1 : x1 + tw])
-                elif self.backend == "pillow":
-                    crop_imgs.append(img.crop((x1, y1, x1 + tw, y1 + th)))
+                crop_imgs.append(img[y1 : y1 + th, x1 : x1 + tw])
         return crop_imgs
 
-    def __call__(
-        self, videos: List[Union[Sequence[Image.Image], np.ndarray]]
-    ) -> List[Union[List[Image.Image], np.ndarray]]:
+    def __call__(self, videos: List[np.ndarray]) -> List[np.ndarray]:
         """
         Apply the center crop operation to a list of videos.
 
         Args:
-            videos (List[Union[Sequence[PIL.Image.Image], np.ndarray]]): A list of videos, where each video is a sequence of images.
+            videos (List[np.ndarray]): A list of videos, where each video is a sequence of images.
 
         Returns:
-            List[Union[List[PIL.Image.Image], np.ndarray]]: A list of videos after center cropping.
+            List[np.ndarray]: A list of videos after center cropping.
         """
         return [self.center_crop(video) for video in videos]
 
@@ -255,12 +217,12 @@ class Image2Array:
         self.transpose = transpose
         self.data_format = data_format
 
-    def img2array(self, imgs: Sequence[Image.Image]) -> np.ndarray:
+    def img2array(self, imgs: List[np.ndarray]) -> np.ndarray:
         """
         Converts a sequence of images to a numpy array and optionally transposes it.
 
         Args:
-            imgs (Sequence[PIL.Image.Image]): A list of images to be converted to a numpy array.
+            imgs (List[np.ndarray]): A list of images to be converted to a numpy array.
 
         Returns:
             np.ndarray: A numpy array representation of the images.
@@ -273,12 +235,12 @@ class Image2Array:
                 t_imgs = t_imgs.transpose([3, 0, 1, 2])  # cthw
         return t_imgs
 
-    def __call__(self, videos: List[Sequence[Image.Image]]) -> List[np.ndarray]:
+    def __call__(self, videos: List[np.ndarray]) -> List[np.ndarray]:
         """
         Apply the image to array conversion to a list of videos.
 
         Args:
-            videos (List[Sequence[PIL.Image.Image]]): A list of videos, where each video is a sequence of images.
+            videos (List[Sequence[np.ndarray]]): A list of videos, where each video is a sequence of images.
 
         Returns:
             List[np.ndarray]: A list of numpy arrays, one for each video.

@@ -56,12 +56,7 @@ class VideoBatchSampler(BaseBatchSampler):
 
         batch = []
         for input in inputs:
-            if isinstance(input, np.ndarray):
-                batch.append(input)
-                if len(batch) == self.batch_size:
-                    yield batch
-                    batch = []
-            elif isinstance(input, str):
+            if isinstance(input, str):
                 file_path = (
                     self._download_from_url(input)
                     if input.startswith("http")
@@ -75,7 +70,7 @@ class VideoBatchSampler(BaseBatchSampler):
                         batch = []
             else:
                 logging.warning(
-                    f"Not supported input data type! Only `numpy.ndarray` and `str` are supported! So has been ignored: {input}."
+                    f"Not supported input data type! Only `str` are supported! So has been ignored: {input}."
                 )
         if len(batch) > 0:
             yield batch

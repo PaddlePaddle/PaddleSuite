@@ -48,7 +48,6 @@ class VideoClasPredictor(BasicPredictor):
         pre_tfs = {}
         for cfg in self.config["PreProcess"]["transform_ops"]:
             tf_key = list(cfg.keys())[0]
-            # print(self._FUNC_MAP)
             assert tf_key in self._FUNC_MAP
             func = self._FUNC_MAP[tf_key]
             args = cfg.get(tf_key, {})
@@ -73,7 +72,6 @@ class VideoClasPredictor(BasicPredictor):
         return pre_tfs, infer, post_op
 
     def process(self, batch_data, topk: Union[int, None] = None):
-        # raise NotImplementedError
         batch_raw_videos = self.pre_tfs["ReadVideo"](videos=batch_data)
         batch_videos = self.pre_tfs["Scale"](videos=batch_raw_videos)
         batch_videos = self.pre_tfs["CenterCrop"](videos=batch_videos)

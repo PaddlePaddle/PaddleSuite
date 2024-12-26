@@ -15,7 +15,7 @@
 import numpy as np
 import cv2
 
-from ...utils.io import ImageReader, PDFReader, VideoReader
+from ...utils.io import VideoReader
 
 
 class ReadVideo:

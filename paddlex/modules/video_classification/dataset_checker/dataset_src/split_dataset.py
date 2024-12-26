@@ -21,15 +21,16 @@ from .....utils.file_interface import custom_open
 
 def split_dataset(root_dir, train_rate, val_rate):
     """
-    将图像数据集按照比例分成训练集、验证集和测试集，并生成对应的.txt文件。
+    Split the image dataset into training, validation, and test sets according to the given ratios,
+    and generate corresponding .txt files.
 
     Args:
-        root_dir (str): 数据集根目录路径。
-        train_rate (int): 训练集占总数据集的比例（%）。
-        val_rate (int): 验证集占总数据集的比例（%）。
+        root_dir (str): Path to the root directory of the dataset.
+        train_rate (int): Percentage of the dataset to be used as the training set.
+        val_rate (int): Percentage of the dataset to be used as the validation set.
 
     Returns:
-        str: 数据划分结果信息。
+        str: Information about the dataset split results.
     """
     sum_rate = train_rate + val_rate
     assert (

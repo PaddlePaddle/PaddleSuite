@@ -56,6 +56,7 @@ class BaseTrainer(ABC, metaclass=AutoRegisterABCMetaClass):
         self.config = config
         self.global_config = config.Global
         self.train_config = config.Train
+        self.eval_config = config.Evaluate
         self.benchmark_config = config.get("Benchmark", None)
         config_path = self.train_config.get("basic_config_path", None)
 

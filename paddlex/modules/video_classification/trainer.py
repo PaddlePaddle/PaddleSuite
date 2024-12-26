@@ -58,7 +58,11 @@ class VideoClsTrainer(BaseTrainer):
         if label_dict_path.exists():
             self.dump_label_dict(label_dict_path)
         if self.train_config.batch_size is not None:
-            self.pdx_config.update_batch_size(self.train_config.batch_size)
+            self.pdx_config.update_batch_size(
+                self.train_config.batch_size, mode="train"
+            )
+        if self.eval_config.batch_size is not None:
+            self.pdx_config.update_batch_size(self.eval_config.batch_size, mode="eval")
         if self.train_config.learning_rate is not None:
             self.pdx_config.update_learning_rate(self.train_config.learning_rate)
         if self.train_config.epochs_iters is not None:

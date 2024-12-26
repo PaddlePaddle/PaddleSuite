@@ -1,5 +1,5 @@
 Global:
-  model: PPTSMv2_LCNet_k400_16frames_uniform
+  model: PP-TSM-R50_8frames_uniform
   mode: check_dataset # check_dataset/train/evaluate/predict
   dataset_dir: "./dataset/k400_examples"
   device: gpu:0,1,2,3
@@ -19,7 +19,7 @@ Train:
   epochs_iters: 20
   batch_size: 16
   learning_rate: 0.01
-  pretrain_weight_path: https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PPTSMv2_LCNet_k400_16frames_uniform_pretrained.pdparams
+  pretrain_weight_path: https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-TSM-R50_8frames_uniform_pretrained.pdparams
   warmup_steps: 4
   resume_path: null
   log_interval: 10
@@ -29,9 +29,10 @@ Train:
 Evaluate:
   weight_path: "output/best_model/best_model.pdparams"
   log_interval: 1
+  batch_size: 2
 
 Export:
-  weight_path: https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PPTSMv2_LCNet_k400_16frames_uniform_pretrained.pdparams
+  weight_path: https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-TSM-R50_8frames_uniform_pretrained.pdparams
 
 Predict:
   batch_size: 1

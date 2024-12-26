@@ -13,7 +13,7 @@
 # limitations under the License.
 
 MODELS = [
-    "PPTSM_ResNet50_k400_8frames_uniform",
-    "PPTSMv2_LCNet_k400_8frames_uniform",
-    "PPTSMv2_LCNet_k400_16frames_uniform",
+    "PP-TSM-R50_8frames_uniform",
+    "PP-TSMv2-LCNetV2_8frames_uniform",
+    "PP-TSMv2-LCNetV2_16frames_uniform",
 ]

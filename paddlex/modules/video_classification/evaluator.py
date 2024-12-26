@@ -28,6 +28,8 @@ class VideoClsEvaluator(BaseEvaluator):
         self.pdx_config.update_dataset(
             self.global_config.dataset_dir, "VideoClsDataset"
         )
+        if self.eval_config.batch_size is not None:
+            self.pdx_config.update_batch_size(self.eval_config.batch_size, mode="eval")
         self.pdx_config.update_pretrained_weights(self.eval_config.weight_path)
 
     def get_eval_kwargs(self) -> dict:

@@ -37,11 +37,9 @@ register_suite_info(
 ################ Models Using Universal Config ################
 register_model_info(
     {
-        "model_name": "PPTSM_ResNet50_k400_8frames_uniform",
+        "model_name": "PP-TSM-R50_8frames_uniform",
         "suite": "VideoCls",
-        "config_path": osp.join(
-            PDX_CONFIG_DIR, "PPTSM_ResNet50_k400_8frames_uniform.yaml"
-        ),
+        "config_path": osp.join(PDX_CONFIG_DIR, "PP-TSM-R50_8frames_uniform.yaml"),
         "supported_apis": ["train", "evaluate", "predict", "export", "infer"],
         "infer_config": "deploy/configs/inference_cls.yaml",
     }
@@ -49,10 +47,10 @@ register_model_info(
 
 register_model_info(
     {
-        "model_name": "PPTSMv2_LCNet_k400_8frames_uniform",
+        "model_name": "PP-TSMv2-LCNetV2_8frames_uniform",
         "suite": "VideoCls",
         "config_path": osp.join(
-            PDX_CONFIG_DIR, "PPTSMv2_LCNet_k400_8frames_uniform.yaml"
+            PDX_CONFIG_DIR, "PP-TSMv2-LCNetV2_8frames_uniform.yaml"
         ),
         "supported_apis": ["train", "evaluate", "predict", "export", "infer"],
         "infer_config": "deploy/configs/inference_cls.yaml",
@@ -62,10 +60,10 @@ register_model_info(
 
 register_model_info(
     {
-        "model_name": "PPTSMv2_LCNet_k400_16frames_uniform",
+        "model_name": "PP-TSMv2-LCNetV2_16frames_uniform",
         "suite": "VideoCls",
         "config_path": osp.join(
-            PDX_CONFIG_DIR, "PPTSMv2_LCNet_k400_16frames_uniform.yaml"
+            PDX_CONFIG_DIR, "PP-TSMv2-LCNetV2_16frames_uniform.yaml"
         ),
         "supported_apis": ["train", "evaluate", "predict", "export", "infer"],
         "infer_config": "deploy/configs/inference_cls.yaml",

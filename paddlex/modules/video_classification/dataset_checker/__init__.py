@@ -15,7 +15,7 @@
 from pathlib import Path
 
 from ...base import BaseDatasetChecker
-from .dataset_src import check, convert, split_dataset, deep_analyse
+from .dataset_src import check, split_dataset, deep_analyse
 from ..model_list import MODELS
 
 
@@ -38,17 +38,6 @@ class VideoClsDatasetChecker(BaseDatasetChecker):
         assert len(anno_dirs) == 1
         dataset_dir = anno_dirs[0].parent.as_posix()
         return dataset_dir
-
-    def convert_dataset(self, src_dataset_dir: str) -> str:
-        """convert the dataset from other type to specified type
-
-        Args:
-            src_dataset_dir (str): the root directory of dataset.
-
-        Returns:
-            str: the root directory of converted dataset.
-        """
-        return convert(src_dataset_dir)
 
     def split_dataset(self, src_dataset_dir: str) -> str:
         """repartition the train and validation dataset
