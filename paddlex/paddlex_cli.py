@@ -154,7 +154,7 @@ def main():
     if len(sys.argv) == 1:
         logging.warning("No arguments provided. Displaying help information:")
         args_cfg().print_help()
-        sys.exit(1)
+        sys.exit(2)
 
     if args.install:
         install(args)
