@@ -16,6 +16,8 @@ import os
 import argparse
 import subprocess
 import sys
+import shutil
+from pathlib import Path
 
 from importlib_resources import files, as_file
 
@@ -26,11 +28,8 @@ from .utils import logging
 from .utils.interactive_get_pipeline import interactive_get_pipeline
 
 
-def _install_serving_deps():
-    with as_file(files("paddlex").joinpath("serving_requirements.txt")) as req_file:
-        return subprocess.check_call(
-            [sys.executable, "-m", "pip", "install", "-r", str(req_file)]
-        )
+def _get_hpi_params(serial_number, update_license):
+    return {"serial_number": serial_number, "update_license": update_license}
 
 
 def args_cfg():
@@ -85,11 +84,30 @@ def args_cfg():
     parser.add_argument("--host", type=str, default="0.0.0.0")
     parser.add_argument("--port", type=int, default=8080)
 
+    ################# paddle2onnx #################
+    parser.add_argument("--paddle2onnx", action="store_true")
+    parser.add_argument("--paddle_model_dir", type=str)
+    parser.add_argument("--onnx_model_dir", type=str, default="onnx")
+    parser.add_argument("--opset_version", type=int, default=9)
+
     return parser
 
 
 def install(args):
     """install paddlex"""
+
+    def _install_serving_deps():
+        with as_file(files("paddlex").joinpath("serving_requirements.txt")) as req_file:
+            return subprocess.check_call(
+                [sys.executable, "-m", "pip", "install", "-r", str(req_file)]
+            )
+
+    def _install_paddle2onnx_deps():
+        with as_file(files("paddlex").joinpath("serving_requirements.txt")) as req_file:
+            return subprocess.check_call(
+                [sys.executable, "-m", "pip", "install", "-r", str(req_file)]
+            )
+
     # Enable debug info
     os.environ["PADDLE_PDX_DEBUG"] = "True"
     # Disable eager initialization
@@ -99,7 +117,18 @@ def install(args):
 
     if "serving" in plugins:
         plugins.remove("serving")
+        if plugins:
+            logging.error("`serving` cannot be used together with other plugins.")
+            sys.exit(2)
         _install_serving_deps()
+        return
+
+    if "paddle2onnx" in plugins:
+        plugins.remove("paddle2onnx")
+        if plugins:
+            logging.error("`paddle2onnx` cannot be used together with other plugins.")
+            sys.exit(2)
+        _install_paddle2onnx_deps()
         return
 
     if plugins:
@@ -114,10 +143,6 @@ def install(args):
         use_local_repos=args.use_local_repos,
     )
     return
-
-
-def _get_hpi_params(serial_number, update_license):
-    return {"serial_number": serial_number, "update_license": update_license}
 
 
 def pipeline_predict(
@@ -147,12 +172,76 @@ def serve(pipeline, *, device, use_hpip, serial_number, update_license, host, po
     run_server(app, host=host, port=port, debug=False)
 
 
+def paddle_to_onnx(paddle_model_dir, onnx_model_dir, *, opset_version):
+    PD_MODEL_FILENAME = "inference.pdmodel"
+    PD_PARAMS_FILENAME = "inference.pdiparams"
+    ONNX_MODEL_FILENAME = "inference.onnx"
+    CONFIG_FILENAME = "inference.yml"
+
+    def _check_input_dir(input_dir):
+        if input_dir is None:
+            sys.exit("Input directory must be specified")
+        input_dir = Path(input_dir)
+        if not input_dir.exists():
+            sys.exit(f"'{input_dir}' does not exist")
+        if not input_dir.is_dir():
+            sys.exit(f"'{input_dir}' is not a directory")
+        model_path = input_dir / PD_MODEL_FILENAME
+        if not model_path.exists():
+            sys.exit(f"'{model_path}' does not exist")
+        params_path = input_dir / PD_PARAMS_FILENAME
+        if not params_path.exists():
+            sys.exit(f"'{params_path}' does not exist")
+        config_path = input_dir / CONFIG_FILENAME
+        if not config_path.exists():
+            sys.exit(f"'{config_path}' does not exist")
+
+    def _check_paddle2onnx():
+        if shutil.which("paddle2onnx") is None:
+            sys.exit("Paddle2ONNX is not available. Please install the plugin first.")
+
+    def _run_paddle2onnx(input_dir, output_dir, opset_version):
+        logging.info("Paddle2ONNX conversion starting...")
+        cmd = [
+            "paddle2onnx",
+            "--model_dir",
+            input_dir,
+            "--model_filename",
+            PD_MODEL_FILENAME,
+            "--params_filename",
+            PD_PARAMS_FILENAME,
+            "--save_file",
+            str(Path(output_dir, ONNX_MODEL_FILENAME)),
+            "--opset_version",
+            str(opset_version),
+        ]
+        try:
+            subprocess.check_call(cmd)
+        except subprocess.CalledProcessError as e:
+            sys.exit(f"Paddle2ONNX conversion failed with exit code {e.returncode}")
+        logging.info("Paddle2ONNX conversion succeeded")
+
+    def _copy_config_file(input_dir, output_dir):
+        src_path = Path(input_dir, CONFIG_FILENAME)
+        dst_path = Path(output_dir, CONFIG_FILENAME)
+        shutil.copy(src_path, dst_path)
+        logging.info(f"Copied '{src_path}' to '{dst_path}'")
+
+    logging.info(f"Input dir: {paddle_model_dir}")
+    logging.info(f"Output dir: {onnx_model_dir}")
+    _check_input_dir(paddle_model_dir)
+    _check_paddle2onnx()
+    _run_paddle2onnx(paddle_model_dir, onnx_model_dir, opset_version)
+    _copy_config_file(paddle_model_dir, onnx_model_dir)
+    logging.info("Done")
+
+
 # for CLI
 def main():
     """API for commad line"""
     args = args_cfg().parse_args()
     if len(sys.argv) == 1:
-        logging.warning("No arguments provided. Displaying help information:")
+        logging.error("No arguments provided. Displaying help information:")
         args_cfg().print_help()
         sys.exit(2)
 
@@ -167,6 +256,12 @@ def main():
             update_license=args.update_license,
             host=args.host,
             port=args.port,
+        )
+    elif args.paddle2onnx:
+        paddle_to_onnx(
+            args.paddle_model_dir,
+            args.onnx_model_dir,
+            opset_version=args.opset_version,
         )
     else:
         if args.get_pipeline_config is not None:
