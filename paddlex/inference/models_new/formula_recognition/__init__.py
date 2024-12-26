@@ -12,11 +12,4 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from ..base import BaseExportor
-from .model_list import MODELS
-
-
-class TextRecExportor(BaseExportor):
-    """Text Recognition Model Exportor"""
-
-    entities = MODELS
+from .predictor import FormulaRecPredictor

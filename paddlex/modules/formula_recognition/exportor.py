@@ -16,7 +16,7 @@ from ..base import BaseExportor
 from .model_list import MODELS
 
 
-class TextRecExportor(BaseExportor):
+class FormulaRecExportor(BaseExportor):
     """Text Recognition Model Exportor"""
 
     entities = MODELS

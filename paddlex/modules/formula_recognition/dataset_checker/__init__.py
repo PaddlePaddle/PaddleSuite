@@ -13,39 +13,17 @@
 # limitations under the License.
 
 
-import os
-import os.path as osp
-from pathlib import Path
-from collections import defaultdict, Counter
-
-from PIL import Image
-import json
-
 from ...base import BaseDatasetChecker
 from .dataset_src import check, split_dataset, deep_analyse, convert
 
 from ..model_list import MODELS
 
 
-class TextRecDatasetChecker(BaseDatasetChecker):
+class FormulaRecDatasetChecker(BaseDatasetChecker):
     """Dataset Checker for Text Recognition Model"""
 
     entities = MODELS
     sample_num = 10
-
-    def get_dataset_root(self, dataset_dir: str) -> str:
-        """find the dataset root dir
-
-        Args:
-            dataset_dir (str): the directory that contain dataset.
-
-        Returns:
-            str: the root directory of dataset.
-        """
-        anno_dirs = list(Path(dataset_dir).glob("**/train.txt"))
-        assert len(anno_dirs) == 1
-        dataset_dir = anno_dirs[0].parent.as_posix()
-        return dataset_dir
 
     def convert_dataset(self, src_dataset_dir: str) -> str:
         """convert the dataset from other type to specified type
@@ -86,7 +64,7 @@ class TextRecDatasetChecker(BaseDatasetChecker):
         """
         return check(
             dataset_dir,
-            self.output,
+            self.global_config.output,
             sample_num=10,
             dataset_type=self.get_dataset_type(),
         )
@@ -100,10 +78,7 @@ class TextRecDatasetChecker(BaseDatasetChecker):
         Returns:
             dict: the deep analysis results.
         """
-        if self.global_config["model"] in ["LaTeX_OCR_rec"]:
-            datatype = "LaTeXOCRDataset"
-        else:
-            datatype = "MSTextRecDataset"
+        datatype = "FormulaRecDataset"
         return deep_analyse(dataset_dir, self.output, datatype=datatype)
 
     def get_show_type(self) -> str:
@@ -120,7 +95,4 @@ class TextRecDatasetChecker(BaseDatasetChecker):
         Returns:
             str: dataset type
         """
-        if self.global_config["model"] in ["LaTeX_OCR_rec"]:
-            return "LaTeXOCRDataset"
-        else:
-            return "MSTextRecDataset"
+        return "FormulaRecDataset"
