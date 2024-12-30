@@ -23,7 +23,7 @@ class TextRecResult(BaseCVResult):
 
     def _to_img(self):
         """Draw label on image"""
-        image = Image.fromarray(self._input_img)
+        image = Image.fromarray(self["input_img"])
         rec_text = self["rec_text"]
         rec_score = self["rec_score"]
         image = image.convert("RGB")
