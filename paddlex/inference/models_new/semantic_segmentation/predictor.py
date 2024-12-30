@@ -20,13 +20,13 @@ from ....modules.semantic_segmentation.model_list import MODELS
 from ...common.batch_sampler import ImageBatchSampler
 from ...common.reader import ReadImage
 from ..common import (
-    Resize,
     ResizeByShort,
     Normalize,
     ToCHWImage,
     ToBatch,
     StaticInfer,
 )
+from .processors import Resize, SegPostProcess
 from ..base import BasicPredictor
 from .result import SegResult
 
@@ -39,15 +39,22 @@ class SegPredictor(BasicPredictor):
     _FUNC_MAP = {}
     register = FuncRegister(_FUNC_MAP)
 
-    def __init__(self, *args: List, **kwargs: Dict) -> None:
+    def __init__(
+        self,
+        target_size: Union[int, Tuple[int], None] = None,
+        *args: List,
+        **kwargs: Dict,
+    ) -> None:
         """Initializes SegPredictor.
 
         Args:
+            target_size: Image size used for inference.
             *args: Arbitrary positional arguments passed to the superclass.
             **kwargs: Arbitrary keyword arguments passed to the superclass.
         """
         super().__init__(*args, **kwargs)
-        self.preprocessors, self.infer = self._build()
+        self.target_size = target_size
+        self.preprocessors, self.infer, self.postprocessers = self._build()
 
     def _build_batch_sampler(self) -> ImageBatchSampler:
         """Builds and returns an ImageBatchSampler instance.
@@ -80,6 +87,13 @@ class SegPredictor(BasicPredictor):
             name, op = func(self, **args) if args else func(self)
             preprocessors[name] = op
         preprocessors["ToBatch"] = ToBatch()
+        if "Resize" not in preprocessors:
+            _, op = self._FUNC_MAP["Resize"](self, target_size=-1)
+            preprocessors["Resize"] = op
+
+        if self.target_size is not None:
+            _, op = self._FUNC_MAP["Resize"](self, target_size=self.target_size)
+            preprocessors["Resize"] = op
 
         infer = StaticInfer(
             model_dir=self.model_dir,
@@ -87,25 +101,38 @@ class SegPredictor(BasicPredictor):
             option=self.pp_option,
         )
 
-        return preprocessors, infer
+        postprocessers = SegPostProcess()
 
-    def process(self, batch_data: List[Union[str, np.ndarray]]) -> Dict[str, Any]:
+        return preprocessors, infer, postprocessers
+
+    def process(
+        self,
+        batch_data: List[Union[str, np.ndarray]],
+        target_size: Union[int, Tuple[int], None] = None,
+    ) -> Dict[str, Any]:
         """
         Process a batch of data through the preprocessing, inference, and postprocessing.
 
         Args:
             batch_data (List[Union[str, np.ndarray], ...]): A batch of input data (e.g., image file paths).
+            target_size: Image size used for inference.
 
         Returns:
             dict: A dictionary containing the input path, raw image, and predicted segmentation maps for every instance of the batch. Keys include 'input_path', 'input_img', and 'pred'.
         """
         batch_raw_imgs = self.preprocessors["Read"](imgs=batch_data)
-        batch_imgs = self.preprocessors["ToCHW"](imgs=batch_raw_imgs)
+        batch_imgs = self.preprocessors["Resize"](
+            imgs=batch_raw_imgs, target_size=target_size
+        )
+        batch_imgs = self.preprocessors["ToCHW"](imgs=batch_imgs)
         batch_imgs = self.preprocessors["Normalize"](imgs=batch_imgs)
         x = self.preprocessors["ToBatch"](imgs=batch_imgs)
         batch_preds = self.infer(x=x)
         if len(batch_data) > 1:
             batch_preds = np.split(batch_preds[0], len(batch_data), axis=0)
+
+        # postprocess
+        batch_preds = self.postprocessers(batch_preds, batch_raw_imgs)
 
         return {
             "input_path": batch_data,
@@ -121,3 +148,19 @@ class SegPredictor(BasicPredictor):
     ):
         op = Normalize(mean=mean, std=std)
         return "Normalize", op
+
+    @register("Resize")
+    def build_resize(
+        self,
+        target_size=-1,
+        keep_ratio=True,
+        size_divisor=32,
+        interp="LINEAR",
+    ):
+        op = Resize(
+            target_size=target_size,
+            keep_ratio=keep_ratio,
+            size_divisor=size_divisor,
+            interp=interp,
+        )
+        return "Resize", op

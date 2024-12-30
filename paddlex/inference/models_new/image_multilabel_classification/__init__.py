@@ -12,14 +12,4 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from PIL import Image
-
-from ...common.result import BaseCVResult
-
-
-class IdentityResult(BaseCVResult):
-
-    def _to_img(self):
-        """This module does not support visualization; it simply outputs the input images"""
-        image = Image.fromarray(self["input_img"])
-        return image
+from .predictor import MLClasPredictor

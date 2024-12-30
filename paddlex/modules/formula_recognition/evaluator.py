@@ -19,7 +19,7 @@ from ..base import BaseEvaluator
 from .model_list import MODELS
 
 
-class TextRecEvaluator(BaseEvaluator):
+class FormulaRecEvaluator(BaseEvaluator):
     """Text Recognition Model Evaluator"""
 
     entities = MODELS
@@ -32,13 +32,13 @@ class TextRecEvaluator(BaseEvaluator):
             self.pdx_config.update_dataset(
                 self.global_config.dataset_dir, "LaTeXOCRDataSet"
             )
-        elif "PP-OCRv3" in self.global_config["model"]:
+        elif self.global_config["model"] in (
+            "UniMERNet",
+            "PP-FormulaNet-L",
+            "PP-FormulaNet-S",
+        ):
             self.pdx_config.update_dataset(
                 self.global_config.dataset_dir, "SimpleDataSet"
-            )
-        else:
-            self.pdx_config.update_dataset(
-                self.global_config.dataset_dir, "MSTextRecDataset"
             )
         label_dict_path = None
         if self.eval_config.get("label_dict_path"):

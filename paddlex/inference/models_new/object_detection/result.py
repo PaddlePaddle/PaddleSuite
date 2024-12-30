@@ -99,5 +99,5 @@ class DetResult(BaseCVResult):
     def _to_img(self) -> Image.Image:
         """apply"""
         boxes = self["boxes"]
-        image = Image.fromarray(self._input_img)
+        image = Image.fromarray(self["input_img"])
         return draw_box(image, boxes)

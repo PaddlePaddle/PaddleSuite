@@ -22,7 +22,7 @@ from ...utils.config import AttrDict
 from .model_list import MODELS
 
 
-class TextRecTrainer(BaseTrainer):
+class FormulaRecTrainer(BaseTrainer):
     """Text Recognition Model Trainer"""
 
     entities = MODELS
@@ -51,13 +51,13 @@ class TextRecTrainer(BaseTrainer):
             self.pdx_config.update_dataset(
                 self.global_config.dataset_dir, "LaTeXOCRDataSet"
             )
-        elif "PP-OCRv3" in self.global_config["model"]:
+        elif self.global_config["model"] in (
+            "UniMERNet",
+            "PP-FormulaNet-L",
+            "PP-FormulaNet-S",
+        ):
             self.pdx_config.update_dataset(
                 self.global_config.dataset_dir, "SimpleDataSet"
-            )
-        else:
-            self.pdx_config.update_dataset(
-                self.global_config.dataset_dir, "MSTextRecDataset"
             )
 
         label_dict_path = Path(self.global_config.dataset_dir).joinpath("dict.txt")
@@ -73,14 +73,19 @@ class TextRecTrainer(BaseTrainer):
         if self.global_config["model"] == "LaTeX_OCR_rec":
             if (
                 self.train_config.batch_size_train is not None
-                and self.train_config.batch_size_val
+                and self.train_config.batch_size_val is not None
             ):
                 self.pdx_config.update_batch_size_pair(
                     self.train_config.batch_size_train, self.train_config.batch_size_val
                 )
         else:
-            if self.train_config.batch_size is not None:
-                self.pdx_config.update_batch_size(self.train_config.batch_size)
+            if (
+                self.train_config.batch_size_train is not None
+                and self.train_config.batch_size_val is not None
+            ):
+                self.pdx_config.update_batch_size(
+                    self.train_config.batch_size_train, self.train_config.batch_size_val
+                )
 
         if self.train_config.learning_rate is not None:
             self.pdx_config.update_learning_rate(self.train_config.learning_rate)

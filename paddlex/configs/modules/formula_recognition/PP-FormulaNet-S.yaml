@@ -1,5 +1,5 @@
 Global:
-  model: LaTeX_OCR_rec
+  model: PP-FormulaNet-S
   mode: check_dataset # check_dataset/train/evaluate/predict
   dataset_dir: "./dataset/ocr_rec_latexocr_dataset_example"
   device: gpu:0,1,2,3
@@ -7,7 +7,7 @@ Global:
 
 CheckDataset:
   convert: 
-    enable: True
+    enable: False
     src_dataset_type: FormulaRecDataset
   split: 
     enable: False
@@ -19,7 +19,7 @@ Train:
   batch_size_train: 30
   batch_size_val: 10
   learning_rate: 0.0001
-  pretrain_weight_path: https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/LaTeX_OCR_rec_pretrained.pdparams
+  pretrain_weight_path: https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-FormulaNet-S_pretrained.pdparams
   resume_path: null
   log_interval: 20
   eval_interval: 1
@@ -30,11 +30,11 @@ Evaluate:
   log_interval: 1
 
 Export:
-  weight_path: https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/LaTeX_OCR_rec_pretrained.pdparams
+  weight_path: https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-FormulaNet-S_pretrained.pdparams
 
 Predict:
   batch_size: 1
-  model_dir: "output/best_accuracy/inference"
+  model_dir: "output/best_accuracy/inference_pir"
   input: "https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/general_formula_rec_001.png"
   kernel_option:
     run_mode: paddle

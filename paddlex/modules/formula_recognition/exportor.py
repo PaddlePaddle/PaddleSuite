@@ -12,14 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from PIL import Image
+from ..base import BaseExportor
+from .model_list import MODELS
 
-from ...common.result import BaseCVResult
 
+class FormulaRecExportor(BaseExportor):
+    """Text Recognition Model Exportor"""
 
-class IdentityResult(BaseCVResult):
-
-    def _to_img(self):
-        """This module does not support visualization; it simply outputs the input images"""
-        image = Image.fromarray(self["input_img"])
-        return image
+    entities = MODELS
