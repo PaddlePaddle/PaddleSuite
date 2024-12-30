@@ -111,7 +111,8 @@ def install_external_deps(repo_name, repo_root):
         if os.path.exists(os.path.join(repo_root, "ppdet", "ext_op")):
             """Install custom op for rotated object detection"""
             if (
-                _compare_version(gcc_version, "8.2.0") >= 0
+                PLATFORM == "Linux"
+                and _compare_version(gcc_version, "8.2.0") >= 0
                 and "gpu" in get_device_type()
                 and (
                     paddle.is_compiled_with_cuda()
@@ -123,9 +124,9 @@ def install_external_deps(repo_name, repo_root):
                     _check_call(args)
             else:
                 logging.warning(
-                    "The custom operators in PaddleDetection for Rotated Object Detection is only supported when using CUDA, GCC>=8.2.0 and Paddle>=2.0.1, \
-                        your environment does not meet these requirements, so we will skip the installation of custom operators under PaddleDetection/ppdet/ext_ops, \
-                            which means you can not train the Rotated Object Detection models."
+                    "The custom operators in PaddleDetection for Rotated Object Detection is only supported when using CUDA, GCC>=8.2.0 and Paddle>=2.0.1, "
+                    "your environment does not meet these requirements, so we will skip the installation of custom operators under PaddleDetection/ppdet/ext_ops, "
+                    "which means you can not train the Rotated Object Detection models."
                 )
 
 

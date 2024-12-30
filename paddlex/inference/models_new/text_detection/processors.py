@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
+from typing import List, Tuple, Union
 import os
 import sys
 import cv2
@@ -50,23 +50,32 @@ class DetResizeForTest:
             self.limit_side_len = 736
             self.limit_type = "min"
 
-    def __call__(self, imgs):
+    def __call__(
+        self,
+        imgs,
+        limit_side_len: Union[int, None] = None,
+        limit_type: Union[str, None] = None,
+    ):
         """apply"""
         resize_imgs, img_shapes = [], []
         for ori_img in imgs:
-            img, shape = self.resize(ori_img)
+            img, shape = self.resize(ori_img, limit_side_len, limit_type)
             resize_imgs.append(img)
             img_shapes.append(shape)
         return resize_imgs, img_shapes
 
-    def resize(self, img):
+    def resize(
+        self, img, limit_side_len: Union[int, None], limit_type: Union[str, None]
+    ):
         src_h, src_w, _ = img.shape
         if sum([src_h, src_w]) < 64:
             img = self.image_padding(img)
 
         if self.resize_type == 0:
             # img, shape = self.resize_image_type0(img)
-            img, [ratio_h, ratio_w] = self.resize_image_type0(img)
+            img, [ratio_h, ratio_w] = self.resize_image_type0(
+                img, limit_side_len, limit_type
+            )
         elif self.resize_type == 2:
             img, [ratio_h, ratio_w] = self.resize_image_type2(img)
         else:
@@ -95,7 +104,9 @@ class DetResizeForTest:
         # return img, np.array([ori_h, ori_w])
         return img, [ratio_h, ratio_w]
 
-    def resize_image_type0(self, img):
+    def resize_image_type0(
+        self, img, limit_side_len: Union[int, None], limit_type: Union[str, None]
+    ):
         """
         resize image to a size multiple of 32 which is required by the network
         args:
@@ -103,11 +114,12 @@ class DetResizeForTest:
         return(tuple):
             img, (ratio_h, ratio_w)
         """
-        limit_side_len = self.limit_side_len
+        limit_side_len = limit_side_len or self.limit_side_len
+        limit_type = limit_type or self.limit_type
         h, w, c = img.shape
 
         # limit the max side
-        if self.limit_type == "max":
+        if limit_type == "max":
             if max(h, w) > limit_side_len:
                 if h > w:
                     ratio = float(limit_side_len) / h
@@ -115,7 +127,7 @@ class DetResizeForTest:
                     ratio = float(limit_side_len) / w
             else:
                 ratio = 1.0
-        elif self.limit_type == "min":
+        elif limit_type == "min":
             if min(h, w) < limit_side_len:
                 if h < w:
                     ratio = float(limit_side_len) / h
@@ -123,7 +135,7 @@ class DetResizeForTest:
                     ratio = float(limit_side_len) / w
             else:
                 ratio = 1.0
-        elif self.limit_type == "resize_long":
+        elif limit_type == "resize_long":
             ratio = float(limit_side_len) / max(h, w)
         else:
             raise Exception("not support limit type, image ")
@@ -221,10 +233,18 @@ class DBPostProcess:
             "slow",
             "fast",
         ], "Score mode must be in [slow, fast] but got: {}".format(score_mode)
+        self.use_dilation = use_dilation
 
-        self.dilation_kernel = None if not use_dilation else np.array([[1, 1], [1, 1]])
-
-    def polygons_from_bitmap(self, pred, _bitmap, dest_width, dest_height):
+    def polygons_from_bitmap(
+        self,
+        pred,
+        _bitmap,
+        dest_width,
+        dest_height,
+        box_thresh,
+        max_candidates,
+        unclip_ratio,
+    ):
         """_bitmap: single map with shape (1, H, W), whose values are binarized as {0, 1}"""
 
         bitmap = _bitmap
@@ -237,7 +257,7 @@ class DBPostProcess:
             (bitmap * 255).astype(np.uint8), cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE
         )
 
-        for contour in contours[: self.max_candidates]:
+        for contour in contours[:max_candidates]:
             epsilon = 0.002 * cv2.arcLength(contour, True)
             approx = cv2.approxPolyDP(contour, epsilon, True)
             points = approx.reshape((-1, 2))
@@ -245,11 +265,11 @@ class DBPostProcess:
                 continue
 
             score = self.box_score_fast(pred, points.reshape(-1, 2))
-            if self.box_thresh > score:
+            if box_thresh > score:
                 continue
 
             if points.shape[0] > 2:
-                box = self.unclip(points, self.unclip_ratio)
+                box = self.unclip(points, unclip_ratio)
                 if len(box) > 1:
                     continue
             else:
@@ -272,7 +292,16 @@ class DBPostProcess:
             scores.append(score)
         return boxes, scores
 
-    def boxes_from_bitmap(self, pred, _bitmap, dest_width, dest_height):
+    def boxes_from_bitmap(
+        self,
+        pred,
+        _bitmap,
+        dest_width,
+        dest_height,
+        box_thresh,
+        max_candidates,
+        unclip_ratio,
+    ):
         """_bitmap: single map with shape (1, H, W), whose values are binarized as {0, 1}"""
 
         bitmap = _bitmap
@@ -286,7 +315,7 @@ class DBPostProcess:
         elif len(outs) == 2:
             contours, _ = outs[0], outs[1]
 
-        num_contours = min(len(contours), self.max_candidates)
+        num_contours = min(len(contours), max_candidates)
 
         boxes = []
         scores = []
@@ -300,10 +329,10 @@ class DBPostProcess:
                 score = self.box_score_fast(pred, points.reshape(-1, 2))
             else:
                 score = self.box_score_slow(pred, contour)
-            if self.box_thresh > score:
+            if box_thresh > score:
                 continue
 
-            box = self.unclip(points, self.unclip_ratio).reshape(-1, 1, 2)
+            box = self.unclip(points, unclip_ratio).reshape(-1, 1, 2)
             box, sside = self.get_mini_boxes(box)
             if sside < self.min_size + 2:
                 continue
@@ -385,31 +414,61 @@ class DBPostProcess:
         cv2.fillPoly(mask, contour.reshape(1, -1, 2).astype(np.int32), 1)
         return cv2.mean(bitmap[ymin : ymax + 1, xmin : xmax + 1], mask)[0]
 
-    def __call__(self, preds, img_shapes):
+    def __call__(
+        self,
+        preds,
+        img_shapes,
+        thresh: Union[float, None] = None,
+        box_thresh: Union[float, None] = None,
+        max_candidates: Union[int, None] = None,
+        unclip_ratio: Union[float, None] = None,
+        use_dilation: Union[bool, None] = None,
+    ):
         """apply"""
         boxes, scores = [], []
         for pred, img_shape in zip(preds[0], img_shapes):
-            box, score = self.process(pred, img_shape)
+            box, score = self.process(
+                pred,
+                img_shape,
+                thresh or self.thresh,
+                box_thresh or self.box_thresh,
+                max_candidates or self.max_candidates,
+                unclip_ratio or self.unclip_ratio,
+                use_dilation or self.use_dilation,
+            )
             boxes.append(box)
             scores.append(score)
         return boxes, scores
 
-    def process(self, pred, img_shape):
+    def process(
+        self,
+        pred,
+        img_shape,
+        thresh,
+        box_thresh,
+        max_candidates,
+        unclip_ratio,
+        use_dilation,
+    ):
         pred = pred[0, :, :]
-        segmentation = pred > self.thresh
-
+        segmentation = pred > thresh
+        dilation_kernel = None if not use_dilation else np.array([[1, 1], [1, 1]])
         src_h, src_w, ratio_h, ratio_w = img_shape
-        if self.dilation_kernel is not None:
+        if dilation_kernel is not None:
             mask = cv2.dilate(
                 np.array(segmentation).astype(np.uint8),
-                self.dilation_kernel,
+                dilation_kernel,
             )
         else:
             mask = segmentation
         if self.box_type == "poly":
-            boxes, scores = self.polygons_from_bitmap(pred, mask, src_w, src_h)
+            boxes, scores = self.polygons_from_bitmap(
+                pred, mask, src_w, src_h, box_thresh, max_candidates, unclip_ratio
+            )
         elif self.box_type == "quad":
-            boxes, scores = self.boxes_from_bitmap(pred, mask, src_w, src_h)
+            boxes, scores = self.boxes_from_bitmap(
+                pred, mask, src_w, src_h, box_thresh, max_candidates, unclip_ratio
+            )
         else:
             raise ValueError("box_type can only be one of ['quad', 'poly']")
         return boxes, scores

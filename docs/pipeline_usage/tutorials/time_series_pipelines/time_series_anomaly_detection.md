@@ -103,7 +103,7 @@ paddlex --pipeline ts_ad --input ts_ad.csv --device gpu:0
 <pre><code>paddlex --get_pipeline_config ts_ad --save_path ./my_path
 </code></pre>
 <p>获取产线配置文件后，可将<code>--pipeline</code> 替换为配置文件保存路径，即可使配置文件生效。例如，若配置文件保存路径为 <code>./ts_ad.yaml</code>，只需执行：</p>
-<pre><code class="language-bash">paddlex --pipeline ./ts_ad.yaml --input ts_ad.cs --device gpu:0
+<pre><code class="language-bash">paddlex --pipeline ./ts_ad.yaml --input ts_ad.csv --device gpu:0
 </code></pre>
 <p>其中，<code>--model</code>、<code>--device</code> 等参数无需指定，将使用配置文件中的参数。若依然指定了参数，将以指定的参数为准。</p></details>
 
@@ -135,7 +135,7 @@ from paddlex import create_pipeline
 
 pipeline = create_pipeline(pipeline="ts_ad")
 
-output = pipeline.predict("ts_ad.cs")
+output = pipeline.predict("ts_ad.csv")
 for res in output:
     res.print() ## 打印预测的结构化输出
     res.save_to_csv("./output/") ## 保存csv格式结果
@@ -244,7 +244,7 @@ for res in output:
 ```python
 from paddlex import create_pipeline
 pipeline = create_pipeline(pipeline="./my_path/ts_ad.yaml")
-output = pipeline.predict("ts_ad.cs")
+output = pipeline.predict("ts_ad.csv")
 for res in output:
     res.print() ## 打印预测的结构化输出
     res.save_to_csv("./output/") ## 保存csv格式结果
@@ -281,6 +281,11 @@ for res in output:
 </thead>
 <tbody>
 <tr>
+<td><code>logId</code></td>
+<td><code>string</code></td>
+<td>请求的UUID。</td>
+</tr>
+<tr>
 <td><code>errorCode</code></td>
 <td><code>integer</code></td>
 <td>错误码。固定为<code>0</code>。</td>
@@ -290,9 +295,13 @@ for res in output:
 <td><code>string</code></td>
 <td>错误说明。固定为<code>"Success"</code>。</td>
 </tr>
+<tr>
+<td><code>result</code></td>
+<td><code>object</code></td>
+<td>操作结果。</td>
+</tr>
 </tbody>
 </table>
-<p>响应体还可能有<code>result</code>属性，类型为<code>object</code>，其中存储操作结果信息。</p>
 <ul>
 <li>当请求处理未成功时，响应体的属性如下：</li>
 </ul>
@@ -305,6 +314,11 @@ for res in output:
 </tr>
 </thead>
 <tbody>
+<tr>
+<td><code>logId</code></td>
+<td><code>string</code></td>
+<td>请求的UUID。</td>
+</tr>
 <tr>
 <td><code>errorCode</code></td>
 <td><code>integer</code></td>
@@ -748,11 +762,11 @@ PaddleX 支持英伟达 GPU、昆仑芯 XPU、昇腾 NPU和寒武纪 MLU 等多�
 例如，您使用英伟达 GPU 进行时序异常检测产线的推理，使用的 Python 命令为：
 
 ```bash
-paddlex --pipeline ts_ad --input ts_ad.cs --device gpu:0
+paddlex --pipeline ts_ad --input ts_ad.csv --device gpu:0
 ```
 此时，若您想将硬件切换为昇腾 NPU，仅需对 Python 命令中的` --device` 修改为 npu:0 即可：
 
 ```bash
-paddlex --pipeline ts_ad --input ts_ad.cs --device npu:0
+paddlex --pipeline ts_ad --input ts_ad.csv --device npu:0
 ```
 若您想在更多种类的硬件上使用通用时序异常检测产线，请参考[PaddleX多硬件使用指南](../../../other_devices_support/multi_devices_use_guide.md)。

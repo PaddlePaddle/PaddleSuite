@@ -67,10 +67,8 @@ class Crop:
 class Topk:
     """Topk Transform"""
 
-    def __init__(self, topk, class_ids=None):
+    def __init__(self, class_ids=None):
         super().__init__()
-        assert isinstance(topk, (int,))
-        self.topk = topk
         self.class_id_map = self._parse_class_id_map(class_ids)
 
     def _parse_class_id_map(self, class_ids):
@@ -80,8 +78,8 @@ class Topk:
         class_id_map = {id: str(lb) for id, lb in enumerate(class_ids)}
         return class_id_map
 
-    def __call__(self, preds):
-        indexes = preds[0].argsort(axis=1)[:, -self.topk :][:, ::-1].astype("int32")
+    def __call__(self, preds, topk=5):
+        indexes = preds[0].argsort(axis=1)[:, -topk:][:, ::-1].astype("int32")
         scores = [
             np.around(pred[index], decimals=5) for pred, index in zip(preds[0], indexes)
         ]

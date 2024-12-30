@@ -15,13 +15,13 @@
 import os
 from typing import Any, Dict, List, Optional, Union
 
-import ultrainfer as ui
+import ultra_infer as ui
 import numpy as np
+from paddlex.inference.common.batch_sampler import ImageBatchSampler
 from paddlex.inference.results import TopkResult
 from paddlex.modules.image_classification.model_list import MODELS
 from pydantic import BaseModel
 
-from paddlex_hpi._utils.typing import BatchData, Data
 from paddlex_hpi.models.base import CVPredictor, HPIParams
 
 
@@ -49,6 +49,12 @@ class ClasPredictor(CVPredictor):
         self._pp_params = self._get_pp_params()
         self._ui_model.postprocessor.topk = self._pp_params.topk
 
+    def _build_batch_sampler(self) -> ImageBatchSampler:
+        return ImageBatchSampler()
+
+    def _get_result_class(self) -> type:
+        return TopkResult
+
     def _build_ui_model(
         self, option: ui.RuntimeOption
     ) -> ui.vision.classification.PaddleClasModel:
@@ -60,14 +66,29 @@ class ClasPredictor(CVPredictor):
         )
         return model
 
-    def _predict(self, batch_data: BatchData) -> BatchData:
-        imgs = [np.ascontiguousarray(data["img"]) for data in batch_data]
+    def process(self, batch_data: List[Any]) -> Dict[str, List[Any]]:
+        batch_raw_imgs = self._data_reader(imgs=batch_data)
+        imgs = [np.ascontiguousarray(img) for img in batch_raw_imgs]
         ui_results = self._ui_model.batch_predict(imgs)
-        results: BatchData = []
-        for data, ui_result in zip(batch_data, ui_results):
-            clas_result = self._create_clas_result(data, ui_result)
-            results.append({"result": clas_result})
-        return results
+
+        class_ids_list = []
+        scores_list = []
+        label_names_list = []
+        for ui_result in ui_results:
+            class_ids_list.append(ui_result.label_ids)
+            scores_list.append(np.around(ui_result.scores, decimals=5).tolist())
+            if self._pp_params.label_list is not None:
+                label_names_list.append(
+                    [self._pp_params.label_list[i] for i in ui_result.label_ids]
+                )
+
+        return {
+            "input_path": batch_data,
+            "input_img": batch_raw_imgs,
+            "class_ids": class_ids_list,
+            "scores": scores_list,
+            "label_names": label_names_list,
+        }
 
     def _get_pp_params(self) -> _ClasPPParams:
         pp_config = self.config["PostProcess"]
@@ -77,15 +98,3 @@ class ClasPredictor(CVPredictor):
         topk = topk_config["topk"]
         label_list = topk_config.get("label_list", None)
         return _ClasPPParams(topk=topk, label_list=label_list)
-
-    def _create_clas_result(self, data: Data, ui_result: Any) -> TopkResult:
-        dic = {
-            "input_path": data["input_path"],
-            "class_ids": ui_result.label_ids,
-            "scores": np.around(ui_result.scores, decimals=5).tolist(),
-        }
-        if self._pp_params.label_list is not None:
-            dic["label_names"] = [
-                self._pp_params.label_list[i] for i in ui_result.label_ids
-            ]
-        return TopkResult(dic)

@@ -1,5 +1,5 @@
 aiohttp>=3.9
-bce-python-sdk>=0.8
+bce-python-sdk>=0.9
 fastapi>=0.110
 pydantic>=2
 starlette>=0.36

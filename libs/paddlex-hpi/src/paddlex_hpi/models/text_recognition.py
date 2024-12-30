@@ -13,19 +13,25 @@
 # limitations under the License.
 
 import tempfile
-from typing import List
+from typing import Any, Dict, List
 
-import ultrainfer as ui
+import ultra_infer as ui
 import numpy as np
+from paddlex.inference.common.batch_sampler import ImageBatchSampler
 from paddlex.inference.results import TextRecResult
 from paddlex.modules.text_recognition.model_list import MODELS
 
-from paddlex_hpi._utils.typing import BatchData, Data
 from paddlex_hpi.models.base import CVPredictor
 
 
 class TextRecPredictor(CVPredictor):
     entities = MODELS
+
+    def _build_batch_sampler(self) -> ImageBatchSampler:
+        return ImageBatchSampler()
+
+    def _get_result_class(self) -> type:
+        return TextRecResult
 
     def _build_ui_model(self, option: ui.RuntimeOption) -> ui.vision.ocr.Recognizer:
         with tempfile.NamedTemporaryFile("w", encoding="utf-8", suffix=".txt") as f:
@@ -42,14 +48,20 @@ class TextRecPredictor(CVPredictor):
             self._config_ui_preprocessor(model)
         return model
 
-    def _predict(self, batch_data: BatchData) -> BatchData:
-        imgs = [np.ascontiguousarray(data["img"]) for data in batch_data]
-        ui_result = self._ui_model.batch_predict(imgs)
-        results: BatchData = []
-        for data, text, score in zip(batch_data, ui_result.text, ui_result.rec_scores):
-            text_rec_result = self._create_text_rec_result(data, text, score)
-            results.append({"result": text_rec_result})
-        return results
+    def process(self, batch_data: List[Any]) -> Dict[str, List[Any]]:
+        batch_raw_imgs = self._data_reader(imgs=batch_data)
+        imgs = [np.ascontiguousarray(img) for img in batch_raw_imgs]
+        ui_results = self._ui_model.batch_predict(imgs)
+
+        texts_list = ui_results.text
+        rec_score_list = ui_results.rec_scores
+
+        return {
+            "input_path": batch_data,
+            "input_img": batch_raw_imgs,
+            "rec_text": texts_list,
+            "rec_score": rec_score_list,
+        }
 
     def _config_ui_preprocessor(self, model: ui.vision.ocr.Recognizer) -> None:
         pp_config = self.config["PreProcess"]
@@ -74,13 +86,3 @@ class TextRecPredictor(CVPredictor):
                 raise RuntimeError(f"Unkown preprocessing operator: {op_name}")
         if not found_resize_op:
             raise RuntimeError("Could not find the config for `RecResizeImg`.")
-
-    def _create_text_rec_result(
-        self, data: Data, text: str, score: float
-    ) -> TextRecResult:
-        dic = {
-            "input_path": data["input_path"],
-            "rec_text": text,
-            "rec_score": score,
-        }
-        return TextRecResult(dic)

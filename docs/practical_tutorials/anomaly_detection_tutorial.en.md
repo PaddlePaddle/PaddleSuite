@@ -37,7 +37,7 @@ PaddleX provides 1 end-to-end anomaly detection models. For details, refer to th
 
 | Model List          | Avg (%) | GPU Inference Time (ms) | CPU Inference Time (ms) | Model Size (M) | yaml file |
 |-|-|-|-|-|-|
-|STFPM|96.2|-|-|21.5 M|[STFPM.yaml](../../paddlex/configs/image_anomaly_detection/STFPM.yaml)|
+|STFPM|96.2|-|-|21.5 M|[STFPM.yaml](../../paddlex/configs/modules/image_anomaly_detection/STFPM.yaml)|
 
 > **Note: The above accuracy metrics are measured on the [MVTec AD](https://www.mvtec.com/company/research/datasets/mvtec-ad) dataset.**
 

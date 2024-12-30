@@ -520,6 +520,8 @@ class CropByPolys(BaseOperator):
         def get_intersection(pD, pG):
             return Polygon(pD).intersection(Polygon(pG)).area
 
+        if not Polygon(points).is_valid:
+            return temp_crop_img
         cal_IoU = get_intersection_over_union(points, temp_box)
 
         if cal_IoU >= 0.7:

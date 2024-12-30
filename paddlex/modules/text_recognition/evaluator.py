@@ -17,9 +17,6 @@ from pathlib import Path
 
 from ..base import BaseEvaluator
 from .model_list import MODELS
-from ..formula_recognition.model_list import MODELS as MODELS_LaTeX
-
-MODELS = MODELS + MODELS_LaTeX
 
 
 class TextRecEvaluator(BaseEvaluator):
@@ -34,6 +31,10 @@ class TextRecEvaluator(BaseEvaluator):
         if self.global_config["model"] == "LaTeX_OCR_rec":
             self.pdx_config.update_dataset(
                 self.global_config.dataset_dir, "LaTeXOCRDataSet"
+            )
+        elif "PP-OCRv3" in self.global_config["model"]:
+            self.pdx_config.update_dataset(
+                self.global_config.dataset_dir, "SimpleDataSet"
             )
         else:
             self.pdx_config.update_dataset(

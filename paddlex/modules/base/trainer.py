@@ -19,6 +19,7 @@ from .build_model import build_model
 from ...utils.device import update_device_num, set_env_for_device
 from ...utils.misc import AutoRegisterABCMetaClass
 from ...utils.config import AttrDict
+from ...utils.logging import info
 
 
 def build_trainer(config: AttrDict) -> "BaseTrainer":
@@ -31,6 +32,12 @@ def build_trainer(config: AttrDict) -> "BaseTrainer":
         BaseTrainer: the trainer, which is subclass of BaseTrainer.
     """
     model_name = config.Global.model
+    try:
+        import feature_line_modules
+    except ModuleNotFoundError:
+        info(
+            "The PaddleX FeaTure Line plugin is not installed, but continuing execution."
+        )
     return BaseTrainer.get(model_name)(config)
 
 

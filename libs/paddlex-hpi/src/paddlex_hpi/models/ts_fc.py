@@ -14,7 +14,7 @@
 
 from typing import Any, List
 
-import ultrainfer as ui
+import ultra_infer as ui
 import pandas as pd
 from paddlex.inference.results import TSFcResult
 from paddlex.modules.ts_forecast.model_list import MODELS
