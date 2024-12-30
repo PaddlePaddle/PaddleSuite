@@ -135,7 +135,9 @@ class TextRecModel(BaseModel):
         # PDX related settings
         device_type = device.split(":")[0]
         uniform_output_enabled = kwargs.pop("uniform_output_enabled", True)
+        export_during_train = kwargs.pop("export_during_train", True)
         config.update({"Global.uniform_output_enabled": uniform_output_enabled})
+        config.update({"Global.export_during_train": export_during_train})
         config.update({"Global.pdx_model_name": self.name})
 
         self._assert_empty_kwargs(kwargs)
