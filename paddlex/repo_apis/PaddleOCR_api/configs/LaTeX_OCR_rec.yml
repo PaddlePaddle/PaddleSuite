@@ -107,6 +107,7 @@ Eval:
     keep_smaller_batches: True
     transforms:
       - DecodeImage:
+          img_mode: RGB
           channel_first: False
       - MinMaxResize:
           min_dimensions: [32, 32]

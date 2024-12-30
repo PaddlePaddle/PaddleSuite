@@ -384,6 +384,11 @@ Below are the API references and multi-language service invocation examples:
 </thead>
 <tbody>
 <tr>
+<td><code>logId</code></td>
+<td><code>string</code></td>
+<td>UUID for the request.</td>
+</tr>
+<tr>
 <td><code>errorCode</code></td>
 <td><code>integer</code></td>
 <td>Error code. Fixed to <code>0</code>.</td>
@@ -393,9 +398,13 @@ Below are the API references and multi-language service invocation examples:
 <td><code>string</code></td>
 <td>Error description. Fixed to <code>"Success"</code>.</td>
 </tr>
+<tr>
+<td><code>result</code></td>
+<td><code>object</code></td>
+<td>Operation result.</td>
+</tr>
 </tbody>
 </table>
-<p>The response body may also have a <code>result</code> property, which is an <code>object</code> type that stores operation result information.</p>
 <ul>
 <li>When the request is not processed successfully, the properties of the response body are as follows:</li>
 </ul>
@@ -408,6 +417,11 @@ Below are the API references and multi-language service invocation examples:
 </tr>
 </thead>
 <tbody>
+<tr>
+<td><code>logId</code></td>
+<td><code>string</code></td>
+<td>UUID for the request.</td>
+</tr>
 <tr>
 <td><code>errorCode</code></td>
 <td><code>integer</code></td>

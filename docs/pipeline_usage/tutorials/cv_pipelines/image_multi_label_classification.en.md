@@ -257,6 +257,11 @@ Below are the API references and multi-language service invocation examples:
 </thead>
 <tbody>
 <tr>
+<td><code>logId</code></td>
+<td><code>string</code></td>
+<td>UUID for the request.</td>
+</tr>
+<tr>
 <td><code>errorCode</code></td>
 <td><code>integer</code></td>
 <td>Error code. Fixed to <code>0</code>.</td>
@@ -266,9 +271,13 @@ Below are the API references and multi-language service invocation examples:
 <td><code>string</code></td>
 <td>Error message. Fixed to <code>"Success"</code>.</td>
 </tr>
+<tr>
+<td><code>result</code></td>
+<td><code>object</code></td>
+<td>Operation result.</td>
+</tr>
 </tbody>
 </table>
-<p>The response body may also have a <code>result</code> property of type <code>object</code>, which stores the operation result information.</p>
 <ul>
 <li>When the request is not processed successfully, the response body properties are as follows:</li>
 </ul>
@@ -281,6 +290,11 @@ Below are the API references and multi-language service invocation examples:
 </tr>
 </thead>
 <tbody>
+<tr>
+<td><code>logId</code></td>
+<td><code>string</code></td>
+<td>UUID for the request.</td>
+</tr>
 <tr>
 <td><code>errorCode</code></td>
 <td><code>integer</code></td>
@@ -338,9 +352,9 @@ Below are the API references and multi-language service invocation examples:
 </thead>
 <tbody>
 <tr>
-<td><code>topK</code></td>
-<td><code>integer</code></td>
-<td>Only the top <code>topK</code> categories with the highest scores will be retained in the result.</td>
+<td><code>threshold</code></td>
+<td><code>number</code></td>
+<td>Category score threshold.</td>
 <td>No</td>
 </tr>
 </tbody>

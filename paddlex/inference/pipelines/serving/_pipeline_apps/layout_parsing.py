@@ -12,40 +12,24 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import os
-from typing import Final, List, Literal, Optional, Tuple
+from typing import List, Literal, Optional
 
-import numpy as np
 from fastapi import FastAPI, HTTPException
-from numpy.typing import ArrayLike
 from pydantic import BaseModel, Field
 from typing_extensions import Annotated, TypeAlias
 
+from ._common import cv as cv_common, ocr as ocr_common
 from .....utils import logging
 from ...layout_parsing import LayoutParsingPipeline
-from ..storage import SupportsGetURL, Storage, create_storage
 from .. import utils as serving_utils
 from ..app import AppConfig, create_app
-from ..models import Response, ResultResponse
-
-_DEFAULT_MAX_IMG_SIZE: Final[Tuple[int, int]] = (2000, 2000)
-_DEFAULT_MAX_NUM_IMGS: Final[int] = 10
+from ..models import NoResultResponse, ResultResponse, DataInfo
 
 
-FileType: TypeAlias = Literal[0, 1]
-
-
-class InferenceParams(BaseModel):
-    maxLongSide: Optional[Annotated[int, Field(gt=0)]] = None
-
-
-class InferRequest(BaseModel):
-    file: str
-    fileType: Optional[FileType] = None
+class InferRequest(ocr_common.InferRequest):
     useImgOrientationCls: bool = True
-    useImgUnwrapping: bool = True
+    useImgUnwarping: bool = True
     useSealTextDet: bool = True
-    inferenceParams: Optional[InferenceParams] = None
 
 
 BoundingBox: TypeAlias = Annotated[List[float], Field(min_length=4, max_length=4)]
@@ -65,23 +49,7 @@ class LayoutParsingResult(BaseModel):
 
 class InferResult(BaseModel):
     layoutParsingResults: List[LayoutParsingResult]
-
-
-def _postprocess_image(
-    img: ArrayLike,
-    request_id: str,
-    filename: str,
-    file_storage: Optional[Storage],
-) -> str:
-    key = f"{request_id}/{filename}"
-    ext = os.path.splitext(filename)[1]
-    img = np.asarray(img)
-    img_bytes = serving_utils.image_array_to_bytes(img, ext=ext)
-    if file_storage is not None:
-        file_storage.set(key, img_bytes)
-        if isinstance(file_storage, SupportsGetURL):
-            return file_storage.get_url(key)
-    return serving_utils.base64_encode(img_bytes)
+    dataInfo: DataInfo
 
 
 def create_pipeline_app(
@@ -91,41 +59,20 @@ def create_pipeline_app(
         pipeline=pipeline, app_config=app_config, app_aiohttp_session=True
     )
 
-    if ctx.config.extra and "file_storage" in ctx.config.extra:
-        ctx.extra["file_storage"] = create_storage(ctx.config.extra["file_storage"])
-    else:
-        ctx.extra["file_storage"] = None
-    ctx.extra.setdefault("max_img_size", _DEFAULT_MAX_IMG_SIZE)
-    ctx.extra.setdefault("max_num_imgs", _DEFAULT_MAX_NUM_IMGS)
+    ocr_common.update_app_context(ctx)
 
     @app.post(
         "/layout-parsing",
         operation_id="infer",
-        responses={422: {"model": Response}},
+        responses={422: {"model": NoResultResponse}},
         response_model_exclude_none=True,
     )
     async def _infer(
         request: InferRequest,
     ) -> ResultResponse[InferResult]:
         pipeline = ctx.pipeline
-        aiohttp_session = ctx.aiohttp_session
 
-        request_id = serving_utils.generate_request_id()
-
-        if request.fileType is None:
-            if serving_utils.is_url(request.file):
-                try:
-                    file_type = serving_utils.infer_file_type(request.file)
-                except Exception as e:
-                    logging.exception(e)
-                    raise HTTPException(
-                        status_code=422,
-                        detail="The file type cannot be inferred from the URL. Please specify the file type explicitly.",
-                    )
-            else:
-                raise HTTPException(status_code=422, detail="Unknown file type")
-        else:
-            file_type = "PDF" if request.fileType == 0 else "IMAGE"
+        log_id = serving_utils.generate_log_id()
 
         if request.inferenceParams:
             max_long_side = request.inferenceParams.maxLongSide
@@ -135,22 +82,13 @@ def create_pipeline_app(
                     detail="`max_long_side` is currently not supported.",
                 )
 
-        try:
-            file_bytes = await serving_utils.get_raw_bytes(
-                request.file, aiohttp_session
-            )
-            images = await serving_utils.call_async(
-                serving_utils.file_to_images,
-                file_bytes,
-                file_type,
-                max_img_size=ctx.extra["max_img_size"],
-                max_num_imgs=ctx.extra["max_num_imgs"],
-            )
+        images, data_info = await ocr_common.get_images(request, ctx)
 
+        try:
             result = await pipeline.infer(
                 images,
                 use_doc_image_ori_cls_model=request.useImgOrientationCls,
-                use_doc_image_unwarp_model=request.useImgUnwrapping,
+                use_doc_image_unwarp_model=request.useImgUnwarping,
                 use_seal_text_det_model=request.useSealTextDet,
             )
 
@@ -166,11 +104,12 @@ def create_pipeline_app(
                     label = next(iter(dyn_keys))
                     if label in ("image", "figure", "img", "fig"):
                         image_ = await serving_utils.call_async(
-                            _postprocess_image,
+                            cv_common.postprocess_image,
                             subitem[label]["img"],
-                            request_id=request_id,
+                            log_id=log_id,
                             filename=f"image_{i}_{j}.jpg",
                             file_storage=ctx.extra["file_storage"],
+                            max_img_size=ctx.extra["max_output_img_size"],
                         )
                         text = subitem[label]["image_text"]
                     else:
@@ -189,17 +128,16 @@ def create_pipeline_app(
                     LayoutParsingResult(layoutElements=layout_elements)
                 )
 
-            return ResultResponse(
-                logId=serving_utils.generate_log_id(),
-                errorCode=0,
-                errorMsg="Success",
+            return ResultResponse[InferResult](
+                logId=log_id,
                 result=InferResult(
                     layoutParsingResults=layout_parsing_results,
+                    dataInfo=data_info,
                 ),
             )
 
-        except Exception as e:
-            logging.exception(e)
+        except Exception:
+            logging.exception("Unexpected exception")
             raise HTTPException(status_code=500, detail="Internal server error")
 
     return app
