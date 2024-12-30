@@ -371,7 +371,7 @@ class DecordVideoReaderBackend(_VideoReaderBackend):
         imgs = []
         for i in range(np_frames.shape[0]):
             imgbuf = np_frames[i]
-            imgs.append(Image.fromarray(imgbuf, mode="RGB"))
+            imgs.append(imgbuf)
         return imgs
 
     def get_fps(self):

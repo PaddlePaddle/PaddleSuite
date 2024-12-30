@@ -70,7 +70,7 @@ class Scale:
 
         resized_imgs = []
         for i in range(len(imgs)):
-            img = np.array(imgs[i])
+            img = imgs[i]
             if isinstance(img, np.ndarray):
                 h, w, _ = img.shape
             else:
