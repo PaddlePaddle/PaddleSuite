@@ -160,7 +160,6 @@ class VideoReader(_GenerativeReader):
         """read vide file from path"""
         self._backend.set_pos(self.st_frame_id)
         gen = self._backend.read_file(str(in_path))
-        self._fps = self._backend.get_fps()
         if self.max_num_frames is not None:
             gen = itertools.islice(gen, self.num_frames)
         yield from gen
@@ -169,7 +168,7 @@ class VideoReader(_GenerativeReader):
 
     def get_fps(self):
         """get fps"""
-        return self._fps
+        return self._backend.get_fps()
 
     def _init_backend(self, bk_type, bk_args):
         """init backend"""
@@ -274,13 +273,8 @@ class OpenCVVideoReaderBackend(_VideoReaderBackend):
         self._pos = 0
         self._max_num_frames = None
 
-    def sample(
-        self,
-    ):
-        raise NotImplementedError
-
     def get_fps(self):
-        raise NotImplementedError
+        return self._cap.get(cv2.CAP_PROP_FPS)
 
     def read_file(self, in_path):
         """read vidio file from path"""
@@ -375,18 +369,17 @@ class DecordVideoReaderBackend(_VideoReaderBackend):
         return imgs
 
     def get_fps(self):
-        return self._fps
+        return self._cap.get_avg_fps()
 
     def read_file(self, in_path):
         """read vidio file from path"""
-        video_object = decord.VideoReader(in_path)
-        frame_len = len(video_object)
-        self._fps = video_object.get_avg_fps()
+        self._cap = decord.VideoReader(in_path)
+        frame_len = len(self._cap)
         if self.sample_type == "uniform":
-            sample_video = self.sample(frame_len, video_object)
+            sample_video = self.sample(frame_len, self._cap)
             return sample_video
         else:
-            return video_object
+            return self._cap
 
     def close(self):
         pass
