@@ -164,4 +164,39 @@ All packages are installed.
 
 ## 2. Usage
 
-The usage of PaddleX model pipeline development tool on hardware platforms such as Ascend NPU, Cambricon MLU, Kunlun XPU, and Hygon DCU is identical to that on GPU. You only need to modify the device configuration parameters according to your hardware platform. For detailed usage tutorials, please refer to [PaddleX Pipeline Development Tool Local Usage Guide](../pipeline_usage/pipeline_develop_guide.en.md).
+The usage of PaddleX model pipeline development tool on hardware platforms such as Ascend NPU, Cambricon MLU, Kunlun XPU, Hygon DCU and Enflame GCU is identical to that on GPU. You only need to modify the device configuration parameters according to your hardware platform.
+Taking the general OCR pipeline as an example to introduce the pipeline development tools.The General OCR Pipeline is designed to solve text recognition tasks, extracting text information from images and outputting it in text form. PP-OCRv4 is an end-to-end OCR system that achieves millisecond-level text content prediction on CPUs, reaching state-of-the-art (SOTA) performance in open-source projects for general scenarios.You can directly use the pre-trained models provided by OCR pipeline for inference.
+* Command line
+
+```bash
+paddlex --pipeline OCR --input general_ocr_002.png --device npu:0 # change the device name to npu, mlu, xpu, dcu or gcu
+```
+* Python Script
+
+```python
+from paddlex import create_pipeline
+
+pipeline = create_pipeline(pipeline="OCR", device="npu:0") # change the device name to npu, mlu, xpu, dcu or gcu
+
+output = pipeline.predict("general_ocr_002.png")
+for res in output:
+    res.print()
+    res.save_to_img("./output/")
+```
+If you are not satisfied with the performance of the pre-trained model, you can fine-tune it. For example, let's discuss single model development using the PP-OCRv4 mobile text detection model (PP-OCRv4_mobile_det).
+
+```bash
+# train
+python main.py -c paddlex/configs/text_detection/PP-OCRv4_mobile_det.yaml \
+    -o Global.mode=train \
+    -o Global.dataset_dir=./dataset/ocr_det_dataset_examples \ # change the dataset_dir to your own dataset path
+    -o Global.device=npu:0,1,2,3 # change the device name to npu, mlu, xpu, dcu or gcu
+
+# predict
+python main.py -c paddlex/configs/text_detection/PP-OCRv4_mobile_det.yaml \
+    -o Global.mode=predict \
+    -o Predict.model_dir="./output/best_accuracy/inference" \
+    -o Predict.input="general_ocr_001.png"
+    -o Global.device=npu # change the device name to npu, mlu, xpu, dcu or gcu
+```
+For more detailed usage tutorials, please refer to [PaddleX Pipeline Development Tool Local Usage Guide](../pipeline_usage/pipeline_develop_guide.en.md).
