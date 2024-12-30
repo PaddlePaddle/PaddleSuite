@@ -14,9 +14,8 @@
 
 import os
 import GPUtil
-import paddle
-import lazy_paddle as paddle
 
+import lazy_paddle as paddle
 from . import logging
 from .errors import raise_unsupported_device_error
 
@@ -32,12 +31,12 @@ def _constr_device(device_type, device_ids):
 
 
 def get_default_device():
-    # avail_gpus = GPUtil.getAvailable()
-    if paddle.is_compiled_with_cuda():
-        num_gpus = paddle.device.cuda.device_count()
-        avail_gpus = [i for i in range(num_gpus)]
-    else:
-        avail_gpus = []
+    avail_gpus = GPUtil.getAvailable()
+    if not avail_gpus:
+        # maybe edge devices like Jetson
+        if os.path.exists("/etc/nv_tegra_release"):
+            avail_gpus = [0]
+    print(f"* DEBUG: avail_gpus = {avail_gpus}")
     if not avail_gpus:
         return "cpu"
     else:
