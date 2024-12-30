@@ -118,6 +118,14 @@ class TextRecConfig(BaseConfig):
         else:
             raise ValueError(f"{repr(dataset_type)} is not supported.")
 
+    def update_dataset_by_list(self, label_file_list, ratio_list):
+        _cfg = {
+            "Train.dataset.name": "MSTextRecDataset",
+            "Train.dataset.label_file_list": label_file_list,
+            "Train.dataset.ratio_list": ratio_list,
+        }
+        self.update(_cfg)
+
     def update_batch_size(self, batch_size: int, mode: str = "train"):
         """update batch size setting
 

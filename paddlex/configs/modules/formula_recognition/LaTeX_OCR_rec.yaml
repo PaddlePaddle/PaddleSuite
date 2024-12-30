@@ -8,7 +8,7 @@ Global:
 CheckDataset:
   convert: 
     enable: True
-    src_dataset_type: MSTextRecDataset
+    src_dataset_type: FormulaRecDataset
   split: 
     enable: False
     train_percent: null

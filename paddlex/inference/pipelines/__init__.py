@@ -13,7 +13,7 @@
 # limitations under the License.
 
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Mapping, Optional
 
 from ...utils.config import parse_config
 from ..utils.get_pipeline_path import get_pipeline_path
@@ -59,7 +59,7 @@ def load_pipeline_config(pipeline: str) -> Dict[str, Any]:
 
 
 def create_pipeline_from_config(
-    config: Dict[str, Any],
+    config: Mapping[str, Any],
     device=None,
     pp_option=None,
     use_hpip: bool = False,
@@ -73,6 +73,7 @@ def create_pipeline_from_config(
     predictor_kwargs = {"use_hpip": use_hpip}
     if "use_hpip" in pipeline_setting:
         predictor_kwargs["use_hpip"] = use_hpip
+        pipeline_setting.pop("use_hpip", None)
     if hpi_params is not None:
         predictor_kwargs["hpi_params"] = hpi_params
         pipeline_setting.pop("hpi_params", None)

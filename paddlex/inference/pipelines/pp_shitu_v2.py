@@ -40,10 +40,12 @@ class ShiTuV2Pipeline(BasePipeline):
         return_k=5,
         device=None,
         predictor_kwargs=None,
+        _build_models=True,
     ):
         super().__init__(device, predictor_kwargs)
-        self._build_predictor(det_model, rec_model)
-        self.set_predictor(det_batch_size, rec_batch_size, device)
+        if _build_models:
+            self._build_predictor(det_model, rec_model)
+            self.set_predictor(det_batch_size, rec_batch_size, device)
         self._return_k, self._score_thres, self._hamming_radius = (
             return_k,
             score_thres,
