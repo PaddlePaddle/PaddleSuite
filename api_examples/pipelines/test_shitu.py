@@ -12,11 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .common import CVResult, BaseResult
-from .common import SortQuadBoxes, SortPolyBoxes
-from .common import CropByPolys, CropByBoxes
-from .utils.mixin import HtmlMixin, XlsxMixin
-from .chat_server.base import BaseChat
-from .retriever.base import BaseRetriever
-from .prompt_engeering.base import BaseGeneratePrompt
-from .faisser import FaissBuilder, FaissIndexer
+from paddlex import create_pipeline
+
+pipeline = create_pipeline(pipeline="PP-ShiTuV2")
+
+index_data = pipeline.build_index(
+    gallery_imgs="drink_dataset_v2.0/", gallery_label="drink_dataset_v2.0/gallery.txt"
+)
+index_data.save("drink_index")
+
+output = pipeline.predict("./drink_dataset_v2.0/test_images/", index=index_data)
+for res in output:
+    res.print()
+    res.save_to_img("./output/")

@@ -30,6 +30,7 @@ from .anomaly_detection import AnomalyDetectionPipeline
 from .ts_forecasting import TSFcPipeline
 from .ts_anomaly_detection import TSAnomalyDetPipeline
 from .ts_classification import TSClsPipeline
+from .pp_shitu_v2 import ShiTuV2Pipeline
 
 
 def get_pipeline_path(pipeline_name: str) -> str:
