@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from ..base import BasePipeline
+from .pipeline_base import PP_ChatOCR_Pipeline
 
 from typing import Any, Dict, Optional
 
@@ -35,10 +35,10 @@ import numpy as np
 import copy
 
 
-class PP_ChatOCR_Pipeline(BasePipeline):
+class PP_ChatOCRv3_Pipeline(PP_ChatOCR_Pipeline):
     """PP-ChatOCR Pipeline"""
 
-    entities = ["PP-ChatOCRv3-doc", "PP-ChatOCRv4-doc"]
+    entities = ["PP-ChatOCRv3-doc"]
 
     def __init__(
         self,
@@ -64,6 +64,10 @@ class PP_ChatOCR_Pipeline(BasePipeline):
         )
 
         self.pipeline_name = config["pipeline_name"]
+        if self.pipeline_name not in self.entities:
+            raise ValueError(
+                f"pipeline_name must be in {self.entities} of PP_ChatOCRv3_Pipeline."
+            )
 
         self.inintial_predictor(config)
 
@@ -103,13 +107,6 @@ class PP_ChatOCR_Pipeline(BasePipeline):
 
         table_pe_config = config["SubModules"]["PromptEngneering"]["KIE_Table"]
         self.table_pe = create_prompt_engeering(table_pe_config)
-
-        self.use_mllm_predict = False
-        if "use_mllm_predict" in config:
-            self.use_mllm_predict = config["use_mllm_predict"]
-        if self.use_mllm_predict:
-            ensemble_pe_config = config["SubModules"]["PromptEngneering"]["Ensemble"]
-            self.ensemble_pe = create_prompt_engeering(ensemble_pe_config)
         return
 
     def decode_visual_result(
@@ -146,18 +143,15 @@ class PP_ChatOCR_Pipeline(BasePipeline):
         table_res_list = layout_parsing_result["table_res_list"]
         table_text_list = []
         table_html_list = []
-        table_nei_text_list = []
         for table_res in table_res_list:
             table_html_list.append(table_res["pred_html"])
             single_table_text = " ".join(table_res["table_ocr_pred"]["rec_text"])
             table_text_list.append(single_table_text)
-            table_nei_text_list.append(table_res["neighbor_text"])
 
         visual_info = {}
         visual_info["normal_text_dict"] = normal_text_dict
         visual_info["table_text_list"] = table_text_list
         visual_info["table_html_list"] = table_html_list
-        visual_info["table_nei_text_list"] = table_nei_text_list
         return VisualInfoResult(visual_info)
 
     # Function to perform visual prediction on input images
@@ -246,7 +240,7 @@ class PP_ChatOCR_Pipeline(BasePipeline):
 
     def merge_visual_info_list(
         self, visual_info_list: list[VisualInfoResult]
-    ) -> tuple[list, list, list, list]:
+    ) -> tuple[list, list, list]:
         """
         Merge visual info lists.
 
@@ -254,31 +248,22 @@ class PP_ChatOCR_Pipeline(BasePipeline):
             visual_info_list (list[VisualInfoResult]): A list of visual info results.
 
         Returns:
-            tuple[list, list, list, list]: A tuple containing four lists, one for normal text dicts,
+            tuple[list, list, list]: A tuple containing four lists, one for normal text dicts,
                                                one for table text lists, one for table HTML lists.
-                                               one for table neighbor texts.
         """
         all_normal_text_list = []
         all_table_text_list = []
         all_table_html_list = []
-        all_table_nei_text_list = []
         for single_visual_info in visual_info_list:
             normal_text_dict = single_visual_info["normal_text_dict"]
             for key in normal_text_dict:
                 normal_text_dict[key] = normal_text_dict[key].replace("\n", "")
             table_text_list = single_visual_info["table_text_list"]
             table_html_list = single_visual_info["table_html_list"]
-            table_nei_text_list = single_visual_info["table_nei_text_list"]
             all_normal_text_list.append(normal_text_dict)
             all_table_text_list.extend(table_text_list)
             all_table_html_list.extend(table_html_list)
-            all_table_nei_text_list.extend(table_nei_text_list)
-        return (
-            all_normal_text_list,
-            all_table_text_list,
-            all_table_html_list,
-            all_table_nei_text_list,
-        )
+        return (all_normal_text_list, all_table_text_list, all_table_html_list)
 
     def build_vector(
         self,
@@ -304,11 +289,11 @@ class PP_ChatOCR_Pipeline(BasePipeline):
             visual_info_list = visual_info
 
         all_visual_info = self.merge_visual_info_list(visual_info_list)
+
         (
             all_normal_text_list,
             all_table_text_list,
             all_table_html_list,
-            all_table_nei_text_list,
         ) = all_visual_info
 
         vector_info = {}
@@ -318,11 +303,9 @@ class PP_ChatOCR_Pipeline(BasePipeline):
             for type, text in normal_text_dict.items():
                 all_items += [f"{type}：{text}\n"]
 
-        for table_html, table_text, table_nei_text in zip(
-            all_table_html_list, all_table_text_list, all_table_nei_text_list
-        ):
+        for table_html, table_text in zip(all_table_html_list, all_table_text_list):
             if len(table_html) > min_characters - self.table_structure_len_max:
-                all_items += [f"table：{table_text}\t{table_nei_text}"]
+                all_items += [f"table：{table_text}"]
 
         all_text_str = "".join(all_items)
 
@@ -336,7 +319,8 @@ class PP_ChatOCR_Pipeline(BasePipeline):
 
     def save_vector(self, vector_info: dict, save_path: str) -> None:
         if "flag_too_short_text" not in vector_info or "vector" not in vector_info:
-            raise ValueError("Invalid vector info.")
+            logging.error("Invalid vector info.")
+            return
         save_vector_info = {}
         save_vector_info["flag_too_short_text"] = vector_info["flag_too_short_text"]
         if not vector_info["flag_too_short_text"]:
@@ -356,7 +340,8 @@ class PP_ChatOCR_Pipeline(BasePipeline):
             data = fin.readline()
             vector_info = json.loads(data)
             if "flag_too_short_text" not in vector_info or "vector" not in vector_info:
-                raise ValueError("Invalid vector info.")
+                logging.error("Invalid vector info.")
+                return {}
             if not vector_info["flag_too_short_text"]:
                 vector_info["vector"] = self.retriever.decode_vector_store_from_bytes(
                     vector_info["vector"]
@@ -377,7 +362,6 @@ class PP_ChatOCR_Pipeline(BasePipeline):
             return []
 
         if isinstance(key_list, list):
-            # key_list = [key.replace("\xa0", " ") for key in key_list]
             return key_list
 
         if isinstance(key_list, str):
@@ -387,56 +371,8 @@ class PP_ChatOCR_Pipeline(BasePipeline):
 
         return []
 
-    def fix_llm_result_format(self, llm_result: str) -> dict:
-        """
-        Fix the format of the LLM result.
-
-        Args:
-            llm_result (str): The result from the LLM (Large Language Model).
-
-        Returns:
-            dict: A fixed format dictionary from the LLM result.
-        """
-        if not llm_result:
-            return {}
-
-        if "json" in llm_result or "```" in llm_result:
-            llm_result = (
-                llm_result.replace("```", "").replace("json", "").replace("/n", "")
-            )
-            llm_result = llm_result.replace("[", "").replace("]", "")
-
-        try:
-            llm_result = json.loads(llm_result)
-            llm_result_final = {}
-            for key in llm_result:
-                value = llm_result[key]
-                if isinstance(value, list):
-                    if len(value) > 0:
-                        llm_result_final[key] = value[0]
-                else:
-                    llm_result_final[key] = value
-            return llm_result_final
-
-        except:
-            results = (
-                llm_result.replace("\n", "")
-                .replace("    ", "")
-                .replace("{", "")
-                .replace("}", "")
-            )
-            if not results.endswith('"'):
-                results = results + '"'
-            pattern = r'"(.*?)": "([^"]*)"'
-            matches = re.findall(pattern, str(results))
-            if len(matches) > 0:
-                llm_result = {k: v for k, v in matches}
-                return llm_result
-            else:
-                return {}
-
     def generate_and_merge_chat_results(
-        self, prompt: str, key_list: list, final_results: dict, failed_results: dict
+        self, prompt: str, key_list: list, final_results: dict, failed_results: list
     ) -> None:
         """
         Generate and merge chat results into the final results dictionary.
@@ -445,7 +381,7 @@ class PP_ChatOCR_Pipeline(BasePipeline):
             prompt (str): The input prompt for the chat bot.
             key_list (list): A list of keys to track which results to merge.
             final_results (dict): The dictionary to store the final merged results.
-            failed_results (dict): A dictionary of failed results to avoid merging.
+            failed_results (list): A list of failed results to avoid merging.
 
         Returns:
             None
@@ -453,15 +389,13 @@ class PP_ChatOCR_Pipeline(BasePipeline):
 
         llm_result = self.chat_bot.generate_chat_results(prompt)
         if llm_result is None:
-            logging.warning(
+            logging.error(
                 "chat bot error: \n [prompt:]\n %s\n [result:] %s\n"
                 % (prompt, self.chat_bot.ERROR_MASSAGE)
             )
             return
 
-        # print(prompt, llm_result)
-
-        llm_result = self.fix_llm_result_format(llm_result)
+        llm_result = self.chat_bot.fix_llm_result_format(llm_result)
 
         for key, value in llm_result.items():
             if value not in failed_results and key in key_list:
@@ -515,54 +449,6 @@ class PP_ChatOCR_Pipeline(BasePipeline):
                 )
         return related_text
 
-    def ensemble_ocr_llm_mllm(
-        self, key_list: list[str], ocr_llm_predict_dict: dict, mllm_predict_dict: dict
-    ) -> dict:
-        """
-        Ensemble OCR_LLM and LMM predictions based on given key list.
-
-        Args:
-            key_list (list[str]): List of keys to retrieve predictions.
-            ocr_llm_predict_dict (dict): Dictionary containing OCR LLM predictions.
-            mllm_predict_dict (dict): Dictionary containing mLLM predictions.
-
-        Returns:
-            dict: A dictionary with final predictions.
-        """
-        final_predict_dict = {}
-
-        for key in key_list:
-            predict = ""
-            ocr_llm_predict = ""
-            mllm_predict = ""
-            if key in ocr_llm_predict_dict:
-                ocr_llm_predict = ocr_llm_predict_dict[key]
-            if key in mllm_predict_dict:
-                mllm_predict = mllm_predict_dict[key]
-            if ocr_llm_predict != "" and mllm_predict != "":
-                prompt = self.ensemble_pe.generate_prompt(
-                    key, ocr_llm_predict, mllm_predict
-                )
-                llm_result = self.chat_bot.generate_chat_results(prompt)
-                if llm_result is not None:
-                    llm_result = self.fix_llm_result_format(llm_result)
-                if key in llm_result:
-                    tmp = llm_result[key]
-                    if "B" in tmp:
-                        predict = mllm_predict
-                    else:
-                        predict = ocr_llm_predict
-                else:
-                    predict = ocr_llm_predict
-            elif key in ocr_llm_predict_dict:
-                predict = ocr_llm_predict_dict[key]
-            elif key in mllm_predict_dict:
-                predict = mllm_predict_dict[key]
-
-            if predict != "":
-                final_predict_dict[key] = predict
-        return final_predict_dict
-
     def chat(
         self,
         key_list: str | list[str],
@@ -580,7 +466,6 @@ class PP_ChatOCR_Pipeline(BasePipeline):
         table_rules_str: str = None,
         table_few_shot_demo_text_content: str = None,
         table_few_shot_demo_key_value_list: str = None,
-        mllm_predict_dict: dict = None,
     ) -> dict:
         """
         Generates chat results based on the provided key list and visual information.
@@ -601,7 +486,6 @@ class PP_ChatOCR_Pipeline(BasePipeline):
             table_rules_str (str): The rules for generating table results.
             table_few_shot_demo_text_content (str): The text content for table few-shot demos.
             table_few_shot_demo_key_value_list (str): The key-value list for table few-shot demos.
-            mllm_predict_dict (dict): The dictionary of mLLM predicts.
         Returns:
             dict: A dictionary containing the chat results.
         """
@@ -617,15 +501,34 @@ class PP_ChatOCR_Pipeline(BasePipeline):
             visual_info_list = visual_info
 
         all_visual_info = self.merge_visual_info_list(visual_info_list)
+
         (
             all_normal_text_list,
             all_table_text_list,
             all_table_html_list,
-            all_table_nei_text_list,
         ) = all_visual_info
 
         final_results = {}
         failed_results = ["大模型调用失败", "未知", "未找到关键信息", "None", ""]
+
+        if len(key_list) > 0:
+            for table_html, table_text in zip(all_table_html_list, all_table_text_list):
+                if len(table_html) <= min_characters - self.table_structure_len_max:
+                    for table_info in [table_html]:
+                        if len(key_list) > 0:
+                            prompt = self.table_pe.generate_prompt(
+                                table_info,
+                                key_list,
+                                task_description=table_task_description,
+                                output_format=table_output_format,
+                                rules_str=table_rules_str,
+                                few_shot_demo_text_content=table_few_shot_demo_text_content,
+                                few_shot_demo_key_value_list=table_few_shot_demo_key_value_list,
+                            )
+
+                            self.generate_and_merge_chat_results(
+                                prompt, key_list, final_results, failed_results
+                            )
 
         if len(key_list) > 0:
             related_text = self.get_related_normal_text(
@@ -649,41 +552,7 @@ class PP_ChatOCR_Pipeline(BasePipeline):
                 self.generate_and_merge_chat_results(
                     prompt, key_list, final_results, failed_results
                 )
-
-        if len(key_list) > 0:
-            for table_html, table_text, table_nei_text in zip(
-                all_table_html_list, all_table_text_list, all_table_nei_text_list
-            ):
-                if len(table_html) <= min_characters - self.table_structure_len_max:
-                    for table_info in [table_html]:
-                        if len(key_list) > 0:
-
-                            if len(table_nei_text) > 0:
-                                table_info = (
-                                    table_info + "\n 表格周围文字：" + table_nei_text
-                                )
-
-                            prompt = self.table_pe.generate_prompt(
-                                table_info,
-                                key_list,
-                                task_description=table_task_description,
-                                output_format=table_output_format,
-                                rules_str=table_rules_str,
-                                few_shot_demo_text_content=table_few_shot_demo_text_content,
-                                few_shot_demo_key_value_list=table_few_shot_demo_key_value_list,
-                            )
-
-                            self.generate_and_merge_chat_results(
-                                prompt, key_list, final_results, failed_results
-                            )
-
-        if self.use_mllm_predict:
-            final_predict_dict = self.ensemble_ocr_llm_mllm(
-                key_list_ori, final_results, mllm_predict_dict
-            )
-        else:
-            final_predict_dict = final_results
-        return {"chat_res": final_predict_dict}
+        return {"chat_res": final_results}
 
     def predict(self, *args, **kwargs) -> None:
         logging.error(

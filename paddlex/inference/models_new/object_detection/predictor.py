@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Any, List, Sequence
+from typing import Any, List, Sequence, Optional
 
 import numpy as np
 
@@ -43,8 +43,16 @@ class DetPredictor(BasicPredictor):
     _FUNC_MAP = {}
     register = FuncRegister(_FUNC_MAP)
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, threshold: Optional[float] = None, **kwargs):
+        """Initializes DetPredictor.
+        Args:
+            *args: Arbitrary positional arguments passed to the superclass.
+            threshold (Optional[float], optional): The threshold for filtering out low-confidence predictions.
+                Defaults to None.
+            **kwargs: Arbitrary keyword arguments passed to the superclass.
+        """
         super().__init__(*args, **kwargs)
+        self.threshold = threshold
         self.pre_ops, self.infer, self.post_op = self._build()
 
     def _build_batch_sampler(self):
@@ -131,7 +139,7 @@ class DetPredictor(BasicPredictor):
         else:
             return [{"boxes": np.array(res)} for res in pred_box]
 
-    def process(self, batch_data: List[Any]):
+    def process(self, batch_data: List[Any], threshold: Optional[float] = None):
         """
         Process a batch of data through the preprocessing, inference, and postprocessing.
 
@@ -157,7 +165,9 @@ class DetPredictor(BasicPredictor):
         preds_list = self._format_output(batch_preds)
 
         # postprocess
-        boxes = self.post_op(preds_list, datas)
+        boxes = self.post_op(
+            preds_list, datas, threshold if threshold is not None else self.threshold
+        )
 
         return {
             "input_path": [data.get("img_path", None) for data in datas],

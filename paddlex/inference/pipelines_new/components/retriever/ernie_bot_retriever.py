@@ -191,7 +191,11 @@ class ErnieBotRetriever(BaseRetriever):
         return vector
 
     def similarity_retrieval(
-        self, query_text_list: list[str], vectorstore: FAISS, sleep_time: float = 0.5
+        self,
+        query_text_list: list[str],
+        vectorstore: FAISS,
+        sleep_time: float = 0.5,
+        topk: int = 2,
     ) -> str:
         """
         Retrieve similar contexts based on a list of query texts.
@@ -200,7 +204,7 @@ class ErnieBotRetriever(BaseRetriever):
             query_text_list (list[str]): A list of query texts to search for similar contexts.
             vectorstore (FAISS): The vector store where to perform the similarity search.
             sleep_time (float): The time to sleep between each query, in seconds. Default is 0.5.
-
+            topk (int): The number of results to retrieve per query. Default is 2.
         Returns:
             str: A concatenated string of all unique contexts found.
         """
@@ -208,7 +212,7 @@ class ErnieBotRetriever(BaseRetriever):
         for query_text in query_text_list:
             QUESTION = query_text
             time.sleep(sleep_time)
-            docs = vectorstore.similarity_search_with_relevance_scores(QUESTION, k=3)
+            docs = vectorstore.similarity_search_with_relevance_scores(QUESTION, k=topk)
             context = [(document.page_content, score) for document, score in docs]
             context = sorted(context, key=lambda x: x[1])
             C.extend([x[0] for x in context[::-1]])

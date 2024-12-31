@@ -1,7 +1,6 @@
 
 pipeline_name: layout_parsing
 
-use_layout_detection: True
 use_doc_preprocessor: True
 use_general_ocr: True
 use_seal_recognition: True
@@ -11,12 +10,6 @@ SubModules:
   LayoutDetection:
     module_name: layout_detection
     model_name: RT-DETR-H_layout_3cls
-    model_dir: null
-    batch_size: 1
-
-  TableStructureRecognition:
-    module_name: table_structure_recognition
-    model_name: SLANet_plus
     model_dir: null
     batch_size: 1
 
@@ -36,6 +29,7 @@ SubPipelines:
         model_name: UVDoc
         model_dir: null
         batch_size: 1
+
   GeneralOCR:
     pipeline_name: OCR
     text_type: general
@@ -50,17 +44,35 @@ SubPipelines:
         model_name: PP-OCRv4_server_rec
         model_dir: null
         batch_size: 1
-  SealOCR:
-    pipeline_name: OCR
-    text_type: seal
+
+  TableRecognition:
+    pipeline_name: table_recognition
+    use_layout_detection: False
+    use_doc_preprocessor: False
+    use_ocr_model: False
     SubModules:
-      TextDetection:
-        module_name: seal_text_detection
-        model_name: PP-OCRv4_server_seal_det
-        model_dir: null
-        batch_size: 1    
-      TextRecognition:
-        module_name: text_recognition
-        model_name: PP-OCRv4_server_rec
+      TableStructureRecognition:
+        module_name: table_structure_recognition
+        model_name: SLANet_plus
         model_dir: null
         batch_size: 1
+
+  SealRecognition:
+    pipeline_name: seal_recognition
+    use_layout_detection: False
+    use_doc_preprocessor: False
+    SubPipelines:
+      SealOCR:
+        pipeline_name: OCR
+        text_type: seal
+        SubModules:
+          TextDetection:
+            module_name: seal_text_detection
+            model_name: PP-OCRv4_server_seal_det
+            model_dir: null
+            batch_size: 1    
+          TextRecognition:
+            module_name: text_recognition
+            model_name: PP-OCRv4_server_rec
+            model_dir: null
+            batch_size: 1

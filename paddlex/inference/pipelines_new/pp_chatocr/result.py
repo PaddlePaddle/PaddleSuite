@@ -20,7 +20,8 @@ import PIL
 from PIL import Image, ImageDraw, ImageFont
 
 from ....utils.fonts import PINGFANG_FONT_FILE_PATH
-from ..components import BaseResult
+
+from ...common.result import BaseResult
 
 
 class VisualInfoResult(BaseResult):
