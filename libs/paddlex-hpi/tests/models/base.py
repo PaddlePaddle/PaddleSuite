@@ -52,6 +52,10 @@ class BaseTestPredictor(object):
     def predictor_cls(self):
         raise NotImplementedError
 
+    @property
+    def should_test_with_args(self):
+        return False
+
     @pytest.fixture(scope="class")
     def data_dir(self):
         with tempfile.TemporaryDirectory() as td:
@@ -108,11 +112,17 @@ class BaseTestPredictor(object):
 
     @pytest.mark.parametrize("device", DEVICES)
     def test__call__with_predictor_args(
-        self, model_path, input_data_path, device, expected_result_with_args
+        self, model_path, input_data_path, device, request
     ):
-        self._predict_with_predictor_args(
-            model_path, input_data_path, device, expected_result_with_args
-        )
+        if self.should_test_with_args:
+            self._predict_with_predictor_args(
+                model_path,
+                input_data_path,
+                device,
+                request.getfixturevalue("expected_result_with_args"),
+            )
+        else:
+            pytest.skip("Skipping test__call__with_predictor_args for this predictor")
 
     @pytest.mark.parametrize("device", DEVICES)
     def test__call__with_predict_args(
@@ -121,15 +131,18 @@ class BaseTestPredictor(object):
         input_data_path,
         device,
         expected_result,
-        expected_result_with_args,
+        request,
     ):
-        self._predict_with_predict_args(
-            model_path,
-            input_data_path,
-            device,
-            expected_result,
-            expected_result_with_args,
-        )
+        if self.should_test_with_args:
+            self._predict_with_predict_args(
+                model_path,
+                input_data_path,
+                device,
+                expected_result,
+                request.getfixturevalue("expected_result_with_args"),
+            )
+        else:
+            pytest.skip("Skipping test__call__with_predict_args for this predictor")
 
     def _check_output(self, output, expected_result, expected_num_results):
         assert isinstance(output, GeneratorType)
