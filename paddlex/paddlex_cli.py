@@ -89,7 +89,7 @@ def args_cfg():
     parser.add_argument("--paddle2onnx", action="store_true")
     parser.add_argument("--paddle_model_dir", type=str)
     parser.add_argument("--onnx_model_dir", type=str, default="onnx")
-    parser.add_argument("--opset_version", type=int, default=9)
+    parser.add_argument("--opset_version", type=int, default=7)
 
     return parser
 
