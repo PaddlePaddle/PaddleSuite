@@ -6,7 +6,7 @@ comments: true
 
 PaddleX 内置了多条产线，每条产线都包含了若干模块，每个模块包含若干模型，具体使用哪些模型，您可以根据下边的 benchmark 数据来选择。如您更考虑模型精度，请选择精度较高的模型，如您更考虑模型存储大小，请选择存储大小较小的模型。
 
-## 图像分类模块
+## [图像分类模块](../module_usage/tutorials/cv_modules/image_classification.md)
 <table>
 <thead>
 <tr>
@@ -25,7 +25,7 @@ PaddleX 内置了多条产线，每条产线都包含了若干模块，每个模
 </table>
 <b>注：以上精度指标为</b>[ImageNet-1k](https://www.image-net.org/index.php)<b>验证集 Top1 Acc。</b>
 
-## 目标检测模块
+## [目标检测模块](../module_usage/tutorials/cv_modules/object_detection.md)
 <table>
 <thead>
 <tr>
@@ -35,6 +35,31 @@ PaddleX 内置了多条产线，每条产线都包含了若干模块，每个模
 <th>模型下载链接</th></tr>
 </thead>
 <tbody>
+<tr>
+<td>FCOS-ResNet50</td>
+<td>39.6</td>
+<td>124.2 M</td>
+<td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/FCOS-ResNet50_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/FCOS-ResNet50_pretrained.pdparams">训练模型</a></td></tr>
+<tr>
+<td>PicoDet-L</td>
+<td>42.5</td>
+<td>20.9 M</td>
+<td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PicoDet-L_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PicoDet-L_pretrained.pdparams">训练模型</a></td></tr>
+<tr>
+<td>PicoDet-M</td>
+<td>37.4</td>
+<td>16.8 M</td>
+<td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PicoDet-M_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PicoDet-M_pretrained.pdparams">训练模型</a></td></tr>
+<tr>
+<td>PicoDet-S</td>
+<td>29.0</td>
+<td>4.4 M</td>
+<td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PicoDet-S_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PicoDet-S_pretrained.pdparams">训练模型</a></td></tr>
+<tr>
+<td>PicoDet-XS</td>
+<td>26.2</td>
+<td>5.7M</td>
+<td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PicoDet-XS_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PicoDet-XS_pretrained.pdparams">训练模型</a></td></tr>
 <tr>
 <td>PP-YOLOE_plus-L</td>
 <td>52.8</td>
@@ -84,7 +109,31 @@ PaddleX 内置了多条产线，每条产线都包含了若干模块，每个模
 </table>
 <b>注：以上精度指标为</b>[COCO2017](https://cocodataset.org/#home)<b>验证集 mAP(0.5:0.95)。</b>
 
-## 文本检测模块
+## [行人检测模块](../module_usage/tutorials/cv_modules/human_detection.md)
+<table>
+<thead>
+<tr>
+<th>模型名称</th>
+<th>mAP（%）</th>
+<th>模型存储大小</th>
+<th>模型下载链接</th></tr>
+</thead>
+<tbody>
+<tr>
+<td>PP-YOLOE-L_human</td>
+<td>48.0</td>
+<td>196.1 M</td>
+<td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-YOLOE-L_human_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-YOLOE-L_human_pretrained.pdparams">训练模型</a></td></tr>
+<tr>
+<td>PP-YOLOE-S_human</td>
+<td>42.5</td>
+<td>28.8 M</td>
+<td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-YOLOE-S_human_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-YOLOE-S_human_pretrained.pdparams">训练模型</a></td></tr>
+</tbody>
+</table>
+<b>注：以上精度指标为 </b>[CrowdHuman](https://bj.bcebos.com/v1/paddledet/data/crowdhuman.zip)<b> 验证集 mAP(0.5:0.95)。</b>
+
+## [文本检测模块](../module_usage/tutorials/ocr_modules/text_detection.md)
 <table>
 <thead>
 <tr>
@@ -108,7 +157,7 @@ PaddleX 内置了多条产线，每条产线都包含了若干模块，每个模
 </table>
 <b>注：以上精度指标的评估集是 PaddleOCR 自建的中文数据集，覆盖街景、网图、文档、手写多个场景，其中检测包含 500 张图片。</b>
 
-## 文本识别模块
+## [文本识别模块](../module_usage/tutorials/ocr_modules/text_recognition.md)
 <table>
 <thead>
 <tr>

@@ -6,7 +6,7 @@ comments: true
 
 PaddleX incorporates multiple pipelines, each containing several modules, and each module encompasses various models. You can select the appropriate models based on the benchmark data below. If you prioritize model accuracy, choose models with higher accuracy. If you prioritize model size, select models with smaller storage requirements.
 
-## Image Classification Module
+## [Image Classification Module](../module_usage/tutorials/cv_modules/image_classification.en.md)
 <table>
 <thead>
 <tr>
@@ -25,7 +25,7 @@ PaddleX incorporates multiple pipelines, each containing several modules, and ea
 </table>
 <b>Note: The above accuracy metrics refer to Top-1 Accuracy on the [ImageNet-1k](https://www.image-net.org/index.php) validation set.</b>
 
-## Object Detection Module
+## [Object Detection Module](../module_usage/tutorials/cv_modules/object_detection.en.md)
 <table>
 <thead>
 <tr>
@@ -35,6 +35,31 @@ PaddleX incorporates multiple pipelines, each containing several modules, and ea
 <th>Model Download Link</th></tr>
 </thead>
 <tbody>
+<tr>
+<td>FCOS-ResNet50</td>
+<td>39.6</td>
+<td>124.2 M</td>
+<td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/FCOS-ResNet50_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/FCOS-ResNet50_pretrained.pdparams">Trained Model</a></td></tr>
+<tr>
+<td>PicoDet-L</td>
+<td>42.5</td>
+<td>20.9 M</td>
+<td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PicoDet-L_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PicoDet-L_pretrained.pdparams">Trained Model</a></td></tr>
+<tr>
+<td>PicoDet-M</td>
+<td>37.4</td>
+<td>16.8 M</td>
+<td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PicoDet-M_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PicoDet-M_pretrained.pdparams">Trained Model</a></td></tr>
+<tr>
+<td>PicoDet-S</td>
+<td>29.0</td>
+<td>4.4 M</td>
+<td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PicoDet-S_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PicoDet-S_pretrained.pdparams">Trained Model</a></td></tr>
+<tr>
+<td>PicoDet-XS</td>
+<td>26.2</td>
+<td>5.7M</td>
+<td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PicoDet-XS_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PicoDet-XS_pretrained.pdparams">Trained Model</a></td></tr>
 <tr>
 <td>PP-YOLOE_plus-L</td>
 <td>52.8</td>
@@ -84,7 +109,31 @@ PaddleX incorporates multiple pipelines, each containing several modules, and ea
 </table>
 <b>Note: The above accuracy metrics are for</b> [COCO2017](https://cocodataset.org/#home) <b>validation set mAP(0.5:0.95).</b>
 
-## Text Detection Module
+## [Pedestrian Detection Module](../module_usage/tutorials/cv_modules/human_detection.en.md)
+<table>
+<thead>
+<tr>
+<th>Model Name</th>
+<th>mAP（%）</th>
+<th>Model Size (M)</th>
+<th>Model Download Link</th></tr>
+</thead>
+<tbody>
+<tr>
+<td>PP-YOLOE-L_human</td>
+<td>48.0</td>
+<td>196.1 M</td>
+<td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-YOLOE-L_human_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-YOLOE-L_human_pretrained.pdparams">Trained Model</a></td></tr>
+<tr>
+<td>PP-YOLOE-S_human</td>
+<td>42.5</td>
+<td>28.8 M</td>
+<td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-YOLOE-S_human_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-YOLOE-S_human_pretrained.pdparams">Trained Model</a></td></tr>
+</tbody>
+</table>
+<b>Note: The above accuracy metrics are mAP(0.5:0.95) on the [CrowdHuman](https://bj.bcebos.com/v1/paddledet/data/crowdhuman.zip) validation set.</b>
+
+## [Text Detection Module](../module_usage/tutorials/ocr_modules/text_detection.en.md)
 <table>
 <thead>
 <tr>
@@ -108,7 +157,7 @@ PaddleX incorporates multiple pipelines, each containing several modules, and ea
 </table>
 <b>Note: The above accuracy metrics are evaluated on PaddleOCR's self-built Chinese dataset, covering street scenes, web images, documents, and handwritten scenarios, with 500 images for detection.</b>
 
-## Text Recognition Module
+## [Text Recognition Module](../module_usage/tutorials/ocr_modules/text_recognition.en.md)
 <table>
 <thead>
 <tr>
