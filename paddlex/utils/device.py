@@ -36,7 +36,7 @@ def get_default_device():
         # maybe edge devices like Jetson
         if os.path.exists("/etc/nv_tegra_release"):
             avail_gpus = [0]
-    # print(f"* DEBUG: avail_gpus = {avail_gpus}")
+            print("Detected that the current device is a Jetson edge device. Since GPUtil cannot detect GPU on Jetson, the function defaults to returning GPU: 0")
     if not avail_gpus:
         return "cpu"
     else:
