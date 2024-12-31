@@ -24,6 +24,7 @@ from importlib_resources import files, as_file
 from . import create_pipeline
 from .inference.pipelines import create_pipeline_from_config, load_pipeline_config
 from .repo_manager import setup, get_all_supported_repo_names
+from .utils.flags import FLAGS_json_format_model
 from .utils import logging
 from .utils.interactive_get_pipeline import interactive_get_pipeline
 
@@ -173,7 +174,10 @@ def serve(pipeline, *, device, use_hpip, serial_number, update_license, host, po
 
 
 def paddle_to_onnx(paddle_model_dir, onnx_model_dir, *, opset_version):
-    PD_MODEL_FILENAME = "inference.pdmodel"
+    # TODO: Move to another module
+    PD_MODEL_FILENAME = (
+        "inference.json" if FLAGS_json_format_model else "inference.pdmodel"
+    )
     PD_PARAMS_FILENAME = "inference.pdiparams"
     ONNX_MODEL_FILENAME = "inference.onnx"
     CONFIG_FILENAME = "inference.yml"
@@ -183,18 +187,18 @@ def paddle_to_onnx(paddle_model_dir, onnx_model_dir, *, opset_version):
             sys.exit("Input directory must be specified")
         input_dir = Path(input_dir)
         if not input_dir.exists():
-            sys.exit(f"'{input_dir}' does not exist")
+            sys.exit(f"{input_dir} does not exist")
         if not input_dir.is_dir():
-            sys.exit(f"'{input_dir}' is not a directory")
+            sys.exit(f"{input_dir} is not a directory")
         model_path = input_dir / PD_MODEL_FILENAME
         if not model_path.exists():
-            sys.exit(f"'{model_path}' does not exist")
+            sys.exit(f"{model_path} does not exist")
         params_path = input_dir / PD_PARAMS_FILENAME
         if not params_path.exists():
-            sys.exit(f"'{params_path}' does not exist")
+            sys.exit(f"{params_path} does not exist")
         config_path = input_dir / CONFIG_FILENAME
         if not config_path.exists():
-            sys.exit(f"'{config_path}' does not exist")
+            sys.exit(f"{config_path} does not exist")
 
     def _check_paddle2onnx():
         if shutil.which("paddle2onnx") is None:
@@ -224,8 +228,9 @@ def paddle_to_onnx(paddle_model_dir, onnx_model_dir, *, opset_version):
     def _copy_config_file(input_dir, output_dir):
         src_path = Path(input_dir, CONFIG_FILENAME)
         dst_path = Path(output_dir, CONFIG_FILENAME)
-        shutil.copy(src_path, dst_path)
-        logging.info(f"Copied '{src_path}' to '{dst_path}'")
+        if not dst_path.samefile(src_path):
+            shutil.copy(src_path, dst_path)
+            logging.info(f"Copied {src_path} to {dst_path}")
 
     logging.info(f"Input dir: {paddle_model_dir}")
     logging.info(f"Output dir: {onnx_model_dir}")
