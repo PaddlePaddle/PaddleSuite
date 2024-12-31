@@ -43,6 +43,10 @@ class TestMLClasPredictor(BaseTestPredictor):
         return EXPECTED_RESULT_WITH_ARGS_URL
 
     @property
+    def should_test_with_args(self):
+        return True
+
+    @property
     def predictor_cls(self):
         return MLClasPredictor
 

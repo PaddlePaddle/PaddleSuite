@@ -45,6 +45,10 @@ class TestSegPredictor(BaseTestPredictor):
     def predictor_cls(self):
         return SegPredictor
 
+    @property
+    def should_test_with_args(self):
+        return True
+
     def _predict_with_predictor_args(
         self, model_path, input_data_path, device, expected_result_with_args
     ):
