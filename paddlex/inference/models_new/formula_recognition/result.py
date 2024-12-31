@@ -37,7 +37,7 @@ class FormulaRecResult(BaseCVResult):
         self,
     ):
         """Draw formula on image"""
-        image = Image.fromarray(self._input_img)
+        image = Image.fromarray(self["input_img"])
         try:
             env_valid()
         except subprocess.CalledProcessError as e:

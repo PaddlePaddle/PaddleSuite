@@ -103,3 +103,10 @@ from .face_recognition import (
 )
 
 from .ts_forecast import TSFCDatasetChecker, TSFCTrainer, TSFCEvaluator
+
+from .video_classification import (
+    VideoClsDatasetChecker,
+    VideoClsTrainer,
+    VideoClsEvaluator,
+    VideoClsExportor,
+)

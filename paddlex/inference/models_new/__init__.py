@@ -38,6 +38,7 @@ from .image_multilabel_classification import MLClasPredictor
 # from .general_recognition import ShiTuRecPredictor
 # from .anomaly_detection import UadPredictor
 # from .face_recognition import FaceRecPredictor
+from .video_classification import VideoClasPredictor
 
 
 def _create_hp_predictor(
