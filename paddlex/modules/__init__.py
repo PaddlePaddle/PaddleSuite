@@ -104,6 +104,13 @@ from .face_recognition import (
 
 from .ts_forecast import TSFCDatasetChecker, TSFCTrainer, TSFCEvaluator
 
+from .keypoint_detection import (
+    KeypointDatasetChecker,
+    KeypointTrainer,
+    KeypointEvaluator,
+    KeypointExportor,
+)
+
 from .video_classification import (
     VideoClsDatasetChecker,
     VideoClsTrainer,

@@ -229,7 +229,7 @@ class DetPredictor(BasicPredictor):
         return WarpAffine(input_h=input_h, input_w=input_w, keep_res=keep_res)
 
     def build_to_batch(self):
-        model_names_required_imgsize = [
+        models_required_imgsize = [
             "DETR",
             "RCNN",
             "YOLOv3",
@@ -237,7 +237,7 @@ class DetPredictor(BasicPredictor):
             "BlazeFace",
             "BlazeFace-FPN-SSH",
         ]
-        if any(name in self.model_name for name in model_names_required_imgsize):
+        if any(name in self.model_name for name in models_required_imgsize):
             ordered_required_keys = (
                 "img_size",
                 "img",
