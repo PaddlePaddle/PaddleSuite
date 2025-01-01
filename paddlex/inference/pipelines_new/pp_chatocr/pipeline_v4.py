@@ -453,7 +453,7 @@ class PP_ChatOCRv4_Pipeline(PP_ChatOCR_Pipeline):
             vector = vector_info["vector"]
             if not vector_info["flag_too_short_text"]:
                 related_text = self.retriever.similarity_retrieval(
-                    question_key_list, vector, topk=3
+                    question_key_list, vector, topk=5
                 )
             else:
                 if len(vector) > 0:
