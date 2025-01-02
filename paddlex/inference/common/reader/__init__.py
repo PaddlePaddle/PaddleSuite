@@ -13,4 +13,5 @@
 # limitations under the License.
 
 from .image_reader import ReadImage
+from .video_reader import ReadVideo
 from .ts_reader import ReadTS

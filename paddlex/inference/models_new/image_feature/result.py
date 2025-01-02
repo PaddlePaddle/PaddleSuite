@@ -21,5 +21,5 @@ class IdentityResult(BaseCVResult):
 
     def _to_img(self):
         """This module does not support visualization; it simply outputs the input images"""
-        image = Image.fromarray(self._input_img)
+        image = Image.fromarray(self["input_img"])
         return image

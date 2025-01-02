@@ -29,7 +29,7 @@ class TopkResult(BaseCVResult):
         labels = self.get("label_names", self["class_ids"])
         label_str = f"{labels[0]} {self['scores'][0]:.2f}"
 
-        image = Image.fromarray(self._input_img)
+        image = Image.fromarray(self["input_img"])
         image_size = image.size
         draw = ImageDraw.Draw(image)
         min_font_size = int(image_size[0] * 0.02)

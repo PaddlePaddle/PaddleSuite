@@ -25,7 +25,7 @@ from ...common.result import BaseCVResult
 class MLClassResult(BaseCVResult):
     def _to_img(self):
         """Draw label on image"""
-        image = Image.fromarray(self._input_img)
+        image = Image.fromarray(self["input_img"])
         label_names = self["label_names"]
         scores = self["scores"]
         image = image.convert("RGB")

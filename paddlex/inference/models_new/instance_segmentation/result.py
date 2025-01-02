@@ -137,7 +137,7 @@ class InstanceSegResult(BaseCVResult):
     def _to_img(self):
         """apply"""
         # image = self._img_reader.read(self["input_path"])
-        image = Image.fromarray(self._input_img)
+        image = Image.fromarray(self["input_img"])
         ori_img_size = list(image.size)[::-1]
         boxes = self["boxes"]
         masks = self["masks"]
