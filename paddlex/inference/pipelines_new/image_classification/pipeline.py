@@ -14,7 +14,6 @@
 
 from typing import Any, Dict, Optional
 import numpy as np
-
 from ...common.reader import ReadImage
 from ...common.batch_sampler import ImageBatchSampler
 from ...utils.pp_option import PaddlePredictorOption

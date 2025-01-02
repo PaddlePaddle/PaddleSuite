@@ -12,27 +12,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .pipeline_base import PP_ChatOCR_Pipeline
-
 from typing import Any, Dict, Optional
-
-from .result import VisualInfoResult
 import re
-
+import json
+import numpy as np
+import copy
+from .pipeline_base import PP_ChatOCR_Pipeline
+from .result import VisualInfoResult
 from ...common.reader import ReadImage
 from ...common.batch_sampler import ImageBatchSampler
-
-import json
-
 from ....utils import logging
-
 from ...utils.pp_option import PaddlePredictorOption
-
 from ..layout_parsing.result import LayoutParsingResult
-
-import numpy as np
-
-import copy
 
 
 class PP_ChatOCRv3_Pipeline(PP_ChatOCR_Pipeline):
@@ -64,10 +55,6 @@ class PP_ChatOCRv3_Pipeline(PP_ChatOCR_Pipeline):
         )
 
         self.pipeline_name = config["pipeline_name"]
-        if self.pipeline_name not in self.entities:
-            raise ValueError(
-                f"pipeline_name must be in {self.entities} of PP_ChatOCRv3_Pipeline."
-            )
 
         self.inintial_predictor(config)
 

@@ -12,8 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .base import BaseGeneratePrompt
 from typing import Dict
+from .base import BaseGeneratePrompt
 from .....utils import logging
 
 
@@ -145,6 +145,4 @@ class GenerateKIEPrompt(BaseGeneratePrompt):
                 \n问题列表：{key_list}。""".replace(
                 "    ", ""
             )
-        else:
-            logging.error(f"{self.task_type} is currently not supported.")
         return prompt

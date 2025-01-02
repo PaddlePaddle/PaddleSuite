@@ -18,9 +18,7 @@ import numpy as np
 import cv2
 import PIL
 from PIL import Image, ImageDraw, ImageFont
-
 from ....utils.fonts import PINGFANG_FONT_FILE_PATH
-
 from ...common.result import BaseResult
 
 

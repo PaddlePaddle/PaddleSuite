@@ -12,31 +12,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from ..base import BasePipeline
 from typing import Any, Dict, Optional
+import os, sys
 import numpy as np
 import cv2
-
+from ..base import BasePipeline
 from .utils import convert_points_to_boxes, get_sub_regions_ocr_res
-
 from .result import LayoutParsingResult
-
 from ....utils import logging
-
 from ...utils.pp_option import PaddlePredictorOption
-
 from ...common.reader import ReadImage
-
 from ...common.batch_sampler import ImageBatchSampler
-
 from ..ocr.result import OCRResult
-
 from ..doc_preprocessor.result import DocPreprocessorResult
 
 # [TODO] 待更新models_new到models
 from ...models_new.object_detection.result import DetResult
-
-import os, sys
 
 
 class LayoutParsingPipeline(BasePipeline):

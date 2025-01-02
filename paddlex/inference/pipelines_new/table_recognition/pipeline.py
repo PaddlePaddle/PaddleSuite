@@ -12,34 +12,25 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from ..base import BasePipeline
+import os, sys
 from typing import Any, Dict, Optional
 import numpy as np
 import cv2
+from ..base import BasePipeline
 from ..components import CropByBoxes
-
 from ..layout_parsing.utils import convert_points_to_boxes
-
 from .utils import get_neighbor_boxes_idx
-
 from .table_recognition_post_processing import get_table_recognition_res
-
 from .result import SingleTableRecognitionResult, TableRecognitionResult
-
 from ....utils import logging
-
 from ...utils.pp_option import PaddlePredictorOption
-
 from ...common.reader import ReadImage
 from ...common.batch_sampler import ImageBatchSampler
-
 from ..ocr.result import OCRResult
 from ..doc_preprocessor.result import DocPreprocessorResult
 
 # [TODO] 待更新models_new到models
 from ...models_new.object_detection.result import DetResult
-
-import os, sys
 
 
 class TableRecognitionPipeline(BasePipeline):

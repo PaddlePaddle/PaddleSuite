@@ -12,13 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from ..base import BasePipeline
 from typing import Any, Dict, Optional
 from scipy.ndimage import rotate
+import numpy as np
+from ..base import BasePipeline
 from .result import DocPreprocessorResult
 from ....utils import logging
-import numpy as np
-
 from ...common.reader import ReadImage
 from ...common.batch_sampler import ImageBatchSampler
 from ...utils.pp_option import PaddlePredictorOption

@@ -12,15 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import os
+from typing import Dict
+from pathlib import Path
 import numpy as np
 import cv2
-import os
-
 from ...common.result import BaseCVResult, HtmlMixin, XlsxMixin
-
-from typing import Dict
-
-from pathlib import Path
 
 
 class SingleTableRecognitionResult(BaseCVResult, HtmlMixin, XlsxMixin):

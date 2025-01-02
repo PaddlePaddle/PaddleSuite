@@ -12,27 +12,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .pipeline_base import PP_ChatOCR_Pipeline
-
 from typing import Any, Dict, Optional
-
-from .result import VisualInfoResult
 import re
-
+import json
+import numpy as np
+import copy
+from .pipeline_base import PP_ChatOCR_Pipeline
+from .result import VisualInfoResult
 from ...common.reader import ReadImage
 from ...common.batch_sampler import ImageBatchSampler
-
-import json
-
 from ....utils import logging
-
 from ...utils.pp_option import PaddlePredictorOption
-
 from ..layout_parsing.result import LayoutParsingResult
-
-import numpy as np
-
-import copy
 
 
 class PP_ChatOCRv4_Pipeline(PP_ChatOCR_Pipeline):
@@ -64,11 +55,6 @@ class PP_ChatOCRv4_Pipeline(PP_ChatOCR_Pipeline):
         )
 
         self.pipeline_name = config["pipeline_name"]
-
-        if self.pipeline_name not in self.entities:
-            raise ValueError(
-                f"pipeline_name must be in {self.entities} of PP_ChatOCRv4_Pipeline."
-            )
 
         self.inintial_predictor(config)
 
@@ -442,7 +428,7 @@ class PP_ChatOCRv4_Pipeline(PP_ChatOCR_Pipeline):
             vector_info (dict): Dictionary containing vector information.
             key_list (list[str]): List of keys to generate question keys.
             all_normal_text_list (list): List of normal text.
-            min_characters (int): Minimum number of characters required for the output.
+            min_characters (int): The minimum number of characters required for text processing, defaults to 3500.
 
         Returns:
             str: Related normal text.
@@ -453,7 +439,7 @@ class PP_ChatOCRv4_Pipeline(PP_ChatOCR_Pipeline):
             vector = vector_info["vector"]
             if not vector_info["flag_too_short_text"]:
                 related_text = self.retriever.similarity_retrieval(
-                    question_key_list, vector, topk=5
+                    question_key_list, vector, topk=5, min_characters=min_characters
                 )
             else:
                 if len(vector) > 0:
@@ -547,7 +533,7 @@ class PP_ChatOCRv4_Pipeline(PP_ChatOCR_Pipeline):
             visual_info (VisualInfoResult): The visual information result.
             use_vector_retrieval (bool): Whether to use vector retrieval.
             vector_info (dict): The vector information for retrieval.
-            min_characters (int): The minimum number of characters required.
+            min_characters (int): The minimum number of characters required for text processing, defaults to 3500.
             text_task_description (str): The description of the text task.
             text_output_format (str): The output format for text results.
             text_rules_str (str): The rules for generating text results.

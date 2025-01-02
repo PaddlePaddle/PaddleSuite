@@ -12,20 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .base import BaseRetriever
+from typing import Dict
+import time
 import os
-
 from langchain.docstore.document import Document
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-
 from langchain_community.embeddings import QianfanEmbeddingsEndpoint
 from langchain_community.vectorstores import FAISS
 from langchain_community import vectorstores
 from erniebot_agent.extensions.langchain.embeddings import ErnieEmbeddings
-
-import time
-
-from typing import Dict
+from .base import BaseRetriever
 
 
 class ErnieBotRetriever(BaseRetriever):
@@ -196,6 +192,7 @@ class ErnieBotRetriever(BaseRetriever):
         vectorstore: FAISS,
         sleep_time: float = 0.5,
         topk: int = 2,
+        min_characters: int = 3500,
     ) -> str:
         """
         Retrieve similar contexts based on a list of query texts.
@@ -205,6 +202,7 @@ class ErnieBotRetriever(BaseRetriever):
             vectorstore (FAISS): The vector store where to perform the similarity search.
             sleep_time (float): The time to sleep between each query, in seconds. Default is 0.5.
             topk (int): The number of results to retrieve per query. Default is 2.
+            min_characters (int): The minimum number of characters required for text processing, defaults to 3500.
         Returns:
             str: A concatenated string of all unique contexts found.
         """

@@ -12,12 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .....utils import logging
-from .base import BaseChat
-import erniebot
 from typing import Dict
 import re
 import json
+import erniebot
+from .....utils import logging
+from .base import BaseChat
 
 
 class ErnieBotChat(BaseChat):

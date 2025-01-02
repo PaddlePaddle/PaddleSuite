@@ -14,15 +14,14 @@
 
 import math
 import random
+from pathlib import Path
 import numpy as np
 import cv2
 import PIL
 from PIL import Image, ImageDraw, ImageFont
-
 from ....utils.fonts import PINGFANG_FONT_FILE_PATH, create_font
 from ...common.result import BaseCVResult
 
-from pathlib import Path
 
 class DocPreprocessorResult(BaseCVResult):
     """doc preprocessor result"""

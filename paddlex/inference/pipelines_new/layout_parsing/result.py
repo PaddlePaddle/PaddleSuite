@@ -13,7 +13,6 @@
 # limitations under the License.
 
 import os
-
 from pathlib import Path
 
 

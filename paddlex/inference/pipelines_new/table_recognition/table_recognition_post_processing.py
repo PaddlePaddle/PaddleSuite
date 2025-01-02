@@ -11,11 +11,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-from ..layout_parsing.utils import convert_points_to_boxes, get_sub_regions_ocr_res
-import numpy as np
-from .result import SingleTableRecognitionResult
 from typing import Any, Dict, Optional
+import numpy as np
+from ..layout_parsing.utils import convert_points_to_boxes, get_sub_regions_ocr_res
+from .result import SingleTableRecognitionResult
 from ..ocr.result import OCRResult
 
 

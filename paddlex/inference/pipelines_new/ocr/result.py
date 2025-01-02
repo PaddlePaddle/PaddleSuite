@@ -12,17 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from pathlib import Path
 import math
 import random
 import numpy as np
 import cv2
 import PIL
 from PIL import Image, ImageDraw, ImageFont
-
 from ....utils.fonts import PINGFANG_FONT_FILE_PATH, create_font
 from ...common.result import BaseCVResult
 
-from pathlib import Path
 
 class OCRResult(BaseCVResult):
     """OCR result"""
