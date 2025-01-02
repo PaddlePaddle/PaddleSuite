@@ -21,8 +21,17 @@ from PIL import Image, ImageOps
 import pandas as pd
 import numpy as np
 import yaml
-import decord
 import random
+import platform
+
+from ....utils import logging
+
+if not platform.machine().startswith("arm"):
+    import decord
+else:
+    logging.warning(
+        "Please install `decord` manually on ARM machine. Otherwise, the related model cannot work."
+    )
 
 __all__ = [
     "ReaderType",
