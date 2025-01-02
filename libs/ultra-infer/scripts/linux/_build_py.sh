@@ -45,7 +45,7 @@ fi
 
 python -m pip install numpy pandas
 
-cd /workspace/ultra_infer
+cd /workspace/ultra-infer
 
 rm -rf "TensorRT-${TRT_VERSION}" "TensorRT-${TRT_VERSION}.Linux.x86_64-gnu.cuda-${CUDA_VERSION}.cudnn${CUDNN_VERSION}.tar.gz"
 http_proxy= https_proxy= wget "https://fastdeploy.bj.bcebos.com/resource/TensorRT/TensorRT-${TRT_VERSION}.Linux.x86_64-gnu.cuda-${CUDA_VERSION}.cudnn${CUDNN_VERSION}.tar.gz"
@@ -53,7 +53,7 @@ tar -xzvf "TensorRT-${TRT_VERSION}.Linux.x86_64-gnu.cuda-${CUDA_VERSION}.cudnn${
 
 export WITH_GPU="${WITH_GPU}"
 export ENABLE_TRT_BACKEND="${WITH_GPU}"
-export TRT_DIRECTORY="/workspace/ultra_infer/TensorRT-${TRT_VERSION}"
+export TRT_DIRECTORY="/workspace/ultra-infer/TensorRT-${TRT_VERSION}"
 export ENABLE_ORT_BACKEND=ON
 export ENABLE_PADDLE_BACKEND=ON
 export PADDLEINFERENCE_URL="${PADDLEINFERENCE_URL}"
@@ -65,7 +65,7 @@ export ENABLE_BENCHMARK="${ENABLE_BENCHMARK}"
 export CC=/usr/local/gcc-8.2/bin/gcc
 export CXX=/usr/local/gcc-8.2/bin/g++
 
-cd /workspace/ultra_infer/python
+cd /workspace/ultra-infer/python
 python -m pip install wheel
 unset http_proxy https_proxy
 

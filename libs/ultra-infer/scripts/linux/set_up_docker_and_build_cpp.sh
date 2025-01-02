@@ -36,7 +36,7 @@ docker run --gpus all -it --name="${CONTAINER_NAME}" --shm-size=128g --net=host 
 "${DOCKER_IMAGE}" /bin/bash -c "
 ldconfig && \
 cd /workspace && \
-./ultra_infer/scripts/linux/_build_cpp.sh --with-gpu "${WITH_GPU}" --enable-benchmark "${ENABLE_BENCHMARK}" --paddleinference-url "${PADDLEINFERENCE_URL}" --paddleinference-version "${PADDLEINFERENCE_VERSION}" && \
+./ultra-infer/scripts/linux/_build_cpp.sh --with-gpu "${WITH_GPU}" --enable-benchmark "${ENABLE_BENCHMARK}" --paddleinference-url "${PADDLEINFERENCE_URL}" --paddleinference-version "${PADDLEINFERENCE_VERSION}" && \
 tail -f /dev/null"
 EOF
 )
@@ -49,7 +49,7 @@ docker run -it --name="${CONTAINER_NAME}" --shm-size=128g --net=host \
 -e "https_proxy=${https_proxy}" \
 "${DOCKER_IMAGE}" /bin/bash -c "
 cd /workspace && \
-./ultra_infer/scripts/linux/_build_cpp.sh --with-gpu "${WITH_GPU}" --enable-benchmark "${ENABLE_BENCHMARK}" --paddleinference-url "${PADDLEINFERENCE_URL}" --paddleinference-version "${PADDLEINFERENCE_VERSION}" && \
+./ultra-infer/scripts/linux/_build_cpp.sh --with-gpu "${WITH_GPU}" --enable-benchmark "${ENABLE_BENCHMARK}" --paddleinference-url "${PADDLEINFERENCE_URL}" --paddleinference-version "${PADDLEINFERENCE_VERSION}" && \
 tail -f /dev/null"
 EOF
 )

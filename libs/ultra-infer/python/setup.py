@@ -23,7 +23,7 @@ import os
 TOP_DIR = os.path.realpath(os.path.dirname(__file__))
 TOP_DIR = os.path.split(TOP_DIR)[0]
 PACKAGE_NAME = os.getenv("PACKAGE_NAME", "ultra_infer")
-wheel_name = os.getenv("WHEEL_NAME", "ultra_infer-python")
+wheel_name = os.getenv("WHEEL_NAME", "ultra-infer-python")
 
 if not os.path.exists(PACKAGE_NAME):
     shutil.copytree("ultra_infer", PACKAGE_NAME)
