@@ -27,7 +27,7 @@ from typing import (
 
 import ultra_infer as ui
 from ultra_infer.model import BaseUltraInferModel
-from paddlex.inference.common.reader import ReadImage
+from paddlex.inference.common.reader import ReadImage, ReadTS
 from paddlex.inference.models_new import BasePredictor
 from paddlex.inference.utils.new_ir_blacklist import NEWIR_BLOCKLIST
 from paddlex.utils import device as device_helper
@@ -190,4 +190,4 @@ class CVPredictor(HPPredictor):
 
 class TSPredictor(HPPredictor):
     def _build_data_reader(self):
-        return None
+        return ReadTS()
