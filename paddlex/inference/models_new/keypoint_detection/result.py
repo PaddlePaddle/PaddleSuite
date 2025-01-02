@@ -178,7 +178,7 @@ def draw_keypoints(imgfile, results, visual_thresh=0.1, ids=None):
     return canvas
 
 
-class KeypointResult(BaseCVResult):
+class KptResult(BaseCVResult):
     """Save Result Transform"""
 
     def _to_img(self):
@@ -187,7 +187,5 @@ class KeypointResult(BaseCVResult):
             keypoints = [kpt["keypoints"] for kpt in self["kpts"]]
         else:
             keypoints = np.concatenate([obj["keypoints"] for obj in self["boxes"]])
-        image = draw_keypoints(
-            self._input_img[..., ::-1], dict(keypoints=np.stack(keypoints))
-        )
-        return Image.fromarray(image[:, :, ::-1])
+        image = draw_keypoints(self["input_img"], dict(keypoints=np.stack(keypoints)))
+        return Image.fromarray(image)

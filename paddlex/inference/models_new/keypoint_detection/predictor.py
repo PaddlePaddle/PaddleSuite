@@ -23,7 +23,7 @@ from ...common.batch_sampler import ImageBatchSampler
 from ..common import ToBatch
 from ..object_detection import DetPredictor
 from .processors import TopDownAffine, KptPostProcess
-from .result import KeypointResult
+from .result import KptResult
 
 
 class KptBatchSampler(ImageBatchSampler):
@@ -100,7 +100,7 @@ class KptPredictor(DetPredictor):
         return KptBatchSampler()
 
     def _get_result_class(self):
-        return KeypointResult
+        return KptResult
 
     def _format_output(self, pred: Sequence[Any]) -> List[dict]:
         """Transform batch outputs into a list of single image output."""
