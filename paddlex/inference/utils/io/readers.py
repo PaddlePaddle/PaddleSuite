@@ -21,7 +21,6 @@ from PIL import Image, ImageOps
 import pandas as pd
 import numpy as np
 import yaml
-import decord
 import random
 
 __all__ = [
@@ -373,6 +372,8 @@ class DecordVideoReaderBackend(_VideoReaderBackend):
 
     def read_file(self, in_path):
         """read vidio file from path"""
+        import decord
+
         self._cap = decord.VideoReader(in_path)
         frame_len = len(self._cap)
         if self.sample_type == "uniform":
