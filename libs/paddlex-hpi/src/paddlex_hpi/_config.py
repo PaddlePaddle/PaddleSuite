@@ -82,7 +82,9 @@ class TensorRTConfig(_BackendConfig):
 
     def update_ui_option(self, option: ui.RuntimeOption, model_dir: Path) -> None:
         option.use_trt_backend()
-        option.trt_option.serialize_file = str(model_dir / "trt_serialized.trt")
+        option.trt_option.serialize_file = str(
+            model_dir / f"trt_serialized_{self.precision}.trt"
+        )
         if self.precision == "FP16":
             option.trt_option.enable_fp16 = True
         if self.dynamic_shapes is not None:
