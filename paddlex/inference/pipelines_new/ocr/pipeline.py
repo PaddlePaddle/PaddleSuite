@@ -14,7 +14,6 @@
 
 from typing import Any, Dict, Optional
 import numpy as np
-
 from ...common.reader import ReadImage
 from ...common.batch_sampler import ImageBatchSampler
 from ...utils.pp_option import PaddlePredictorOption
@@ -76,7 +75,7 @@ class OCRPipeline(BasePipeline):
         """Predicts OCR results for the given input.
 
         Args:
-            input (str | list[str] | np.ndarray | list[np.ndarray]): The input image(s) or path(s) to the images.
+            input (str | list[str] | np.ndarray | list[np.ndarray]): The input image(s) or path(s) to the images or pdf(s).
             **kwargs: Additional keyword arguments that can be passed to the function.
 
         Returns:
@@ -94,13 +93,15 @@ class OCRPipeline(BasePipeline):
 
             dt_polys = self._sort_boxes(dt_polys)
 
+            img_id += 1
+
             single_img_res = {
                 "input_img": raw_img,
                 "dt_polys": dt_polys,
                 "img_id": img_id,
                 "text_type": self.text_type,
             }
-            img_id += 1
+
             single_img_res["rec_text"] = []
             single_img_res["rec_score"] = []
             if len(dt_polys) > 0:

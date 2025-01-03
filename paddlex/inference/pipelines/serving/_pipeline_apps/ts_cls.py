@@ -19,7 +19,7 @@ from .....utils import logging
 from ...single_model_pipeline import TSCls
 from .. import utils as serving_utils
 from ..app import AppConfig, create_app
-from ..models import Response, ResultResponse
+from ..models import NoResultResponse, ResultResponse
 
 
 class InferRequest(BaseModel):
@@ -39,7 +39,8 @@ def create_pipeline_app(pipeline: TSCls, app_config: AppConfig) -> FastAPI:
     @app.post(
         "/time-series-classification",
         operation_id="infer",
-        responses={422: {"model": Response}},
+        responses={422: {"model": NoResultResponse}},
+        response_model_exclude_none=True,
     )
     async def _infer(request: InferRequest) -> ResultResponse[InferResult]:
         pipeline = ctx.pipeline
@@ -54,15 +55,13 @@ def create_pipeline_app(pipeline: TSCls, app_config: AppConfig) -> FastAPI:
             label = str(result["classification"].at[0, "classid"])
             score = float(result["classification"].at[0, "score"])
 
-            return ResultResponse(
+            return ResultResponse[InferResult](
                 logId=serving_utils.generate_log_id(),
-                errorCode=0,
-                errorMsg="Success",
                 result=InferResult(label=label, score=score),
             )
 
-        except Exception as e:
-            logging.exception(e)
+        except Exception:
+            logging.exception("Unexpected exception")
             raise HTTPException(status_code=500, detail="Internal server error")
 
     return app

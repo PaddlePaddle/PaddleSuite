@@ -22,6 +22,7 @@ from typing import (
     Dict,
     Generic,
     List,
+    Mapping,
     Optional,
     Tuple,
     TypeVar,
@@ -37,7 +38,7 @@ from starlette.exceptions import HTTPException
 from typing_extensions import Final, ParamSpec
 
 from ..base import BasePipeline
-from .models import Response
+from .models import NoResultResponse
 from .utils import call_async, generate_log_id
 
 SERVING_CONFIG_KEY: Final[str] = "Serving"
@@ -108,7 +109,7 @@ class AppContext(Generic[_PipelineT]):
         self._aiohttp_session = val
 
 
-def create_app_config(pipeline_config: Dict[str, Any], **kwargs: Any) -> AppConfig:
+def create_app_config(pipeline_config: Mapping[str, Any], **kwargs: Any) -> AppConfig:
     app_config = pipeline_config.get(SERVING_CONFIG_KEY, {})
     app_config.update(kwargs)
     return AppConfig.model_validate(app_config)
@@ -134,15 +135,17 @@ def create_app(
     app.state.context = ctx
 
     @app.get("/health", operation_id="checkHealth")
-    async def _check_health() -> Response:
-        return Response(logId=generate_log_id(), errorCode=0, errorMsg="Healthy")
+    async def _check_health() -> NoResultResponse:
+        return NoResultResponse(
+            logId=generate_log_id(), errorCode=0, errorMsg="Healthy"
+        )
 
     @app.exception_handler(RequestValidationError)
     async def _validation_exception_handler(
         request: fastapi.Request, exc: RequestValidationError
     ) -> JSONResponse:
         json_compatible_data = jsonable_encoder(
-            Response(
+            NoResultResponse(
                 logId=generate_log_id(),
                 errorCode=422,
                 errorMsg=json.dumps(exc.errors()),
@@ -155,7 +158,7 @@ def create_app(
         request: fastapi.Request, exc: HTTPException
     ) -> JSONResponse:
         json_compatible_data = jsonable_encoder(
-            Response(
+            NoResultResponse(
                 logId=generate_log_id(), errorCode=exc.status_code, errorMsg=exc.detail
             )
         )

@@ -12,40 +12,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# from .single_model_pipeline import (
-#     _SingleModelPipeline,
-#     ImageClassification,
-#     ObjectDetection,
-#     InstanceSegmentation,
-#     SemanticSegmentation,
-#     TSFc,
-#     TSAd,
-#     TSCls,
-#     MultiLableImageClas,
-#     SmallObjDet,
-#     AnomalyDetection,
-# )
-# from .ocr import OCRPipeline
-# from .formula_recognition import FormulaRecognitionPipeline
-# from .table_recognition import TableRecPipeline
-# from .face_recognition import FaceRecPipeline
-# from .seal_recognition import SealOCRPipeline
-# from .ppchatocrv3 import PPChatOCRPipeline
-# from .layout_parsing import LayoutParsingPipeline
-# from .pp_shitu_v2 import ShiTuV2Pipeline
-# from .attribute_recognition import AttributeRecPipeline
-
 from pathlib import Path
 from typing import Any, Dict, Optional
 from .base import BasePipeline
 from ..utils.pp_option import PaddlePredictorOption
 from .components import BaseChat, BaseRetriever, BaseGeneratePrompt
 from ...utils.config import parse_config
-
 from .ocr import OCRPipeline
 from .doc_preprocessor import DocPreprocessorPipeline
 from .layout_parsing import LayoutParsingPipeline
-from .pp_chatocrv3_doc import PP_ChatOCRv3_doc_Pipeline
+from .pp_chatocr import PP_ChatOCRv3_Pipeline, PP_ChatOCRv4_Pipeline
+from .image_classification import ImageClassificationPipeline
+from .seal_recognition import SealRecognitionPipeline
+from .table_recognition import TableRecognitionPipeline
 
 
 def get_pipeline_path(pipeline_name: str) -> str:

@@ -610,6 +610,11 @@ chat_result.print()
 </thead>
 <tbody>
 <tr>
+<td><code>logId</code></td>
+<td><code>string</code></td>
+<td>请求的UUID。</td>
+</tr>
+<tr>
 <td><code>errorCode</code></td>
 <td><code>integer</code></td>
 <td>错误码。固定为<code>0</code>。</td>
@@ -619,9 +624,13 @@ chat_result.print()
 <td><code>string</code></td>
 <td>错误说明。固定为<code>"Success"</code>。</td>
 </tr>
+<tr>
+<td><code>result</code></td>
+<td><code>object</code></td>
+<td>操作结果。</td>
+</tr>
 </tbody>
 </table>
-<p>响应体还可能有<code>result</code>属性，类型为<code>object</code>，其中存储操作结果信息。</p>
 <ul>
 <li>当请求处理未成功时，响应体的属性如下：</li>
 </ul>
@@ -634,6 +643,11 @@ chat_result.print()
 </tr>
 </thead>
 <tbody>
+<tr>
+<td><code>logId</code></td>
+<td><code>string</code></td>
+<td>请求的UUID。</td>
+</tr>
 <tr>
 <td><code>errorCode</code></td>
 <td><code>integer</code></td>
@@ -684,7 +698,7 @@ chat_result.print()
 <td>否</td>
 </tr>
 <tr>
-<td><code>useImgUnwrapping</code></td>
+<td><code>useImgUnwarping</code></td>
 <td><code>boolean</code></td>
 <td>是否启用文本图像矫正功能。默认启用该功能。</td>
 <td>否</td>
@@ -743,6 +757,11 @@ chat_result.print()
 <td><code>visionInfo</code></td>
 <td><code>object</code></td>
 <td>图像中的关键信息，可用作其他操作的输入。</td>
+</tr>
+<tr>
+<td><code>dataInfo</code></td>
+<td><code>object</code></td>
+<td>输入数据信息。</td>
 </tr>
 </tbody>
 </table>
@@ -1116,17 +1135,17 @@ chat_result.print()
 <tbody>
 <tr>
 <td><code>ocr</code></td>
-<td><code>string</code></td>
+<td><code>array</code></td>
 <td>OCR提示词。</td>
 </tr>
 <tr>
 <td><code>table</code></td>
-<td><code>string</code></td>
+<td><code>array</code></td>
 <td>表格提示词。</td>
 </tr>
 <tr>
 <td><code>html</code></td>
-<td><code>string</code></td>
+<td><code>array</code></td>
 <td>HTML提示词。</td>
 </tr>
 </tbody>
@@ -1166,7 +1185,7 @@ payload = {
     &quot;file&quot;: file_data,
     &quot;fileType&quot;: 1,
     &quot;useImgOrientationCls&quot;: True,
-    &quot;useImgUnwrapping&quot;: True,
+    &quot;useImgUnwarping&quot;: True,
     &quot;useSealTextDet&quot;: True,
 }
 resp_vision = requests.post(url=f&quot;{API_BASE_URL}/chatocr-vision&quot;, json=payload)

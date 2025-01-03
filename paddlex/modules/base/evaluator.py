@@ -33,6 +33,12 @@ def build_evaluater(config: AttrDict) -> "BaseEvaluator":
         BaseEvaluator: the evaluater, which is subclass of BaseEvaluator.
     """
     model_name = config.Global.model
+    try:
+        import feature_line_modules
+    except ModuleNotFoundError:
+        info(
+            "The PaddleX FeaTure Line plugin is not installed, but continuing execution."
+        )
     return BaseEvaluator.get(model_name)(config)
 
 
@@ -51,9 +57,9 @@ class BaseEvaluator(ABC, metaclass=AutoRegisterABCMetaClass):
         self.global_config = config.Global
         self.eval_config = config.Evaluate
 
-        config_path = self.eval_config.get("basic_config_path", None)
-        if not config_path:
-            config_path = self.get_config_path(self.eval_config.weight_path)
+        config_path = self.get_config_path(self.eval_config.weight_path)
+        if self.eval_config.get("basic_config_path", None):
+            config_path = self.eval_config.get("basic_config_path", None)
 
         self.pdx_config, self.pdx_model = build_model(
             self.global_config.model, config_path=config_path

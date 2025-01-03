@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import List
+from typing import List, Optional
 
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
@@ -21,11 +21,16 @@ from .....utils import logging
 from ...single_model_pipeline import ImageClassification
 from .. import utils as serving_utils
 from ..app import AppConfig, create_app
-from ..models import Response, ResultResponse
+from ..models import NoResultResponse, ResultResponse
+
+
+class InferenceParams(BaseModel):
+    threshold: Optional[float] = None
 
 
 class InferRequest(BaseModel):
     image: str
+    inferenceParams: Optional[InferenceParams] = None
 
 
 class Category(BaseModel):
@@ -49,11 +54,20 @@ def create_pipeline_app(
     @app.post(
         "/multilabel-image-classification",
         operation_id="infer",
-        responses={422: {"model": Response}},
+        responses={422: {"model": NoResultResponse}},
+        response_model_exclude_none=True,
     )
     async def _infer(request: InferRequest) -> ResultResponse[InferResult]:
         pipeline = ctx.pipeline
         aiohttp_session = ctx.aiohttp_session
+
+        if request.inferenceParams:
+            threshold = request.inferenceParams.threshold
+            if threshold is not None:
+                raise HTTPException(
+                    status_code=422,
+                    detail="`threshold` is currently not supported.",
+                )
 
         try:
             file_bytes = await serving_utils.get_raw_bytes(
@@ -76,15 +90,13 @@ def create_pipeline_app(
                 serving_utils.image_to_bytes(result.img)
             )
 
-            return ResultResponse(
+            return ResultResponse[InferResult](
                 logId=serving_utils.generate_log_id(),
-                errorCode=0,
-                errorMsg="Success",
                 result=InferResult(categories=categories, image=output_image_base64),
             )
 
-        except Exception as e:
-            logging.exception(e)
+        except Exception:
+            logging.exception("Unexpected exception")
             raise HTTPException(status_code=500, detail="Internal server error")
 
     return app

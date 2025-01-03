@@ -12,18 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import math
-import random
-import numpy as np
-import cv2
-import PIL
-from PIL import Image, ImageDraw, ImageFont
-
-from ....utils.fonts import PINGFANG_FONT_FILE_PATH
-from ..components import BaseResult
-
-
-class VisualInfoResult(BaseResult):
-    """VisualInfoResult"""
-
-    pass
+MODELS = [
+    "PP-TSM-R50_8frames_uniform",
+    "PP-TSMv2-LCNetV2_8frames_uniform",
+    "PP-TSMv2-LCNetV2_16frames_uniform",
+]

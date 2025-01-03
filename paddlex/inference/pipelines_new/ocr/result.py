@@ -12,18 +12,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from pathlib import Path
 import math
 import random
 import numpy as np
 import cv2
 import PIL
 from PIL import Image, ImageDraw, ImageFont
-
 from ....utils.fonts import PINGFANG_FONT_FILE_PATH, create_font
-from ..components import CVResult
+from ...common.result import BaseCVResult
 
 
-class OCRResult(CVResult):
+class OCRResult(BaseCVResult):
     """OCR result"""
 
     def save_to_img(self, save_path: str, *args, **kwargs) -> None:
@@ -40,7 +40,7 @@ class OCRResult(CVResult):
         """
         if not str(save_path).lower().endswith((".jpg", ".png")):
             img_id = self["img_id"]
-            save_path = save_path + "/res_ocr_%d.jpg" % img_id
+            save_path = Path(save_path) / f"res_ocr_{img_id}.jpg"
         super().save_to_img(save_path, *args, **kwargs)
 
     def get_minarea_rect(self, points: np.ndarray) -> np.ndarray:
