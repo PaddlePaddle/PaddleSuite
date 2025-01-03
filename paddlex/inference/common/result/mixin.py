@@ -31,6 +31,7 @@ from ...utils.io import (
     HtmlWriter,
     XlsxWriter,
     TextWriter,
+    VideoWriter,
 )
 
 
@@ -248,6 +249,8 @@ class Base64Mixin:
         if not str(save_path).lower().endswith((".b64")):
             fp = Path(self["input_path"])
             save_path = Path(save_path) / f"{fp.stem}{fp.suffix}"
+        else:
+            save_path = Path(save_path)
         self._base64_writer.write(save_path.as_posix(), self.base64, *args, **kwargs)
 
 
@@ -352,6 +355,8 @@ class CSVMixin:
         """
         if not str(save_path).endswith(".csv"):
             save_path = Path(save_path) / f"{Path(self['input_path']).stem}.csv"
+        else:
+            save_path = Path(save_path)
         self._csv_writer.write(save_path.as_posix(), self.csv, *args, **kwargs)
 
 
@@ -397,6 +402,8 @@ class HtmlMixin:
         """
         if not str(save_path).endswith(".html"):
             save_path = Path(save_path) / f"{Path(self['input_path']).stem}.html"
+        else:
+            save_path = Path(save_path)
         self._html_writer.write(save_path.as_posix(), self.html, *args, **kwargs)
 
 
@@ -442,4 +449,29 @@ class XlsxMixin:
         """
         if not str(save_path).endswith(".xlsx"):
             save_path = Path(save_path) / f"{Path(self['input_path']).stem}.xlsx"
+        else:
+            save_path = Path(save_path)
         self._xlsx_writer.write(save_path.as_posix(), self.xlsx, *args, **kwargs)
+
+
+class VideoMixin:
+    def __init__(self, backend="opencv", *args, **kwargs):
+        self._video_writer = VideoWriter(backend=backend, *args, **kwargs)
+        self._save_funcs.append(self.save_to_video)
+
+    @abstractmethod
+    def _to_video(self):
+        raise NotImplementedError
+
+    @property
+    def video(self):
+        video = self._to_video()
+        return video
+
+    def save_to_video(self, save_path, *args, **kwargs):
+        if not str(save_path).lower().endswith((".mp4", ".avi", ".mkv")):
+            fp = Path(self["input_path"])
+            save_path = Path(save_path) / f"{fp.stem}{fp.suffix}"
+        _save_list_data(
+            self._video_writer.write, save_path, self.video, *args, **kwargs
+        )

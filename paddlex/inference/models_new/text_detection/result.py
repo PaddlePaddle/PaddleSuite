@@ -26,7 +26,7 @@ class TextDetResult(BaseCVResult):
     def _to_img(self):
         """draw rectangle"""
         boxes = self["dt_polys"]
-        image = self._input_img
+        image = self["input_img"]
         for box in boxes:
             box = np.reshape(np.array(box).astype(int), [-1, 1, 2]).astype(np.int64)
             cv2.polylines(image, [box], True, (0, 0, 255), 2)

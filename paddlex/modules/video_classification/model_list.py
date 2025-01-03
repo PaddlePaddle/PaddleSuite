@@ -12,4 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .pipeline import PP_ChatOCRv3_doc_Pipeline
+MODELS = [
+    "PP-TSM-R50_8frames_uniform",
+    "PP-TSMv2-LCNetV2_8frames_uniform",
+    "PP-TSMv2-LCNetV2_16frames_uniform",
+]

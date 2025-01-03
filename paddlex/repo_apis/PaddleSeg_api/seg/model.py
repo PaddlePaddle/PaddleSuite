@@ -167,8 +167,11 @@ class SegModel(BaseModel):
 
         # PDX related settings
         uniform_output_enabled = kwargs.pop("uniform_output_enabled", True)
+        export_with_pir = kwargs.pop("export_with_pir", False)
         config.set_val("uniform_output_enabled", uniform_output_enabled)
         config.set_val("pdx_model_name", self.name)
+        if export_with_pir:
+            config.set_val("export_with_pir", export_with_pir)
 
         self._assert_empty_kwargs(kwargs)
 
@@ -352,8 +355,11 @@ class SegModel(BaseModel):
 
         # PDX related settings
         uniform_output_enabled = kwargs.pop("uniform_output_enabled", True)
+        export_with_pir = kwargs.pop("export_with_pir", False)
         config.set_val("uniform_output_enabled", uniform_output_enabled)
         config.set_val("pdx_model_name", self.name)
+        if export_with_pir:
+            config.set_val("export_with_pir", export_with_pir)
 
         self._assert_empty_kwargs(kwargs)
 

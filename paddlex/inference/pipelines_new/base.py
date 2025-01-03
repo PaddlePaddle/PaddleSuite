@@ -12,12 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from abc import ABC, abstractmethod
-from ...utils.subclass_register import AutoRegisterABCMetaClass
-import yaml
-import codecs
 from pathlib import Path
 from typing import Any, Dict, Optional
+from abc import ABC, abstractmethod
+import yaml
+import codecs
+from ...utils.subclass_register import AutoRegisterABCMetaClass
 from ..utils.pp_option import PaddlePredictorOption
 from ..models import BasePredictor
 

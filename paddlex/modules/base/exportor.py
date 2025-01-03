@@ -122,8 +122,12 @@ exporting!"
 
     def get_export_kwargs(self):
         """get key-value arguments of model export function"""
+        export_with_pir = self.global_config.get("export_with_pir", False) or os.getenv(
+            "FLAGS_json_format_model"
+        ) in ["1", "True"]
         return {
             "weight_path": self.export_config.weight_path,
             "save_dir": self.global_config.output,
             "device": self.get_device(1),
+            "export_with_pir": export_with_pir,
         }
