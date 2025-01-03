@@ -505,7 +505,7 @@ data_root             # 数据集根目录，目录名称可以改变
 <tr>
 <td><code>image</code></td>
 <td><code>string</code></td>
-<td>服务可访问的图像文件的URL或图像文件内容的Base64编码结果。</td>
+<td>服务器可访问的图像文件的URL或图像文件内容的Base64编码结果。</td>
 </tr>
 <tr>
 <td><code>label</code></td>
@@ -583,7 +583,7 @@ data_root             # 数据集根目录，目录名称可以改变
 <tr>
 <td><code>image</code></td>
 <td><code>string</code></td>
-<td>服务可访问的图像文件的URL或图像文件内容的Base64编码结果。</td>
+<td>服务器可访问的图像文件的URL或图像文件内容的Base64编码结果。</td>
 </tr>
 <tr>
 <td><code>label</code></td>
@@ -683,7 +683,7 @@ data_root             # 数据集根目录，目录名称可以改变
 <tr>
 <td><code>image</code></td>
 <td><code>string</code></td>
-<td>服务可访问的图像文件的URL或图像文件内容的Base64编码结果。</td>
+<td>服务器可访问的图像文件的URL或图像文件内容的Base64编码结果。</td>
 <td>是</td>
 </tr>
 <tr>

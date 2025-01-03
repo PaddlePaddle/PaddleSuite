@@ -307,7 +307,7 @@ Below are the API references and multi-language service invocation examples:
 <tr>
 <td><code>video</code></td>
 <td><code>string</code></td>
-<td>The URL of an video file accessible by the service or the Base64 encoded result of the video file content.</td>
+<td>The URL of a video file accessible by the server or the Base64 encoded result of the video file content.</td>
 <td>Yes</td>
 </tr>
 <tr>

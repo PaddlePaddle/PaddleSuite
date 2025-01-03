@@ -696,7 +696,7 @@ Below are the API references and multi-language service invocation examples:
 <li><b><code>analyzeImages</code></b></li>
 </ul>
 <p>Analyze images using computer vision models to obtain OCR, table recognition results, and extract key information from the images.</p>
-<p><code>POST /chatocr-vision</code></p>
+<p><code>POST /chatocr-visual</code></p>
 <ul>
 <li>Request body properties:</li>
 </ul>
@@ -780,12 +780,12 @@ Below are the API references and multi-language service invocation examples:
 </thead>
 <tbody>
 <tr>
-<td><code>visionResults</code></td>
+<td><code>visualResults</code></td>
 <td><code>array</code></td>
 <td>Analysis results obtained using the computer vision model. The array length is 1 (for image input) or the smaller of the number of document pages and 10 (for PDF input). For PDF input, each element in the array represents the processing result of each page in the PDF file in sequence.</td>
 </tr>
 <tr>
-<td><code>visionInfo</code></td>
+<td><code>visualInfo</code></td>
 <td><code>object</code></td>
 <td>Key information in the image, which can be used as input for other operations.</td>
 </tr>
@@ -796,7 +796,7 @@ Below are the API references and multi-language service invocation examples:
 </tr>
 </tbody>
 </table>
-<p>Each element in <code>visionResults</code> is an <code>object</code> with the following properties:</p>
+<p>Each element in <code>visualResults</code> is an <code>object</code> with the following properties:</p>
 <table>
 <thead>
 <tr>
@@ -901,7 +901,7 @@ Below are the API references and multi-language service invocation examples:
 </thead>
 <tbody>
 <tr>
-<td><code>visionInfo</code></td>
+<td><code>visualInfo</code></td>
 <td><code>object</code></td>
 <td>Key information from the image. Provided by the <code>analyzeImages</code> operation.</td>
 <td>Yes</td>
@@ -1063,7 +1063,7 @@ Below are the API references and multi-language service invocation examples:
 <td>Yes</td>
 </tr>
 <tr>
-<td><code>visionInfo</code></td>
+<td><code>visualInfo</code></td>
 <td><code>object</code></td>
 <td>Key information from images. Provided by the <code>analyzeImages</code> operation.</td>
 <td>Yes</td>
@@ -1218,30 +1218,30 @@ payload = {
     &quot;useImgUnwarping&quot;: True,
     &quot;useSealTextDet&quot;: True,
 }
-resp_vision = requests.post(url=f&quot;{API_BASE_URL}/chatocr-vision&quot;, json=payload)
-if resp_vision.status_code != 200:
+resp_visual = requests.post(url=f&quot;{API_BASE_URL}/chatocr-visual&quot;, json=payload)
+if resp_visual.status_code != 200:
     print(
-        f&quot;Request to chatocr-vision failed with status code {resp_vision.status_code}.&quot;
+        f&quot;Request to chatocr-visual failed with status code {resp_visual.status_code}.&quot;
     )
-    pprint.pp(resp_vision.json())
+    pprint.pp(resp_visual.json())
     sys.exit(1)
-result_vision = resp_vision.json()[&quot;result&quot;]
+result_visual = resp_visual.json()[&quot;result&quot;]
 
-for i, res in enumerate(result_vision[&quot;visionResults&quot;]):
+for i, res in enumerate(result_visual[&quot;visualResults&quot;]):
     print(&quot;Texts:&quot;)
     pprint.pp(res[&quot;texts&quot;])
     print(&quot;Tables:&quot;)
     pprint.pp(res[&quot;tables&quot;])
-    ocr_img_path = f&quot;ocr_{i}.jpg&quot;
-    with open(ocr_img_path, &quot;wb&quot;) as f:
-        f.write(base64.b64decode(res[&quot;ocrImage&quot;]))
     layout_img_path = f&quot;layout_{i}.jpg&quot;
     with open(layout_img_path, &quot;wb&quot;) as f:
         f.write(base64.b64decode(res[&quot;layoutImage&quot;]))
-    print(f&quot;Output images saved at {ocr_img_path} and {layout_img_path}&quot;)
+    ocr_img_path = f&quot;ocr_{i}.jpg&quot;
+    with open(ocr_img_path, &quot;wb&quot;) as f:
+        f.write(base64.b64decode(res[&quot;ocrImage&quot;]))
+    print(f&quot;Output images saved at {layout_img_path} and {ocr_img_path}&quot;)
 
 payload = {
-    &quot;visionInfo&quot;: result_vision[&quot;visionInfo&quot;],
+    &quot;visualInfo&quot;: result_visual[&quot;visualInfo&quot;],
     &quot;minChars&quot;: 200,
     &quot;llmRequestInterval&quot;: 1000,
     &quot;llmName&quot;: LLM_NAME,
@@ -1273,7 +1273,7 @@ result_retrieval = resp_retrieval.json()[&quot;result&quot;]
 
 payload = {
     &quot;keys&quot;: keys,
-    &quot;visionInfo&quot;: result_vision[&quot;visionInfo&quot;],
+    &quot;visualInfo&quot;: result_visual[&quot;visualInfo&quot;],
     &quot;vectorStore&quot;: result_vector[&quot;vectorStore&quot;],
     &quot;retrievalResult&quot;: result_retrieval[&quot;retrievalResult&quot;],
     &quot;taskDescription&quot;: &quot;&quot;,

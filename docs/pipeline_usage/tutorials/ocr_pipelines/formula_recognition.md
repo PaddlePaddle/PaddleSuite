@@ -378,7 +378,7 @@ for res in output:
 <tr>
 <td><code>file</code></td>
 <td><code>string</code></td>
-<td>服务可访问的图像文件或PDF文件的URL，或上述类型文件内容的Base64编码结果。对于超过10页的PDF文件，只有前10页的内容会被使用。</td>
+<td>服务器可访问的图像文件或PDF文件的URL，或上述类型文件内容的Base64编码结果。对于超过10页的PDF文件，只有前10页的内容会被使用。</td>
 <td>是</td>
 </tr>
 <tr>
@@ -462,11 +462,6 @@ for res in output:
 <td><code>layoutImage</code></td>
 <td><code>string</code></td>
 <td>版面区域检测结果图。图像为JPEG格式，使用Base64编码。</td>
-</tr>
-<tr>
-<td><code>ocrImage</code></td>
-<td><code>string</code></td>
-<td>OCR结果图。图像为JPEG格式，使用Base64编码。</td>
 </tr>
 </tbody>
 </table>

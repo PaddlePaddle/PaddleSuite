@@ -566,7 +566,7 @@ for res in output:
 <tr>
 <td><code>file</code></td>
 <td><code>string</code></td>
-<td>服务可访问的图像文件或PDF文件的URL，或上述类型文件内容的Base64编码结果。对于超过10页的PDF文件，只有前10页的内容会被使用。</td>
+<td>服务器可访问的图像文件或PDF文件的URL，或上述类型文件内容的Base64编码结果。对于超过10页的PDF文件，只有前10页的内容会被使用。</td>
 <td>是</td>
 </tr>
 <tr>
@@ -711,13 +711,13 @@ result = response.json()[&quot;result&quot;]
 for i, res in enumerate(result[&quot;sealRecResults&quot;]):
     print(&quot;Detected texts:&quot;)
     print(res[&quot;texts&quot;])
-    ocr_img_path = f&quot;ocr_{i}.jpg&quot;
-    with open(ocr_img_path, &quot;wb&quot;) as f:
-        f.write(base64.b64decode(res[&quot;ocrImage&quot;]))
     layout_img_path = f&quot;layout_{i}.jpg&quot;
     with open(layout_img_path, &quot;wb&quot;) as f:
         f.write(base64.b64decode(res[&quot;layoutImage&quot;]))
-    print(f&quot;Output images saved at {ocr_img_path} and {layout_img_path}&quot;)
+    ocr_img_path = f&quot;ocr_{i}.jpg&quot;
+    with open(ocr_img_path, &quot;wb&quot;) as f:
+        f.write(base64.b64decode(res[&quot;ocrImage&quot;]))
+    print(f&quot;Output images saved at {layout_img_path} and {ocr_img_path}&quot;)
 </code></pre></details>
 </details>
 <br/>

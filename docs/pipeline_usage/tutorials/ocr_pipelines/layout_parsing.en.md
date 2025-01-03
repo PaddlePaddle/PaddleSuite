@@ -625,7 +625,7 @@ Below are the API references and multi-language service invocation examples:
 <tr>
 <td><code>file</code></td>
 <td><code>string</code></td>
-<td>The URL of an image file or PDF file accessible by the service, or the Base64 encoded result of the content of the above-mentioned file types. For PDF files with more than 10 pages, only the content of the first 10 pages will be used.</td>
+<td>The URL of an image file or PDF file accessible by the server, or the Base64 encoded result of the content of the above-mentioned file types. For PDF files with more than 10 pages, only the content of the first 10 pages will be used.</td>
 <td>Yes</td>
 </tr>
 <tr>

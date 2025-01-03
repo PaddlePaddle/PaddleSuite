@@ -111,10 +111,10 @@ async def postprocess_images(
     index: str,
     app_context: AppContext,
     input_image: Optional[ArrayLike] = None,
-    ocr_image: Optional[ArrayLike] = None,
     layout_image: Optional[ArrayLike] = None,
+    ocr_image: Optional[ArrayLike] = None,
 ) -> List[str]:
-    if input_image is None and ocr_image is None and layout_image is None:
+    if input_image is None and layout_image is None and ocr_image is None:
         raise ValueError("At least one of the images must be provided.")
     file_storage = app_context.extra["file_storage"]
     max_img_size = app_context.extra["max_output_img_size"]
@@ -129,22 +129,22 @@ async def postprocess_images(
             max_img_size=max_img_size,
         )
         futures.append(future)
-    if ocr_image is not None:
-        future = serving_utils.call_async(
-            postprocess_image,
-            ocr_image,
-            log_id=log_id,
-            filename=f"ocr_image_{index}.jpg",
-            file_storage=file_storage,
-            max_img_size=max_img_size,
-        )
-        futures.append(future)
     if layout_image is not None:
         future = serving_utils.call_async(
             postprocess_image,
             layout_image,
             log_id=log_id,
             filename=f"layout_image_{index}.jpg",
+            file_storage=file_storage,
+            max_img_size=max_img_size,
+        )
+        futures.append(future)
+    if ocr_image is not None:
+        future = serving_utils.call_async(
+            postprocess_image,
+            ocr_image,
+            log_id=log_id,
+            filename=f"ocr_image_{index}.jpg",
             file_storage=file_storage,
             max_img_size=max_img_size,
         )
