@@ -269,8 +269,10 @@ class OCRPipeline(BasePipeline):
             single_img_res = {
                 "input_img": image_array,
                 "doc_preprocessor_image": doc_preprocessor_image,
+                "doc_preprocessor_res": doc_preprocessor_res,
                 "dt_polys": dt_polys,
                 "img_id": img_id,
+                "input_params": input_params,
                 "text_type": self.text_type,
             }
 
