@@ -110,3 +110,10 @@ from .video_classification import (
     VideoClsEvaluator,
     VideoClsExportor,
 )
+
+from .video_detection import (
+    VideoDetDatasetChecker,
+    VideoDetTrainer,
+    VideoDetEvaluator,
+    VideoDetExportor,
+)

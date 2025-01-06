@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
-from .video_cls import VideoClsModel, VideoClsRunner, register
-from .video_det import VideoDetModel, VideoDetRunner, register
+from .trainer import VideoDetTrainer
+from .dataset_checker import VideoDetDatasetChecker
+from .evaluator import VideoDetEvaluator
+from .exportor import VideoDetExportor
