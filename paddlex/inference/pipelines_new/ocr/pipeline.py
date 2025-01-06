@@ -239,7 +239,7 @@ class OCRPipeline(BasePipeline):
             "use_doc_preprocessor": self.use_doc_preprocessor,
             "use_doc_orientation_classify": use_doc_orientation_classify,
             "use_doc_unwarping": use_doc_unwarping,
-            "use_textline_orientation": self.use_doc_preprocessor,
+            "use_textline_orientation": self.use_textline_orientation,
         }
         if use_doc_orientation_classify or use_doc_unwarping:
             input_params["use_doc_preprocessor"] = True
