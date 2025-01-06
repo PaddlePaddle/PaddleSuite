@@ -72,4 +72,8 @@ MODELS = [
     "BlazeFace-FPN-SSH",
     "PP-YOLOE_plus-S_face",
     "PP-YOLOE-R_L",
+    "Co-Deformable-DETR-R50",
+    "Co-Deformable-DETR-Swin-T",
+    "Co-DINO-R50",
+    "Co-DINO-Swin-L",
 ]

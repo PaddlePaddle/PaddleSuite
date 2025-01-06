@@ -406,18 +406,9 @@ class WarpAffine:
             ori_img = data["img"]
             if "ori_img_size" not in data:
                 data["ori_img_size"] = [ori_img.shape[1], ori_img.shape[0]]
-            ori_img_size = data["ori_img_size"]
 
             img = self.apply(ori_img)
             data["img"] = img
-
-            img_size = [img.shape[1], img.shape[0]]
-            data["img_size"] = img_size  # [size_w, size_h]
-
-            data["scale_factors"] = [  # [w_scale, h_scale]
-                img_size[0] / ori_img_size[0],
-                img_size[1] / ori_img_size[1],
-            ]
 
         return datas
 

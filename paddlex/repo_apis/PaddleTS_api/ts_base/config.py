@@ -184,7 +184,6 @@ class BaseTSConfig(BaseConfig):
         """
         self.update({"log_interval": log_interval})
 
-
     def update_dataset(self, dataset_dir: str, dataset_type: str = None):
         """update dataset settings"""
         raise NotImplementedError
