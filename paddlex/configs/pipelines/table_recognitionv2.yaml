@@ -1,0 +1,74 @@
+
+pipeline_name: table_recognitionv2
+
+use_layout_detection: True
+use_doc_preprocessor: True
+use_ocr_model: True
+
+SubModules:
+  LayoutDetection:
+    module_name: layout_detection
+    model_name: RT-DETR-H_layout_3cls
+    model_dir: null
+    batch_size: 1
+  
+  TableClassification:
+    module_name: table_classification
+    model_name: PP-LCNet_x1_0_table_cls
+    model_dir: null
+    batch_size: 1
+
+  WiredTableStructureRecognition:
+    module_name: table_structure_recognition
+    model_name: SLANeXt_wired
+    model_dir: null
+    batch_size: 1
+  
+  WirelessTableStructureRecognition:
+    module_name: table_structure_recognition
+    model_name: SLANeXt_wireless
+    model_dir: null
+    batch_size: 1
+  
+  WiredTableCellsDetection:
+    module_name: table_cells_detection
+    model_name: RT-DETR-L_wired_table_cell_det
+    model_dir: null
+    batch_size: 1
+  
+  WirelessTableCellsDetection:
+    module_name: table_cells_detection
+    model_name: RT-DETR-L_wireless_table_cell_det
+    model_dir: null
+    batch_size: 1
+
+SubPipelines:
+  DocPreprocessor:
+    pipeline_name: doc_preprocessor
+    use_doc_orientation_classify: True
+    use_doc_unwarping: True
+    SubModules:
+      DocOrientationClassify:
+        module_name: doc_text_orientation
+        model_name: PP-LCNet_x1_0_doc_ori
+        model_dir: null
+        batch_size: 1
+      DocUnwarping:
+        module_name: image_unwarping
+        model_name: UVDoc
+        model_dir: null
+        batch_size: 1
+  GeneralOCR:
+    pipeline_name: OCR
+    text_type: general
+    SubModules:
+      TextDetection:
+        module_name: text_detection
+        model_name: PP-OCRv4_server_det
+        model_dir: null
+        batch_size: 1    
+      TextRecognition:
+        module_name: text_recognition
+        model_name: PP-OCRv4_server_rec
+        model_dir: null
+        batch_size: 1

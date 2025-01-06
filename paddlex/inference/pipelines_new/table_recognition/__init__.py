@@ -13,3 +13,4 @@
 # limitations under the License.
 
 from .pipeline import TableRecognitionPipeline
+from .pipelinev2 import TableRecognitionPipelinev2
