@@ -1221,7 +1221,8 @@ payload = {
 resp_visual = requests.post(url=f&quot;{API_BASE_URL}/chatocr-visual&quot;, json=payload)
 if resp_visual.status_code != 200:
     print(
-        f&quot;Request to chatocr-visual failed with status code {resp_visual.status_code}.&quot;
+        f&quot;Request to chatocr-visual failed with status code {resp_visual.status_code}.&quot;,
+        file=sys.stderr,
     )
     pprint.pp(resp_visual.json())
     sys.exit(1)
@@ -1250,7 +1251,8 @@ payload = {
 resp_vector = requests.post(url=f&quot;{API_BASE_URL}/chatocr-vector&quot;, json=payload)
 if resp_vector.status_code != 200:
     print(
-        f&quot;Request to chatocr-vector failed with status code {resp_vector.status_code}.&quot;
+        f&quot;Request to chatocr-vector failed with status code {resp_vector.status_code}.&quot;,
+        file=sys.stderr,
     )
     pprint.pp(resp_vector.json())
     sys.exit(1)
@@ -1265,7 +1267,8 @@ payload = {
 resp_retrieval = requests.post(url=f&quot;{API_BASE_URL}/chatocr-retrieval&quot;, json=payload)
 if resp_retrieval.status_code != 200:
     print(
-        f&quot;Request to chatocr-retrieval failed with status code {resp_retrieval.status_code}.&quot;
+        f&quot;Request to chatocr-retrieval failed with status code {resp_retrieval.status_code}.&quot;,
+        file=sys.stderr,
     )
     pprint.pp(resp_retrieval.json())
     sys.exit(1)
@@ -1286,7 +1289,8 @@ payload = {
 resp_chat = requests.post(url=f&quot;{API_BASE_URL}/chatocr-chat&quot;, json=payload)
 if resp_chat.status_code != 200:
     print(
-        f&quot;Request to chatocr-chat failed with status code {resp_chat.status_code}.&quot;
+        f&quot;Request to chatocr-chat failed with status code {resp_chat.status_code}.&quot;,
+        file=sys.stderr,
     )
     pprint.pp(resp_chat.json())
     sys.exit(1)
