@@ -23,15 +23,10 @@ import numpy as np
 import yaml
 import random
 import platform
+import importlib
 
 from ....utils import logging
 
-if not platform.machine().startswith("arm"):
-    import decord
-else:
-    logging.warning(
-        "Please install `decord` manually on ARM machine. Otherwise, the related model cannot work."
-    )
 
 __all__ = [
     "ReaderType",
@@ -342,6 +337,14 @@ class DecordVideoReaderBackend(_VideoReaderBackend):
         self.valid_mode = True
         self._fps = 0
 
+        # XXX(gaotingquan): There is a confict with `paddle` when import `decord` globally.
+        try:
+            self.decord_module = importlib.import_module("decord")
+        except ModuleNotFoundError():
+            raise Exception(
+                "Please install `decord` manually, otherwise, the related model cannot work. It can be automatically installed only on `x86_64`. Refers: `https://github.com/dmlc/decord`."
+            )
+
     def set_pos(self, pos):
         self._pos = pos
 
@@ -382,7 +385,7 @@ class DecordVideoReaderBackend(_VideoReaderBackend):
 
     def read_file(self, in_path):
         """read vidio file from path"""
-        self._cap = decord.VideoReader(in_path)
+        self._cap = self.decord_module.VideoReader(in_path)
         frame_len = len(self._cap)
         if self.sample_type == "uniform":
             sample_video = self.sample(frame_len, self._cap)
