@@ -11,11 +11,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-from .utils import convert_points_to_boxes, get_sub_regions_ocr_res
-import numpy as np
-from .result import TableRecognitionResult
 from typing import Any, Dict, Optional
+import numpy as np
+from ..layout_parsing.utils import convert_points_to_boxes, get_sub_regions_ocr_res
+from .result import SingleTableRecognitionResult
 from ..ocr.result import OCRResult
 
 
@@ -209,20 +208,20 @@ def get_html_result(
 
 
 def get_table_recognition_res(
-    crop_img_info: dict, table_structure_pred: dict, overall_ocr_res: OCRResult
-) -> TableRecognitionResult:
+    table_box: list, table_structure_pred: dict, overall_ocr_res: OCRResult
+) -> SingleTableRecognitionResult:
     """
     Retrieve table recognition result from cropped image info, table structure prediction, and overall OCR result.
 
     Args:
-        crop_img_info (dict): Information about the cropped image, including the bounding box.
+        table_box (list): Information about the location of cropped image, including the bounding box.
         table_structure_pred (dict): Predicted table structure.
         overall_ocr_res (OCRResult): Overall OCR result from the input image.
 
     Returns:
-        TableRecognitionResult: An object containing the table recognition result.
+        SingleTableRecognitionResult: An object containing the single table recognition result.
     """
-    table_box = np.array([crop_img_info["box"]])
+    table_box = np.array([table_box])
     table_ocr_pred = get_sub_regions_ocr_res(overall_ocr_res, table_box)
 
     crop_start_point = [table_box[0][0], table_box[0][1]]
@@ -243,4 +242,4 @@ def get_table_recognition_res(
         "table_ocr_pred": table_ocr_pred,
         "pred_html": pred_html,
     }
-    return TableRecognitionResult(single_img_res)
+    return SingleTableRecognitionResult(single_img_res)

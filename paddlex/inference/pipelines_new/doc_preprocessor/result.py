@@ -14,16 +14,16 @@
 
 import math
 import random
+from pathlib import Path
 import numpy as np
 import cv2
 import PIL
 from PIL import Image, ImageDraw, ImageFont
-
 from ....utils.fonts import PINGFANG_FONT_FILE_PATH, create_font
-from ..components import CVResult
+from ...common.result import BaseCVResult
 
 
-class DocPreprocessorResult(CVResult):
+class DocPreprocessorResult(BaseCVResult):
     """doc preprocessor result"""
 
     def save_to_img(self, save_path: str, *args, **kwargs) -> None:
@@ -42,7 +42,7 @@ class DocPreprocessorResult(CVResult):
         """
         if not str(save_path).lower().endswith((".jpg", ".png")):
             img_id = self["img_id"]
-            save_path = save_path + "/res_doc_preprocess_%d.jpg" % img_id
+            save_path = Path(save_path) / f"res_doc_preprocess_{img_id}.jpg"
         super().save_to_img(save_path, *args, **kwargs)
 
     def _to_img(self) -> PIL.Image:
@@ -56,16 +56,23 @@ class DocPreprocessorResult(CVResult):
         angle = self["angle"]
         rot_img = self["rot_img"][:, :, ::-1]
         output_img = self["output_img"][:, :, ::-1]
-        h, w = image.shape[0:2]
-        img_show = Image.new("RGB", (w * 3, h + 25), (255, 255, 255))
-        img_show.paste(Image.fromarray(image), (0, 0, w, h))
-        img_show.paste(Image.fromarray(rot_img), (w, 0, w * 2, h))
-        img_show.paste(Image.fromarray(output_img), (w * 2, 0, w * 3, h))
+        h1, w1 = image.shape[0:2]
+        h2, w2 = rot_img.shape[0:2]
+        h3, w3 = output_img.shape[0:2]
+        h = max(max(h1, h2), h3)
+        img_show = Image.new("RGB", (w1 + w2 + w3, h + 25), (255, 255, 255))
+        img_show.paste(Image.fromarray(image), (0, 0, w1, h1))
+        img_show.paste(Image.fromarray(rot_img), (w1, 0, w1 + w2, h2))
+        img_show.paste(Image.fromarray(output_img), (w1 + w2, 0, w1 + w2 + w3, h3))
 
         draw_text = ImageDraw.Draw(img_show)
         txt_list = ["Original Image", "Rotated Image", "Unwarping Image"]
+        region_w_list = [w1, w2, w3]
+        beg_w_list = [0, w1, w1 + w2]
         for tno in range(len(txt_list)):
             txt = txt_list[tno]
-            font = create_font(txt, (w, 20), PINGFANG_FONT_FILE_PATH)
-            draw_text.text([10 + w * tno, h + 2], txt, fill=(0, 0, 0), font=font)
+            font = create_font(txt, (region_w_list[tno], 20), PINGFANG_FONT_FILE_PATH)
+            draw_text.text(
+                [10 + beg_w_list[tno], h + 2], txt, fill=(0, 0, 0), font=font
+            )
         return img_show

@@ -12,16 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from ..base import BasePipeline
 from typing import Any, Dict, Optional
 from scipy.ndimage import rotate
+import numpy as np
+from ..base import BasePipeline
 from .result import DocPreprocessorResult
 from ....utils import logging
-import numpy as np
-
-########## [TODO]后续需要更新路径
-from ...components.transforms import ReadImage
-
+from ...common.reader import ReadImage
+from ...common.batch_sampler import ImageBatchSampler
 from ...utils.pp_option import PaddlePredictorOption
 
 
@@ -68,6 +66,7 @@ class DocPreprocessorPipeline(BasePipeline):
             doc_unwarping_config = config["SubModules"]["DocUnwarping"]
             self.doc_unwarping_model = self.create_model(doc_unwarping_config)
 
+        self.batch_sampler = ImageBatchSampler(batch_size=1)
         self.img_reader = ReadImage(format="BGR")
 
     def rotate_image(self, image_array: np.ndarray, rotate_angle: float) -> np.ndarray:
@@ -128,7 +127,7 @@ class DocPreprocessorPipeline(BasePipeline):
         Predict the preprocessing result for the input image or images.
 
         Args:
-            input (str | list[str] | np.ndarray | list[np.ndarray]): The input image(s) or path(s) to the images.
+            input (str | list[str] | np.ndarray | list[np.ndarray]): The input image(s) or path(s) to the images or pdfs.
             use_doc_orientation_classify (bool): Whether to use document orientation classification.
             use_doc_unwarping (bool): Whether to use document unwarping.
             **kwargs: Additional keyword arguments.
@@ -136,11 +135,6 @@ class DocPreprocessorPipeline(BasePipeline):
         Returns:
             DocPreprocessorResult: A generator yielding preprocessing results.
         """
-
-        if not isinstance(input, list):
-            input_list = [input]
-        else:
-            input_list = input
 
         input_params = {
             "use_doc_orientation_classify": use_doc_orientation_classify,
@@ -150,14 +144,8 @@ class DocPreprocessorPipeline(BasePipeline):
         if not self.check_input_params_valid(input_params):
             yield {"error": "input params invalid"}
 
-        img_id = 1
-        for input in input_list:
-            if isinstance(input, str):
-                image_array = next(self.img_reader(input))[0]["img"]
-            else:
-                image_array = input
-
-            assert len(image_array.shape) == 3
+        for img_id, batch_data in enumerate(self.batch_sampler(input)):
+            image_array = self.img_reader(batch_data)[0]
 
             if input_params["use_doc_orientation_classify"]:
                 pred = next(self.doc_ori_classify_model(image_array))
@@ -172,6 +160,7 @@ class DocPreprocessorPipeline(BasePipeline):
             else:
                 output_img = rot_img
 
+            img_id += 1
             single_img_res = {
                 "input_image": image_array,
                 "input_params": input_params,
@@ -180,5 +169,4 @@ class DocPreprocessorPipeline(BasePipeline):
                 "output_img": output_img,
                 "img_id": img_id,
             }
-            img_id += 1
             yield DocPreprocessorResult(single_img_res)

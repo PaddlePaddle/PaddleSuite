@@ -18,12 +18,13 @@ from .base import BasePipeline
 from ..utils.pp_option import PaddlePredictorOption
 from .components import BaseChat, BaseRetriever, BaseGeneratePrompt
 from ...utils.config import parse_config
-
 from .ocr import OCRPipeline
 from .doc_preprocessor import DocPreprocessorPipeline
 from .layout_parsing import LayoutParsingPipeline
-from .pp_chatocrv3_doc import PP_ChatOCRv3_doc_Pipeline
+from .pp_chatocr import PP_ChatOCRv3_Pipeline, PP_ChatOCRv4_Pipeline
 from .image_classification import ImageClassificationPipeline
+from .seal_recognition import SealRecognitionPipeline
+from .table_recognition import TableRecognitionPipeline
 
 
 def get_pipeline_path(pipeline_name: str) -> str:

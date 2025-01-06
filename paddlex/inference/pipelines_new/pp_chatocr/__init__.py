@@ -12,18 +12,5 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import math
-import random
-import numpy as np
-import cv2
-import PIL
-from PIL import Image, ImageDraw, ImageFont
-
-from ....utils.fonts import PINGFANG_FONT_FILE_PATH
-from ..components import BaseResult
-
-
-class VisualInfoResult(BaseResult):
-    """VisualInfoResult"""
-
-    pass
+from .pipeline_v3 import PP_ChatOCRv3_Pipeline
+from .pipeline_v4 import PP_ChatOCRv4_Pipeline

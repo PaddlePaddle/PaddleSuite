@@ -12,20 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .base import BaseRetriever
+from typing import Dict
+import time
 import os
-
 from langchain.docstore.document import Document
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-
 from langchain_community.embeddings import QianfanEmbeddingsEndpoint
 from langchain_community.vectorstores import FAISS
 from langchain_community import vectorstores
 from erniebot_agent.extensions.langchain.embeddings import ErnieEmbeddings
-
-import time
-
-from typing import Dict
+from .base import BaseRetriever
 
 
 class ErnieBotRetriever(BaseRetriever):
@@ -112,7 +108,6 @@ class ErnieBotRetriever(BaseRetriever):
         )
         texts = text_splitter.split_text("\t".join(text_list))
         all_splits = [Document(page_content=text) for text in texts]
-
         api_type = self.config["api_type"]
         if api_type == "qianfan":
             os.environ["QIANFAN_AK"] = os.environ.get("EB_AK", self.config["ak"])
@@ -192,7 +187,12 @@ class ErnieBotRetriever(BaseRetriever):
         return vector
 
     def similarity_retrieval(
-        self, query_text_list: list[str], vectorstore: FAISS, sleep_time: float = 0.5
+        self,
+        query_text_list: list[str],
+        vectorstore: FAISS,
+        sleep_time: float = 0.5,
+        topk: int = 2,
+        min_characters: int = 3500,
     ) -> str:
         """
         Retrieve similar contexts based on a list of query texts.
@@ -201,7 +201,8 @@ class ErnieBotRetriever(BaseRetriever):
             query_text_list (list[str]): A list of query texts to search for similar contexts.
             vectorstore (FAISS): The vector store where to perform the similarity search.
             sleep_time (float): The time to sleep between each query, in seconds. Default is 0.5.
-
+            topk (int): The number of results to retrieve per query. Default is 2.
+            min_characters (int): The minimum number of characters required for text processing, defaults to 3500.
         Returns:
             str: A concatenated string of all unique contexts found.
         """
@@ -209,7 +210,7 @@ class ErnieBotRetriever(BaseRetriever):
         for query_text in query_text_list:
             QUESTION = query_text
             time.sleep(sleep_time)
-            docs = vectorstore.similarity_search_with_relevance_scores(QUESTION, k=2)
+            docs = vectorstore.similarity_search_with_relevance_scores(QUESTION, k=topk)
             context = [(document.page_content, score) for document, score in docs]
             context = sorted(context, key=lambda x: x[1])
             C.extend([x[0] for x in context[::-1]])

@@ -34,9 +34,10 @@ from .ts_classify import TSClsPredictor
 from .image_unwarping import WarpPredictor
 from .image_multilabel_classification import MLClasPredictor
 
+
 # from .table_recognition import TablePredictor
 # from .general_recognition import ShiTuRecPredictor
-# from .anomaly_detection import UadPredictor
+from .anomaly_detection import UadPredictor
 # from .face_recognition import FaceRecPredictor
 from .video_classification import VideoClasPredictor
 

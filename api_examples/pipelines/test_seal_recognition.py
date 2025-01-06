@@ -16,6 +16,12 @@ from paddlex import create_pipeline
 
 pipeline = create_pipeline(pipeline="seal_recognition")
 output = pipeline.predict("./test_samples/seal_text_det.png")
+
+# output = pipeline.predict("./test_samples/seal_text_det.png",
+#     use_layout_detection=False)
+
+# output = pipeline.predict("./test_samples/财报1.pdf")
+
 for res in output:
     print(res)
     res.save_results("./output")

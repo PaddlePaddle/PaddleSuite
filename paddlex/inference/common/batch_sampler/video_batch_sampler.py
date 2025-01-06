@@ -25,7 +25,7 @@ from .base_batch_sampler import BaseBatchSampler
 
 class VideoBatchSampler(BaseBatchSampler):
 
-    SUFFIX = ["mp4", "avi", "mkv"]
+    SUFFIX = ["mp4", "avi", "mkv", "webm"]
 
     # XXX: auto download for url
     def _download_from_url(self, in_path):
