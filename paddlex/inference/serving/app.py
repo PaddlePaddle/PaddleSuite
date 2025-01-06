@@ -20,6 +20,7 @@ from typing import (
     AsyncGenerator,
     Callable,
     Dict,
+    Final,
     Generic,
     List,
     Mapping,
@@ -35,8 +36,9 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from starlette.exceptions import HTTPException
-from typing_extensions import Final, ParamSpec
+from typing_extensions import ParamSpec
 
+from ...utils import logging
 from ..pipelines_new import BasePipeline
 from .models import NoResultResponse
 from .utils import call_async, generate_log_id
@@ -135,6 +137,7 @@ def create_app(
         else:
             yield
 
+    # Should we control API versions?
     app = fastapi.FastAPI(lifespan=_app_lifespan)
     ctx = AppContext[_PipelineT](config=app_config)
     app.state.context = ctx
@@ -169,4 +172,33 @@ def create_app(
         )
         return JSONResponse(content=json_compatible_data, status_code=exc.status_code)
 
+    @app.exception_handler(Exception)
+    async def _unexpected_exception_handler(
+        request: fastapi.Request, exc: Exception
+    ) -> JSONResponse:
+        # XXX: The default server will duplicate the error message. Is it
+        # necessary to log the exception info here?
+        logging.exception("Unhandled exception")
+        json_compatible_data = jsonable_encoder(
+            NoResultResponse(
+                logId=generate_log_id(),
+                errorCode=500,
+                errorMsg="Internal server error",
+            )
+        )
+        return JSONResponse(content=json_compatible_data, status_code=500)
+
     return app, ctx
+
+
+# TODO: Precise type hints
+def main_operation(
+    app: fastapi.FastAPI, path: str, operation_id: str, **kwargs: Any
+) -> callable:
+    return app.post(
+        path,
+        operation_id=operation_id,
+        responses={422: {"model": NoResultResponse}, 500: {"model": NoResultResponse}},
+        response_model_exclude_none=True,
+        **kwargs,
+    )

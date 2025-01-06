@@ -18,11 +18,10 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 from typing_extensions import Annotated, TypeAlias
 
-from ._common import ocr as ocr_common
-from ....utils import logging
 from .. import utils as serving_utils
-from ..app import AppConfig, create_app
-from ..models import NoResultResponse, ResultResponse, DataInfo
+from ..app import AppConfig, create_app, main_operation
+from ..models import DataInfo, ResultResponse
+from ._common import ocr as ocr_common
 
 InferRequest: Type[ocr_common.InferRequest] = ocr_common.InferRequest
 
@@ -55,11 +54,10 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
 
     ocr_common.update_app_context(ctx)
 
-    @app.post(
+    @main_operation(
+        app,
         "/seal-recognition",
-        operation_id="infer",
-        responses={422: {"model": NoResultResponse}},
-        response_model_exclude_none=True,
+        "infer",
     )
     async def _infer(request: InferRequest) -> ResultResponse[InferResult]:
         pipeline = ctx.pipeline
@@ -76,45 +74,40 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
 
         images, data_info = await ocr_common.get_images(request, ctx)
 
-        try:
-            result = await pipeline.infer(images)
+        result = await pipeline.infer(images)
 
-            seal_rec_results: List[SealRecResult] = []
-            for i, (img, item) in enumerate(zip(images, result)):
-                texts: List[Text] = []
-                for poly, text, score in zip(
-                    item["ocr_result"]["dt_polys"],
-                    item["ocr_result"]["rec_text"],
-                    item["ocr_result"]["rec_score"],
-                ):
-                    texts.append(Text(poly=poly, text=text, score=score))
-                input_img, layout_img, ocr_img = await ocr_common.postprocess_images(
-                    log_id=log_id,
-                    index=i,
-                    app_context=ctx,
-                    input_image=img,
-                    layout_image=item["layout_result"].img,
-                    ocr_image=item["ocr_result"].img,
+        seal_rec_results: List[SealRecResult] = []
+        for i, (img, item) in enumerate(zip(images, result)):
+            texts: List[Text] = []
+            for poly, text, score in zip(
+                item["ocr_result"]["dt_polys"],
+                item["ocr_result"]["rec_text"],
+                item["ocr_result"]["rec_score"],
+            ):
+                texts.append(Text(poly=poly, text=text, score=score))
+            input_img, layout_img, ocr_img = await ocr_common.postprocess_images(
+                log_id=log_id,
+                index=i,
+                app_context=ctx,
+                input_image=img,
+                layout_image=item["layout_result"].img,
+                ocr_image=item["ocr_result"].img,
+            )
+            seal_rec_results.append(
+                SealRecResult(
+                    texts=texts,
+                    inputImage=input_img,
+                    layoutImage=layout_img,
+                    ocrImage=ocr_img,
                 )
-                seal_rec_results.append(
-                    SealRecResult(
-                        texts=texts,
-                        inputImage=input_img,
-                        layoutImage=layout_img,
-                        ocrImage=ocr_img,
-                    )
-                )
-
-            return ResultResponse[InferResult](
-                logId=log_id,
-                result=InferResult(
-                    sealRecResults=seal_rec_results,
-                    dataInfo=data_info,
-                ),
             )
 
-        except Exception:
-            logging.exception("Unexpected exception")
-            raise HTTPException(status_code=500, detail="Internal server error")
+        return ResultResponse[InferResult](
+            logId=log_id,
+            result=InferResult(
+                sealRecResults=seal_rec_results,
+                dataInfo=data_info,
+            ),
+        )
 
     return app

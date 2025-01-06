@@ -22,14 +22,14 @@ from functools import partial
 from typing import (
     Awaitable,
     Callable,
+    Final,
     List,
     Literal,
     Optional,
-    TypeVar,
-    Final,
     Tuple,
-    overload,
+    TypeVar,
     Union,
+    overload,
 )
 from urllib.parse import parse_qs, urlparse
 

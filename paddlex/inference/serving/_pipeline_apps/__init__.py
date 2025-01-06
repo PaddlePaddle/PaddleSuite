@@ -17,7 +17,6 @@ from typing import Any, Dict
 
 from fastapi import FastAPI
 
-
 from ..app import create_app_config
 
 

@@ -18,11 +18,12 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 from typing_extensions import Annotated, TypeAlias
 
-from ._common import cv as cv_common, ocr as ocr_common
 from ....utils import logging
 from .. import utils as serving_utils
-from ..app import AppConfig, create_app
-from ..models import NoResultResponse, ResultResponse, DataInfo
+from ..app import AppConfig, create_app, main_operation
+from ..models import DataInfo, ResultResponse
+from ._common import cv as cv_common
+from ._common import ocr as ocr_common
 
 
 class InferRequest(ocr_common.InferRequest):
@@ -58,11 +59,10 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
 
     ocr_common.update_app_context(ctx)
 
-    @app.post(
+    @main_operation(
+        app,
         "/layout-parsing",
-        operation_id="infer",
-        responses={422: {"model": NoResultResponse}},
-        response_model_exclude_none=True,
+        "infer",
     )
     async def _infer(
         request: InferRequest,
@@ -81,61 +81,60 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
 
         images, data_info = await ocr_common.get_images(request, ctx)
 
-        try:
-            result = await pipeline.infer(
-                images,
-                use_doc_image_ori_cls_model=request.useImgOrientationCls,
-                use_doc_image_unwarp_model=request.useImgUnwarping,
-                use_seal_text_det_model=request.useSealTextDet,
-            )
+        result = await pipeline.infer(
+            images,
+            use_doc_image_ori_cls_model=request.useImgOrientationCls,
+            use_doc_image_unwarp_model=request.useImgUnwarping,
+            use_seal_text_det_model=request.useSealTextDet,
+        )
 
-            layout_parsing_results: List[LayoutParsingResult] = []
-            for i, item in enumerate(result):
-                layout_elements: List[LayoutElement] = []
-                for j, subitem in enumerate(
-                    item["layout_parsing_result"]["parsing_result"]
-                ):
-                    dyn_keys = subitem.keys() - {"input_path", "layout_bbox", "layout"}
-                    if len(dyn_keys) != 1:
-                        raise RuntimeError(f"Unexpected result: {subitem}")
-                    label = next(iter(dyn_keys))
-                    if label in ("image", "figure", "img", "fig"):
-                        text = subitem[label]["image_text"]
-                        image = await serving_utils.call_async(
-                            cv_common.postprocess_image,
-                            subitem[label]["img"],
-                            log_id=log_id,
-                            filename=f"image_{i}_{j}.jpg",
-                            file_storage=ctx.extra["file_storage"],
-                            return_url=ctx.extra["return_img_urls"],
-                            max_img_size=ctx.extra["max_output_img_size"],
-                        )
-                    else:
-                        text = subitem[label]
-                        image = None
-                    layout_elements.append(
-                        LayoutElement(
-                            bbox=subitem["layout_bbox"],
-                            label=label,
-                            text=text,
-                            layoutType=subitem["layout"],
-                            image=image,
-                        )
+        layout_parsing_results: List[LayoutParsingResult] = []
+        for i, item in enumerate(result):
+            layout_elements: List[LayoutElement] = []
+            for j, subitem in enumerate(
+                item["layout_parsing_result"]["parsing_result"]
+            ):
+                dyn_keys = subitem.keys() - {"input_path", "layout_bbox", "layout"}
+                if len(dyn_keys) != 1:
+                    logging.error("Unexpected result: %s", subitem)
+                    raise HTTPException(
+                        status_code=500,
+                        detail="Internal server error",
                     )
-                layout_parsing_results.append(
-                    LayoutParsingResult(layoutElements=layout_elements)
+                label = next(iter(dyn_keys))
+                if label in ("image", "figure", "img", "fig"):
+                    text = subitem[label]["image_text"]
+                    image = await serving_utils.call_async(
+                        cv_common.postprocess_image,
+                        subitem[label]["img"],
+                        log_id=log_id,
+                        filename=f"image_{i}_{j}.jpg",
+                        file_storage=ctx.extra["file_storage"],
+                        return_url=ctx.extra["return_img_urls"],
+                        max_img_size=ctx.extra["max_output_img_size"],
+                    )
+                else:
+                    text = subitem[label]
+                    image = None
+                layout_elements.append(
+                    LayoutElement(
+                        bbox=subitem["layout_bbox"],
+                        label=label,
+                        text=text,
+                        layoutType=subitem["layout"],
+                        image=image,
+                    )
                 )
-
-            return ResultResponse[InferResult](
-                logId=log_id,
-                result=InferResult(
-                    layoutParsingResults=layout_parsing_results,
-                    dataInfo=data_info,
-                ),
+            layout_parsing_results.append(
+                LayoutParsingResult(layoutElements=layout_elements)
             )
 
-        except Exception:
-            logging.exception("Unexpected exception")
-            raise HTTPException(status_code=500, detail="Internal server error")
+        return ResultResponse[InferResult](
+            logId=log_id,
+            result=InferResult(
+                layoutParsingResults=layout_parsing_results,
+                dataInfo=data_info,
+            ),
+        )
 
     return app

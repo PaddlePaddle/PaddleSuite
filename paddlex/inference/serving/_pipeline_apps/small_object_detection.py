@@ -14,14 +14,13 @@
 
 from typing import Any, List
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI
 from pydantic import BaseModel, Field
 from typing_extensions import Annotated, TypeAlias
 
-from ....utils import logging
 from .. import utils as serving_utils
-from ..app import AppConfig, create_app
-from ..models import NoResultResponse, ResultResponse
+from ..app import AppConfig, create_app, main_operation
+from ..models import ResultResponse
 
 
 class InferRequest(BaseModel):
@@ -47,44 +46,36 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
         pipeline=pipeline, app_config=app_config, app_aiohttp_session=True
     )
 
-    @app.post(
+    @main_operation(
+        app,
         "/small-object-detection",
-        operation_id="infer",
-        responses={422: {"model": NoResultResponse}},
-        response_model_exclude_none=True,
+        "infer",
     )
     async def _infer(request: InferRequest) -> ResultResponse[InferResult]:
         pipeline = ctx.pipeline
         aiohttp_session = ctx.aiohttp_session
 
-        try:
-            file_bytes = await serving_utils.get_raw_bytes(
-                request.image, aiohttp_session
-            )
-            image = serving_utils.image_bytes_to_array(file_bytes)
+        file_bytes = await serving_utils.get_raw_bytes(request.image, aiohttp_session)
+        image = serving_utils.image_bytes_to_array(file_bytes)
 
-            result = (await pipeline.infer(image))[0]
+        result = (await pipeline.infer(image))[0]
 
-            objects: List[DetectedObject] = []
-            for obj in result["boxes"]:
-                objects.append(
-                    DetectedObject(
-                        bbox=obj["coordinate"],
-                        categoryId=obj["cls_id"],
-                        score=obj["score"],
-                    )
+        objects: List[DetectedObject] = []
+        for obj in result["boxes"]:
+            objects.append(
+                DetectedObject(
+                    bbox=obj["coordinate"],
+                    categoryId=obj["cls_id"],
+                    score=obj["score"],
                 )
-            output_image_base64 = serving_utils.base64_encode(
-                serving_utils.image_to_bytes(result.img)
             )
+        output_image_base64 = serving_utils.base64_encode(
+            serving_utils.image_to_bytes(result.img)
+        )
 
-            return ResultResponse[InferResult](
-                logId=serving_utils.generate_log_id(),
-                result=InferResult(detectedObjects=objects, image=output_image_base64),
-            )
-
-        except Exception:
-            logging.exception("Unexpected exception")
-            raise HTTPException(status_code=500, detail="Internal server error")
+        return ResultResponse[InferResult](
+            logId=serving_utils.generate_log_id(),
+            result=InferResult(detectedObjects=objects, image=output_image_base64),
+        )
 
     return app

@@ -23,10 +23,10 @@ from typing_extensions import Annotated, TypeAlias, assert_never
 
 from .....utils import logging
 from ... import utils as serving_utils
-from .cv import postprocess_image
-from ...models import DataInfo
-from ...storage import create_storage, SupportsGetURL
 from ...app import AppContext
+from ...models import DataInfo
+from ...storage import SupportsGetURL, create_storage
+from .cv import postprocess_image
 
 DEFAULT_MAX_NUM_INPUT_IMGS: Final[int] = 10
 DEFAULT_MAX_OUTPUT_IMG_SIZE: Final[Tuple[int, int]] = (2000, 2000)
@@ -91,22 +91,18 @@ async def get_images(
     request: InferRequest, app_context: AppContext
 ) -> Tuple[List[np.ndarray], DataInfo]:
     file_type = get_file_type(request)
-    # XXX: Currently, we use 500 for consistency. However, 422 may be more
-    # appropriate.
-    try:
-        file_bytes = await serving_utils.get_raw_bytes(
-            request.file,
-            app_context.aiohttp_session,
-        )
-        images, data_info = await serving_utils.call_async(
-            serving_utils.file_to_images,
-            file_bytes,
-            file_type,
-            max_num_imgs=app_context.extra["max_num_input_imgs"],
-        )
-    except Exception:
-        logging.exception("Unexpected exception")
-        raise HTTPException(status_code=500, detail="Internal server error")
+    # XXX: Should we return 422?
+
+    file_bytes = await serving_utils.get_raw_bytes(
+        request.file,
+        app_context.aiohttp_session,
+    )
+    images, data_info = await serving_utils.call_async(
+        serving_utils.file_to_images,
+        file_bytes,
+        file_type,
+        max_num_imgs=app_context.extra["max_num_input_imgs"],
+    )
 
     if file_type == "IMAGE":
         return images, DataInfo(image=data_info)

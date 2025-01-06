@@ -15,7 +15,7 @@
 import abc
 from os import PathLike
 from pathlib import Path
-from typing import Any, Dict, Literal, Optional, Union, Protocol, runtime_checkable
+from typing import Any, Dict, Literal, Optional, Protocol, Union, runtime_checkable
 
 from baidubce.auth.bce_credentials import BceCredentials
 from baidubce.bce_client_configuration import BceClientConfiguration

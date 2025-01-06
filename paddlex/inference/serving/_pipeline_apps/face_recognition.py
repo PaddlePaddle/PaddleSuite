@@ -13,22 +13,20 @@
 # limitations under the License.
 
 import asyncio
-import faiss
 import pickle
 import uuid
 from typing import Any, Dict, List, Optional
 
-from fastapi import FastAPI, HTTPException
+import faiss
+from fastapi import FastAPI
 from pydantic import BaseModel, Field
 from typing_extensions import Annotated, TypeAlias
 
-from ....utils import logging
 from ...pipelines_new.components.retrieval.faiss import IndexData
-from ..storage import create_storage
 from .. import utils as serving_utils
-from ..app import AppConfig, create_app
-from ..models import NoResultResponse, ResultResponse
-
+from ..app import AppConfig, create_app, main_operation
+from ..models import ResultResponse
+from ..storage import create_storage
 
 DEFAULT_INDEX_DIR = ".index"
 
@@ -112,11 +110,10 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
             {"type": "file_system", "directory": DEFAULT_INDEX_DIR}
         )
 
-    @app.post(
+    @main_operation(
+        app,
         "/face-recognition-index-build",
-        operation_id="buildIndex",
-        responses={422: {"model": NoResultResponse}},
-        response_model_exclude_none=True,
+        "buildIndex",
     )
     async def _build_index(
         request: BuildIndexRequest,
@@ -124,49 +121,39 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
         pipeline = ctx.pipeline
         aiohttp_session = ctx.aiohttp_session
 
-        try:
-            images = [pair.image for pair in request.imageLabelPairs]
-            file_bytes_list = await asyncio.gather(
-                *(serving_utils.get_raw_bytes(img, aiohttp_session) for img in images)
-            )
-            images = [
-                serving_utils.image_bytes_to_array(item) for item in file_bytes_list
-            ]
-            labels = [pair.label for pair in request.imageLabelPairs]
+        images = [pair.image for pair in request.imageLabelPairs]
+        file_bytes_list = await asyncio.gather(
+            *(serving_utils.get_raw_bytes(img, aiohttp_session) for img in images)
+        )
+        images = [serving_utils.image_bytes_to_array(item) for item in file_bytes_list]
+        labels = [pair.label for pair in request.imageLabelPairs]
 
-            # TODO: Support specifying `index_type` and `metric_type` in the
-            # request
-            index_data = await pipeline.call(
-                pipeline.pipeline.build_index,
-                images,
-                labels,
-                index_type="Flat",
-                metric_type="IP",
-            )
+        # TODO: Support specifying `index_type` and `metric_type` in the
+        # request
+        index_data = await pipeline.call(
+            pipeline.pipeline.build_index,
+            images,
+            labels,
+            index_type="Flat",
+            metric_type="IP",
+        )
 
-            index_storage = ctx.extra["index_storage"]
-            index_key = str(uuid.uuid4())
-            index_data_bytes = await serving_utils.call_async(
-                _serialize_index_data, index_data
-            )
-            await serving_utils.call_async(
-                index_storage.set, index_key, index_data_bytes
-            )
+        index_storage = ctx.extra["index_storage"]
+        index_key = str(uuid.uuid4())
+        index_data_bytes = await serving_utils.call_async(
+            _serialize_index_data, index_data
+        )
+        await serving_utils.call_async(index_storage.set, index_key, index_data_bytes)
 
-            return ResultResponse[BuildIndexResult](
-                logId=serving_utils.generate_log_id(),
-                result=BuildIndexResult(indexKey=index_key, idMap=index_data.id_map),
-            )
+        return ResultResponse[BuildIndexResult](
+            logId=serving_utils.generate_log_id(),
+            result=BuildIndexResult(indexKey=index_key, idMap=index_data.id_map),
+        )
 
-        except Exception:
-            logging.exception("Unexpected exception")
-            raise HTTPException(status_code=500, detail="Internal server error")
-
-    @app.post(
+    @main_operation(
+        app,
         "/face-recognition-index-add",
-        operation_id="buildIndex",
-        responses={422: {"model": NoResultResponse}},
-        response_model_exclude_none=True,
+        "buildIndex",
     )
     async def _add_images_to_index(
         request: AddImagesToIndexRequest,
@@ -174,55 +161,83 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
         pipeline = ctx.pipeline
         aiohttp_session = ctx.aiohttp_session
 
-        try:
-            images = [pair.image for pair in request.imageLabelPairs]
-            file_bytes_list = await asyncio.gather(
-                *(serving_utils.get_raw_bytes(img, aiohttp_session) for img in images)
-            )
-            images = [
-                serving_utils.image_bytes_to_array(item) for item in file_bytes_list
-            ]
-            labels = [pair.label for pair in request.imageLabelPairs]
-            index_storage = ctx.extra["index_storage"]
-            index_data_bytes = await serving_utils.call_async(
-                index_storage.get, request.indexKey
-            )
-            index_data = await serving_utils.call_async(
-                _deserialize_index_data, index_data_bytes
-            )
+        images = [pair.image for pair in request.imageLabelPairs]
+        file_bytes_list = await asyncio.gather(
+            *(serving_utils.get_raw_bytes(img, aiohttp_session) for img in images)
+        )
+        images = [serving_utils.image_bytes_to_array(item) for item in file_bytes_list]
+        labels = [pair.label for pair in request.imageLabelPairs]
+        index_storage = ctx.extra["index_storage"]
+        index_data_bytes = await serving_utils.call_async(
+            index_storage.get, request.indexKey
+        )
+        index_data = await serving_utils.call_async(
+            _deserialize_index_data, index_data_bytes
+        )
 
-            index_data = await pipeline.call(
-                pipeline.pipeline.append_index, images, labels, index_data
-            )
+        index_data = await pipeline.call(
+            pipeline.pipeline.append_index, images, labels, index_data
+        )
 
-            index_data_bytes = await serving_utils.call_async(
-                _serialize_index_data, index_data
-            )
-            await serving_utils.call_async(
-                index_storage.set, request.indexKey, index_data_bytes
-            )
+        index_data_bytes = await serving_utils.call_async(
+            _serialize_index_data, index_data
+        )
+        await serving_utils.call_async(
+            index_storage.set, request.indexKey, index_data_bytes
+        )
 
-            return ResultResponse[AddImagesToIndexResult](
-                logId=serving_utils.generate_log_id(),
-                result=AddImagesToIndexResult(idMap=index_data.id_map),
-            )
+        return ResultResponse[AddImagesToIndexResult](
+            logId=serving_utils.generate_log_id(),
+            result=AddImagesToIndexResult(idMap=index_data.id_map),
+        )
 
-        except Exception:
-            logging.exception("Unexpected exception")
-            raise HTTPException(status_code=500, detail="Internal server error")
-
-    @app.post(
+    @main_operation(
+        app,
         "/face-recognition-index-remove",
-        operation_id="buildIndex",
-        responses={422: {"model": NoResultResponse}},
-        response_model_exclude_none=True,
+        "buildIndex",
     )
     async def _remove_images_from_index(
         request: RemoveImagesFromIndexRequest,
     ) -> ResultResponse[RemoveImagesFromIndexResult]:
         pipeline = ctx.pipeline
 
-        try:
+        index_storage = ctx.extra["index_storage"]
+        index_data_bytes = await serving_utils.call_async(
+            index_storage.get, request.indexKey
+        )
+        index_data = await serving_utils.call_async(
+            _deserialize_index_data, index_data_bytes
+        )
+
+        index_data = await pipeline.call(
+            pipeline.pipeline.remove_index, request.ids, index_data
+        )
+
+        index_data_bytes = await serving_utils.call_async(
+            _serialize_index_data, index_data
+        )
+        await serving_utils.call_async(
+            index_storage.set, request.indexKey, index_data_bytes
+        )
+
+        return ResultResponse[RemoveImagesFromIndexResult](
+            logId=serving_utils.generate_log_id(),
+            result=RemoveImagesFromIndexResult(idMap=index_data.id_map),
+        )
+
+    @main_operation(
+        app,
+        "/face-recognition-infer",
+        "infer",
+    )
+    async def _infer(request: InferRequest) -> ResultResponse[InferResult]:
+        pipeline = ctx.pipeline
+        aiohttp_session = ctx.aiohttp_session
+
+        image_bytes = await serving_utils.get_raw_bytes(request.image, aiohttp_session)
+        image = serving_utils.image_bytes_to_array(image_bytes)
+
+        if request.indexKey is not None:
             index_storage = ctx.extra["index_storage"]
             index_data_bytes = await serving_utils.call_async(
                 index_storage.get, request.indexKey
@@ -230,87 +245,38 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
             index_data = await serving_utils.call_async(
                 _deserialize_index_data, index_data_bytes
             )
+        else:
+            index_data = None
 
-            index_data = await pipeline.call(
-                pipeline.pipeline.remove_index, request.ids, index_data
-            )
+        result = list(
+            await pipeline.call(pipeline.pipeline.predict, image, index=index_data)
+        )[0]
 
-            index_data_bytes = await serving_utils.call_async(
-                _serialize_index_data, index_data
-            )
-            await serving_utils.call_async(
-                index_storage.set, request.indexKey, index_data_bytes
-            )
-
-            return ResultResponse[RemoveImagesFromIndexResult](
-                logId=serving_utils.generate_log_id(),
-                result=RemoveImagesFromIndexResult(idMap=index_data.id_map),
-            )
-
-        except Exception:
-            logging.exception("Unexpected exception")
-            raise HTTPException(status_code=500, detail="Internal server error")
-
-    @app.post(
-        "/face-recognition-infer",
-        operation_id="infer",
-        responses={422: {"model": NoResultResponse}},
-        response_model_exclude_none=True,
-    )
-    async def _infer(request: InferRequest) -> ResultResponse[InferResult]:
-        pipeline = ctx.pipeline
-        aiohttp_session = ctx.aiohttp_session
-
-        try:
-            image_bytes = await serving_utils.get_raw_bytes(
-                request.image, aiohttp_session
-            )
-            image = serving_utils.image_bytes_to_array(image_bytes)
-
-            if request.indexKey is not None:
-                index_storage = ctx.extra["index_storage"]
-                index_data_bytes = await serving_utils.call_async(
-                    index_storage.get, request.indexKey
-                )
-                index_data = await serving_utils.call_async(
-                    _deserialize_index_data, index_data_bytes
-                )
-            else:
-                index_data = None
-
-            result = list(
-                await pipeline.call(pipeline.pipeline.predict, image, index=index_data)
-            )[0]
-
-            faces: List[Face] = []
-            for face in result["boxes"]:
-                rec_results: List[RecResult] = []
-                if face["rec_scores"] is not None:
-                    for label, score in zip(face["labels"], face["rec_scores"]):
-                        rec_results.append(
-                            RecResult(
-                                label=label,
-                                score=score,
-                            )
+        faces: List[Face] = []
+        for face in result["boxes"]:
+            rec_results: List[RecResult] = []
+            if face["rec_scores"] is not None:
+                for label, score in zip(face["labels"], face["rec_scores"]):
+                    rec_results.append(
+                        RecResult(
+                            label=label,
+                            score=score,
                         )
-                faces.append(
-                    Face(
-                        bbox=face["coordinate"],
-                        recResults=rec_results,
-                        score=face["det_score"],
                     )
+            faces.append(
+                Face(
+                    bbox=face["coordinate"],
+                    recResults=rec_results,
+                    score=face["det_score"],
                 )
-            output_image_base64 = serving_utils.base64_encode(
-                serving_utils.image_to_bytes(result.img)
             )
+        output_image_base64 = serving_utils.base64_encode(
+            serving_utils.image_to_bytes(result.img)
+        )
 
-            return ResultResponse[InferResult](
-                logId=serving_utils.generate_log_id(),
-                result=InferResult(faces=faces, image=output_image_base64),
-            )
-
-        except Exception:
-            logging.exception("Unexpected exception")
-            raise HTTPException(status_code=500, detail="Internal server error")
+        return ResultResponse[InferResult](
+            logId=serving_utils.generate_log_id(),
+            result=InferResult(faces=faces, image=output_image_base64),
+        )
 
     return app

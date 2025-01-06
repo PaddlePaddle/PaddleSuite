@@ -18,11 +18,10 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 from typing_extensions import Annotated, TypeAlias
 
-from ._common import ocr as ocr_common
-from ....utils import logging
 from .. import utils as serving_utils
-from ..app import AppConfig, create_app
-from ..models import NoResultResponse, ResultResponse, DataInfo
+from ..app import AppConfig, create_app, main_operation
+from ..models import DataInfo, ResultResponse
+from ._common import ocr as ocr_common
 
 InferRequest: Type[ocr_common.InferRequest] = ocr_common.InferRequest
 
@@ -59,11 +58,10 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
         if "return_ocr_imgs" in ctx.config.extra:
             ctx.extra["return_ocr_imgs"] = ctx.config.extra["return_ocr_imgs"]
 
-    @app.post(
+    @main_operation(
+        app,
         "/formula-recognition",
-        operation_id="infer",
-        responses={422: {"model": NoResultResponse}},
-        response_model_exclude_none=True,
+        "infer",
     )
     async def _infer(request: InferRequest) -> ResultResponse[InferResult]:
         pipeline = ctx.pipeline
@@ -80,57 +78,54 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
 
         images, data_info = await ocr_common.get_images(request, ctx)
 
-        try:
-            result = await pipeline.infer(images)
+        result = await pipeline.infer(images)
 
-            formula_rec_results: List[FormulaRecResult] = []
-            for i, (img, item) in enumerate(zip(images, result)):
-                formulas: List[Formula] = []
-                for poly, latex in zip(item["dt_polys"], item["rec_formula"]):
-                    formulas.append(
-                        Formula(
-                            poly=poly,
-                            latex=latex,
-                        )
-                    )
-                layout_img = item["layout_result"].img
-                if ctx.extra["return_ocr_imgs"]:
-                    ocr_img = item["formula_result"].img
-                    if ocr_img is None:
-                        raise RuntimeError("Failed to get the OCR image")
-                else:
-                    ocr_img = None
-                output_imgs = await ocr_common.postprocess_images(
-                    log_id=log_id,
-                    index=i,
-                    app_context=ctx,
-                    input_image=img,
-                    layout_image=layout_img,
-                    ocr_image=ocr_img,
-                )
-                if ocr_img is not None:
-                    input_img, layout_img, ocr_img = output_imgs
-                else:
-                    input_img, layout_img = output_imgs
-                formula_rec_results.append(
-                    FormulaRecResult(
-                        formulas=formulas,
-                        inputImage=input_img,
-                        layoutImage=layout_img,
-                        ocrImage=ocr_img,
+        formula_rec_results: List[FormulaRecResult] = []
+        for i, (img, item) in enumerate(zip(images, result)):
+            formulas: List[Formula] = []
+            for poly, latex in zip(item["dt_polys"], item["rec_formula"]):
+                formulas.append(
+                    Formula(
+                        poly=poly,
+                        latex=latex,
                     )
                 )
-
-            return ResultResponse[InferResult](
-                logId=log_id,
-                result=InferResult(
-                    formulaRecResults=formula_rec_results,
-                    dataInfo=data_info,
-                ),
+            layout_img = item["layout_result"].img
+            if ctx.extra["return_ocr_imgs"]:
+                ocr_img = item["formula_result"].img
+                if ocr_img is None:
+                    raise HTTPException(
+                        status_code=500, detail="Failed to get the OCR image"
+                    )
+            else:
+                ocr_img = None
+            output_imgs = await ocr_common.postprocess_images(
+                log_id=log_id,
+                index=i,
+                app_context=ctx,
+                input_image=img,
+                layout_image=layout_img,
+                ocr_image=ocr_img,
+            )
+            if ocr_img is not None:
+                input_img, layout_img, ocr_img = output_imgs
+            else:
+                input_img, layout_img = output_imgs
+            formula_rec_results.append(
+                FormulaRecResult(
+                    formulas=formulas,
+                    inputImage=input_img,
+                    layoutImage=layout_img,
+                    ocrImage=ocr_img,
+                )
             )
 
-        except Exception:
-            logging.exception("Unexpected exception")
-            raise HTTPException(status_code=500, detail="Internal server error")
+        return ResultResponse[InferResult](
+            logId=log_id,
+            result=InferResult(
+                formulaRecResults=formula_rec_results,
+                dataInfo=data_info,
+            ),
+        )
 
     return app

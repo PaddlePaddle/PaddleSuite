@@ -14,13 +14,12 @@
 
 from typing import Any
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI
 from pydantic import BaseModel
 
-from ....utils import logging
 from .. import utils as serving_utils
-from ..app import AppConfig, create_app
-from ..models import NoResultResponse, ResultResponse
+from ..app import AppConfig, create_app, main_operation
+from ..models import ResultResponse
 
 
 class InferRequest(BaseModel):
@@ -36,33 +35,27 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
         pipeline=pipeline, app_config=app_config, app_aiohttp_session=True
     )
 
-    @app.post(
+    @main_operation(
+        app,
         "/time-series-anomaly-detection",
-        operation_id="infer",
-        responses={422: {"model": NoResultResponse}},
-        response_model_exclude_none=True,
+        "infer",
     )
     async def _infer(request: InferRequest) -> ResultResponse[InferResult]:
         pipeline = ctx.pipeline
         aiohttp_session = ctx.aiohttp_session
 
-        try:
-            file_bytes = await serving_utils.get_raw_bytes(request.csv, aiohttp_session)
-            df = serving_utils.csv_bytes_to_data_frame(file_bytes)
+        file_bytes = await serving_utils.get_raw_bytes(request.csv, aiohttp_session)
+        df = serving_utils.csv_bytes_to_data_frame(file_bytes)
 
-            result = (await pipeline.infer(df))[0]
+        result = (await pipeline.infer(df))[0]
 
-            output_csv = serving_utils.base64_encode(
-                serving_utils.data_frame_to_bytes(result["anomaly"])
-            )
+        output_csv = serving_utils.base64_encode(
+            serving_utils.data_frame_to_bytes(result["anomaly"])
+        )
 
-            return ResultResponse[InferResult](
-                logId=serving_utils.generate_log_id(),
-                result=InferResult(csv=output_csv),
-            )
-
-        except Exception:
-            logging.exception("Unexpected exception")
-            raise HTTPException(status_code=500, detail="Internal server error")
+        return ResultResponse[InferResult](
+            logId=serving_utils.generate_log_id(),
+            result=InferResult(csv=output_csv),
+        )
 
     return app

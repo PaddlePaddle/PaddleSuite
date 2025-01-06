@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Generic, TypeVar, Union, Literal, List, Optional
+from typing import Generic, List, Literal, Optional, TypeVar, Union
 
 from pydantic import BaseModel
 

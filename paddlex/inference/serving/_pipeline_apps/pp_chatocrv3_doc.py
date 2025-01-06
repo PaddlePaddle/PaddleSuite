@@ -18,11 +18,10 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 from typing_extensions import Annotated, TypeAlias, assert_never
 
-from ....utils import logging
 from ... import results
 from .. import utils as serving_utils
-from ..app import AppConfig, create_app
-from ..models import NoResultResponse, ResultResponse, DataInfo
+from ..app import AppConfig, create_app, main_operation
+from ..models import DataInfo, ResultResponse
 from ._common import ocr as ocr_common
 
 
@@ -158,11 +157,10 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
 
     ocr_common.update_app_context(ctx)
 
-    @app.post(
+    @main_operation(
+        app,
         "/chatocr-visual",
-        operation_id="analyzeImages",
-        responses={422: {"model": NoResultResponse}},
-        response_model_exclude_none=True,
+        "analyzeImages",
     )
     async def _analyze_images(
         request: AnalyzeImagesRequest,
@@ -181,183 +179,158 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
 
         images, data_info = await ocr_common.get_images(request, ctx)
 
-        try:
-            result = await pipeline.call(
-                pipeline.pipeline.visual_predict,
-                images,
-                use_doc_image_ori_cls_model=request.useImgOrientationCls,
-                use_doc_image_unwarp_model=request.useImgUnwarping,
-                use_seal_text_det_model=request.useSealTextDet,
+        result = await pipeline.call(
+            pipeline.pipeline.visual_predict,
+            images,
+            use_doc_image_ori_cls_model=request.useImgOrientationCls,
+            use_doc_image_unwarp_model=request.useImgUnwarping,
+            use_seal_text_det_model=request.useSealTextDet,
+        )
+
+        visual_results: List[VisualResult] = []
+        for i, (img, item) in enumerate(zip(images, result[0])):
+            texts: List[Text] = []
+            for poly, text, score in zip(
+                item["ocr_result"]["dt_polys"],
+                item["ocr_result"]["rec_text"],
+                item["ocr_result"]["rec_score"],
+            ):
+                texts.append(Text(poly=poly, text=text, score=score))
+            tables = [
+                Table(bbox=r["layout_bbox"], html=r["html"])
+                for r in item["table_result"]
+            ]
+            input_img, layout_img, ocr_img = await ocr_common.postprocess_images(
+                log_id=log_id,
+                index=i,
+                app_context=ctx,
+                input_image=img,
+                layout_image=item["layout_result"].img,
+                ocr_image=item["ocr_result"].img,
             )
-
-            visual_results: List[VisualResult] = []
-            for i, (img, item) in enumerate(zip(images, result[0])):
-                texts: List[Text] = []
-                for poly, text, score in zip(
-                    item["ocr_result"]["dt_polys"],
-                    item["ocr_result"]["rec_text"],
-                    item["ocr_result"]["rec_score"],
-                ):
-                    texts.append(Text(poly=poly, text=text, score=score))
-                tables = [
-                    Table(bbox=r["layout_bbox"], html=r["html"])
-                    for r in item["table_result"]
-                ]
-                input_img, layout_img, ocr_img = await ocr_common.postprocess_images(
-                    log_id=log_id,
-                    index=i,
-                    app_context=ctx,
-                    input_image=img,
-                    layout_image=item["layout_result"].img,
-                    ocr_image=item["ocr_result"].img,
-                )
-                visual_result = VisualResult(
-                    texts=texts,
-                    tables=tables,
-                    inputImage=input_img,
-                    layoutImage=layout_img,
-                    ocrImage=ocr_img,
-                )
-                visual_results.append(visual_result)
-
-            return ResultResponse[AnalyzeImagesResult](
-                logId=log_id,
-                result=AnalyzeImagesResult(
-                    visualResults=visual_results,
-                    visualInfo=result[1],
-                    dataInfo=data_info,
-                ),
+            visual_result = VisualResult(
+                texts=texts,
+                tables=tables,
+                inputImage=input_img,
+                layoutImage=layout_img,
+                ocrImage=ocr_img,
             )
+            visual_results.append(visual_result)
 
-        except Exception:
-            logging.exception("Unexpected exception")
-            raise HTTPException(status_code=500, detail="Internal server error")
+        return ResultResponse[AnalyzeImagesResult](
+            logId=log_id,
+            result=AnalyzeImagesResult(
+                visualResults=visual_results,
+                visualInfo=result[1],
+                dataInfo=data_info,
+            ),
+        )
 
-    @app.post(
+    @main_operation(
+        app,
         "/chatocr-vector",
-        operation_id="buildVectorStore",
-        responses={422: {"model": NoResultResponse}},
-        response_model_exclude_none=True,
+        "buildVectorStore",
     )
     async def _build_vector_store(
         request: BuildVectorStoreRequest,
     ) -> ResultResponse[BuildVectorStoreResult]:
         pipeline = ctx.pipeline
 
-        try:
-            kwargs = {"visual_info": results.VisualInfoResult(request.visualInfo)}
-            if request.minChars is not None:
-                kwargs["min_characters"] = request.minChars
-            if request.llmRequestInterval is not None:
-                kwargs["llm_request_interval"] = request.llmRequestInterval
-            if request.llmName is not None:
-                kwargs["llm_name"] = request.llmName
-            if request.llmParams is not None:
-                kwargs["llm_params"] = _llm_params_to_dict(request.llmParams)
+        kwargs = {"visual_info": results.VisualInfoResult(request.visualInfo)}
+        if request.minChars is not None:
+            kwargs["min_characters"] = request.minChars
+        if request.llmRequestInterval is not None:
+            kwargs["llm_request_interval"] = request.llmRequestInterval
+        if request.llmName is not None:
+            kwargs["llm_name"] = request.llmName
+        if request.llmParams is not None:
+            kwargs["llm_params"] = _llm_params_to_dict(request.llmParams)
 
-            result = await serving_utils.call_async(
-                pipeline.pipeline.build_vector, **kwargs
-            )
+        result = await serving_utils.call_async(
+            pipeline.pipeline.build_vector, **kwargs
+        )
 
-            return ResultResponse[BuildVectorStoreResult](
-                logId=serving_utils.generate_log_id(),
-                result=BuildVectorStoreResult(vectorStore=result["vector"]),
-            )
+        return ResultResponse[BuildVectorStoreResult](
+            logId=serving_utils.generate_log_id(),
+            result=BuildVectorStoreResult(vectorStore=result["vector"]),
+        )
 
-        except Exception:
-            logging.exception("Unexpected exception")
-            raise HTTPException(status_code=500, detail="Internal server error")
-
-    @app.post(
+    @main_operation(
+        app,
         "/chatocr-retrieval",
-        operation_id="retrieveKnowledge",
-        responses={422: {"model": NoResultResponse}},
-        response_model_exclude_none=True,
+        "retrieveKnowledge",
     )
     async def _retrieve_knowledge(
         request: RetrieveKnowledgeRequest,
     ) -> ResultResponse[RetrieveKnowledgeResult]:
         pipeline = ctx.pipeline
 
-        try:
-            kwargs = {
-                "key_list": request.keys,
-                "vector": results.VectorResult({"vector": request.vectorStore}),
-            }
-            if request.llmName is not None:
-                kwargs["llm_name"] = request.llmName
-            if request.llmParams is not None:
-                kwargs["llm_params"] = _llm_params_to_dict(request.llmParams)
+        kwargs = {
+            "key_list": request.keys,
+            "vector": results.VectorResult({"vector": request.vectorStore}),
+        }
+        if request.llmName is not None:
+            kwargs["llm_name"] = request.llmName
+        if request.llmParams is not None:
+            kwargs["llm_params"] = _llm_params_to_dict(request.llmParams)
 
-            result = await serving_utils.call_async(
-                pipeline.pipeline.retrieval, **kwargs
-            )
+        result = await serving_utils.call_async(pipeline.pipeline.retrieval, **kwargs)
 
-            return ResultResponse[RetrieveKnowledgeResult](
-                logId=serving_utils.generate_log_id(),
-                result=RetrieveKnowledgeResult(retrievalResult=result["retrieval"]),
-            )
+        return ResultResponse[RetrieveKnowledgeResult](
+            logId=serving_utils.generate_log_id(),
+            result=RetrieveKnowledgeResult(retrievalResult=result["retrieval"]),
+        )
 
-        except Exception:
-            logging.exception("Unexpected exception")
-            raise HTTPException(status_code=500, detail="Internal server error")
-
-    @app.post(
+    @main_operation(
+        app,
         "/chatocr-chat",
-        operation_id="chat",
-        responses={422: {"model": NoResultResponse}},
-        response_model_exclude_none=True,
+        "chat",
     )
     async def _chat(
         request: ChatRequest,
     ) -> ResultResponse[ChatResult]:
         pipeline = ctx.pipeline
 
-        try:
-            kwargs = {
-                "key_list": request.keys,
-                "visual_info": results.VisualInfoResult(request.visualInfo),
-            }
-            if request.vectorStore is not None:
-                kwargs["vector"] = results.VectorResult({"vector": request.vectorStore})
-            if request.retrievalResult is not None:
-                kwargs["retrieval_result"] = results.RetrievalResult(
-                    {"retrieval": request.retrievalResult}
-                )
-            if request.taskDescription is not None:
-                kwargs["user_task_description"] = request.taskDescription
-            if request.rules is not None:
-                kwargs["rules"] = request.rules
-            if request.fewShot is not None:
-                kwargs["few_shot"] = request.fewShot
-            if request.llmName is not None:
-                kwargs["llm_name"] = request.llmName
-            if request.llmParams is not None:
-                kwargs["llm_params"] = _llm_params_to_dict(request.llmParams)
-            kwargs["save_prompt"] = request.returnPrompts
-
-            result = await serving_utils.call_async(pipeline.pipeline.chat, **kwargs)
-
-            if result["prompt"]:
-                prompts = Prompts(
-                    ocr=result["prompt"]["ocr_prompt"],
-                    table=result["prompt"]["table_prompt"] or None,
-                    html=result["prompt"]["html_prompt"] or None,
-                )
-            else:
-                prompts = None
-            chat_result = ChatResult(
-                chatResult=result["chat_res"],
-                prompts=prompts,
+        kwargs = {
+            "key_list": request.keys,
+            "visual_info": results.VisualInfoResult(request.visualInfo),
+        }
+        if request.vectorStore is not None:
+            kwargs["vector"] = results.VectorResult({"vector": request.vectorStore})
+        if request.retrievalResult is not None:
+            kwargs["retrieval_result"] = results.RetrievalResult(
+                {"retrieval": request.retrievalResult}
             )
+        if request.taskDescription is not None:
+            kwargs["user_task_description"] = request.taskDescription
+        if request.rules is not None:
+            kwargs["rules"] = request.rules
+        if request.fewShot is not None:
+            kwargs["few_shot"] = request.fewShot
+        if request.llmName is not None:
+            kwargs["llm_name"] = request.llmName
+        if request.llmParams is not None:
+            kwargs["llm_params"] = _llm_params_to_dict(request.llmParams)
+        kwargs["save_prompt"] = request.returnPrompts
 
-            return ResultResponse[ChatResult](
-                logId=serving_utils.generate_log_id(),
-                result=chat_result,
+        result = await serving_utils.call_async(pipeline.pipeline.chat, **kwargs)
+
+        if result["prompt"]:
+            prompts = Prompts(
+                ocr=result["prompt"]["ocr_prompt"],
+                table=result["prompt"]["table_prompt"] or None,
+                html=result["prompt"]["html_prompt"] or None,
             )
+        else:
+            prompts = None
+        chat_result = ChatResult(
+            chatResult=result["chat_res"],
+            prompts=prompts,
+        )
 
-        except Exception:
-            logging.exception("Unexpected exception")
-            raise HTTPException(status_code=500, detail="Internal server error")
+        return ResultResponse[ChatResult](
+            logId=serving_utils.generate_log_id(),
+            result=chat_result,
+        )
 
     return app

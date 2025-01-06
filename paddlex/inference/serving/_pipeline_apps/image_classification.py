@@ -14,14 +14,13 @@
 
 from typing import Any, List, Optional
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI
 from pydantic import BaseModel, Field
 from typing_extensions import Annotated
 
-from ....utils import logging
 from .. import utils as serving_utils
-from ..app import AppConfig, create_app
-from ..models import NoResultResponse, ResultResponse
+from ..app import AppConfig, create_app, main_operation
+from ..models import ResultResponse
 
 
 class InferenceParams(BaseModel):
@@ -49,48 +48,38 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
         pipeline=pipeline, app_config=app_config, app_aiohttp_session=True
     )
 
-    @app.post(
+    @main_operation(
+        app,
         "/image-classification",
-        operation_id="infer",
-        responses={422: {"model": NoResultResponse}},
-        response_model_exclude_none=True,
+        "infer",
     )
     async def _infer(request: InferRequest) -> ResultResponse[InferResult]:
         pipeline = ctx.pipeline
         aiohttp_session = ctx.aiohttp_session
 
-        try:
-            file_bytes = await serving_utils.get_raw_bytes(
-                request.image, aiohttp_session
-            )
-            image = serving_utils.image_bytes_to_array(file_bytes)
-            top_k: Optional[int] = None
-            if request.inferenceParams is not None:
-                if request.inferenceParams.topK is not None:
-                    top_k = request.inferenceParams.topK
+        file_bytes = await serving_utils.get_raw_bytes(request.image, aiohttp_session)
+        image = serving_utils.image_bytes_to_array(file_bytes)
+        top_k: Optional[int] = None
+        if request.inferenceParams is not None:
+            if request.inferenceParams.topK is not None:
+                top_k = request.inferenceParams.topK
 
-            result = (await pipeline.infer(image, topk=top_k))[0]
+        result = (await pipeline.infer(image, topk=top_k))[0]
 
-            if "label_names" in result:
-                cat_names = result["label_names"]
-            else:
-                cat_names = [str(id_) for id_ in result["class_ids"]]
-            categories: List[Category] = []
-            for id_, name, score in zip(
-                result["class_ids"], cat_names, result["scores"]
-            ):
-                categories.append(Category(id=id_, name=name, score=score))
-            output_image_base64 = serving_utils.base64_encode(
-                serving_utils.image_to_bytes(result.img)
-            )
+        if "label_names" in result:
+            cat_names = result["label_names"]
+        else:
+            cat_names = [str(id_) for id_ in result["class_ids"]]
+        categories: List[Category] = []
+        for id_, name, score in zip(result["class_ids"], cat_names, result["scores"]):
+            categories.append(Category(id=id_, name=name, score=score))
+        output_image_base64 = serving_utils.base64_encode(
+            serving_utils.image_to_bytes(result.img)
+        )
 
-            return ResultResponse[InferResult](
-                logId=serving_utils.generate_log_id(),
-                result=InferResult(categories=categories, image=output_image_base64),
-            )
-
-        except Exception:
-            logging.exception("Unexpected exception")
-            raise HTTPException(status_code=500, detail="Internal server error")
+        return ResultResponse[InferResult](
+            logId=serving_utils.generate_log_id(),
+            result=InferResult(categories=categories, image=output_image_base64),
+        )
 
     return app
