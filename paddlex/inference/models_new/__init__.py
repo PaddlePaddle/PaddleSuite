@@ -34,6 +34,7 @@ from .ts_anomaly_detection import TSAdPredictor
 from .ts_classification import TSClsPredictor
 from .image_unwarping import WarpPredictor
 from .image_multilabel_classification import MLClasPredictor
+from .face_feature import FaceFeaturePredictor
 
 
 # from .table_recognition import TablePredictor
