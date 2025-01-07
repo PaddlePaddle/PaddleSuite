@@ -12,6 +12,4 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
-from .video_cls import VideoClsModel, VideoClsRunner, register
-from .video_det import VideoDetModel, VideoDetRunner, register
+MODELS = ["YOWO"]

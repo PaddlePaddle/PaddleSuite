@@ -41,7 +41,9 @@ class OCRResult(BaseCVResult):
         input_params = self["input_params"]
         img_id = self["img_id"]
         if input_params["use_doc_preprocessor"]:
-            save_img_path = Path(save_path) / f"doc_preprocessor_result_img_{img_id}.jpg"
+            save_img_path = (
+                Path(save_path) / f"doc_preprocessor_result_img_{img_id}.jpg"
+            )
             self["doc_preprocessor_res"].save_to_img(save_img_path)
 
         if not str(save_path).lower().endswith((".jpg", ".png")):
@@ -97,7 +99,7 @@ class OCRResult(BaseCVResult):
         boxes = self["dt_polys"]
         txts = self["rec_text"]
         scores = self["rec_score"]
-        image = self["doc_preprocessor_image"]
+        image = self["input_img"]
         h, w = image.shape[0:2]
         image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         img_left = Image.fromarray(image_rgb)

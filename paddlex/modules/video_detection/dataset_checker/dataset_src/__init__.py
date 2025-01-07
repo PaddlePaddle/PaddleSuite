@@ -13,5 +13,5 @@
 # limitations under the License.
 
 
-from .video_cls import VideoClsModel, VideoClsRunner, register
-from .video_det import VideoDetModel, VideoDetRunner, register
+from .check_dataset import check
+from .analyse_dataset import deep_analyse

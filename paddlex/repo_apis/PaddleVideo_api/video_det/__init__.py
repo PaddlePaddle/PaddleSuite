@@ -13,5 +13,7 @@
 # limitations under the License.
 
 
-from .video_cls import VideoClsModel, VideoClsRunner, register
-from .video_det import VideoDetModel, VideoDetRunner, register
+from .model import VideoDetModel
+from .runner import VideoDetRunner
+from .config import VideoDetConfig
+from . import register
