@@ -14,7 +14,6 @@
 
 from typing import Any, Dict, Optional, Union
 import numpy as np
-from ...common.batch_sampler import VideoBatchSampler
 from ...utils.pp_option import PaddlePredictorOption
 from ..base import BasePipeline
 
@@ -53,8 +52,6 @@ class VideoClassificationPipeline(BasePipeline):
         self.video_classification_model = self.create_model(
             video_classification_model_config
         )
-        batch_size = video_classification_model_config["batch_size"]
-        self.batch_sampler = VideoBatchSampler(batch_size=batch_size)
 
     def predict(
         self,
