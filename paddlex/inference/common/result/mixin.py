@@ -456,7 +456,7 @@ class XlsxMixin:
 
 class VideoMixin:
     def __init__(self, backend="opencv", *args, **kwargs):
-        self._video_writer = VideoWriter(backend=backend, *args, **kwargs)
+        self._backend = backend
         self._save_funcs.append(self.save_to_video)
 
     @abstractmethod
@@ -469,9 +469,8 @@ class VideoMixin:
         return video
 
     def save_to_video(self, save_path, *args, **kwargs):
-        if not str(save_path).lower().endswith((".mp4", ".avi", ".mkv")):
+        video_writer = VideoWriter(backend=self._backend, *args, **kwargs)
+        if not str(save_path).lower().endswith((".mp4", ".avi", ".mkv", ".webm")):
             fp = Path(self["input_path"])
             save_path = Path(save_path) / f"{fp.stem}{fp.suffix}"
-        _save_list_data(
-            self._video_writer.write, save_path, self.video, *args, **kwargs
-        )
+        _save_list_data(video_writer.write, save_path, self.video, *args, **kwargs)

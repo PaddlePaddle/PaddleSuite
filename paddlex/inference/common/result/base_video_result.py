@@ -32,8 +32,6 @@ class BaseVideoResult(BaseResult, StrMixin, JsonMixin, VideoMixin):
         Raises:
             AssertionError: If the required key (`BaseVideoResult.INPUT_IMG_KEY`) are not found in the data.
         """
-        self._video_reader = VideoReader(backend="decord")
-        self._video_writer = VideoWriter(backend="opencv")
 
         super().__init__(data)
         StrMixin.__init__(self)
