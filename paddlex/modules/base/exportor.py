@@ -78,7 +78,12 @@ class BaseExportor(ABC, metaclass=AutoRegisterABCMetaClass):
         """
 
         config_path = Path(weight_path).parent / "config.yaml"
-        if not config_path.exists():
+        # `Path("https://xxx/xxx")` would cause error on Windows
+        try:
+            is_exists = config_path.exists()
+        except Exception:
+            is_exists = False
+        if not is_exists:
             logging.warning(
                 f"The config file(`{config_path}`) related to weight file(`{weight_path}`) is not exist, use default instead."
             )

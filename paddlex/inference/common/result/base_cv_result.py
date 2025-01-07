@@ -20,8 +20,6 @@ from ...utils.io import ImageWriter
 class BaseCVResult(BaseResult, StrMixin, JsonMixin, ImgMixin):
     """Base class for computer vision results."""
 
-    INPUT_IMG_KEY = "input_img"
-
     def __init__(self, data: dict) -> None:
         """
         Initialize the BaseCVResult.
