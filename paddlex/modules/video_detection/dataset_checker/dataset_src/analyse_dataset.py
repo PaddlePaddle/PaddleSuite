@@ -33,12 +33,12 @@ def deep_analyse(dataset_path, output):
     """class analysis for dataset"""
     tags = ["train", "val"]
     labels_cnt = defaultdict(str)
-    label_path = os.path.join(dataset_path, "label.txt")
+    label_path = os.path.join(dataset_path, "label_map.txt")
     with custom_open(label_path, "r") as f:
         lines = f.readlines()
     for line in lines:
         line = line.strip().split()
-        labels_cnt[line[0]] = " ".join(line[1:])
+        labels_cnt[line[1]] = " ".join(line[0])
     for tag in tags:
         anno_path = os.path.join(dataset_path, f"{tag}.txt")
         classes_num = defaultdict(int)
@@ -48,7 +48,13 @@ def deep_analyse(dataset_path, output):
             lines = f.readlines()
         for line in lines:
             line = line.strip().split()
-            classes_num[labels_cnt[line[1]]] += 1
+            label_file_path = os.path.join(dataset_path, line[0])
+            with custom_open(label_file_path, "r") as f:
+                label_lines = f.readlines()
+                for label_line in label_lines:
+                    label_info = label_line.strip().split(" ")
+                    classes_num[labels_cnt[label_info[0]]] += 1
+            
         if tag == "train":
             cnts_train = [cat_ids for cat_name, cat_ids in classes_num.items()]
         elif tag == "val":
@@ -83,7 +89,7 @@ def deep_analyse(dataset_path, output):
         "类别名称", fontproperties=None if os_system == "windows" else font, fontsize=12
     )
     ax.set_ylabel(
-        "视频数量", fontproperties=None if os_system == "windows" else font, fontsize=12
+        "样本框数量", fontproperties=None if os_system == "windows" else font, fontsize=12
     )
     plt.legend(loc=1)
     fig.tight_layout()

@@ -18,6 +18,7 @@ import random
 from PIL import Image, ImageOps
 from collections import defaultdict
 
+from .....utils.file_interface import custom_open
 from .....utils.errors import DatasetFileNotFoundError, CheckFailedError
 
 
@@ -30,35 +31,40 @@ def check(dataset_dir, output, sample_num=10):
 
     tags = ["train", "val"]
     delim = " "
-    valid_num_parts = 2
+    valid_num_parts = 5
 
     sample_cnts = dict()
     label_map_dict = dict()
     sample_paths = defaultdict(list)
     labels = []
-
-    label_file = osp.join(dataset_dir, "label.txt")
-    if not osp.exists(label_file):
+    image_dir = osp.join(dataset_dir, "rgb-images")
+    label_dir = osp.join(dataset_dir, "labels")
+    if not osp.exists(image_dir):
+        raise DatasetFileNotFoundError(file_path=image_dir)
+    if not osp.exists(label_dir):
+        raise DatasetFileNotFoundError(file_path=label_dir)
+    
+    label_map_file = osp.join(dataset_dir, "label_map.txt")
+    if not osp.exists(label_map_file):
         raise DatasetFileNotFoundError(
-            file_path=label_file,
-            solution=f"Ensure that `label.txt` exist in {dataset_dir}",
+            file_path=label_map_file,
+            solution=f"Ensure that `label_map.txt` exist in {dataset_dir}",
         )
-
-    with open(label_file, "r", encoding="utf-8") as f:
+    with open(label_map_file, "r", encoding="utf-8") as f:
         all_lines = f.readlines()
         for line in all_lines:
             substr = line.strip("\n").split(" ", 1)
             try:
-                label_idx = int(substr[0])
+                label_idx = int(substr[1])
                 labels.append(label_idx)
-                label_map_dict[label_idx] = str(substr[1])
+                label_map_dict[label_idx] = str(substr[0])
             except:
                 raise CheckFailedError(
-                    f"Ensure that the first number in each line in {label_file} should be int."
+                    f"Ensure that the second number in each line in {label_file} should be int."
                 )
-    if min(labels) != 0:
+    if min(labels) != 1:
         raise CheckFailedError(
-            f"Ensure that the index starts from 0 in `{label_file}`."
+            f"Ensure that the index starts from 1 in `{label_file}`."
         )
 
     for tag in tags:
@@ -79,38 +85,42 @@ def check(dataset_dir, output, sample_num=10):
                 random.seed(123)
                 random.shuffle(all_lines)
                 sample_cnts[tag] = len(all_lines)
+
                 for line in all_lines:
-                    substr = line.strip("\n").split(delim)
-                    if len(substr) != valid_num_parts:
-                        raise CheckFailedError(
-                            f"The number of delimiter-separated items in each row in {file_list} \
-                                    should be {valid_num_parts} (current delimiter is '{delim}')."
-                        )
-                    file_name = substr[0]
-                    label = substr[1]
+                    substr = line.strip("\n")
+                    label_path = osp.join(dataset_dir, substr)
+                    img_path = osp.join(dataset_dir, substr).replace("labels", "rgb-images").replace("txt", "jpg")
 
-                    video_path = osp.join(dataset_dir, file_name)
+                    if not osp.exists(img_path):
+                        raise DatasetFileNotFoundError(file_path=img_path)
+                    if not osp.exists(label_path):
+                        raise DatasetFileNotFoundError(file_path=label_path)
+                    with custom_open(label_path, "r") as f:
+                        label_lines = f.readlines()
+                        for label_line in label_lines:
+                            label_info = label_line.strip().split(" ")
+                        try:
+                            label = int(label_info[0])
+                        except (ValueError, TypeError) as e:
+                            raise CheckFailedError(
+                                f"Ensure that the first number in each line in {label_info} should be int."
+                            ) from e
+                            if len(label_info) != valid_num_parts:
+                                raise CheckFailedError(
+                                    f"Ensure that each line in {label_file} has exactly two numbers."
+                                )
 
-                    if not osp.exists(video_path):
-                        raise DatasetFileNotFoundError(file_path=video_path)
 
                     if len(sample_paths[tag]) < sample_num:
                         sample_path = osp.join(
-                            "check_dataset", os.path.relpath(video_path, output)
+                            "check_dataset", os.path.relpath(img_path, output)
                         )
                         sample_paths[tag].append(sample_path)
 
-                    try:
-                        label = int(label)
-                    except (ValueError, TypeError) as e:
-                        raise CheckFailedError(
-                            f"Ensure that the second number in each line in {label_file} should be int."
-                        ) from e
-
-    num_classes = max(labels) + 1
+    num_classes = max(labels)
 
     attrs = {}
-    attrs["label_file"] = osp.relpath(label_file, output)
+    attrs["label_file"] = osp.relpath(label_map_file, output)
     attrs["num_classes"] = num_classes
     attrs["train_samples"] = sample_cnts["train"]
     attrs["train_sample_paths"] = sample_paths["train"]

@@ -140,7 +140,23 @@ class VideoDetConfig(BaseConfig):
 
         update_str_list = {"MODEL.backbone.num_class": num_classes}
         self.update(update_str_list)
+        update_str_list = {"MODEL.loss.num_classes": num_classes}
+        self.update(update_str_list)
     
+    def update_label_list(self, label_path: str):
+        """update label list
+
+        Args:
+            label_list (str): the path of label list file to set.
+        """
+        with open(label_path, "r") as f:
+            lines = [line.strip().split(" ") for line in f.readlines()]
+            sorted_lines = sorted(lines, key=lambda x: int(x[1]))
+            label_list = [line[0] for line in sorted_lines]
+        f.close()
+
+        self.update({"label_list": label_list})
+
     def update_pretrained_weights(self, pretrained_model: str):
         """update pretrained weight path
 

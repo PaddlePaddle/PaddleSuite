@@ -22,8 +22,8 @@ from ..common import (
     StaticInfer,
 )
 from ..base import BasicPredictor
-from .processors import ResizeVideo, Image2Array, NormalizeVideo
-from .result import TopkVideoResult
+from .processors import ResizeVideo, Image2Array, NormalizeVideo, DetVideoPostProcess
+from .result import DetVideoResult
 
 
 class VideoDetPredictor(BasicPredictor):
@@ -41,56 +41,52 @@ class VideoDetPredictor(BasicPredictor):
         return VideoBatchSampler()
 
     def _get_result_class(self):
-        return TopkVideoResult
+        return DetVideoResult
 
     def _build(self):
         pre_tfs = {}
         for cfg in self.config["PreProcess"]["transform_ops"]:
             tf_key = list(cfg.keys())[0]
-            print(tf_key)
             assert tf_key in self._FUNC_MAP
             func = self._FUNC_MAP[tf_key]
             args = cfg.get(tf_key, {})
             name, op = func(self, **args) if args else func(self)
             if op:
                 pre_tfs[name] = op
-        pre_tfs["ToBatch"] = ToBatch()
-
+        
         infer = StaticInfer(
             model_dir=self.model_dir,
             model_prefix=self.MODEL_FILE_PREFIX,
             option=self.pp_option,
         )
-
         post_op = {}
-        # for key in self.config["PostProcess"]:
-        #     func = self._FUNC_MAP.get(key)
-        #     args = self.config["PostProcess"].get(key, {})
-        #     name, op = func(self, **args) if args else func(self)
-        #     post_op[name] = op
+        for cfg in self.config["PostProcess"]["transform_ops"]:
+            tf_key = list(cfg.keys())[0]
+            assert tf_key in self._FUNC_MAP
+            func = self._FUNC_MAP[tf_key]
+            args = cfg.get(tf_key, {})
+            if tf_key == "DetVideoPostProcess":
+                args['label_list'] = self.config['label_list']
+            name, op = func(self, **args) if args else func(self)
+            if op:
+                post_op[name] = op
 
         return pre_tfs, infer, post_op
 
-    def process(self, batch_data, topk: Union[int, None] = None):
+    def process(self, batch_data):
         batch_raw_videos = self.pre_tfs["ReadVideo"](videos=batch_data)
         batch_videos = self.pre_tfs["ResizeVideo"](videos=batch_raw_videos)
         batch_videos = self.pre_tfs["Image2Array"](videos=batch_videos)
         x = self.pre_tfs["NormalizeVideo"](videos=batch_videos)
-
         num_seg = len(x[0])
         pred_seg = []
         for i in range(num_seg):
             batch_preds = self.infer(x=[x[0][i]])
             pred_seg.append(batch_preds)
-
-        batch_class_ids, batch_scores, batch_label_names = self.post_op["Topk"](
-            batch_preds, topk=topk or self.topk
-        )
+        batch_bboxes = self.post_op["DetVideoPostProcess"](preds=[pred_seg])
         return {
             "input_path": batch_data,
-            "class_ids": batch_class_ids,
-            "scores": batch_scores,
-            "label_names": batch_label_names,
+            "result": batch_bboxes,
         }
 
     @register("ReadVideo")
@@ -111,7 +107,7 @@ class VideoDetPredictor(BasicPredictor):
 
     @register("Image2Array")
     def build_image2array(self, data_format="tchw"):
-        return "Image2Array", Image2Array(transpose=True, data_format="tchw")
+        return "Image2Array", Image2Array(data_format="tchw")
 
     @register("NormalizeVideo")
     def build_normalize(
@@ -119,3 +115,11 @@ class VideoDetPredictor(BasicPredictor):
         scale=255.0,
     ):
         return "NormalizeVideo", NormalizeVideo(scale=scale)
+
+    @register("DetVideoPostProcess")
+    def build_postprocess(self, nms_thresh=0.5, score_thresh=0.4, label_list=[]):
+        return "DetVideoPostProcess", DetVideoPostProcess(
+            nms_thresh=nms_thresh,
+            score_thresh=score_thresh,
+            label_list=label_list
+        )

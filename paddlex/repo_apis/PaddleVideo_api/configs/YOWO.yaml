@@ -98,10 +98,41 @@ Infer:
     transforms:
         - ReadVideo:
             num_seg: 16
+        - ResizeVideo:
+            target_size: 224
         - Image2Array:
             data_format: 'tchw'
         - NormalizeVideo:
             scale: 255.0
+    PostProcess:
+        - DetVideoPostProcess:
+            nms_thresh: 0.5
+            score_thresh: 0.4
+label_list:
+    - Basketball
+    - BasketballDunk
+    - Biking
+    - CliffDiving
+    - CricketBowling
+    - Diving
+    - Fencing
+    - FloorGymnastics
+    - GolfSwing
+    - HorseRiding
+    - IceDancing
+    - LongJump
+    - PoleVault
+    - RopeClimbing
+    - SalsaSpin
+    - SkateBoarding
+    - Skiing
+    - Skijet
+    - SoccerJuggling
+    - Surfing
+    - TennisSwing
+    - TrampolineJumping
+    - VolleyballSpiking
+    - WalkingWithDog
 
 model_name: "YOWO"
 log_interval: 20 #Optional, the interal of logger, default:10

@@ -14,6 +14,7 @@
 
 import cv2
 import numpy as np
+import random
 import PIL
 from PIL import Image, ImageDraw, ImageFont
 
@@ -26,57 +27,61 @@ class DetVideoResult(BaseVideoResult):
 
     def _to_video(self):
         """Draw label on image"""
-        labels = self.get("label_names", self["class_ids"])
-        label_str = f"{labels[0]} {self['scores'][0]:.2f}"
         video_reader = self._video_reader
         video = video_reader.read(self["input_path"])
         video = list(video)
         write_fps = video_reader.get_fps()
-
+        label2color = {}
+        catid2fontcolor = {}
+        color_list = get_colormap(rgb=True)
         video_list = []
+
         for i in range(len(video)):
             image = Image.fromarray(video[i].asnumpy())
             image_size = image.size
+            font_size = int(0.018 * int(image.width)) + 2
+            font = ImageFont.truetype(PINGFANG_FONT_FILE_PATH, font_size, encoding="utf-8")
+            draw_thickness = int(max(image.size) * 0.002)
             draw = ImageDraw.Draw(image)
-            min_font_size = int(image_size[0] * 0.02)
-            max_font_size = int(image_size[0] * 0.05)
-            for font_size in range(max_font_size, min_font_size - 1, -1):
-                font = ImageFont.truetype(
-                    PINGFANG_FONT_FILE_PATH, font_size, encoding="utf-8"
+            results = self["result"][i]
+            for result in results:
+                bbox, score, class_name = result
+                if class_name not in label2color:
+                    random_index = random.randint(0, len(color_list) - 1)
+                    label2color[class_name] = color_list[random_index]
+                    catid2fontcolor[class_name] = self._get_font_colormap(random_index)
+                color = tuple(label2color[class_name])
+                font_color = tuple(catid2fontcolor[class_name])
+                xmin, ymin, xmax, ymax = bbox
+                rectangle = [
+                    (xmin, ymin),
+                    (xmin, ymax),
+                    (xmax, ymax),
+                    (xmax, ymin),
+                    (xmin, ymin),
+                ]
+                draw.line(
+                    rectangle,
+                    width=draw_thickness,
+                    fill=color,
                 )
+                text = "{} {:.2f}".format(class_name, score)
                 if tuple(map(int, PIL.__version__.split("."))) <= (10, 0, 0):
-                    text_width_tmp, text_height_tmp = draw.textsize(label_str, font)
+                    tw, th = draw.textsize(text, font=font)
                 else:
-                    left, top, right, bottom = draw.textbbox((0, 0), label_str, font)
-                    text_width_tmp, text_height_tmp = right - left, bottom - top
-                if text_width_tmp <= image_size[0]:
-                    break
+                    left, top, right, bottom = draw.textbbox((0, 0), text, font)
+                    tw, th = right - left, bottom - top + 4
+                if ymin < th:
+                    draw.rectangle([(xmin, ymin), (xmin + tw + 4, ymin + th + 1)], fill=color)
+                    draw.text((xmin + 2, ymin - 2), text, fill=font_color, font=font)
                 else:
-                    font = ImageFont.truetype(PINGFANG_FONT_FILE_PATH, min_font_size)
-            color_list = get_colormap(rgb=True)
-            color = tuple(color_list[0])
-            font_color = tuple(self._get_font_colormap(3))
-            if tuple(map(int, PIL.__version__.split("."))) <= (10, 0, 0):
-                text_width, text_height = draw.textsize(label_str, font)
-            else:
-                left, top, right, bottom = draw.textbbox((0, 0), label_str, font)
-                text_width, text_height = right - left, bottom - top
+                    draw.rectangle([(xmin, ymin - th), (xmin + tw + 4, ymin + 1)], fill=color)
+                    draw.text((xmin + 2, ymin - th - 2), text, fill=font_color, font=font)
 
-            rect_left = 3
-            rect_top = 3
-            rect_right = rect_left + text_width + 3
-            rect_bottom = rect_top + text_height + 6
-
-            draw.rectangle(
-                [(rect_left, rect_top), (rect_right, rect_bottom)], fill=color
-            )
-
-            text_x = rect_left + 3
-            text_y = rect_top
-            draw.text((text_x, text_y), label_str, fill=font_color, font=font)
             image = cv2.cvtColor(np.array(image), cv2.COLOR_RGB2BGR)
             video_list.append(image)
         return np.array(video_list), write_fps
+
 
     def _get_font_colormap(self, color_index):
         """

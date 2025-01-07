@@ -54,9 +54,9 @@ class VideoDetTrainer(BaseTrainer):
                 self.train_config.pretrain_weight_path
             )
 
-        label_dict_path = Path(self.global_config.dataset_dir).joinpath("label.txt")
+        label_dict_path = Path(self.global_config.dataset_dir).joinpath("label_map.txt")
         if label_dict_path.exists():
-            self.dump_label_dict(label_dict_path)
+            self.pdx_config.update_label_list(label_dict_path)
         if self.train_config.batch_size is not None:
             self.pdx_config.update_batch_size(self.train_config.batch_size)
         if self.train_config.learning_rate is not None:
