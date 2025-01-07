@@ -20,6 +20,7 @@ from .readers import (
     CSVReader,
     PDFReader,
     YAMLReader,
+    AudioReader,
 )
 from .writers import (
     WriterType,

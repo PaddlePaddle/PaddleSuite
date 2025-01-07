@@ -21,6 +21,8 @@ from PIL import Image, ImageOps
 import pandas as pd
 import numpy as np
 import yaml
+import soundfile
+import decord
 import random
 import platform
 
@@ -40,6 +42,7 @@ __all__ = [
     "CSVReader",
     "PDFReader",
     "YAMLReader",
+    "AudioReader",
 ]
 
 
@@ -455,3 +458,39 @@ class YAMLReaderBackend(_BaseReaderBackend):
         with open(in_path, "r", encoding="utf-8", **kwargs) as yaml_file:
             data = yaml.load(yaml_file, Loader=yaml.FullLoader)
         return data
+
+
+class AudioReader(_BaseReader):
+    def __init__(self, backend="wav", **bk_args):
+        super().__init__(backend="wav", **bk_args)
+
+    def _init_backend(self, bk_type, bk_args):
+        """init backend"""
+        if bk_type == "wav":
+            return WAVReaderBackend(**bk_args)
+        else:
+            raise ValueError("Unsupported backend type")
+
+    def read(self, in_path):
+        audio, audio_sample_rate = self._backend.read_file(str(in_path))
+        return audio, audio_sample_rate
+
+
+class _AudioReaderBackend(_BaseReaderBackend):
+    """_AudioReaderBackend"""
+
+    pass
+
+
+class WAVReaderBackend(_AudioReaderBackend):
+    """PandasCSVReaderBackend"""
+
+    def __init__(self):
+        super().__init__()
+
+    def read_file(self, in_path):
+        """read wav file from path"""
+        audio, audio_sample_rate = soundfile.read(
+            in_path, dtype="float32", always_2d=True
+        )
+        return audio, audio_sample_rate

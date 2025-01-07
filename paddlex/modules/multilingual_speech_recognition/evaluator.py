@@ -12,8 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .base_batch_sampler import BaseBatchSampler
-from .image_batch_sampler import ImageBatchSampler
-from .video_batch_sampler import VideoBatchSampler
-from .ts_batch_sampler import TSBatchSampler
-from .audio_batch_sampler import AudioBatchSampler
+from .model_list import MODELS
+from ..base import BaseEvaluator
+from ...utils.errors import UnsupportedAPIError
+
+
+class WhisperEvaluator(BaseEvaluator):
+    """Instance Whisper Model Evaluator"""
+
+    entities = MODELS
+
+    def __init__(self, config):
+        # not support for now
+        raise UnsupportedAPIError("whisper model not support evaluate for now.")
