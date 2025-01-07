@@ -23,10 +23,10 @@ from pydantic import BaseModel, Field
 from typing_extensions import Annotated, TypeAlias
 
 from ...pipelines_new.components.retrieval.faiss import IndexData
-from .. import utils as serving_utils
-from ..app import AppConfig, create_app, main_operation
-from ..models import ResultResponse
-from ..storage import create_storage
+from .. import _utils as serving_utils
+from .._app import AppConfig, create_app, main_operation
+from .._models import ResultResponse
+from .._storage import create_storage
 
 DEFAULT_INDEX_DIR = ".index"
 

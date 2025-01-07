@@ -24,7 +24,6 @@ from typing import (
     Callable,
     Final,
     List,
-    Literal,
     Optional,
     Tuple,
     TypeVar,
@@ -40,9 +39,9 @@ import numpy as np
 import pandas as pd
 import yarl
 from PIL import Image
-from typing_extensions import ParamSpec, assert_never
+from typing_extensions import Literal, ParamSpec, assert_never
 
-from .models import ImageInfo, PDFInfo, PDFPageInfo
+from ._models import ImageInfo, PDFInfo, PDFPageInfo
 
 FileType = Literal["IMAGE", "PDF"]
 

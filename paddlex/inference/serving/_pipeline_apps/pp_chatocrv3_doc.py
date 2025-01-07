@@ -12,16 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Any, List, Literal, Optional
+from typing import Any, List, Optional, Union
 
 from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel, Field
-from typing_extensions import Annotated, TypeAlias, assert_never
+from pydantic import BaseModel, Discriminator, Field
+from typing_extensions import Annotated, Literal, TypeAlias, assert_never
 
 from ... import results
-from .. import utils as serving_utils
-from ..app import AppConfig, create_app, main_operation
-from ..models import DataInfo, ResultResponse
+from .. import _utils as serving_utils
+from .._app import AppConfig, create_app, main_operation
+from .._models import DataInfo, ResultResponse
 from ._common import ocr as ocr_common
 
 
@@ -85,9 +85,9 @@ class AIStudioParams(BaseModel):
     apiType: Literal["aistudio"] = "aistudio"
 
 
-class LLMParams(BaseModel):
-    qianfan: Optional[QianfanParams] = None
-    aistudio: Optional[AIStudioParams] = None
+LLMParams: TypeAlias = Annotated[
+    Union[QianfanParams, AIStudioParams], Discriminator("apiType")
+]
 
 
 class BuildVectorStoreRequest(BaseModel):
@@ -106,7 +106,7 @@ class RetrieveKnowledgeRequest(BaseModel):
     keys: List[str]
     vectorStore: str
     llmName: Optional[LLMName] = None
-    llmParams: Optional[Annotated[LLMParams, Field(discriminator="apiType")]] = None
+    llmParams: Optional[LLMParams] = None
 
 
 class RetrieveKnowledgeResult(BaseModel):
@@ -122,7 +122,7 @@ class ChatRequest(BaseModel):
     rules: Optional[str] = None
     fewShot: Optional[str] = None
     llmName: Optional[LLMName] = None
-    llmParams: Optional[Annotated[LLMParams, Field(discriminator="apiType")]] = None
+    llmParams: Optional[LLMParams] = None
     returnPrompts: bool = False
 
 

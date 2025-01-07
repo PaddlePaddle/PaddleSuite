@@ -19,8 +19,8 @@ import cv2
 import numpy as np
 from numpy.typing import ArrayLike
 
-from ... import utils as serving_utils
-from ...storage import Storage, SupportsGetURL
+from ... import _utils as serving_utils
+from ..._storage import Storage, SupportsGetURL
 
 
 def postprocess_image(

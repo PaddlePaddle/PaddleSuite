@@ -18,9 +18,9 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 from typing_extensions import Annotated, TypeAlias
 
-from .. import utils as serving_utils
-from ..app import AppConfig, create_app, main_operation
-from ..models import DataInfo, ResultResponse
+from .. import _utils as serving_utils
+from .._app import AppConfig, create_app, main_operation
+from .._models import DataInfo, ResultResponse
 from ._common import cv as cv_common
 from ._common import ocr as ocr_common
 

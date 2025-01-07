@@ -17,7 +17,7 @@ from typing import Any, Dict
 
 from fastapi import FastAPI
 
-from ..app import create_app_config
+from .._app import create_app_config
 
 
 def _pipeline_name_to_mod_name(pipeline_name: str) -> str:

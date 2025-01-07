@@ -12,9 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Generic, List, Literal, Optional, TypeVar, Union
+from typing import Generic, List, TypeVar, Union
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Discriminator
+from typing_extensions import Annotated, Literal, TypeAlias
 
 
 class NoResultResponse(BaseModel):
@@ -33,12 +34,13 @@ class ResultResponse(BaseModel, Generic[ResultT]):
     result: ResultT
 
 
-Response = Union[ResultResponse, NoResultResponse]
+Response: TypeAlias = Union[ResultResponse, NoResultResponse]
 
 
 class ImageInfo(BaseModel):
     width: int
     height: int
+    type: Literal["image"] = "image"
 
 
 class PDFPageInfo(BaseModel):
@@ -49,10 +51,7 @@ class PDFPageInfo(BaseModel):
 class PDFInfo(BaseModel):
     numPages: int
     pages: List[PDFPageInfo]
+    type: Literal["pdf"] = "pdf"
 
 
-class DataInfo(BaseModel):
-    image: Optional[ImageInfo] = None
-    pdf: Optional[PDFInfo] = None
-
-    # TODO: Validate that only one field is set
+DataInfo: TypeAlias = Annotated[Union[ImageInfo, PDFInfo], Discriminator("type")]

@@ -17,9 +17,9 @@ from typing import Any, List, Optional
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 
-from .. import utils as serving_utils
-from ..app import AppConfig, create_app, main_operation
-from ..models import ResultResponse
+from .. import _utils as serving_utils
+from .._app import AppConfig, create_app, main_operation
+from .._models import ResultResponse
 
 
 class InferenceParams(BaseModel):

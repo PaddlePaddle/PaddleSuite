@@ -20,9 +20,9 @@ from fastapi import FastAPI
 from pydantic import BaseModel, Field
 from typing_extensions import Annotated, TypeAlias
 
-from .. import utils as serving_utils
-from ..app import AppConfig, create_app, main_operation
-from ..models import ResultResponse
+from .. import _utils as serving_utils
+from .._app import AppConfig, create_app, main_operation
+from .._models import ResultResponse
 
 
 class InferRequest(BaseModel):

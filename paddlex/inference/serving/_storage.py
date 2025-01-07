@@ -15,13 +15,13 @@
 import abc
 from os import PathLike
 from pathlib import Path
-from typing import Any, Dict, Literal, Optional, Protocol, Union, runtime_checkable
+from typing import Any, Dict, Optional, Protocol, Union, runtime_checkable
 
 from baidubce.auth.bce_credentials import BceCredentials
 from baidubce.bce_client_configuration import BceClientConfiguration
 from baidubce.services.bos.bos_client import BosClient
 from pydantic import BaseModel, Discriminator, SecretStr, TypeAdapter
-from typing_extensions import Annotated, assert_never
+from typing_extensions import Annotated, Literal, assert_never
 
 
 class InMemoryStorageConfig(BaseModel):
@@ -45,7 +45,10 @@ class BOSConfig(BaseModel):
     type: Literal["bos"] = "bos"
 
 
-FileStorageConfig = Union[InMemoryStorageConfig, FileSystemStorageConfig, BOSConfig]
+FileStorageConfig = Annotated[
+    Union[InMemoryStorageConfig, FileSystemStorageConfig, BOSConfig],
+    Discriminator("type"),
+]
 
 
 @runtime_checkable
@@ -148,9 +151,7 @@ class BOS(Storage):
 
 
 def create_storage(dic: Dict[str, Any], /) -> Storage:
-    config = TypeAdapter(
-        Annotated[FileStorageConfig, Discriminator("type")]
-    ).validate_python(dic)
+    config = TypeAdapter(FileStorageConfig).validate_python(dic)
     if config.type == "memory":
         return InMemoryStorage(config)
     elif config.type == "file_system":

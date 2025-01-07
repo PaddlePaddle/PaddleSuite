@@ -13,19 +13,19 @@
 # limitations under the License.
 
 import asyncio
-from typing import Awaitable, Final, List, Literal, Optional, Tuple
+from typing import Awaitable, Final, List, Optional, Tuple, Union
 
 import numpy as np
 from fastapi import HTTPException
 from numpy.typing import ArrayLike
 from pydantic import BaseModel, Field
-from typing_extensions import Annotated, TypeAlias, assert_never
+from typing_extensions import Annotated, Literal, TypeAlias, assert_never
 
 from .....utils import logging
-from ... import utils as serving_utils
-from ...app import AppContext
-from ...models import DataInfo
-from ...storage import SupportsGetURL, create_storage
+from ... import _utils as serving_utils
+from ..._app import AppContext
+from ..._models import ImageInfo, PDFInfo
+from ..._storage import SupportsGetURL, create_storage
 from .cv import postprocess_image
 
 DEFAULT_MAX_NUM_INPUT_IMGS: Final[int] = 10
@@ -89,7 +89,7 @@ def get_file_type(request: InferRequest) -> Literal["IMAGE", "PDF"]:
 
 async def get_images(
     request: InferRequest, app_context: AppContext
-) -> Tuple[List[np.ndarray], DataInfo]:
+) -> Tuple[List[np.ndarray], Union[ImageInfo, PDFInfo]]:
     file_type = get_file_type(request)
     # XXX: Should we return 422?
 
@@ -104,12 +104,7 @@ async def get_images(
         max_num_imgs=app_context.extra["max_num_input_imgs"],
     )
 
-    if file_type == "IMAGE":
-        return images, DataInfo(image=data_info)
-    elif file_type == "PDF":
-        return images, DataInfo(pdf=data_info)
-    else:
-        assert_never()
+    return images, data_info
 
 
 async def postprocess_images(

@@ -40,8 +40,8 @@ from typing_extensions import ParamSpec
 
 from ...utils import logging
 from ..pipelines_new import BasePipeline
-from .models import NoResultResponse
-from .utils import call_async, generate_log_id
+from ._models import NoResultResponse
+from ._utils import call_async, generate_log_id
 
 SERVING_CONFIG_KEY: Final[str] = "Serving"
 
