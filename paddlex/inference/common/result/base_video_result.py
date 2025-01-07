@@ -14,7 +14,6 @@
 
 from .base_result import BaseResult
 from .mixin import StrMixin, JsonMixin, ImgMixin, VideoMixin
-from ...utils.io import VideoReader, VideoWriter
 
 
 class BaseVideoResult(BaseResult, StrMixin, JsonMixin, VideoMixin):

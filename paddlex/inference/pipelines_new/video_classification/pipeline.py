@@ -73,8 +73,4 @@ class VideoClassificationPipeline(BasePipeline):
             TopkVideoResult: The predicted top k results.
         """
 
-        for img_id, batch_data in enumerate(self.batch_sampler(input)):
-            for topk_single_result in self.video_classification_model(
-                batch_data, topk=topk
-            ):
-                yield topk_single_result
+        yield from self.video_classification_model(input, topk=topk)
