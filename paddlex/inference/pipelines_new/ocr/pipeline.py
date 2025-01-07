@@ -267,7 +267,6 @@ class OCRPipeline(BasePipeline):
             dt_polys = self._sort_boxes(dt_polys)
 
             single_img_res = {
-                "input_img": image_array,
                 "doc_preprocessor_image": doc_preprocessor_image,
                 "doc_preprocessor_res": doc_preprocessor_res,
                 "dt_polys": dt_polys,
