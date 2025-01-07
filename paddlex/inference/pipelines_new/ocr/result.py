@@ -99,7 +99,7 @@ class OCRResult(BaseCVResult):
         boxes = self["dt_polys"]
         txts = self["rec_text"]
         scores = self["rec_score"]
-        image = self["input_img"]
+        image = self["doc_preprocessor_image"]
         h, w = image.shape[0:2]
         image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         img_left = Image.fromarray(image_rgb)
