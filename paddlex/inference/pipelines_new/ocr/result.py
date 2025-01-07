@@ -38,9 +38,15 @@ class OCRResult(BaseCVResult):
             *args: Additional positional arguments.
             **kwargs: Additional keyword arguments.
         """
+        input_params = self["input_params"]
+        img_id = self["img_id"]
+        if input_params["use_doc_preprocessor"]:
+            save_img_path = Path(save_path) / f"doc_preprocessor_result_img_{img_id}.jpg"
+            self["doc_preprocessor_res"].save_to_img(save_img_path)
+
         if not str(save_path).lower().endswith((".jpg", ".png")):
-            img_id = self["img_id"]
             save_path = Path(save_path) / f"res_ocr_{img_id}.jpg"
+
         super().save_to_img(save_path, *args, **kwargs)
 
     def get_minarea_rect(self, points: np.ndarray) -> np.ndarray:
@@ -91,7 +97,7 @@ class OCRResult(BaseCVResult):
         boxes = self["dt_polys"]
         txts = self["rec_text"]
         scores = self["rec_score"]
-        image = self["input_img"]
+        image = self["doc_preprocessor_image"]
         h, w = image.shape[0:2]
         image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         img_left = Image.fromarray(image_rgb)

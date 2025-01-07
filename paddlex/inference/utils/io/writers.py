@@ -19,7 +19,6 @@ import json
 from pathlib import Path
 
 import cv2
-import decord
 import numpy as np
 from PIL import Image
 import pandas as pd

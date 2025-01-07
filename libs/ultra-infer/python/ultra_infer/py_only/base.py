@@ -38,6 +38,9 @@ class PyOnlyUltraInferModel(BaseUltraInferModel):
     def num_outputs_of_runtime(self):
         return self._runtime.num_outputs()
 
+    def get_profile_time(self):
+        return self._runtime.get_profile_time()
+
     def _update_option(self):
         pass
 
