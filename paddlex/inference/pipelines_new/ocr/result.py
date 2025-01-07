@@ -40,8 +40,11 @@ class OCRResult(BaseCVResult):
             *args: Additional positional arguments.
             **kwargs: Additional keyword arguments.
         """
+
         input_params = self["input_params"]
         img_id = self["img_id"]
+
+        # TODO : Support determining the output name based on the input name.
         if input_params["use_doc_preprocessor"]:
             save_img_path = (
                 Path(save_path) / f"doc_preprocessor_result_img_{img_id}.jpg"
@@ -73,6 +76,11 @@ class OCRResult(BaseCVResult):
             **kwargs: Additional keyword arguments to pass to the underlying writer.
         """
         img_id = self["img_id"]
+
+        # TODO : Support determining the output name based on the input name.
+        os.makedirs(save_path, exist_ok=True)
+        save_path = os.path.join(save_path, 'res.json')
+
         base_name, ext = os.path.splitext(save_path)
         save_path = f"{base_name}_{img_id}{ext}"
 

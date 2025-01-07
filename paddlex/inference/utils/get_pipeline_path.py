@@ -19,7 +19,9 @@ from pathlib import Path
 def get_pipeline_path(pipeline_name):
     # XXX: using dict class to handle all pipeline configs
     pipeline_path = (
-        Path(__file__).parent.parent.parent / "pipelines" / f"{pipeline_name}.yaml"
+        Path(__file__).parent.parent.parent
+        / "configs/pipelines"
+        / f"{pipeline_name}.yaml"
     ).resolve()
     if not Path(pipeline_path).exists():
         return None
