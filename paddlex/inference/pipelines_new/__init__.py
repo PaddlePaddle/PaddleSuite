@@ -28,6 +28,7 @@ from .seal_recognition import SealRecognitionPipeline
 from .table_recognition import TableRecognitionPipeline
 from .multilingual_speech_recognition import MultilingualSpeechRecognitionPipeline
 from .formula_recognition import FormulaRecognitionPipeline
+from .image_multilabel_classification import ImageMultiLabelClassificationPipeline
 from .video_classification import VideoClassificationPipeline
 from .anomaly_detection import AnomalyDetectionPipeline
 from .ts_forecasting import TSFcPipeline
