@@ -12,8 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import os
-import sys
+import os, sys
+from typing import Any, Dict, Optional, List
 import cv2
 import PIL
 import fitz
@@ -29,7 +29,6 @@ from ...common.result import BaseCVResult
 from ....utils import logging
 from ....utils.fonts import PINGFANG_FONT_FILE_PATH
 from ....utils.file_interface import custom_open
-from typing import Any, Dict, Optional, List
 
 
 class FormulaRecResult(BaseCVResult):

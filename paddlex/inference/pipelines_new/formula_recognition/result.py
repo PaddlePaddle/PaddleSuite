@@ -12,8 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import os
-import sys
+import os, sys
+from typing import Tuple
 import cv2
 import PIL
 import math
@@ -37,7 +37,6 @@ from ...models_new.formula_recognition.result import (
     crop_white_area,
     draw_box_txt_fine,
 )
-from typing import Tuple
 
 
 class FormulaRecognitionResult(dict):
