@@ -131,20 +131,12 @@ class FaissIndexer:
     def __init__(
         self,
         index,
-        return_k=1,
-        score_thres=None,
-        hamming_radius=None,
     ):
         super().__init__()
         self._indexer, self.id_map, self.metric_type, index_type = IndexData.load(index)
-        self.return_k = return_k
-        if self.metric_type in FaissBuilder.BINARY_METRIC_TYPE:
-            self.hamming_radius = hamming_radius
-        else:
-            self.score_thres = score_thres
 
-    def __call__(self, feature):
-        scores_list, ids_list = self._indexer.search(np.array(feature), self.return_k)
+    def __call__(self, feature, score_thres, hamming_radius, topk):
+        scores_list, ids_list = self._indexer.search(np.array(feature), topk)
         preds = []
         for scores, ids in zip(scores_list, ids_list):
             labels = []
@@ -154,9 +146,9 @@ class FaissIndexer:
             preds.append({"score": scores, "label": labels})
 
         if self.metric_type in FaissBuilder.BINARY_METRIC_TYPE:
-            idxs = np.where(scores_list[:, 0] > self.hamming_radius)[0]
+            idxs = np.where(scores_list[:, 0] > hamming_radius)[0]
         else:
-            idxs = np.where(scores_list[:, 0] < self.score_thres)[0]
+            idxs = np.where(scores_list[:, 0] < score_thres)[0]
         for idx in idxs:
             preds[idx] = {"score": None, "label": None}
         return preds

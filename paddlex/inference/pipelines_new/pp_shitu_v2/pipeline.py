@@ -43,43 +43,42 @@ class ShiTuV2Pipeline(BasePipeline):
             device=device, pp_option=pp_option, use_hpip=use_hpip, hpi_params=hpi_params
         )
 
-        self.det_model = self.create_model(config["SubModules"]["Detection"])
-        self.rec_model = self.create_model(config["SubModules"]["Recognition"])
-        self._crop_by_boxes = CropByBoxes()
-        self._img_reader = ReadImage(format="BGR")
-
-        self._return_k, self._score_thres, self._hamming_radius = (
-            config["return_k"],
-            config.get("score_thres", None),
+        self._topk, self._rec_threshold, self._hamming_radius, self._det_threshold = (
+            config.get("topk", 5),
+            config.get("rec_threshold", 0.5),
             config.get("hamming_radius", None),
+            config.get("det_threshold", 0.5),
         )
         index = config.get("index", None)
-        self._indexer = self._build_indexer(index=index) if index else None
 
+        self.img_reader = ReadImage(format="BGR")
+        self.det_model = self.create_model(config["SubModules"]["Detection"])
+        self.rec_model = self.create_model(config["SubModules"]["Recognition"])
+        self.crop_by_boxes = CropByBoxes()
+        self.indexer = self._build_indexer(index=index) if index else None
         self.batch_sampler = ImageBatchSampler(
             batch_size=self.det_model.batch_sampler.batch_size
         )
-        self.img_reader = ReadImage(format="BGR")
-
-    def _build_indexer(self, index):
-        return FaissIndexer(
-            index=index,
-            return_k=self._return_k,
-            score_thres=self._score_thres,
-            hamming_radius=self._hamming_radius,
-        )
 
     def predict(self, input, index=None, **kwargs):
-        indexer = self._build_indexer(index) if index is not None else self._indexer
+        indexer = FaissIndexer(index) if index is not None else self.indexer
         assert indexer
+        topk = kwargs.get("topk", self._topk)
+        rec_threshold = kwargs.get("rec_threshold", self._rec_threshold)
+        hamming_radius = kwargs.get("hamming_radius", self._hamming_radius)
+        det_threshold = kwargs.get("det_threshold", self._det_threshold)
         for img_id, batch_data in enumerate(self.batch_sampler(input)):
             raw_imgs = self.img_reader(batch_data)
-            all_det_res = list(self.det_model(raw_imgs))
+            all_det_res = list(self.det_model(raw_imgs, threshold=det_threshold))
             for input_data, raw_img, det_res in zip(batch_data, raw_imgs, all_det_res):
-                rec_res = self.get_rec_result(raw_img, det_res, indexer)
+                rec_res = self.get_rec_result(
+                    raw_img, det_res, indexer, rec_threshold, hamming_radius, topk
+                )
                 yield self.get_final_result(input_data, raw_img, det_res, rec_res)
 
-    def get_rec_result(self, raw_img, det_res, indexer):
+    def get_rec_result(
+        self, raw_img, det_res, indexer, rec_threshold, hamming_radius, topk
+    ):
         if len(det_res["boxes"]) == 0:
             w, h = raw_img.shape[:2]
             det_res["boxes"].append(
@@ -90,10 +89,15 @@ class ShiTuV2Pipeline(BasePipeline):
                     "coordinate": [0, 0, h, w],
                 }
             )
-        subs_of_img = list(self._crop_by_boxes(raw_img, det_res["boxes"]))
+        subs_of_img = list(self.crop_by_boxes(raw_img, det_res["boxes"]))
         img_list = [img["img"] for img in subs_of_img]
         all_rec_res = list(self.rec_model(img_list))
-        all_rec_res = indexer([rec_res["feature"] for rec_res in all_rec_res])
+        all_rec_res = indexer(
+            [rec_res["feature"] for rec_res in all_rec_res],
+            score_thres=rec_threshold,
+            hamming_radius=hamming_radius,
+            topk=topk,
+        )
         output = {"label": [], "score": []}
         for res in all_rec_res:
             output["label"].append(res["label"])

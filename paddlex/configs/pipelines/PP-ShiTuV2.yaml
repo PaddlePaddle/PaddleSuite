@@ -1,8 +1,9 @@
 pipeline_name: PP-ShiTuV2
 
 index: None
-score_thres: 0.5
-return_k: 5
+det_threshold: 0.5
+rec_threshold: 0.5
+rec_topk: 5
 
 SubModules:
   Detection:
