@@ -234,7 +234,6 @@ class FormulaRecognitionPipeline(BasePipeline):
             else:
                 if input_params["use_layout_detection"]:
                     layout_det_res = next(self.layout_det_model(doc_preprocessor_image))
-                # print("layout det res", layout_det_res)
                 for box_info in layout_det_res["boxes"]:
                     if box_info["label"].lower() in ["formula"]:
                         crop_img_info = self._crop_by_boxes(image_array, [box_info])
