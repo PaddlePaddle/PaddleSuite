@@ -68,14 +68,6 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
 
         log_id = serving_utils.generate_log_id()
 
-        if request.inferenceParams:
-            max_long_side = request.inferenceParams.maxLongSide
-            if max_long_side:
-                raise HTTPException(
-                    status_code=422,
-                    detail="`max_long_side` is currently not supported.",
-                )
-
         images, data_info = await ocr_common.get_images(request, ctx)
 
         result = await pipeline.infer(images)

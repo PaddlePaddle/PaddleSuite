@@ -26,7 +26,7 @@ from ... import _utils as serving_utils
 from ..._app import AppContext
 from ..._models import ImageInfo, PDFInfo
 from ..._storage import SupportsGetURL, create_storage
-from .cv import postprocess_image
+from .image import postprocess_image
 
 DEFAULT_MAX_NUM_INPUT_IMGS: Final[int] = 10
 DEFAULT_MAX_OUTPUT_IMG_SIZE: Final[Tuple[int, int]] = (2000, 2000)
@@ -67,19 +67,16 @@ def update_app_context(app_context: AppContext) -> None:
     )
 
 
-def get_file_type(request: InferRequest) -> Literal["IMAGE", "PDF"]:
+def get_file_type(request: InferRequest) -> Literal["PDF", "IMAGE"]:
     if request.fileType is None:
         if serving_utils.is_url(request.file):
-            try:
-                file_type = serving_utils.infer_file_type(request.file)
-            except Exception:
-                logging.exception("Failed to infer the file type")
-                raise HTTPException(
-                    status_code=422,
-                    detail="The file type cannot be inferred from the URL. Please specify the file type explicitly.",
-                )
+            file_type = serving_utils.infer_file_type(request.file)
+            if file_type not in ("PDF", "IMAGE"):
+                raise HTTPException(status_code=422, detail="Unsupported file type")
         else:
-            raise HTTPException(status_code=422, detail="Unknown file type")
+            raise HTTPException(
+                status_code=422, detail="File type cannot be determined"
+            )
     else:
         file_type = "PDF" if request.fileType == 0 else "IMAGE"
 

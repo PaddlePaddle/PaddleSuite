@@ -22,7 +22,7 @@ from ....utils import logging
 from .. import _utils as serving_utils
 from .._app import AppConfig, create_app, main_operation
 from .._models import DataInfo, ResultResponse
-from ._common import cv as cv_common
+from ._common import image as image_common
 from ._common import ocr as ocr_common
 
 
@@ -110,7 +110,7 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
                 if label in ("image", "figure", "img", "fig"):
                     text = subitem[label]["image_text"]
                     image = await serving_utils.call_async(
-                        cv_common.postprocess_image,
+                        image_common.postprocess_image,
                         subitem[label]["img"],
                         log_id=log_id,
                         filename=f"image_{i}_{j}.jpg",

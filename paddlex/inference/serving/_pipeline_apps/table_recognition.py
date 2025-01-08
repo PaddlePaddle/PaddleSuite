@@ -14,7 +14,7 @@
 
 from typing import Any, List, Type
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI
 from pydantic import BaseModel, Field
 from typing_extensions import Annotated, TypeAlias
 
@@ -62,14 +62,6 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
         pipeline = ctx.pipeline
 
         log_id = serving_utils.generate_log_id()
-
-        if request.inferenceParams:
-            max_long_side = request.inferenceParams.maxLongSide
-            if max_long_side:
-                raise HTTPException(
-                    status_code=422,
-                    detail="`max_long_side` is currently not supported.",
-                )
 
         images, data_info = await ocr_common.get_images(request, ctx)
 

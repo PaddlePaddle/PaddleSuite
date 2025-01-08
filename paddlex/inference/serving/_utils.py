@@ -15,14 +15,13 @@
 import asyncio
 import base64
 import io
-import os
-import re
+import mimetypes
+import tempfile
 import uuid
 from functools import partial
 from typing import (
     Awaitable,
     Callable,
-    Final,
     List,
     Optional,
     Tuple,
@@ -30,20 +29,21 @@ from typing import (
     Union,
     overload,
 )
-from urllib.parse import parse_qs, urlparse
+from urllib.parse import urlparse
 
 import aiohttp
 import cv2
+import filetype
 import fitz
 import numpy as np
 import pandas as pd
 import yarl
 from PIL import Image
-from typing_extensions import Literal, ParamSpec, assert_never
+from typing_extensions import Literal, ParamSpec, TypeAlias, assert_never
 
 from ._models import ImageInfo, PDFInfo, PDFPageInfo
 
-FileType = Literal["IMAGE", "PDF"]
+FileType: TypeAlias = Literal["IMAGE", "PDF", "VIDEO", "AUDIO"]
 
 _P = ParamSpec("_P")
 _R = TypeVar("_R")
@@ -68,48 +68,32 @@ def is_url(s: str) -> bool:
     return all([result.scheme, result.netloc]) and result.scheme in ("http", "https")
 
 
-def infer_file_type(url: str) -> FileType:
-    # Is it more reliable to guess the file type based on the response headers?
-    SUPPORTED_IMG_EXTS: Final[List[str]] = [".jpg", ".jpeg", ".png"]
-
+def infer_file_type(url: str) -> Optional[FileType]:
     url_parts = urlparse(url)
-    ext = os.path.splitext(url_parts.path)[1]
-    # HACK: The support for BOS URLs with query params is implementation-based,
-    # not interface-based.
-    is_bos_url = (
-        re.fullmatch(r"(?:bj|bd|su|gz|cd|hkg|fwh|fsh)\.bcebos\.com", url_parts.netloc)
-        is not None
-    )
-    if is_bos_url and url_parts.query:
-        params = parse_qs(url_parts.query)
-        if (
-            "responseContentDisposition" not in params
-            or len(params["responseContentDisposition"]) != 1
-        ):
-            raise ValueError("`responseContentDisposition` not found")
-        match_ = re.match(
-            r"attachment;filename=(.*)", params["responseContentDisposition"][0]
-        )
-        if not match_ or not match_.groups()[0] is not None:
-            raise ValueError(
-                "Failed to extract the filename from `responseContentDisposition`"
-            )
-        ext = os.path.splitext(match_.groups()[0])[1]
-    ext = ext.lower()
-    if ext == ".pdf":
-        return "PDF"
-    elif ext in SUPPORTED_IMG_EXTS:
+    filename = url_parts.path.split("/")[-1]
+
+    file_type = mimetypes.guess_type(filename)[0]
+
+    if file_type.startswith("image/"):
         return "IMAGE"
+    elif file_type == "application/pdf":
+        return "PDF"
+    elif file_type.startswith("video/"):
+        return "VIDEO"
+    elif file_type.startswith("audio/"):
+        return "AUDIO"
     else:
-        raise ValueError("Unsupported file type")
+        return None
 
 
-async def get_raw_bytes(file: str, session: aiohttp.ClientSession) -> bytes:
+def infer_file_ext(file: str) -> Optional[str]:
     if is_url(file):
-        async with session.get(yarl.URL(file, encoded=True)) as resp:
-            return await resp.read()
+        url_parts = urlparse(file)
+        filename = url_parts.path.split("/")[-1]
+        return mimetypes.guess_extension(mimetypes.guess_type(filename)[0])
     else:
-        return base64.b64decode(file)
+        bytes_ = base64.b64decode(file)
+        return filetype.guess_extension(bytes_)
 
 
 def image_bytes_to_array(data: bytes) -> np.ndarray:
@@ -138,7 +122,7 @@ def csv_bytes_to_data_frame(data: bytes) -> pd.DataFrame:
     return df
 
 
-def data_frame_to_bytes(df: str) -> str:
+def data_frame_to_bytes(df: pd.DataFrame) -> str:
     return df.to_csv().encode("utf-8")
 
 
@@ -213,6 +197,20 @@ def file_to_images(
 
 def get_image_info(image: np.ndarray) -> ImageInfo:
     return ImageInfo(width=image.shape[1], height=image.shape[0])
+
+
+def write_to_temp_file(file_bytes: bytes, suffix: str) -> str:
+    with tempfile.NamedTemporaryFile("wb", suffix=suffix, delete=False) as f:
+        f.write(file_bytes)
+        return f.name
+
+
+async def get_raw_bytes(file: str, session: aiohttp.ClientSession) -> bytes:
+    if is_url(file):
+        async with session.get(yarl.URL(file, encoded=True)) as resp:
+            return await resp.read()
+    else:
+        return base64.b64decode(file)
 
 
 def call_async(
