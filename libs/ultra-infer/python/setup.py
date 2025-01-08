@@ -23,7 +23,7 @@ import os
 TOP_DIR = os.path.realpath(os.path.dirname(__file__))
 TOP_DIR = os.path.split(TOP_DIR)[0]
 PACKAGE_NAME = os.getenv("PACKAGE_NAME", "ultra_infer")
-wheel_name = os.getenv("WHEEL_NAME", "ultra_infer-python")
+wheel_name = os.getenv("WHEEL_NAME", "ultra-infer-python")
 
 if not os.path.exists(PACKAGE_NAME):
     shutil.copytree("ultra_infer", PACKAGE_NAME)
@@ -118,11 +118,11 @@ setup_configs["BUILD_PADDLE2ONNX"] = os.getenv("BUILD_PADDLE2ONNX", "OFF")
 if setup_configs["RKNN2_TARGET_SOC"] != "" or setup_configs["BUILD_ON_JETSON"] != "OFF":
     REQUIRED_PACKAGES = REQUIRED_PACKAGES.replace("opencv-python", "")
 
-if wheel_name == "ultra_infer-python":
+if wheel_name == "ultra-infer-python":
     if setup_configs["WITH_GPU"] == "ON" or setup_configs["BUILD_ON_JETSON"] == "ON":
-        wheel_name = "ultra_infer-gpu-python"
+        wheel_name = "ultra-infer-gpu-python"
     elif setup_configs["WITH_IPU"] == "ON":
-        wheel_name = "ultra_infer-ipu-python"
+        wheel_name = "ultra-infer-ipu-python"
 
 if os.getenv("CMAKE_CXX_COMPILER", None) is not None:
     setup_configs["CMAKE_CXX_COMPILER"] = os.getenv("CMAKE_CXX_COMPILER")

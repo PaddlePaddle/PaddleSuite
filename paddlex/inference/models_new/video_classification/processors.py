@@ -115,10 +115,9 @@ class Scale:
                         if self.do_round
                         else int(w * self.short_size / h)
                     )
-            if self.keep_ratio is not None:
-                resized_imgs.append(
-                    cv2.resize(img, (ow, oh), interpolation=cv2.INTER_LINEAR)
-                )
+            resized_imgs.append(
+                cv2.resize(img, (ow, oh), interpolation=cv2.INTER_LINEAR)
+            )
         imgs = resized_imgs
         return imgs
 
@@ -348,9 +347,9 @@ class VideoClasTopk:
         Returns:
             np.ndarray: The softmax-transformed data.
         """
-        exp_data = np.exp(data - np.max(data))
-        softmax_data = exp_data / np.sum(exp_data)
-        return softmax_data
+        x_max = np.max(data, axis=-1, keepdims=True)
+        e_x = np.exp(data - x_max)
+        return e_x / np.sum(e_x, axis=-1, keepdims=True)
 
     def _parse_class_id_map(
         self, class_ids: Optional[Sequence[Union[str, int]]]
@@ -385,10 +384,25 @@ class VideoClasTopk:
                 - A list of arrays of scores for the top-k predictions.
                 - A list of lists of label names for the top-k predictions.
         """
-        preds = self.softmax(preds)
+        preds[0] = self.softmax(preds[0])
         indexes = preds[0].argsort(axis=1)[:, -topk:][:, ::-1].astype("int32")
         scores = [
             np.around(pred[index], decimals=5) for pred, index in zip(preds[0], indexes)
         ]
         label_names = [[self.class_id_map[i] for i in index] for index in indexes]
         return indexes, scores, label_names
+
+
+class ToBatch:
+    """A class for batching videos."""
+
+    def __call__(self, videos: List[np.ndarray]) -> List[np.ndarray]:
+        """Call method to stack videos into a batch.
+
+        Args:
+            videos (list of np.ndarrays): List of videos to process.
+
+        Returns:
+            list of np.ndarrays: List containing a stacked tensor of the videos.
+        """
+        return [np.concatenate(videos, axis=0).astype(dtype=np.float32, copy=False)]

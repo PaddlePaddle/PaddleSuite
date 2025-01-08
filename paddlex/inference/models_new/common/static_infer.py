@@ -110,8 +110,18 @@ class StaticInfer:
         """_create"""
         from lazy_paddle.inference import Config, create_predictor
 
-        model_postfix = ".json" if FLAGS_json_format_model else ".pdmodel"
-        model_file = (self.model_dir / f"{self.model_prefix}{model_postfix}").as_posix()
+        if FLAGS_json_format_model:
+            model_file = (self.model_dir / f"{self.model_prefix}.json").as_posix()
+        # when FLAGS_json_format_model is not set, use inference.json if exist, otherwise inference.pdmodel
+        else:
+            model_file = self.model_dir / f"{self.model_prefix}.json"
+            if model_file.exists():
+                model_file = model_file.as_posix()
+            # default by `pdmodel` suffix
+            else:
+                model_file = (
+                    self.model_dir / f"{self.model_prefix}.pdmodel"
+                ).as_posix()
         params_file = (self.model_dir / f"{self.model_prefix}.pdiparams").as_posix()
         config = Config(model_file, params_file)
 

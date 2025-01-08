@@ -23,7 +23,7 @@ export TZ='Asia/Shanghai'
 export CC=/usr/local/gcc-8.2/bin/gcc
 export CXX=/usr/local/gcc-8.2/bin/g++
 
-cd /workspace/ultra_infer
+cd /workspace/ultra-infer
 
 wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.cloud.tencent.com/repo/centos7_base.repo
 yum clean all
@@ -42,7 +42,7 @@ http_proxy= https_proxy= wget "https://fastdeploy.bj.bcebos.com/resource/TensorR
 tar -xzvf "TensorRT-${TRT_VERSION}.Linux.x86_64-gnu.cuda-${CUDA_VERSION}.cudnn${CUDNN_VERSION}.tar.gz"
 
 (
-    cd /workspace/ultra_infer
+    cd /workspace/ultra-infer
     rm -rf build && mkdir build && cd build
     unset http_proxy https_proxy
     cmake \
@@ -50,7 +50,7 @@ tar -xzvf "TensorRT-${TRT_VERSION}.Linux.x86_64-gnu.cuda-${CUDA_VERSION}.cudnn${
         -DCMAKE_INSTALL_PREFIX="${PWD}/ultra_infer_install" \
         -DWITH_GPU="${WITH_GPU}" \
         -DENABLE_TRT_BACKEND="${WITH_GPU}" \
-        -DTRT_DIRECTORY="/workspace/ultra_infer/TensorRT-${TRT_VERSION}" \
+        -DTRT_DIRECTORY="/workspace/ultra-infer/TensorRT-${TRT_VERSION}" \
         -DENABLE_ORT_BACKEND=ON \
         -DENABLE_PADDLE_BACKEND=ON \
         -DPADDLEINFERENCE_URL="${PADDLEINFERENCE_URL}" \
