@@ -940,3 +940,35 @@ register_model_info(
         },
     }
 )
+
+register_model_info(
+    {
+        "model_name": "RT-DETR-L_wired_table_cell_det",
+        "suite": "Det",
+        "config_path": osp.join(PDX_CONFIG_DIR, "RT-DETR-L_wired_table_cell_det.yaml"),
+        "supported_apis": ["train", "evaluate", "predict", "export", "infer"],
+        "supported_dataset_types": ["COCODetDataset"],
+        "supported_train_opts": {
+            "device": ["cpu", "gpu_nxcx", "xpu", "npu", "mlu"],
+            "dy2st": False,
+            "amp": ["OFF"],
+        },
+    }
+)
+
+register_model_info(
+    {
+        "model_name": "RT-DETR-L_wireless_table_cell_det",
+        "suite": "Det",
+        "config_path": osp.join(
+            PDX_CONFIG_DIR, "RT-DETR-L_wireless_table_cell_det.yaml"
+        ),
+        "supported_apis": ["train", "evaluate", "predict", "export", "infer"],
+        "supported_dataset_types": ["COCODetDataset"],
+        "supported_train_opts": {
+            "device": ["cpu", "gpu_nxcx", "xpu", "npu", "mlu"],
+            "dy2st": False,
+            "amp": ["OFF"],
+        },
+    }
+)
