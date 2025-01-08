@@ -16,15 +16,28 @@ from paddlex import create_pipeline
 
 pipeline = create_pipeline(pipeline="formula_recognition")
 
-# output = pipeline.predict(
-#     "/paddle/code/paddlex_pr_2025_1_3/test_img/upload_img/general_formula_recognition01.png", use_layout_detection=True
-# )
-
 output = pipeline.predict(
-    "/paddle/code/paddlex_pr_2025_1_3/test_img/upload_img/general_formula_recognition01.pdf",
-    use_layout_detection=True,
+    "./test_samples/general_formula_recognition01.png", use_layout_detection=True
 )
 
+# output = pipeline.predict(
+#     "./test_samples/general_formula_recognition01.pdf",
+#     use_layout_detection=True,
+# )
+
+# output = pipeline.predict(
+#     "./test_samples/general_formula_recognition02.png",
+#     use_layout_detection=False,
+# )
+
+# img_list = [ "./test_samples/general_formula_recognition03.png", \
+#     "./test_samples/general_formula_recognition04.png", \
+#         "./test_samples/general_formula_recognition05.png",]
+# output = pipeline.predict(
+#     img_list,
+#     use_layout_detection=True,
+# )
+
 for res in output:
-    res.save_to_img("./output/")
-    # res.save_results("./output")
+    # res.save_to_img("./output/")
+    res.save_results("./output")

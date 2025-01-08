@@ -20,8 +20,10 @@ from ..base import BasePipeline
 from ..components import CropByBoxes
 from ..layout_parsing.utils import convert_points_to_boxes
 
-# from .formula_recognition_post_processing import get_formula_recognition_res
-from .result import SingleFormulaRecognitionResult, FormulaRecognitionResult
+from .result import FormulaRecognitionResult
+from ...models_new.formula_recognition.result import (
+    FormulaRecResult as SingleFormulaRecognitionResult,
+)
 from ....utils import logging
 from ...utils.pp_option import PaddlePredictorOption
 from ...common.reader import ReadImage
@@ -174,7 +176,6 @@ class FormulaRecognitionPipeline(BasePipeline):
         use_layout_detection: bool = True,
         use_doc_orientation_classify: bool = False,
         use_doc_unwarping: bool = False,
-        overall_ocr_res: OCRResult = None,
         layout_det_res: DetResult = None,
         **kwargs
     ) -> FormulaRecognitionResult:
@@ -186,8 +187,6 @@ class FormulaRecognitionPipeline(BasePipeline):
             use_layout_detection (bool): Whether to use layout detection.
             use_doc_orientation_classify (bool): Whether to use document orientation classification.
             use_doc_unwarping (bool): Whether to use document unwarping.
-            overall_ocr_res (OCRResult): The overall OCR result with convert_points_to_boxes information.
-                It will be used if it is not None and use_ocr_model is False.
             layout_det_res (DetResult): The layout detection result.
                 It will be used if it is not None and use_layout_detection is False.
             **kwargs: Additional keyword arguments.
@@ -213,6 +212,7 @@ class FormulaRecognitionPipeline(BasePipeline):
 
         for img_id, batch_data in enumerate(self.batch_sampler(input)):
             image_array = self.img_reader(batch_data)[0]
+            input_path = batch_data[0]
             img_id += 1
 
             doc_preprocessor_res, doc_preprocessor_image = (
@@ -234,6 +234,7 @@ class FormulaRecognitionPipeline(BasePipeline):
             else:
                 if input_params["use_layout_detection"]:
                     layout_det_res = next(self.layout_det_model(doc_preprocessor_image))
+                # print("layout det res", layout_det_res)
                 for box_info in layout_det_res["boxes"]:
                     if box_info["label"].lower() in ["formula"]:
                         crop_img_info = self._crop_by_boxes(image_array, [box_info])
@@ -254,5 +255,6 @@ class FormulaRecognitionPipeline(BasePipeline):
                 "formula_res_list": formula_res_list,
                 "input_params": input_params,
                 "img_id": img_id,
+                "img_name": input_path,
             }
             yield FormulaRecognitionResult(single_img_res)
