@@ -26,6 +26,10 @@ from .image_classification import ImageClassificationPipeline
 from .seal_recognition import SealRecognitionPipeline
 from .table_recognition import TableRecognitionPipeline
 from .video_classification import VideoClassificationPipeline
+from .anomaly_detection import AnomalyDetectionPipeline
+from .ts_forecasting import TSFcPipeline
+from .ts_anomaly_detection import TSAnomalyDetPipeline
+from .ts_classification import TSClsPipeline
 
 
 def get_pipeline_path(pipeline_name: str) -> str:
