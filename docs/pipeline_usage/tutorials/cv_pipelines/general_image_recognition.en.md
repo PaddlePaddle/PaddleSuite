@@ -535,7 +535,7 @@ Below are the API reference and multi-language service invocation examples for t
 <td><code>indexKey</code></td>
 <td><code>string</code></td>
 <td>The key corresponding to the index. Provided by the <code>buildIndex</code> operation.</td>
-<td>Yes</td>
+<td>No</td>
 </tr>
 </tbody>
 </table>
@@ -608,7 +608,7 @@ Below are the API reference and multi-language service invocation examples for t
 <td><code>indexKey</code></td>
 <td><code>string</code></td>
 <td>The key corresponding to the index. Provided by the <code>buildIndex</code> operation.</td>
-<td>Yes</td>
+<td>No</td>
 </tr>
 </tbody>
 </table>

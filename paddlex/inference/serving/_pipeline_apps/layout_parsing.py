@@ -26,10 +26,15 @@ from ._common import cv as cv_common
 from ._common import ocr as ocr_common
 
 
+class InferenceParams(BaseModel):
+    maxLongSide: Optional[Annotated[int, Field(gt=0)]] = None
+
+
 class InferRequest(ocr_common.InferRequest):
-    useImgOrientationCls: bool = True
-    useImgUnwarping: bool = True
-    useSealTextDet: bool = True
+    useGeneralOcr: bool = True
+    useSealRecognition: bool = True
+    useTableRecognition: bool = True
+    inferenceParams: Optional[InferenceParams] = None
 
 
 BoundingBox: TypeAlias = Annotated[List[float], Field(min_length=4, max_length=4)]

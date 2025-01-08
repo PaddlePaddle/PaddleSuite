@@ -27,7 +27,7 @@ def _pipeline_name_to_mod_name(pipeline_name: str) -> str:
 # XXX: A dynamic approach is used here for writing fewer lines of code, at the
 # cost of sacrificing some benefits of type hints.
 def create_pipeline_app(pipeline: Any, pipeline_config: Dict[str, Any]) -> FastAPI:
-    pipeline_name = pipeline_config["Global"]["pipeline_name"]
+    pipeline_name = pipeline_config["pipeline_name"]
     mod_name = _pipeline_name_to_mod_name(pipeline_name)
     mod = importlib.import_module(f".{mod_name}", package=__package__)
     app_config = create_app_config(pipeline_config)

@@ -18,8 +18,8 @@ from typing import Awaitable, Final, List, Optional, Tuple, Union
 import numpy as np
 from fastapi import HTTPException
 from numpy.typing import ArrayLike
-from pydantic import BaseModel, Field
-from typing_extensions import Annotated, Literal, TypeAlias, assert_never
+from pydantic import BaseModel
+from typing_extensions import Literal, TypeAlias
 
 from .....utils import logging
 from ... import _utils as serving_utils
@@ -34,14 +34,13 @@ DEFAULT_MAX_OUTPUT_IMG_SIZE: Final[Tuple[int, int]] = (2000, 2000)
 FileType: TypeAlias = Literal[0, 1]
 
 
-class InferenceParams(BaseModel):
-    maxLongSide: Optional[Annotated[int, Field(gt=0)]] = None
-
-
 class InferRequest(BaseModel):
     file: str
     fileType: Optional[FileType] = None
-    inferenceParams: Optional[InferenceParams] = None
+    # Should it be "Classification" instead of "Classify"? Keep the names
+    # consistent with the parameters of the wrapped function though.
+    useDocOrientationClassify: bool = False
+    useDocUnwarping: bool = False
 
 
 def update_app_context(app_context: AppContext) -> None:

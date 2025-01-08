@@ -12,9 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Any, List, Type
+from typing import Any, List, Optional
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI
 from pydantic import BaseModel, Field
 from typing_extensions import Annotated, TypeAlias
 
@@ -24,7 +24,14 @@ from .._models import DataInfo, ResultResponse
 from ._common import cv as cv_common
 from ._common import ocr as ocr_common
 
-InferRequest: Type[ocr_common.InferRequest] = ocr_common.InferRequest
+
+class InferenceParams(BaseModel):
+    maxLongSide: Optional[Annotated[int, Field(gt=0)]] = None
+
+
+class InferRequest(ocr_common.InferRequest):
+    useTextLineOrientation: Optional[bool] = False
+    inferenceParams: Optional[InferenceParams] = None
 
 
 Point: TypeAlias = Annotated[List[int], Field(min_length=2, max_length=2)]
@@ -67,14 +74,16 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
         if request.inferenceParams:
             max_long_side = request.inferenceParams.maxLongSide
             if max_long_side:
-                raise HTTPException(
-                    status_code=422,
-                    detail="`max_long_side` is currently not supported.",
-                )
+                ...
 
         images, data_info = await ocr_common.get_images(request, ctx)
 
-        result = await pipeline.infer(images)
+        result = await pipeline.infer(
+            images,
+            use_textline_orientation=request.useTextLineOrientation,
+            use_doc_orientation_classify=request.useDocOrientationClassify,
+            use_doc_unwarping=request.useDocUnwarping,
+        )
 
         ocr_results: List[OCRResult] = []
         for i, item in enumerate(result):

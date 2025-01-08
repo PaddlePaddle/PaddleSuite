@@ -652,31 +652,6 @@ Below are the API reference and multi-language service invocation examples for t
 <td>Whether to enable seal text detection. This function is enabled by default.</td>
 <td>No</td>
 </tr>
-<tr>
-<td><code>inferenceParams</code></td>
-<td><code>object</code></td>
-<td>Inference parameters.</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
-<p>properties of <code>inferenceParams</code>:</p>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-<th>Required</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>maxLongSide</code></td>
-<td><code>integer</code></td>
-<td>During inference, if the length of the longer side of the input image for the text detection model is greater than <code>maxLongSide</code>, the image will be scaled so that the length of the longer side equals <code>maxLongSide</code>.</td>
-<td>No</td>
-</tr>
 </tbody>
 </table>
 <ul>

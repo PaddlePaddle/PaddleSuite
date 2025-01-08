@@ -47,7 +47,7 @@ class BuildIndexResult(BaseModel):
 
 class AddImagesToIndexRequest(BaseModel):
     imageLabelPairs: List[ImageLabelPair]
-    indexKey: str
+    indexKey: Optional[str] = None
 
 
 class AddImagesToIndexResult(BaseModel):
@@ -56,7 +56,7 @@ class AddImagesToIndexResult(BaseModel):
 
 class RemoveImagesFromIndexRequest(BaseModel):
     ids: List[int]
-    indexKey: str
+    indexKey: Optional[str] = None
 
 
 class RemoveImagesFromIndexResult(BaseModel):
@@ -169,13 +169,17 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
         )
         images = [serving_utils.image_bytes_to_array(item) for item in file_bytes_list]
         labels = [pair.label for pair in request.imageLabelPairs]
-        index_storage = ctx.extra["index_storage"]
-        index_data_bytes = await serving_utils.call_async(
-            index_storage.get, request.indexKey
-        )
-        index_data = await serving_utils.call_async(
-            _deserialize_index_data, index_data_bytes
-        )
+
+        if request.indexKey is not None:
+            index_storage = ctx.extra["index_storage"]
+            index_data_bytes = await serving_utils.call_async(
+                index_storage.get, request.indexKey
+            )
+            index_data = await serving_utils.call_async(
+                _deserialize_index_data, index_data_bytes
+            )
+        else:
+            index_data = None
 
         index_data = await pipeline.call(
             pipeline.pipeline.append_index, images, labels, index_data
@@ -203,13 +207,16 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
     ) -> ResultResponse[RemoveImagesFromIndexResult]:
         pipeline = ctx.pipeline
 
-        index_storage = ctx.extra["index_storage"]
-        index_data_bytes = await serving_utils.call_async(
-            index_storage.get, request.indexKey
-        )
-        index_data = await serving_utils.call_async(
-            _deserialize_index_data, index_data_bytes
-        )
+        if request.indexKey is not None:
+            index_storage = ctx.extra["index_storage"]
+            index_data_bytes = await serving_utils.call_async(
+                index_storage.get, request.indexKey
+            )
+            index_data = await serving_utils.call_async(
+                _deserialize_index_data, index_data_bytes
+            )
+        else:
+            index_data = None
 
         index_data = await pipeline.call(
             pipeline.pipeline.remove_index, request.ids, index_data
