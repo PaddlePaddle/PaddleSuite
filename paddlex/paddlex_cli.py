@@ -228,7 +228,7 @@ def paddle_to_onnx(paddle_model_dir, onnx_model_dir, *, opset_version):
     def _copy_config_file(input_dir, output_dir):
         src_path = Path(input_dir, CONFIG_FILENAME)
         dst_path = Path(output_dir, CONFIG_FILENAME)
-        if not dst_path.samefile(src_path):
+        if not (dst_path.exists() and dst_path.samefile(src_path)):
             shutil.copy(src_path, dst_path)
             logging.info(f"Copied {src_path} to {dst_path}")
 
