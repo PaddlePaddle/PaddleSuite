@@ -3,14 +3,39 @@ pipeline_name: OCR
 
 text_type: general
 
+use_doc_preprocessor: True
+use_textline_orientation: True
+
+SubPipelines:
+  DocPreprocessor:
+    pipeline_name: doc_preprocessor
+    use_doc_orientation_classify: True
+    use_doc_unwarping: True
+    SubModules:
+      DocOrientationClassify:
+        module_name: doc_text_orientation
+        model_name: PP-LCNet_x1_0_doc_ori
+        model_dir: null
+        batch_size: 1
+      DocUnwarping:
+        module_name: image_unwarping
+        model_name: UVDoc
+        model_dir: null
+        batch_size: 1
+
 SubModules:
   TextDetection:
     module_name: text_detection
     model_name: PP-OCRv4_mobile_det
     model_dir: null
+    batch_size: 1
+  TextLineOrientation:
+    module_name: textline_orientation
+    model_name: PP-LCNet_x0_25_textline_ori 
+    model_dir: null
     batch_size: 1    
   TextRecognition:
     module_name: text_recognition
-    model_name: PP-OCRv4_mobile_rec
+    model_name: PP-OCRv4_mobile_rec 
     model_dir: null
     batch_size: 1

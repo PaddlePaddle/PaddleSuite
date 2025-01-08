@@ -347,9 +347,9 @@ class VideoClasTopk:
         Returns:
             np.ndarray: The softmax-transformed data.
         """
-        exp_data = np.exp(data - np.max(data))
-        softmax_data = exp_data / np.sum(exp_data)
-        return softmax_data
+        x_max = np.max(data, axis=-1, keepdims=True)
+        e_x = np.exp(data - x_max)
+        return e_x / np.sum(e_x, axis=-1, keepdims=True)
 
     def _parse_class_id_map(
         self, class_ids: Optional[Sequence[Union[str, int]]]
@@ -384,7 +384,7 @@ class VideoClasTopk:
                 - A list of arrays of scores for the top-k predictions.
                 - A list of lists of label names for the top-k predictions.
         """
-        preds = self.softmax(preds)
+        preds[0] = self.softmax(preds[0])
         indexes = preds[0].argsort(axis=1)[:, -topk:][:, ::-1].astype("int32")
         scores = [
             np.around(pred[index], decimals=5) for pred, index in zip(preds[0], indexes)

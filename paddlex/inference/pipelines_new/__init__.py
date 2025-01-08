@@ -26,6 +26,7 @@ from .image_classification import ImageClassificationPipeline
 from .seal_recognition import SealRecognitionPipeline
 from .table_recognition import TableRecognitionPipeline
 from .formula_recognition import FormulaRecognitionPipeline
+from .video_classification import VideoClassificationPipeline
 
 
 def get_pipeline_path(pipeline_name: str) -> str:
