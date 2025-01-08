@@ -54,9 +54,7 @@ class ImageClassificationPipeline(BasePipeline):
         self.image_classification_model = self.create_model(
             image_classification_model_config
         )
-        batch_size = image_classification_model_config["batch_size"]
-        self.batch_sampler = ImageBatchSampler(batch_size=batch_size)
-        self.img_reader = ReadImage(format="BGR")
+        self.topk = image_classification_model_config["topk"]
 
     def predict(
         self, input: str | list[str] | np.ndarray | list[np.ndarray], **kwargs
@@ -70,8 +68,4 @@ class ImageClassificationPipeline(BasePipeline):
         Returns:
             TopkResult: The predicted top k results.
         """
-
-        for img_id, batch_data in enumerate(self.batch_sampler(input)):
-            batch_imgs = self.img_reader(batch_data)
-            for topk_single_result in self.image_classification_model(batch_imgs):
-                yield topk_single_result
+        yield from self.image_classification_model(input, topk=self.topk)
