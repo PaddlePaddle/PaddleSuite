@@ -12,21 +12,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, Union
 import numpy as np
-from ...common.reader import ReadImage
-from ...common.batch_sampler import ImageBatchSampler
 from ...utils.pp_option import PaddlePredictorOption
 from ..base import BasePipeline
 
 # [TODO] 待更新models_new到models
-from ...models_new.image_classification.result import TopkResult
+from ...models_new.video_classification.result import TopkVideoResult
 
 
-class ImageClassificationPipeline(BasePipeline):
-    """Image Classification Pipeline"""
+class VideoClassificationPipeline(BasePipeline):
+    """Video Classification Pipeline"""
 
-    entities = "image_classification"
+    entities = "video_classification"
 
     def __init__(
         self,
@@ -50,22 +48,26 @@ class ImageClassificationPipeline(BasePipeline):
             device=device, pp_option=pp_option, use_hpip=use_hpip, hpi_params=hpi_params
         )
 
-        image_classification_model_config = config["SubModules"]["ImageClassification"]
-        self.image_classification_model = self.create_model(
-            image_classification_model_config
+        video_classification_model_config = config["SubModules"]["VideoClassification"]
+        self.video_classification_model = self.create_model(
+            video_classification_model_config
         )
-        self.topk = image_classification_model_config["topk"]
 
     def predict(
-        self, input: str | list[str] | np.ndarray | list[np.ndarray], **kwargs
-    ) -> TopkResult:
-        """Predicts image classification results for the given input.
+        self,
+        input: str | list[str] | np.ndarray | list[np.ndarray],
+        topk: Union[int, None] = 1,
+        **kwargs
+    ) -> TopkVideoResult:
+        """Predicts video classification results for the given input.
 
         Args:
             input (str | list[str] | np.ndarray | list[np.ndarray]): The input image(s) or path(s) to the images.
+            topk: Union[int, None]: The number of top predictions to return. Defaults to 1.
             **kwargs: Additional keyword arguments that can be passed to the function.
 
         Returns:
-            TopkResult: The predicted top k results.
+            TopkVideoResult: The predicted top k results.
         """
-        yield from self.image_classification_model(input, topk=self.topk)
+
+        yield from self.video_classification_model(input, topk=topk)
