@@ -73,8 +73,7 @@ TestReader:
     image_shape: [-1, 3, 640, 640]
   sample_transforms:
   - Decode: {}
-  - Resize: {target_size: 640, keep_ratio: True}
-  - Pad: {size: 640}
+  - Resize: {target_size: 640, keep_ratio: false}
   - NormalizeImage: {is_scale: true, mean: [0.485,0.456,0.406], std: [0.229, 0.224,0.225]}
   - Permute: {}
   batch_size: 1
