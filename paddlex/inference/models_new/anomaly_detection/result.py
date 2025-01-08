@@ -12,9 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import copy
 import numpy as np
 from PIL import Image
-import copy
 
 from ...common.result import BaseCVResult
 
@@ -58,7 +58,14 @@ class UadResult(BaseCVResult):
             color_map[: len(custom_color)] = custom_color
         return color_map
 
-    def _to_str(self, _, *args, **kwargs):
+    def _to_str(self, *args, **kwargs):
         data = copy.deepcopy(self)
         data["pred"] = "..."
-        return super()._to_str(data, *args, **kwargs)
+        data.pop("input_img")
+        return data._to_str(*args, **kwargs)
+
+    def _to_json(self, *args, **kwargs):
+        data = copy.deepcopy(self)
+        data["pred"] = "..."
+        data.pop("input_img")
+        return data._to_json(*args, **kwargs)

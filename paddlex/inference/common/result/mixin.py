@@ -46,19 +46,14 @@ class StrMixin:
             Dict[str, str]: The string representation of the result.
         """
 
-        return self._to_str(self)
+        return self._to_str()
 
     def _to_str(
         self,
-        data: dict,
-        json_format: bool = False,
-        indent: int = 4,
-        ensure_ascii: bool = False,
     ):
         """Convert the given result data to a string representation.
 
         Args:
-            data (dict): The data would be converted to str.
             json_format (bool): If True, return a JSON formatted string. Default is False.
             indent (int): Number of spaces to indent for JSON formatting. Default is 4.
             ensure_ascii (bool): If True, ensure all characters are ASCII. Default is False.
@@ -66,27 +61,11 @@ class StrMixin:
         Returns:
             Dict[str, str]: The string representation of the result.
         """
-        if json_format:
-            return {
-                "res": json.dumps(data.json, indent=indent, ensure_ascii=ensure_ascii)
-            }
-        else:
-            return {"res": str(data)}
+        return {"res": str(self)}
 
-    def print(
-        self, json_format: bool = False, indent: int = 4, ensure_ascii: bool = False
-    ) -> None:
-        """Print the string representation of the result.
-
-        Args:
-            json_format (bool): If True, print a JSON formatted string. Default is False.
-            indent (int): Number of spaces to indent for JSON formatting. Default is 4.
-            ensure_ascii (bool): If True, ensure all characters are ASCII. Default is False.
-        """
-        str_ = self._to_str(
-            self, json_format=json_format, indent=indent, ensure_ascii=ensure_ascii
-        )
-        logging.info(str_["res"])
+    def print(self) -> None:
+        """Print the string representation of the result."""
+        logging.info(self.str)
 
 
 class JsonMixin:
