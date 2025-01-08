@@ -12,8 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .base_batch_sampler import BaseBatchSampler
-from .image_batch_sampler import ImageBatchSampler
-from .video_batch_sampler import VideoBatchSampler
-from .ts_batch_sampler import TSBatchSampler
-from .audio_batch_sampler import AudioBatchSampler
+
+MODELS = [
+    "whisper_large",
+    "whisper_medium",
+    "whisper_base",
+    "whisper_small",
+    "whisper_tiny",
+]

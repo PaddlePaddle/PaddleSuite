@@ -12,27 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .base_result import BaseResult
-from .mixin import StrMixin, JsonMixin, ImgMixin, VideoMixin
+from ...common.result import BaseResult, StrMixin, JsonMixin
 
 
-class BaseVideoResult(BaseResult, StrMixin, JsonMixin, VideoMixin):
-    """Base class for computer vision results."""
-
-    INPUT_IMG_KEY = "input_img"
+class WhisperResult(BaseResult, StrMixin, JsonMixin):
 
     def __init__(self, data: dict) -> None:
-        """
-        Initialize the BaseVideoResult.
-
-        Args:
-            data (dict): The initial data.
-
-        Raises:
-            AssertionError: If the required key (`BaseVideoResult.INPUT_IMG_KEY`) are not found in the data.
-        """
-
         super().__init__(data)
         StrMixin.__init__(self)
         JsonMixin.__init__(self)
-        VideoMixin.__init__(self, "opencv")

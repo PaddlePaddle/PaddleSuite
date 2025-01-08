@@ -21,17 +21,14 @@ from PIL import Image, ImageOps
 import pandas as pd
 import numpy as np
 import yaml
+import soundfile
+import decord
 import random
 import platform
+import importlib
 
 from ....utils import logging
 
-if not platform.machine().startswith("arm"):
-    import decord
-else:
-    logging.warning(
-        "Please install `decord` manually on ARM machine. Otherwise, the related model cannot work."
-    )
 
 __all__ = [
     "ReaderType",
@@ -40,6 +37,7 @@ __all__ = [
     "CSVReader",
     "PDFReader",
     "YAMLReader",
+    "AudioReader",
 ]
 
 
@@ -342,6 +340,14 @@ class DecordVideoReaderBackend(_VideoReaderBackend):
         self.valid_mode = True
         self._fps = 0
 
+        # XXX(gaotingquan): There is a confict with `paddle` when import `decord` globally.
+        try:
+            self.decord_module = importlib.import_module("decord")
+        except ModuleNotFoundError():
+            raise Exception(
+                "Please install `decord` manually, otherwise, the related model cannot work. It can be automatically installed only on `x86_64`. Refers: `https://github.com/dmlc/decord`."
+            )
+
     def set_pos(self, pos):
         self._pos = pos
 
@@ -382,7 +388,7 @@ class DecordVideoReaderBackend(_VideoReaderBackend):
 
     def read_file(self, in_path):
         """read vidio file from path"""
-        self._cap = decord.VideoReader(in_path)
+        self._cap = self.decord_module.VideoReader(in_path)
         frame_len = len(self._cap)
         if self.sample_type == "uniform":
             sample_video = self.sample(frame_len, self._cap)
@@ -440,3 +446,39 @@ class YAMLReaderBackend(_BaseReaderBackend):
         with open(in_path, "r", encoding="utf-8", **kwargs) as yaml_file:
             data = yaml.load(yaml_file, Loader=yaml.FullLoader)
         return data
+
+
+class AudioReader(_BaseReader):
+    def __init__(self, backend="wav", **bk_args):
+        super().__init__(backend="wav", **bk_args)
+
+    def _init_backend(self, bk_type, bk_args):
+        """init backend"""
+        if bk_type == "wav":
+            return WAVReaderBackend(**bk_args)
+        else:
+            raise ValueError("Unsupported backend type")
+
+    def read(self, in_path):
+        audio, audio_sample_rate = self._backend.read_file(str(in_path))
+        return audio, audio_sample_rate
+
+
+class _AudioReaderBackend(_BaseReaderBackend):
+    """_AudioReaderBackend"""
+
+    pass
+
+
+class WAVReaderBackend(_AudioReaderBackend):
+    """PandasCSVReaderBackend"""
+
+    def __init__(self):
+        super().__init__()
+
+    def read_file(self, in_path):
+        """read wav file from path"""
+        audio, audio_sample_rate = soundfile.read(
+            in_path, dtype="float32", always_2d=True
+        )
+        return audio, audio_sample_rate
