@@ -15,7 +15,7 @@
 from paddlex import create_pipeline
 
 pipeline = create_pipeline(pipeline="seal_recognition")
-output = pipeline.predict("./test_samples/seal_text_det.png")
+output = pipeline.predict("/ssd2/sunting/1230/PaddleX/dataset/seal_demo/output.pdf")
 
 # output = pipeline.predict("./test_samples/seal_text_det.png",
 #     use_layout_detection=False)

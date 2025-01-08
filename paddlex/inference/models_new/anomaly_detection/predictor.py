@@ -109,7 +109,7 @@ class UadPredictor(BasicPredictor):
         batch_preds = self.postprocessors["Map_to_mask"](preds=batch_preds)
         if len(batch_data) > 1:
             batch_preds = np.split(batch_preds[0], len(batch_data), axis=0)
-
+        import pdb;pdb.set_trace()
         return {
             "input_path": batch_data,
             "input_img": batch_raw_imgs,

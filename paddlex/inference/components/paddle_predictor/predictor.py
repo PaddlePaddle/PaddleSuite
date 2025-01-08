@@ -222,6 +222,7 @@ class BasePaddlePredictor(BaseComponent):
         input_names.sort()
         input_handlers = []
         output_handlers = []
+        import pdb;pdb.set_trace()
         for input_name in input_names:
             input_handler = predictor.get_input_handle(input_name)
             input_handlers.append(input_handler)

@@ -1,7 +1,7 @@
 Global:
   model: AutoEncoder_ad
-  mode: check_dataset # check_dataset/train/evaluate/predict
-  dataset_dir: "/paddle/dataset/paddlex/ts_ad/ts_anomaly_examples/"
+  mode: train  # check_dataset/train/evaluate/predict
+  dataset_dir: "/ssd2/sunting/1230/PaddleTS/ts_anomaly_examples/"
   device: gpu:0
   output: "output"
 
@@ -16,13 +16,13 @@ CheckDataset:
 
 Train:
   time_col: timestamp
-  feature_cols: feature_0,feature_1
+  feature_cols: feature_0,feature_1,feature_2,feature_3,feature_4,feature_5,feature_6,feature_7,feature_8,feature_9,feature_10,feature_11,feature_12,feature_13,feature_14,feature_15,feature_16,feature_17,feature_18,feature_19,feature_20,feature_21,feature_22,feature_23,feature_24
   label_col: label
   freq: 1
-  input_len: 96
-  epochs_iters: 20
-  batch_size: 16
-  learning_rate: 0.0005
+  input_len: 100
+  epochs_iters: 1
+  batch_size: 128
+  learning_rate: 0.001
   log_interval: 10
 
 Evaluate:

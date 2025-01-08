@@ -1,4 +1,4 @@
-# copyright (c) 2024 PaddlePaddle Authors. All Rights Reserve.
+# copyright (c) 2025 PaddlePaddle Authors. All Rights Reserve.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,11 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-NEWIR_BLOCKLIST = [
-    "PP-YOLOE_seg-S",
-    "PatchTST_ad",
-    # "TimesNet_ad",
-    "Nonstationary_ad",
-    "DLinear_ad",
-    "LaTeX_OCR_rec",
-]
+from paddlex import create_pipeline
+
+pipeline = create_pipeline(pipeline="ts_forecast")
+output = pipeline.predict("./test_samples/ts_fc.csv")
+
+for res in output:
+    print(res)
+    res.print()  ## 打印预测的结构化输出
+    res.save_to_csv("./output/")  ## 保存结果到csv文件

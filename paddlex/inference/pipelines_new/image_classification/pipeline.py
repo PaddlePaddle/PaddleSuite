@@ -70,8 +70,4 @@ class ImageClassificationPipeline(BasePipeline):
         Returns:
             TopkResult: The predicted top k results.
         """
-
-        for img_id, batch_data in enumerate(self.batch_sampler(input)):
-            batch_imgs = self.img_reader(batch_data)
-            for topk_single_result in self.image_classification_model(batch_imgs):
-                yield topk_single_result
+        yield from self.image_classification_model(input)
