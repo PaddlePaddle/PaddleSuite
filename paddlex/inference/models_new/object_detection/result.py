@@ -100,4 +100,4 @@ class DetResult(BaseCVResult):
         """apply"""
         boxes = self["boxes"]
         image = Image.fromarray(self["input_img"])
-        return draw_box(image, boxes)
+        return {"res": draw_box(image, boxes)}

@@ -34,7 +34,7 @@ class TableRecResult(BaseCVResult):
             vis_img = self.draw_rectangle(image, bbox_res)
         else:
             vis_img = self.draw_bbox(image, bbox_res)
-        return vis_img
+        return {"res": vis_img}
 
     def draw_rectangle(self, image, boxes):
         """draw_rectangle"""
