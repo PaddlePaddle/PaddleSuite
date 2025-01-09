@@ -12,74 +12,71 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Dict
-import time
-import os
-from langchain.docstore.document import Document
-from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain_community.embeddings import QianfanEmbeddingsEndpoint
-from langchain_community.vectorstores import FAISS
-from langchain_community import vectorstores
-from erniebot_agent.extensions.langchain.embeddings import ErnieEmbeddings
 from .base import BaseRetriever
 
+from langchain.docstore.document import Document
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_community.vectorstores import FAISS
+from langchain_community import vectorstores
 
-class ErnieBotRetriever(BaseRetriever):
-    """Ernie Bot Retriever"""
+import time
+
+from typing import Dict
+
+
+class OpenAIBotRetriever(BaseRetriever):
+    """OpenAI Bot Retriever"""
 
     entities = [
-        "aistudio",
-        "qianfan",
-    ]
-
-    MODELS = [
-        "ernie-4.0",
-        "ernie-3.5",
-        "ernie-3.5-8k",
-        "ernie-lite",
-        "ernie-tiny-8k",
-        "ernie-speed",
-        "ernie-speed-128k",
-        "ernie-char-8k",
+        "openai",
     ]
 
     def __init__(self, config: Dict) -> None:
         """
-        Initializes the ErnieBotRetriever instance with the provided configuration.
+        Initializes the OpenAIBotRetriever instance with the provided configuration.
 
         Args:
             config (Dict): A dictionary containing configuration settings.
                 - model_name (str): The name of the model to use.
                 - api_type (str): The type of API to use ('aistudio', 'qianfan' or 'openai').
-                - ak (str, optional): The access key for 'qianfan' API.
-                - sk (str, optional): The secret key for 'qianfan' API.
-                - access_token (str, optional): The access token for 'aistudio' API.
+                - api_key (str, optional): The API key for 'openai' API.
+                - base_url (str, optional): The base URL for 'openai' API.
 
         Raises:
-            ValueError: If model_name is not in self.entities,
-                api_type is not 'aistudio' or 'qianfan',
-                access_token is missing for 'aistudio' API,
-                or ak and sk are missing for 'qianfan' API.
+            ValueError: If api_type is not one of ['openai'],
+            base_url is None for api_type is openai,
+            api_key is None for api_type is openai.
         """
         super().__init__()
 
         model_name = config.get("model_name", None)
         api_type = config.get("api_type", None)
-        ak = config.get("ak", None)
-        sk = config.get("sk", None)
-        access_token = config.get("access_token", None)
+        api_key = config.get("api_key", None)
+        base_url = config.get("base_url", None)
+        tiktoken_enabled = config.get("tiktoken_enabled", False)
 
-        if model_name not in self.MODELS:
-            raise ValueError(f"model_name must be in {self.MODELS} of ErnieBotChat.")
+        if api_type not in ["openai"]:
+            raise ValueError("api_type must be one of ['openai']")
 
-        if api_type not in ["aistudio", "qianfan"]:
-            raise ValueError("api_type must be one of ['aistudio', 'qianfan']")
+        if api_type == "openai" and api_key is None:
+            raise ValueError("api_key cannot be empty when api_type is openai.")
 
-        if api_type == "aistudio" and access_token is None:
-            raise ValueError("access_token cannot be empty when api_type is aistudio.")
+        if base_url is None:
+            raise ValueError("base_url cannot be empty when api_type is openai.")
 
-        if api_type == "qianfan" and (ak is None or sk is None):
-            raise ValueError("ak and sk cannot be empty when api_type is qianfan.")
+        try:
+            from langchain_openai import OpenAIEmbeddings
+        except:
+            raise Exception(
+                "langchain-openai is not installed, please install it first."
+            )
+
+        self.embedding = OpenAIEmbeddings(
+            model=model_name,
+            api_key=api_key,
+            base_url=base_url,
+            tiktoken_enabled=tiktoken_enabled,
+        )
 
         self.model_name = model_name
         self.config = config
@@ -113,34 +110,12 @@ class ErnieBotRetriever(BaseRetriever):
         )
         texts = text_splitter.split_text("\t".join(text_list))
         all_splits = [Document(page_content=text) for text in texts]
+
         api_type = self.config["api_type"]
-        if api_type == "qianfan":
-            os.environ["QIANFAN_AK"] = os.environ.get("EB_AK", self.config["ak"])
-            os.environ["QIANFAN_SK"] = os.environ.get("EB_SK", self.config["sk"])
-            user_ak = os.environ.get("EB_AK", self.config["ak"])
-            user_id = hash(user_ak)
-            vectorstore = FAISS.from_documents(
-                documents=all_splits, embedding=QianfanEmbeddingsEndpoint()
-            )
-        elif api_type == "aistudio":
-            token = self.config["access_token"]
-            vectorstore = FAISS.from_documents(
-                documents=all_splits[0:1],
-                embedding=ErnieEmbeddings(aistudio_access_token=token),
-            )
-            #### ErnieEmbeddings.chunk_size = 16
-            step = min(16, len(all_splits) - 1)
-            for shot_splits in [
-                all_splits[i : i + step] for i in range(1, len(all_splits), step)
-            ]:
-                time.sleep(sleep_time)
-                vectorstore_slice = FAISS.from_documents(
-                    documents=shot_splits,
-                    embedding=ErnieEmbeddings(aistudio_access_token=token),
-                )
-                vectorstore.merge_from(vectorstore_slice)
-        else:
-            raise ValueError(f"Unsupported api_type: {api_type}")
+
+        vectorstore = FAISS.from_documents(
+            documents=all_splits, embedding=self.embedding
+        )
 
         return vectorstore
 
@@ -174,30 +149,13 @@ class ErnieBotRetriever(BaseRetriever):
         if not self.is_vector_store(vectorstore):
             raise ValueError("The retrieved vectorstore is not for PaddleX.")
 
-        api_type = self.config["api_type"]
-
-        if api_type == "aistudio":
-            access_token = self.config["access_token"]
-            embeddings = ErnieEmbeddings(aistudio_access_token=access_token)
-        elif api_type == "qianfan":
-            ak = self.config["ak"]
-            sk = self.config["sk"]
-            embeddings = QianfanEmbeddingsEndpoint(qianfan_ak=ak, qianfan_sk=sk)
-        else:
-            raise ValueError(f"Unsupported api_type: {api_type}")
-
         vector = vectorstores.FAISS.deserialize_from_bytes(
-            self.decode_vector_store(vectorstore), embeddings
+            self.decode_vector_store(vectorstore), self.embedding
         )
         return vector
 
     def similarity_retrieval(
-        self,
-        query_text_list: list[str],
-        vectorstore: FAISS,
-        sleep_time: float = 0.5,
-        topk: int = 2,
-        min_characters: int = 3500,
+        self, query_text_list: list[str], vectorstore: FAISS, sleep_time: float = 0.5
     ) -> str:
         """
         Retrieve similar contexts based on a list of query texts.
@@ -206,8 +164,7 @@ class ErnieBotRetriever(BaseRetriever):
             query_text_list (list[str]): A list of query texts to search for similar contexts.
             vectorstore (FAISS): The vector store where to perform the similarity search.
             sleep_time (float): The time to sleep between each query, in seconds. Default is 0.5.
-            topk (int): The number of results to retrieve per query. Default is 2.
-            min_characters (int): The minimum number of characters required for text processing, defaults to 3500.
+
         Returns:
             str: A concatenated string of all unique contexts found.
         """
@@ -215,7 +172,7 @@ class ErnieBotRetriever(BaseRetriever):
         for query_text in query_text_list:
             QUESTION = query_text
             time.sleep(sleep_time)
-            docs = vectorstore.similarity_search_with_relevance_scores(QUESTION, k=topk)
+            docs = vectorstore.similarity_search_with_relevance_scores(QUESTION, k=2)
             context = [(document.page_content, score) for document, score in docs]
             context = sorted(context, key=lambda x: x[1])
             C.extend([x[0] for x in context[::-1]])

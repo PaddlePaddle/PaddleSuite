@@ -18,6 +18,13 @@ SubModules:
     ak: "api_key" # Set this to a real API key
     sk: "secret_key"  # Set this to a real secret key
 
+  MLLM_Chat:
+    module_name: chat_bot
+    model_name: PP-DocBee
+    base_url: "http://127.0.0.1/v1/chat/completions"
+    api_type: openai
+    api_key: "api_key"
+
   PromptEngneering:
     KIE_CommonText:
       module_name: prompt_engneering
