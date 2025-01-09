@@ -19,7 +19,7 @@ Train:
   epochs_iters: 50
   batch_size: 16
   learning_rate: 0.001
-  pretrain_weight_path: "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/tinypose_128x96_pretrained.pdparams"
+  pretrain_weight_path: "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-TinyPose_128x96_pretrained.pdparams"
   warmup_steps: 100
   resume_path: null
   log_interval: 10
@@ -37,4 +37,4 @@ Predict:
     run_mode: paddle
 
 Export:
-  weight_path: "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/tinypose_128x96_pretrained.pdparams"
+  weight_path: "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-TinyPose_128x96_pretrained.pdparams"
