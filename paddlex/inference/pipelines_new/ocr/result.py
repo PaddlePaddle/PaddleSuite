@@ -173,7 +173,7 @@ class OCRResult(BaseCVResult):
         img_id = self["img_id"]
 
         return {
-            f"doc_preprocessor_result_img_{img_id}": self["doc_preprocessor_res"].img,
+            **self["doc_preprocessor_res"].img,
             f"res_ocr_{img_id}": img_show,
         }
 
