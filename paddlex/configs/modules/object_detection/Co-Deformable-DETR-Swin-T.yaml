@@ -17,7 +17,7 @@ CheckDataset:
 Train:
   num_classes: 4
   epochs_iters: 50
-  batch_size: 2
+  batch_size: 1
   learning_rate: 0.0001
   pretrain_weight_path: https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/Co-Deformable-DETR-Swin-T_pretrained.pdparams
   warmup_steps: 100
