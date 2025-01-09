@@ -28,34 +28,6 @@ from ...common.result import BaseCVResult
 class OCRResult(BaseCVResult):
     """OCR result"""
 
-    def save_to_img(self, save_path: str, *args, **kwargs) -> None:
-        """
-        Save the image to the specified path with the appropriate extension.
-
-        If the save_path does not end with '.jpg' or '.png', it appends '_res_ocr_<img_id>.jpg'
-        to the path where <img_id> is the id of the image.
-
-        Args:
-            save_path (str): The path to save the image.
-            *args: Additional positional arguments.
-            **kwargs: Additional keyword arguments.
-        """
-
-        input_params = self["input_params"]
-        img_id = self["img_id"]
-
-        # TODO : Support determining the output name based on the input name.
-        if input_params["use_doc_preprocessor"]:
-            save_img_path = (
-                Path(save_path) / f"doc_preprocessor_result_img_{img_id}.jpg"
-            )
-            self["doc_preprocessor_res"].save_to_img(save_img_path)
-
-        if not str(save_path).lower().endswith((".jpg", ".png")):
-            save_path = Path(save_path) / f"res_ocr_{img_id}.jpg"
-
-        super().save_to_img(save_path, *args, **kwargs)
-
     def save_to_json(
         self,
         save_path: str,
@@ -79,7 +51,7 @@ class OCRResult(BaseCVResult):
 
         # TODO : Support determining the output name based on the input name.
         os.makedirs(save_path, exist_ok=True)
-        save_path = os.path.join(save_path, 'res.json')
+        save_path = os.path.join(save_path, "res.json")
 
         base_name, ext = os.path.splitext(save_path)
         save_path = f"{base_name}_{img_id}{ext}"
@@ -196,7 +168,14 @@ class OCRResult(BaseCVResult):
         img_show = Image.new("RGB", (w * 2, h), (255, 255, 255))
         img_show.paste(img_left, (0, 0, w, h))
         img_show.paste(Image.fromarray(img_right), (w, 0, w * 2, h))
-        return img_show
+
+        input_params = self["input_params"]
+        img_id = self["img_id"]
+
+        return {
+            f"doc_preprocessor_result_img_{img_id}": self["doc_preprocessor_res"].img,
+            f"res_ocr_{img_id}": img_show,
+        }
 
 
 # Adds a function comment according to Google Style Guide
