@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Any, List
+from typing import Any, List, Optional
 
 from fastapi import FastAPI
 from pydantic import BaseModel, Field
@@ -30,7 +30,7 @@ class InferRequest(BaseModel):
 class InferResult(BaseModel):
     labelMap: List[int]
     size: Annotated[List[int], Field(min_length=2, max_length=2)]
-    image: str
+    image: Optional[str] = None
 
 
 def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
@@ -55,9 +55,12 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
         pred = result["pred"][0].tolist()
         size = [len(pred), len(pred[0])]
         label_map = [item for sublist in pred for item in sublist]
-        output_image_base64 = serving_utils.base64_encode(
-            serving_utils.image_to_bytes(result.img.convert("RGB"))
-        )
+        if ctx.config.visualize:
+            output_image_base64 = serving_utils.base64_encode(
+                serving_utils.image_to_bytes(result.img.convert("RGB"))
+            )
+        else:
+            output_image_base64 = None
 
         return ResultResponse[InferResult](
             logId=serving_utils.generate_log_id(),

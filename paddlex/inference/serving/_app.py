@@ -80,6 +80,7 @@ class PipelineWrapper(Generic[_PipelineT]):
 
 
 class AppConfig(BaseModel):
+    visualize: bool = True
     extra: Optional[Dict[str, Any]] = None
 
 

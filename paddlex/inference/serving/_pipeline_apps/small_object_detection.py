@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Any, List
+from typing import Any, List, Optional
 
 from fastapi import FastAPI
 from pydantic import BaseModel, Field
@@ -38,7 +38,7 @@ class DetectedObject(BaseModel):
 
 class InferResult(BaseModel):
     detectedObjects: List[DetectedObject]
-    image: str
+    image: Optional[str] = None
 
 
 def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
@@ -69,9 +69,12 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
                     score=obj["score"],
                 )
             )
-        output_image_base64 = serving_utils.base64_encode(
-            serving_utils.image_to_bytes(result.img)
-        )
+        if ctx.config.visualize:
+            output_image_base64 = serving_utils.base64_encode(
+                serving_utils.image_to_bytes(result.img)
+            )
+        else:
+            output_image_base64 = None
 
         return ResultResponse[InferResult](
             logId=serving_utils.generate_log_id(),

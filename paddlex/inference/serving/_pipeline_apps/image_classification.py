@@ -40,7 +40,7 @@ class Category(BaseModel):
 
 class InferResult(BaseModel):
     categories: List[Category]
-    image: str
+    image: Optional[str] = None
 
 
 def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
@@ -59,10 +59,10 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
 
         file_bytes = await serving_utils.get_raw_bytes(request.image, aiohttp_session)
         image = serving_utils.image_bytes_to_array(file_bytes)
-        top_k: Optional[int] = None
         if request.inferenceParams is not None:
-            if request.inferenceParams.topK is not None:
-                top_k = request.inferenceParams.topK
+            top_k = request.inferenceParams.topK
+        else:
+            top_k = None
 
         result = (await pipeline.infer(image, topk=top_k))[0]
 
@@ -73,9 +73,12 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
         categories: List[Category] = []
         for id_, name, score in zip(result["class_ids"], cat_names, result["scores"]):
             categories.append(Category(id=id_, name=name, score=score))
-        output_image_base64 = serving_utils.base64_encode(
-            serving_utils.image_to_bytes(result.img)
-        )
+        if ctx.config.visualize:
+            output_image_base64 = serving_utils.base64_encode(
+                serving_utils.image_to_bytes(result.img)
+            )
+        else:
+            output_image_base64 = None
 
         return ResultResponse[InferResult](
             logId=serving_utils.generate_log_id(),

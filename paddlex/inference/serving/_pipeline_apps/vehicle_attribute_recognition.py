@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Any, List
+from typing import Any, List, Optional
 
 from fastapi import FastAPI
 from pydantic import BaseModel, Field
@@ -23,8 +23,14 @@ from .._app import AppConfig, create_app, main_operation
 from .._models import ResultResponse
 
 
+class InferenceParams(BaseModel):
+    detThreshold: Optional[float] = None
+    clsThreshold: Optional[float] = None
+
+
 class InferRequest(BaseModel):
     image: str
+    inferenceParams: Optional[InferenceParams] = None
 
 
 BoundingBox: TypeAlias = Annotated[List[float], Field(min_length=4, max_length=4)]
@@ -43,7 +49,7 @@ class Vehicle(BaseModel):
 
 class InferResult(BaseModel):
     vehicles: List[Vehicle]
-    image: str
+    image: Optional[str] = None
 
 
 def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
@@ -62,8 +68,20 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
 
         file_bytes = await serving_utils.get_raw_bytes(request.image, aiohttp_session)
         image = serving_utils.image_bytes_to_array(file_bytes)
+        if request.inferenceParams is not None:
+            det_threshold = request.inferenceParams.detThreshold
+            cls_threshold = request.inferenceParams.clsThreshold
+        else:
+            det_threshold = None
+            cls_threshold = None
 
-        result = (await pipeline.infer(image))[0]
+        result = (
+            await pipeline.infer(
+                image,
+                det_threshold=det_threshold,
+                cls_threshold=cls_threshold,
+            )
+        )[0]
 
         vehicles: List[Vehicle] = []
         for obj in result["boxes"]:
@@ -77,9 +95,12 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
                     score=obj["det_score"],
                 )
             )
-        output_image_base64 = serving_utils.base64_encode(
-            serving_utils.image_to_bytes(result.img)
-        )
+        if ctx.config.visualize:
+            output_image_base64 = serving_utils.base64_encode(
+                serving_utils.image_to_bytes(result.img)
+            )
+        else:
+            output_image_base64 = None
 
         return ResultResponse[InferResult](
             logId=serving_utils.generate_log_id(),

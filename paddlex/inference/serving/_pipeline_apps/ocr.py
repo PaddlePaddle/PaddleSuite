@@ -46,7 +46,7 @@ class Text(BaseModel):
 
 class OCRResult(BaseModel):
     texts: List[Text]
-    image: str
+    image: Optional[str] = None
 
 
 class InferResult(BaseModel):
@@ -71,10 +71,10 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
 
         log_id = serving_utils.generate_log_id()
 
-        if request.inferenceParams:
+        if request.inferenceParams is not None:
             max_long_side = request.inferenceParams.maxLongSide
-            if max_long_side:
-                ...
+        else:
+            max_long_side = None
 
         images, data_info = await ocr_common.get_images(request, ctx)
 
@@ -92,15 +92,18 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
                 item["dt_polys"], item["rec_text"], item["rec_score"]
             ):
                 texts.append(Text(poly=poly, text=text, score=score))
-            image = await serving_utils.call_async(
-                image_common.postprocess_image,
-                item.img,
-                log_id=log_id,
-                filename=f"image_{i}.jpg",
-                file_storage=ctx.extra["file_storage"],
-                return_url=ctx.extra["return_img_urls"],
-                max_img_size=ctx.extra["max_output_img_size"],
-            )
+            if ctx.config.visualize:
+                image = await serving_utils.call_async(
+                    image_common.postprocess_image,
+                    item.img,
+                    log_id=log_id,
+                    filename=f"image_{i}.jpg",
+                    file_storage=ctx.extra["file_storage"],
+                    return_url=ctx.extra["return_img_urls"],
+                    max_img_size=ctx.extra["max_output_img_size"],
+                )
+            else:
+                image = None
             ocr_results.append(OCRResult(texts=texts, image=image))
 
         return ResultResponse[InferResult](

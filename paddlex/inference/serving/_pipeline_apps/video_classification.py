@@ -64,10 +64,10 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
             suffix=serving_utils.infer_file_ext(request.video),
         )
 
-        top_k: Optional[int] = None
         if request.inferenceParams is not None:
-            if request.inferenceParams.topK is not None:
-                top_k = request.inferenceParams.topK
+            top_k = request.inferenceParams.topK
+        else:
+            top_k = None
 
         try:
             result = (await pipeline.infer(video_path, topk=top_k))[0]

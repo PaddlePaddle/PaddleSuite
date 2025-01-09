@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Any, List
+from typing import Any, List, Optional
 
 import numpy as np
 import pycocotools.mask as mask_util
@@ -46,7 +46,7 @@ class Instance(BaseModel):
 
 class InferResult(BaseModel):
     instances: List[Instance]
-    image: str
+    image: Optional[str] = None
 
 
 def _rle(mask: np.ndarray) -> str:
@@ -87,9 +87,12 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
                     mask=mask,
                 )
             )
-        output_image_base64 = serving_utils.base64_encode(
-            serving_utils.image_to_bytes(result.img)
-        )
+        if ctx.config.visualize:
+            output_image_base64 = serving_utils.base64_encode(
+                serving_utils.image_to_bytes(result.img)
+            )
+        else:
+            output_image_base64 = None
 
         return ResultResponse[InferResult](
             logId=serving_utils.generate_log_id(),

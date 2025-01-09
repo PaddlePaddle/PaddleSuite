@@ -16,7 +16,7 @@ import os
 import tempfile
 from typing import Any, List, Optional
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI
 from pydantic import BaseModel, Field
 from typing_extensions import Annotated, TypeAlias
 
@@ -56,9 +56,9 @@ class Table(BaseModel):
 class VisualResult(BaseModel):
     texts: List[Text]
     tables: List[Table]
-    inputImage: str
-    layoutImage: str
-    ocrImage: str
+    inputImage: Optional[str] = None
+    layoutImage: Optional[str] = None
+    ocrImage: Optional[str] = None
 
 
 class AnalyzeImagesResult(BaseModel):
@@ -148,13 +148,10 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
 
         log_id = serving_utils.generate_log_id()
 
-        if request.inferenceParams:
+        if request.inferenceParams is not None:
             max_long_side = request.inferenceParams.maxLongSide
-            if max_long_side:
-                raise HTTPException(
-                    status_code=422,
-                    detail="`max_long_side` is currently not supported.",
-                )
+        else:
+            max_long_side = None
 
         images, data_info = await ocr_common.get_images(request, ctx)
 
@@ -181,14 +178,17 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
                 Table(bbox=r["layout_bbox"], html=r["html"])
                 for r in item["table_result"]
             ]
-            input_img, layout_img, ocr_img = await ocr_common.postprocess_images(
-                log_id=log_id,
-                index=i,
-                app_context=ctx,
-                input_image=img,
-                layout_image=item["layout_result"].img,
-                ocr_image=item["ocr_result"].img,
-            )
+            if ctx.config.visualize:
+                input_img, layout_img, ocr_img = await ocr_common.postprocess_images(
+                    log_id=log_id,
+                    index=i,
+                    app_context=ctx,
+                    input_image=img,
+                    layout_image=item["layout_result"].img,
+                    ocr_image=item["ocr_result"].img,
+                )
+            else:
+                input_img, layout_img, ocr_img = None, None, None
             visual_result = VisualResult(
                 texts=texts,
                 tables=tables,

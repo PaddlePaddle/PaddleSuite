@@ -19,16 +19,7 @@ import mimetypes
 import tempfile
 import uuid
 from functools import partial
-from typing import (
-    Awaitable,
-    Callable,
-    List,
-    Optional,
-    Tuple,
-    TypeVar,
-    Union,
-    overload,
-)
+from typing import Awaitable, Callable, List, Optional, Tuple, TypeVar, Union, overload
 from urllib.parse import urlparse
 
 import aiohttp

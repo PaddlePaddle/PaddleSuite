@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# TODO: Add caching to improve performance
+
 import asyncio
 import pickle
 import uuid
@@ -63,9 +65,16 @@ class RemoveImagesFromIndexResult(BaseModel):
     idMap: Dict[int, str]
 
 
+class InferenceParams(BaseModel):
+    detThreshold: Optional[float] = None
+    recThreshold: Optional[float] = None
+    topK: Optional[int] = None
+
+
 class InferRequest(BaseModel):
     image: str
     indexKey: Optional[str] = None
+    inferenceParams: Optional[InferenceParams] = None
 
 
 BoundingBox: TypeAlias = Annotated[List[float], Field(min_length=4, max_length=4)]
@@ -84,7 +93,7 @@ class DetectedObject(BaseModel):
 
 class InferResult(BaseModel):
     detectedObjects: List[DetectedObject]
-    image: str
+    image: Optional[str] = None
 
 
 # XXX: I have to implement serialization and deserialization functions myself,
@@ -257,8 +266,24 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
         else:
             index_data = None
 
+        if request.inferenceParams is not None:
+            det_threshold = request.inferenceParams.detThreshold
+            rec_threshold = request.inferenceParams.recThreshold
+            top_k = request.inferenceParams.topK
+        else:
+            det_threshold = None
+            rec_threshold = None
+            top_k = None
+
         result = list(
-            await pipeline.call(pipeline.pipeline.predict, image, index=index_data)
+            await pipeline.call(
+                pipeline.pipeline.predict,
+                image,
+                index=index_data,
+                det_threshold=det_threshold,
+                rec_threshold=rec_threshold,
+                top_k=top_k,
+            )
         )[0]
 
         objects: List[DetectedObject] = []
@@ -279,9 +304,12 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
                     score=obj["det_score"],
                 )
             )
-        output_image_base64 = serving_utils.base64_encode(
-            serving_utils.image_to_bytes(result.img)
-        )
+        if ctx.config.visualize:
+            output_image_base64 = serving_utils.base64_encode(
+                serving_utils.image_to_bytes(result.img)
+            )
+        else:
+            output_image_base64 = None
 
         return ResultResponse[InferResult](
             logId=serving_utils.generate_log_id(),

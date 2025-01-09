@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Any, List, Type
+from typing import Any, List, Optional, Type
 
 from fastapi import FastAPI
 from pydantic import BaseModel, Field
@@ -36,9 +36,9 @@ class Table(BaseModel):
 
 class TableRecResult(BaseModel):
     tables: List[Table]
-    inputImage: str
-    layoutImage: str
-    ocrImage: str
+    inputImage: Optional[str] = None
+    layoutImage: Optional[str] = None
+    ocrImage: Optional[str] = None
 
 
 class InferResult(BaseModel):
@@ -81,14 +81,17 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
                         html=subitem["html"],
                     )
                 )
-            input_img, layout_img, ocr_img = await ocr_common.postprocess_images(
-                log_id=log_id,
-                index=i,
-                app_context=ctx,
-                input_image=img,
-                layout_image=item["layout_result"].img,
-                ocr_image=item["ocr_result"].img,
-            )
+            if ctx.config.visualize:
+                input_img, layout_img, ocr_img = await ocr_common.postprocess_images(
+                    log_id=log_id,
+                    index=i,
+                    app_context=ctx,
+                    input_image=img,
+                    layout_image=item["layout_result"].img,
+                    ocr_image=item["ocr_result"].img,
+                )
+            else:
+                input_img, layout_img, ocr_img = None, None, None
             table_rec_results.append(
                 TableRecResult(
                     tables=tables,

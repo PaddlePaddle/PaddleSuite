@@ -12,9 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Any, List, Optional
+from typing import Any, Dict, List, Optional, Union
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI
 from pydantic import BaseModel
 
 from .. import _utils as serving_utils
@@ -23,7 +23,7 @@ from .._models import ResultResponse
 
 
 class InferenceParams(BaseModel):
-    threshold: Optional[float] = None
+    threshold: Optional[Union[float, Dict[Union[str, int], float], List[float]]] = None
 
 
 class InferRequest(BaseModel):
@@ -39,7 +39,7 @@ class Category(BaseModel):
 
 class InferResult(BaseModel):
     categories: List[Category]
-    image: str
+    image: Optional[str] = None
 
 
 def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
@@ -56,18 +56,15 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
         pipeline = ctx.pipeline
         aiohttp_session = ctx.aiohttp_session
 
-        if request.inferenceParams:
+        if request.inferenceParams is not None:
             threshold = request.inferenceParams.threshold
-            if threshold is not None:
-                raise HTTPException(
-                    status_code=422,
-                    detail="`threshold` is currently not supported.",
-                )
+        else:
+            threshold = None
 
         file_bytes = await serving_utils.get_raw_bytes(request.image, aiohttp_session)
         image = serving_utils.image_bytes_to_array(file_bytes)
 
-        result = (await pipeline.infer(image))[0]
+        result = (await pipeline.infer(image, threshold=threshold))[0]
 
         if "label_names" in result:
             cat_names = result["label_names"]
@@ -76,9 +73,12 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
         categories: List[Category] = []
         for id_, name, score in zip(result["class_ids"], cat_names, result["scores"]):
             categories.append(Category(id=id_, name=name, score=score))
-        output_image_base64 = serving_utils.base64_encode(
-            serving_utils.image_to_bytes(result.img)
-        )
+        if ctx.config.visualize:
+            output_image_base64 = serving_utils.base64_encode(
+                serving_utils.image_to_bytes(result.img)
+            )
+        else:
+            output_image_base64 = None
 
         return ResultResponse[InferResult](
             logId=serving_utils.generate_log_id(),

@@ -37,8 +37,8 @@ class Formula(BaseModel):
 
 class FormulaRecResult(BaseModel):
     formulas: List[Formula]
-    inputImage: str
-    layoutImage: str
+    inputImage: Optional[str] = None
+    layoutImage: Optional[str] = None
     ocrImage: Optional[str] = None
 
 
@@ -82,27 +82,30 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
                         latex=latex,
                     )
                 )
-            layout_img = item["layout_result"].img
-            if ctx.extra["return_ocr_imgs"]:
-                ocr_img = item["formula_result"].img
-                if ocr_img is None:
-                    raise HTTPException(
-                        status_code=500, detail="Failed to get the OCR image"
-                    )
+            if ctx.config.visualize:
+                layout_img = item["layout_result"].img
+                if ctx.extra["return_ocr_imgs"]:
+                    ocr_img = item["formula_result"].img
+                    if ocr_img is None:
+                        raise HTTPException(
+                            status_code=500, detail="Failed to get the OCR image"
+                        )
+                else:
+                    ocr_img = None
+                output_imgs = await ocr_common.postprocess_images(
+                    log_id=log_id,
+                    index=i,
+                    app_context=ctx,
+                    input_image=img,
+                    layout_image=layout_img,
+                    ocr_image=ocr_img,
+                )
+                if ocr_img is not None:
+                    input_img, layout_img, ocr_img = output_imgs
+                else:
+                    input_img, layout_img = output_imgs
             else:
-                ocr_img = None
-            output_imgs = await ocr_common.postprocess_images(
-                log_id=log_id,
-                index=i,
-                app_context=ctx,
-                input_image=img,
-                layout_image=layout_img,
-                ocr_image=ocr_img,
-            )
-            if ocr_img is not None:
-                input_img, layout_img, ocr_img = output_imgs
-            else:
-                input_img, layout_img = output_imgs
+                input_img, layout_img, ocr_img = None, None, None
             formula_rec_results.append(
                 FormulaRecResult(
                     formulas=formulas,
