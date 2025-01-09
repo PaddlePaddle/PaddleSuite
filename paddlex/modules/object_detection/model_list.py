@@ -76,4 +76,6 @@ MODELS = [
     "Co-Deformable-DETR-Swin-T",
     "Co-DINO-R50",
     "Co-DINO-Swin-L",
+    "RT-DETR-L_wired_table_cell_det",
+    "RT-DETR-L_wireless_table_cell_det",
 ]

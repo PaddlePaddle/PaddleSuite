@@ -12,10 +12,4 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
-MODELS = [
-    "SLANet",
-    "SLANet_plus",
-    "SLANeXt_wired",
-    "SLANeXt_wireless",
-]
+from .predictor import TablePredictor
