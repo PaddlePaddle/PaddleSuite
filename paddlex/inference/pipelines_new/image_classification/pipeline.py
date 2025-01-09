@@ -51,13 +51,15 @@ class ImageClassificationPipeline(BasePipeline):
         )
 
         image_classification_model_config = config["SubModules"]["ImageClassification"]
+        model_kwargs = {}
+        if (topk := image_classification_model_config.get("topk", None)) is not None:
+            model_kwargs = {"topk": topk}
         self.image_classification_model = self.create_model(
-            image_classification_model_config
+            image_classification_model_config, **model_kwargs
         )
-        self.topk = image_classification_model_config["topk"]
 
     def predict(
-        self, input: str | list[str] | np.ndarray | list[np.ndarray], **kwargs
+        self, input: str | list[str] | np.ndarray | list[np.ndarray], topk=None
     ) -> TopkResult:
         """Predicts image classification results for the given input.
 
@@ -68,4 +70,4 @@ class ImageClassificationPipeline(BasePipeline):
         Returns:
             TopkResult: The predicted top k results.
         """
-        yield from self.image_classification_model(input, topk=self.topk)
+        yield from self.image_classification_model(input, topk=topk)
