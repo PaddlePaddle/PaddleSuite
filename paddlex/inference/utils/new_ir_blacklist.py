@@ -19,4 +19,5 @@ NEWIR_BLOCKLIST = [
     "Nonstationary_ad",
     "DLinear_ad",
     "LaTeX_OCR_rec",
+    "GroundingDINO-T",
 ]
