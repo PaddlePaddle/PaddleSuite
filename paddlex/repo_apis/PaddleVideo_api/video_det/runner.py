@@ -189,17 +189,12 @@ def _extract_eval_metrics(stdout: str) -> dict:
     """
     import re
 
-    patterns = [r"avg_acc1=([\d.]+), avg_acc5=([\d.]+)"]
-    keys = [
-        ["val.top1", "val.top5"],
-    ]
-
-    metric_dict = dict()
-    for pattern, key in zip(patterns, keys):
-        pattern = re.compile(pattern)
-        for line in stdout.splitlines():
-            match = pattern.search(line)
-            if match:
-                for k, v in zip(key, map(float, match.groups())):
-                    metric_dict[k] = v
+    pattern = r"mAP:\s*([\d.]+)"
+    compiled_pattern = re.compile(pattern)
+    metric_dict = {}
+    for line in stdout.splitlines():
+        match = compiled_pattern.search(line)
+        if match:
+            fscore_avg_value = float(match.group(1))
+            metric_dict["mAP"] = fscore_avg_value
     return metric_dict

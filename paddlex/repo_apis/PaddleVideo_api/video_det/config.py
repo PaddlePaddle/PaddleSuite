@@ -88,7 +88,8 @@ class VideoDetConfig(BaseConfig):
                 "DATASET.valid.image_dir": dataset_path,
                 "DATASET.valid.file_path": os.path.join(dataset_path, "val.txt"),
                 "DATASET.test.image_dir": dataset_path,
-                "DATASET.test.file_path": os.path.join(dataset_path, "test.txt"),
+                "DATASET.test.file_path": os.path.join(dataset_path, "val.txt"),
+                "METRIC.gt_folder": os.path.join(dataset_path, "val.txt"),
             }
         else:
             raise ValueError(f"{repr(dataset_type)} is not supported.")
@@ -329,6 +330,7 @@ indicating that no pretrained model to be used."
             save_dir (str): the path to save outputs.
         """
         self.update({"output_dir": abspath(save_dir)})
+        self.update({"METRIC.result_path": abspath(save_dir)})
 
     def update_log_interval(self, log_interval: int):
         """update log interval(steps)

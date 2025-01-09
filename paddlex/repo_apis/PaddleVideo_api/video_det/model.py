@@ -19,6 +19,7 @@ from ...base.utils.arg import CLIArgument
 from ...base.utils.subprocess import CompletedProcess
 from ....utils.misc import abspath
 from ....utils import logging
+from ....utils.errors import raise_unsupported_api_error
 
 
 class VideoDetModel(BaseModel):
@@ -292,55 +293,6 @@ class VideoDetModel(BaseModel):
         use_vdl: bool = True,
         save_dir: str = None,
         **kwargs,
-    ) -> CompletedProcess:
-        """compression model
-
-        Args:
-            weight_path (str): the path to weight file of model.
-            batch_size (int, optional): the batch size value of compression training. Defaults to None.
-            learning_rate (float, optional): the learning rate value of compression training. Defaults to None.
-            epochs_iters (int, optional): the epochs or iters of compression training. Defaults to None.
-            device (str, optional): the device to run compression training. Defaults to 'gpu'.
-            use_vdl (bool, optional): whether or not to use VisualDL. Defaults to True.
-            save_dir (str, optional): the directory to save output. Defaults to None.
-
-        Returns:
-            CompletedProcess: the result of compression subprocess execution.
-        """
-
-        with self._create_new_config_file() as config_path:
-            # Update YAML config file
-            config = self.config.copy()
-            config._update_amp(None)
-            config.update_device(device)
-            config._update_use_vdl(use_vdl)
-            config._update_slim_config(self.model_info["auto_compression_config_path"])
-            config.update_pretrained_weights(weight_path)
-
-            if batch_size is not None:
-                config.update_batch_size(batch_size)
-            if learning_rate is not None:
-                config.update_learning_rate(learning_rate)
-            if epochs_iters is not None:
-                config._update_epochs(epochs_iters)
-            if save_dir is not None:
-                save_dir = abspath(save_dir)
-            else:
-                # `save_dir` is None
-                save_dir = abspath(config.get_train_save_dir())
-            config._update_output_dir(save_dir)
-            config.dump(config_path)
-
-            export_cli_args = []
-            export_cli_args.append(
-                CLIArgument(
-                    "-o",
-                    f"Global.save_inference_dir={os.path.join(save_dir, 'export')}",
-                )
-            )
-
-            self._assert_empty_kwargs(kwargs)
-
-            return self.runner.compression(
-                config_path, [], export_cli_args, device, save_dir
-            )
+    ):
+        """compression model"""
+        raise_unsupported_api_error("compression", self.__class__)

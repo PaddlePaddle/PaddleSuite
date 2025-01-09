@@ -27,8 +27,8 @@ MODEL: #MODEL field
 DATASET: #DATASET field
     batch_size: 8 #Mandatory, bacth size
     num_workers: 4 #Mandatory, XXX the number of subprocess on each GPU.
-    test_batch_size: 8
-    valid_batch_size: 8
+    test_batch_size: 4
+    valid_batch_size: 4
     train:
         format: "UCF24Dataset" #Mandatory, indicate the type of dataset, associate to the 'paddlevidel/loader/dateset'
         image_dir: "data/ucf24" #Mandatory, raw data folder path
@@ -88,6 +88,7 @@ METRIC:
     result_path: 'output/detections_test'
     threshold: 0.5
     log_interval: 100
+    for_paddlex: True
 
 INFERENCE:
     name: 'YOWO_Inference_helper'
