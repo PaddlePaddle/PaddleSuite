@@ -9,6 +9,7 @@ save_dir: output
 snapshot_epoch: 1
 print_flops: false
 print_params: false
+use_ema: true
 
 
 # Dataset
