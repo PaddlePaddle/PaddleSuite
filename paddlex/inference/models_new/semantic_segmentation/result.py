@@ -26,6 +26,8 @@ class SegResult(BaseCVResult):
         """apply"""
         seg_map = self["pred"]
         pc_map = self.get_pseudo_color_map(seg_map[0])
+        if pc_map.mode == "P":
+            pc_map = pc_map.convert("RGB")
         return pc_map
 
     def get_pseudo_color_map(self, pred):
