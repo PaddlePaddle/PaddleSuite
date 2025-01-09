@@ -72,4 +72,6 @@ MODELS = [
     "BlazeFace-FPN-SSH",
     "PP-YOLOE_plus-S_face",
     "PP-YOLOE-R_L",
+    "RT-DETR-L_wired_table_cell_det",
+    "RT-DETR-L_wireless_table_cell_det",
 ]
