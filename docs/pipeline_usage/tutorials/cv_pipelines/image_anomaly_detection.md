@@ -65,8 +65,8 @@ paddlex --pipeline anomaly_detection --input uad_grid.png --device gpu:0
 
 运行后，得到的结果为：
 
-```
-{'input_path': 'uad_grid.png'}
+```bash
+{'input_path': 'uad_grid.png', 'pred': '...'}
 ```
 <img src="https://raw.githubusercontent.com/cuicheng01/PaddleX_doc_images/main/images/pipelines/image_anomaly_detection/02.png">
 
@@ -232,6 +232,11 @@ for res in output:
 </thead>
 <tbody>
 <tr>
+<td><code>logId</code></td>
+<td><code>string</code></td>
+<td>请求的UUID。</td>
+</tr>
+<tr>
 <td><code>errorCode</code></td>
 <td><code>integer</code></td>
 <td>错误码。固定为<code>0</code>。</td>
@@ -241,9 +246,13 @@ for res in output:
 <td><code>string</code></td>
 <td>错误说明。固定为<code>"Success"</code>。</td>
 </tr>
+<tr>
+<td><code>result</code></td>
+<td><code>object</code></td>
+<td>操作结果。</td>
+</tr>
 </tbody>
 </table>
-<p>响应体还可能有<code>result</code>属性，类型为<code>object</code>，其中存储操作结果信息。</p>
 <ul>
 <li>当请求处理未成功时，响应体的属性如下：</li>
 </ul>
@@ -256,6 +265,11 @@ for res in output:
 </tr>
 </thead>
 <tbody>
+<tr>
+<td><code>logId</code></td>
+<td><code>string</code></td>
+<td>请求的UUID。</td>
+</tr>
 <tr>
 <td><code>errorCode</code></td>
 <td><code>integer</code></td>

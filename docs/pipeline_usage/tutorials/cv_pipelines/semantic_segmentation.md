@@ -241,9 +241,7 @@ paddlex --pipeline semantic_segmentation --input makassaridn-road_demo.png --dev
 
 运行后，得到的结果为：
 
-```
-{'input_path': 'general_object_detection_002.png'}
-```
+{'input_path': 'makassaridn-road_demo.png', 'pred': '...'}
 <img src="https://raw.githubusercontent.com/cuicheng01/PaddleX_doc_images/main/images/pipelines/semantic_segmentation/03.png">
 可视化图片默认不进行保存，您可以通过 `--save_path` 自定义保存路径，随后所有结果将被保存在指定路径下。
 
@@ -407,6 +405,11 @@ for res in output:
 </thead>
 <tbody>
 <tr>
+<td><code>logId</code></td>
+<td><code>string</code></td>
+<td>请求的UUID。</td>
+</tr>
+<tr>
 <td><code>errorCode</code></td>
 <td><code>integer</code></td>
 <td>错误码。固定为<code>0</code>。</td>
@@ -416,9 +419,13 @@ for res in output:
 <td><code>string</code></td>
 <td>错误说明。固定为<code>"Success"</code>。</td>
 </tr>
+<tr>
+<td><code>result</code></td>
+<td><code>object</code></td>
+<td>操作结果。</td>
+</tr>
 </tbody>
 </table>
-<p>响应体还可能有<code>result</code>属性，类型为<code>object</code>，其中存储操作结果信息。</p>
 <ul>
 <li>当请求处理未成功时，响应体的属性如下：</li>
 </ul>
@@ -431,6 +438,11 @@ for res in output:
 </tr>
 </thead>
 <tbody>
+<tr>
+<td><code>logId</code></td>
+<td><code>string</code></td>
+<td>请求的UUID。</td>
+</tr>
 <tr>
 <td><code>errorCode</code></td>
 <td><code>integer</code></td>

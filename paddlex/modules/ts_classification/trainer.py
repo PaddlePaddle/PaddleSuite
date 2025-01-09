@@ -34,7 +34,21 @@ class TSCLSTrainer(BaseTrainer):
         os.makedirs(self.global_config.output, exist_ok=True)
         self.update_config()
         self.dump_config()
-        train_result = self.pdx_model.train(**self.get_train_kwargs())
+        train_args = self.get_train_kwargs()
+        export_with_pir = self.global_config.get("export_with_pir", False) or os.getenv(
+            "FLAGS_json_format_model"
+        ) in ["1", "True"]
+        train_args.update(
+            {
+                "uniform_output_enabled": self.train_config.get(
+                    "uniform_output_enabled", True
+                ),
+                "export_with_pir": export_with_pir,
+            }
+        )
+        if self.benchmark_config is not None:
+            train_args.update({"benchmark": self.benchmark_config})
+        train_result = self.pdx_model.train(**train_args)
         assert (
             train_result.returncode == 0
         ), f"Encountered an unexpected error({train_result.returncode}) in \
@@ -77,6 +91,8 @@ training!"
             self.pdx_config.update_epochs(self.train_config.epochs_iters)
         if self.train_config.log_interval is not None:
             self.pdx_config.update_log_interval(self.train_config.log_interval)
+        if self.train_config.get("dy2st", False):
+            self.pdx_config.update_to_static(self.train_config.dy2st)
         if self.global_config.output is not None:
             self.pdx_config.update_save_dir(self.global_config.output)
 

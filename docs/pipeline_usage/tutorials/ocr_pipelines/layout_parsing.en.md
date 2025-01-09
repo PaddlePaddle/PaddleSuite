@@ -64,6 +64,14 @@ The <b>General Layout Parsing Pipeline</b> includes modules for table structure 
 <td>An efficient layout area localization model trained on the PubLayNet dataset based on PicoDet-1x can locate five types of areas, including text, titles, tables, images, and lists.</td>
 </tr>
 <tr>
+<td>PicoDet_layout_1x_table</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PicoDet_layout_1x_table_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PicoDet_layout_1x_table_pretrained.pdparams">Trained Model</a></td>
+<td>95.7</td>
+<td>12.623</td>
+<td>90.8934</td>
+<td>7.4 M</td>
+<td>An efficient layout area localization model trained on the PubLayNet dataset based on PicoDet-1x can locate one type of tables.</td>
+</tr>
+<tr>
 <td>PicoDet-S_layout_3cls</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PicoDet-S_layout_3cls_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PicoDet-S_layout_3cls_pretrained.pdparams">Trained Model</a></td>
 <td>87.1</td>
 <td>13.5</td>
@@ -533,7 +541,7 @@ Below are the API references and multi-language service invocation examples:
 <ul>
 <li>The HTTP request method is POST.</li>
 <li>The request body and the response body are both JSON data (JSON objects).</li>
-<li>When the request is processed successfully, the response status code is <code>200</code>, and the response body attributes are as follows:</li>
+<li>When the request is processed successfully, the response status code is <code>200</code>, and the response body properties are as follows:</li>
 </ul>
 <table>
 <thead>
@@ -544,6 +552,11 @@ Below are the API references and multi-language service invocation examples:
 </tr>
 </thead>
 <tbody>
+<tr>
+<td><code>logId</code></td>
+<td><code>string</code></td>
+<td>UUID for the request.</td>
+</tr>
 <tr>
 <td><code>errorCode</code></td>
 <td><code>integer</code></td>
@@ -554,11 +567,15 @@ Below are the API references and multi-language service invocation examples:
 <td><code>string</code></td>
 <td>Error description. Fixed as <code>"Success"</code>.</td>
 </tr>
+<tr>
+<td><code>result</code></td>
+<td><code>object</code></td>
+<td>Operation result.</td>
+</tr>
 </tbody>
 </table>
-<p>The response body may also have a <code>result</code> attribute, of type <code>object</code>, which stores the operation result information.</p>
 <ul>
-<li>When the request is not processed successfully, the response body attributes are as follows:</li>
+<li>When the request is not processed successfully, the response body properties are as follows:</li>
 </ul>
 <table>
 <thead>
@@ -569,6 +586,11 @@ Below are the API references and multi-language service invocation examples:
 </tr>
 </thead>
 <tbody>
+<tr>
+<td><code>logId</code></td>
+<td><code>string</code></td>
+<td>UUID for the request.</td>
+</tr>
 <tr>
 <td><code>errorCode</code></td>
 <td><code>integer</code></td>
@@ -588,7 +610,7 @@ Below are the API references and multi-language service invocation examples:
 <p>Performs layout parsing.</p>
 <p><code>POST /layout-parsing</code></p>
 <ul>
-<li>Request body attributes:</li>
+<li>Request body properties:</li>
 </ul>
 <table>
 <thead>
@@ -609,7 +631,7 @@ Below are the API references and multi-language service invocation examples:
 <tr>
 <td><code>fileType</code></td>
 <td><code>integer</code></td>
-<td>File type. <code>0</code> indicates a PDF file, <code>1</code> indicates an image file. If this attribute is not present in the request body, the service will attempt to infer the file type automatically based on the URL.</td>
+<td>File type. <code>0</code> indicates a PDF file, and <code>1</code> indicates an image file. If this property is not present in the request body, the service will attempt to infer the file type automatically based on the URL.</td>
 <td>No</td>
 </tr>
 <tr>
@@ -619,7 +641,7 @@ Below are the API references and multi-language service invocation examples:
 <td>No</td>
 </tr>
 <tr>
-<td><code>useImgUnwrapping</code></td>
+<td><code>useImgUnwarping</code></td>
 <td><code>boolean</code></td>
 <td>Whether to enable text image rectification. This function is enabled by default.</td>
 <td>No</td>
@@ -638,7 +660,7 @@ Below are the API references and multi-language service invocation examples:
 </tr>
 </tbody>
 </table>
-<p>Attributes of <code>inferenceParams</code>:</p>
+<p>properties of <code>inferenceParams</code>:</p>
 <table>
 <thead>
 <tr>
@@ -658,7 +680,7 @@ Below are the API references and multi-language service invocation examples:
 </tbody>
 </table>
 <ul>
-<li>When the request is processed successfully, the <code>result</code> of the response body has the following attributes:</li>
+<li>When the request is processed successfully, the <code>result</code> of the response body has the following properties:</li>
 </ul>
 <table>
 <thead>
@@ -674,9 +696,14 @@ Below are the API references and multi-language service invocation examples:
 <td><code>array</code></td>
 <td>Layout parsing results. The array length is 1 (for image input) or the smaller of the number of document pages and 10 (for PDF input). For PDF input, each element in the array represents the processing result of each page in the PDF file.</td>
 </tr>
+<tr>
+<td><code>dataInfo</code></td>
+<td><code>object</code></td>
+<td>Information about the input data.</td>
+</tr>
 </tbody>
 </table>
-<p>Each element in <code>layoutParsingResults</code> is an <code>object</code> with the following attributes:</p>
+<p>Each element in <code>layoutParsingResults</code> is an <code>object</code> with the following properties:</p>
 <table>
 <thead>
 <tr>
@@ -693,7 +720,7 @@ Below are the API references and multi-language service invocation examples:
 </tr>
 </tbody>
 </table>
-<p>Each element in <code>layoutElements</code> is an <code>object</code> with the following attributes:</p>
+<p>Each element in <code>layoutElements</code> is an <code>object</code> with the following properties:</p>
 <table>
 <thead>
 <tr>
@@ -741,25 +768,22 @@ Below are the API references and multi-language service invocation examples:
 <pre><code class="language-python">import base64
 import requests
 
-API_URL = &quot;http://localhost:8080/layout-parsing&quot; # 服务URL
+API_URL = &quot;http://localhost:8080/layout-parsing&quot;
 
-# 对本地图像进行Base64编码
 with open(image_path, &quot;rb&quot;) as file:
     image_bytes = file.read()
     image_data = base64.b64encode(image_bytes).decode(&quot;ascii&quot;)
 
 payload = {
-    &quot;file&quot;: image_data, # Base64编码的文件内容或者文件URL
+    &quot;file&quot;: image_data,
     &quot;fileType&quot;: 1,
     &quot;useImgOrientationCls&quot;: True,
-    &quot;useImgUnwrapping&quot;: True,
+    &quot;useImgUnwarping&quot;: True,
     &quot;useSealTextDet&quot;: True,
 }
 
-# 调用API
 response = requests.post(API_URL, json=payload)
 
-# 处理接口返回数据
 assert response.status_code == 200
 result = response.json()[&quot;result&quot;]
 print(&quot;\nDetected layout elements:&quot;)

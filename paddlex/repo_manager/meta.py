@@ -26,13 +26,14 @@ REPO_NAMES = [
     "PaddleNLP",
     "PaddleTS",
     "Paddle3D"
+    "PaddleVideo",
 ]
 
 REPO_META = {
     "PaddleSeg": {
         "git_path": "/PaddlePaddle/PaddleSeg.git",
         "platform": "github",
-        "branch": "release/2.10",
+        "branch": "develop",
         "pkg_name": "paddleseg",
         "lib_name": "paddleseg",
         "pdx_pkg_name": "PaddleSeg_api",
@@ -43,7 +44,7 @@ REPO_META = {
     "PaddleClas": {
         "git_path": "/PaddlePaddle/PaddleClas.git",
         "platform": "github",
-        "branch": "release/2.6",
+        "branch": "develop",
         "pkg_name": "paddleclas",
         "lib_name": "paddleclas",
         "pdx_pkg_name": "PaddleClas_api",
@@ -55,7 +56,7 @@ REPO_META = {
     "PaddleDetection": {
         "git_path": "/PaddlePaddle/PaddleDetection.git",
         "platform": "github",
-        "branch": "release/2.8",
+        "branch": "develop",
         "pkg_name": "paddledet",
         "lib_name": "ppdet",
         "pdx_pkg_name": "PaddleDetection_api",
@@ -65,7 +66,7 @@ REPO_META = {
     "PaddleOCR": {
         "git_path": "/PaddlePaddle/PaddleOCR.git",
         "platform": "github",
-        "branch": "release/2.9",
+        "branch": "main",
         "pkg_name": "paddleocr",
         "lib_name": "paddleocr",
         "pdx_pkg_name": "PaddleOCR_api",
@@ -142,6 +143,18 @@ REPO_META = {
         "path_env": "PADDLE_PDX_PADDLE3D_PATH",
         'requires': ['PaddleSeg', 'PaddleDetection'],
         'pdx_pkg_deps': ['nuscenes-devkit', 'pyquaternion'],
+    "PaddleVideo": {
+        "git_path": "/PaddlePaddle/PaddleVideo.git",
+        "platform": "github",
+        "branch": "develop",
+        "pkg_name": "paddlevideo",
+        "lib_name": "ppvideo",
+        "pdx_pkg_name": "PaddleVideo_api",
+        "editable": False,
+        "extra_req_files": [
+            "requirements_paddlex.txt",
+        ],
+        "path_env": "PADDLE_PDX_PADDLEVIDEO_PATH",
     },
 }
 

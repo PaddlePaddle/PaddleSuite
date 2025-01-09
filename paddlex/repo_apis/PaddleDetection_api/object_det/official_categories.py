@@ -25,6 +25,9 @@ official_categories = {
         {"name": "Table", "id": 3},
         {"name": "Figure", "id": 4},
     ],
+    "PicoDet_layout_1x_table": [
+        {"name": "Table", "id": 0},
+    ],
     "PicoDet-S_layout_3cls": [
         {"name": "image", "id": 0},
         {"name": "table", "id": 1},
@@ -133,4 +136,8 @@ official_categories = {
         {"name": "bus", "id": 8},
         {"name": "motorcycle", "id": 9},
     ],
+    "BlazeFace": [{"name": "face", "id": 0}],
+    "BlazeFace-FPN-SSH": [{"name": "face", "id": 0}],
+    "PicoDet_LCNet_x2_5_face": [{"name": "face", "id": 0}],
+    "PP-YOLOE_plus-S_face": [{"name": "face", "id": 0}],
 }

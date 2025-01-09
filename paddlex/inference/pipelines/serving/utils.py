@@ -19,7 +19,18 @@ import os
 import re
 import uuid
 from functools import partial
-from typing import Awaitable, Callable, List, Literal, Optional, TypeVar, Final, Tuple
+from typing import (
+    Awaitable,
+    Callable,
+    List,
+    Literal,
+    Optional,
+    TypeVar,
+    Final,
+    Tuple,
+    overload,
+    Union,
+)
 from urllib.parse import parse_qs, urlparse
 
 import aiohttp
@@ -31,6 +42,8 @@ import yarl
 from PIL import Image
 from typing_extensions import ParamSpec, assert_never
 
+from .models import ImageInfo, PDFInfo, PDFPageInfo
+
 FileType = Literal["IMAGE", "PDF"]
 
 _P = ParamSpec("_P")
@@ -38,10 +51,6 @@ _R = TypeVar("_R")
 
 
 def generate_log_id() -> str:
-    return str(uuid.uuid4())
-
-
-def generate_request_id() -> str:
     return str(uuid.uuid4())
 
 
@@ -112,7 +121,7 @@ def image_to_bytes(image: Image.Image, format: str = "JPEG") -> bytes:
     return img_bytes
 
 
-def image_array_to_bytes(image: np.ndarray, ext: str = ".jpg") -> str:
+def image_array_to_bytes(image: np.ndarray, ext: str = ".jpg") -> bytes:
     image = cv2.imencode(ext, image)[1]
     return image.tobytes()
 
@@ -132,10 +141,10 @@ def base64_encode(data: bytes) -> str:
 
 
 def read_pdf(
-    bytes_: bytes, resize: bool = False, max_num_imgs: Optional[int] = None
-) -> List[np.ndarray]:
+    bytes_: bytes, max_num_imgs: Optional[int] = None
+) -> Tuple[List[np.ndarray], PDFInfo]:
     images: List[np.ndarray] = []
-    img_size = None
+    page_info_list: List[PDFPageInfo] = []
     with fitz.open("pdf", bytes_) as doc:
         for page in doc:
             if max_num_imgs is not None and len(images) >= max_num_imgs:
@@ -149,37 +158,55 @@ def read_pdf(
                 pixmap.h, pixmap.w, pixmap.n
             )
             image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
-            if resize:
-                if img_size is None:
-                    img_size = (image.shape[1], image.shape[0])
-                else:
-                    if (image.shape[1], image.shape[0]) != img_size:
-                        image = cv2.resize(image, img_size)
             images.append(image)
-    return images
+            page_info = PDFPageInfo(
+                width=pixmap.w,
+                height=pixmap.h,
+            )
+            page_info_list.append(page_info)
+    pdf_info = PDFInfo(
+        numPages=len(page_info_list),
+        pages=page_info_list,
+    )
+    return images, pdf_info
+
+
+@overload
+def file_to_images(
+    file_bytes: bytes,
+    file_type: Literal["IMAGE"],
+    *,
+    max_num_imgs: Optional[int] = ...,
+) -> Tuple[List[np.ndarray], ImageInfo]: ...
+
+
+@overload
+def file_to_images(
+    file_bytes: bytes,
+    file_type: Literal["PDF"],
+    *,
+    max_num_imgs: Optional[int] = ...,
+) -> Tuple[List[np.ndarray], PDFInfo]: ...
 
 
 def file_to_images(
     file_bytes: bytes,
     file_type: Literal["IMAGE", "PDF"],
     *,
-    max_img_size: Tuple[int, int],
-    max_num_imgs: int,
-) -> List[np.ndarray]:
+    max_num_imgs: Optional[int] = None,
+) -> Tuple[List[np.ndarray], Union[ImageInfo, PDFInfo]]:
     if file_type == "IMAGE":
         images = [image_bytes_to_array(file_bytes)]
+        data_info = get_image_info(images[0])
     elif file_type == "PDF":
-        images = read_pdf(file_bytes, resize=True, max_num_imgs=max_num_imgs)
+        images, data_info = read_pdf(file_bytes, max_num_imgs=max_num_imgs)
     else:
         assert_never(file_type)
-    h, w = images[0].shape[0:2]
-    if w > max_img_size[1] or h > max_img_size[0]:
-        if w / h > max_img_size[0] / max_img_size[1]:
-            factor = max_img_size[0] / w
-        else:
-            factor = max_img_size[1] / h
-        images = [cv2.resize(img, (int(factor * w), int(factor * h))) for img in images]
-    return images
+    return images, data_info
+
+
+def get_image_info(image: np.ndarray) -> ImageInfo:
+    return ImageInfo(width=image.shape[1], height=image.shape[0])
 
 
 def call_async(

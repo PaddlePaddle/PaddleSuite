@@ -48,7 +48,6 @@ class BaseRunner(metaclass=abc.ABCMeta):
             runner_root_path (str): Path of the directory where the scripts reside.
         """
         super().__init__()
-
         self.runner_root_path = abspath(runner_root_path)
         # Path to python interpreter
         self.python = sys.executable
@@ -205,6 +204,8 @@ class BaseRunner(metaclass=abc.ABCMeta):
                 new_env["ASCEND_RT_VISIBLE_DEVICES"] = dev_ids
             elif device == "mlu":
                 new_env["MLU_VISIBLE_DEVICES"] = dev_ids
+            elif device == "gcu":
+                new_env["TOPS_VISIBLE_DEVICES"] = dev_ids
             else:
                 new_env["CUDA_VISIBLE_DEVICES"] = dev_ids
             return args, new_env

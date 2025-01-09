@@ -91,6 +91,17 @@ class TextRecConfig(BaseConfig):
                 "Global.character_dict_path": os.path.join(dataset_path, "dict.txt"),
             }
             self.update(_cfg)
+        elif dataset_type == "SimpleDataSet":
+            _cfg = {
+                "Train.dataset.name": dataset_type,
+                "Train.dataset.data_dir": dataset_path,
+                "Train.dataset.label_file_list": [train_list_path],
+                "Eval.dataset.name": "SimpleDataSet",
+                "Eval.dataset.data_dir": dataset_path,
+                "Eval.dataset.label_file_list": [os.path.join(dataset_path, "val.txt")],
+                "Global.character_dict_path": os.path.join(dataset_path, "dict.txt"),
+            }
+            self.update(_cfg)
         elif dataset_type == "LaTeXOCRDataSet":
             _cfg = {
                 "Train.dataset.name": dataset_type,
@@ -106,6 +117,14 @@ class TextRecConfig(BaseConfig):
             self.update(_cfg)
         else:
             raise ValueError(f"{repr(dataset_type)} is not supported.")
+
+    def update_dataset_by_list(self, label_file_list, ratio_list):
+        _cfg = {
+            "Train.dataset.name": "MSTextRecDataset",
+            "Train.dataset.label_file_list": label_file_list,
+            "Train.dataset.ratio_list": ratio_list,
+        }
+        self.update(_cfg)
 
     def update_batch_size(self, batch_size: int, mode: str = "train"):
         """update batch size setting
@@ -228,6 +247,7 @@ class TextRecConfig(BaseConfig):
             "Global.use_xpu": False,
             "Global.use_npu": False,
             "Global.use_mlu": False,
+            "Global.use_gcu": False,
         }
 
         device_cfg = {
@@ -236,6 +256,7 @@ class TextRecConfig(BaseConfig):
             "xpu": {"Global.use_xpu": True},
             "mlu": {"Global.use_mlu": True},
             "npu": {"Global.use_npu": True},
+            "gcu": {"Global.use_gcu": True},
         }
         default_cfg.update(device_cfg[device])
         self.update(default_cfg)

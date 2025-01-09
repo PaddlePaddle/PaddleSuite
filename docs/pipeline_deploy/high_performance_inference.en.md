@@ -333,7 +333,7 @@ PaddleX combines model information and runtime environment information to provid
 
   <tr>
     <td>Formula Recognition</td>
-    <td>❌</td>
+    <td>✅</td>
   </tr>
 
   <tr>
@@ -354,12 +354,12 @@ PaddleX combines model information and runtime environment information to provid
   <tr>
     <td rowspan="2">Formula Recognition</td>
     <td>Layout Detection</td>
-    <td>❌</td>
+    <td>✅</td>
   </tr>
 
   <tr>
     <td>Formula Recognition</td>
-    <td>❌</td>
+    <td>✅</td>
   </tr>
 
   <tr>

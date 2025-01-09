@@ -12,42 +12,25 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import asyncio
-import os
-from typing import Awaitable, Final, List, Literal, Optional, Tuple, Union
+from typing import List, Literal, Optional, Union
 
-import numpy as np
 from fastapi import FastAPI, HTTPException
-from numpy.typing import ArrayLike
 from pydantic import BaseModel, Field
 from typing_extensions import Annotated, TypeAlias, assert_never
 
 from .....utils import logging
 from .... import results
 from ...ppchatocrv3 import PPChatOCRPipeline
-from ..storage import SupportsGetURL, Storage, create_storage
 from .. import utils as serving_utils
 from ..app import AppConfig, create_app
-from ..models import Response, ResultResponse
-
-_DEFAULT_MAX_IMG_SIZE: Final[Tuple[int, int]] = (2000, 2000)
-_DEFAULT_MAX_NUM_IMGS: Final[int] = 10
+from ..models import NoResultResponse, ResultResponse, DataInfo
+from ._common import ocr as ocr_common
 
 
-FileType: TypeAlias = Literal[0, 1]
-
-
-class InferenceParams(BaseModel):
-    maxLongSide: Optional[Annotated[int, Field(gt=0)]] = None
-
-
-class AnalyzeImagesRequest(BaseModel):
-    file: str
-    fileType: Optional[FileType] = None
+class AnalyzeImagesRequest(ocr_common.InferRequest):
     useImgOrientationCls: bool = True
-    useImgUnwrapping: bool = True
+    useImgUnwarping: bool = True
     useSealTextDet: bool = True
-    inferenceParams: Optional[InferenceParams] = None
 
 
 Point: TypeAlias = Annotated[List[int], Field(min_length=2, max_length=2)]
@@ -77,6 +60,7 @@ class VisionResult(BaseModel):
 class AnalyzeImagesResult(BaseModel):
     visionResults: List[VisionResult]
     visionInfo: dict
+    dataInfo: DataInfo
 
 
 class QianfanParams(BaseModel):
@@ -141,9 +125,9 @@ class ChatRequest(BaseModel):
 
 
 class Prompts(BaseModel):
-    ocr: str
-    table: Optional[str] = None
-    html: Optional[str] = None
+    ocr: List[str]
+    table: Optional[List[str]] = None
+    html: Optional[List[str]] = None
 
 
 class ChatResult(BaseModel):
@@ -164,62 +148,25 @@ def _llm_params_to_dict(llm_params: LLMParams) -> dict:
         assert_never(llm_params.apiType)
 
 
-def _postprocess_image(
-    img: ArrayLike,
-    request_id: str,
-    filename: str,
-    file_storage: Optional[Storage],
-) -> str:
-    key = f"{request_id}/{filename}"
-    ext = os.path.splitext(filename)[1]
-    img = np.asarray(img)
-    img_bytes = serving_utils.image_array_to_bytes(img, ext=ext)
-    if file_storage is not None:
-        file_storage.set(key, img_bytes)
-        if isinstance(file_storage, SupportsGetURL):
-            return file_storage.get_url(key)
-    return serving_utils.base64_encode(img_bytes)
-
-
 def create_pipeline_app(pipeline: PPChatOCRPipeline, app_config: AppConfig) -> FastAPI:
     app, ctx = create_app(
         pipeline=pipeline, app_config=app_config, app_aiohttp_session=True
     )
 
-    if ctx.config.extra and "file_storage" in ctx.config.extra:
-        ctx.extra["file_storage"] = create_storage(ctx.config.extra["file_storage"])
-    else:
-        ctx.extra["file_storage"] = None
-    ctx.extra.setdefault("max_img_size", _DEFAULT_MAX_IMG_SIZE)
-    ctx.extra.setdefault("max_num_imgs", _DEFAULT_MAX_NUM_IMGS)
+    ocr_common.update_app_context(ctx)
 
     @app.post(
         "/chatocr-vision",
         operation_id="analyzeImages",
-        responses={422: {"model": Response}},
+        responses={422: {"model": NoResultResponse}},
+        response_model_exclude_none=True,
     )
     async def _analyze_images(
         request: AnalyzeImagesRequest,
     ) -> ResultResponse[AnalyzeImagesResult]:
         pipeline = ctx.pipeline
-        aiohttp_session = ctx.aiohttp_session
 
-        request_id = serving_utils.generate_request_id()
-
-        if request.fileType is None:
-            if serving_utils.is_url(request.file):
-                try:
-                    file_type = serving_utils.infer_file_type(request.file)
-                except Exception as e:
-                    logging.exception(e)
-                    raise HTTPException(
-                        status_code=422,
-                        detail="The file type cannot be inferred from the URL. Please specify the file type explicitly.",
-                    )
-            else:
-                raise HTTPException(status_code=422, detail="Unknown file type")
-        else:
-            file_type = "PDF" if request.fileType == 0 else "IMAGE"
+        log_id = serving_utils.generate_log_id()
 
         if request.inferenceParams:
             max_long_side = request.inferenceParams.maxLongSide
@@ -229,53 +176,19 @@ def create_pipeline_app(pipeline: PPChatOCRPipeline, app_config: AppConfig) -> F
                     detail="`max_long_side` is currently not supported.",
                 )
 
-        try:
-            file_bytes = await serving_utils.get_raw_bytes(
-                request.file, aiohttp_session
-            )
-            images = await serving_utils.call_async(
-                serving_utils.file_to_images,
-                file_bytes,
-                file_type,
-                max_img_size=ctx.extra["max_img_size"],
-                max_num_imgs=ctx.extra["max_num_imgs"],
-            )
+        images, data_info = await ocr_common.get_images(request, ctx)
 
+        try:
             result = await pipeline.call(
                 pipeline.pipeline.visual_predict,
                 images,
                 use_doc_image_ori_cls_model=request.useImgOrientationCls,
-                use_doc_image_unwarp_model=request.useImgUnwrapping,
+                use_doc_image_unwarp_model=request.useImgUnwarping,
                 use_seal_text_det_model=request.useSealTextDet,
             )
 
             vision_results: List[VisionResult] = []
             for i, (img, item) in enumerate(zip(images, result[0])):
-                pp_img_futures: List[Awaitable] = []
-                future = serving_utils.call_async(
-                    _postprocess_image,
-                    img,
-                    request_id=request_id,
-                    filename=f"input_image_{i}.jpg",
-                    file_storage=ctx.extra["file_storage"],
-                )
-                pp_img_futures.append(future)
-                future = serving_utils.call_async(
-                    _postprocess_image,
-                    item["ocr_result"].img,
-                    request_id=request_id,
-                    filename=f"ocr_image_{i}.jpg",
-                    file_storage=ctx.extra["file_storage"],
-                )
-                pp_img_futures.append(future)
-                future = serving_utils.call_async(
-                    _postprocess_image,
-                    item["layout_result"].img,
-                    request_id=request_id,
-                    filename=f"layout_image_{i}.jpg",
-                    file_storage=ctx.extra["file_storage"],
-                )
-                pp_img_futures.append(future)
                 texts: List[Text] = []
                 for poly, text, score in zip(
                     item["ocr_result"]["dt_polys"],
@@ -287,7 +200,14 @@ def create_pipeline_app(pipeline: PPChatOCRPipeline, app_config: AppConfig) -> F
                     Table(bbox=r["layout_bbox"], html=r["html"])
                     for r in item["table_result"]
                 ]
-                input_img, ocr_img, layout_img = await asyncio.gather(*pp_img_futures)
+                input_img, ocr_img, layout_img = await ocr_common.postprocess_images(
+                    log_id=log_id,
+                    index=i,
+                    app_context=ctx,
+                    input_image=img,
+                    ocr_image=item["ocr_result"].img,
+                    layout_image=item["layout_result"].img,
+                )
                 vision_result = VisionResult(
                     texts=texts,
                     tables=tables,
@@ -297,24 +217,24 @@ def create_pipeline_app(pipeline: PPChatOCRPipeline, app_config: AppConfig) -> F
                 )
                 vision_results.append(vision_result)
 
-            return ResultResponse(
-                logId=serving_utils.generate_log_id(),
-                errorCode=0,
-                errorMsg="Success",
+            return ResultResponse[AnalyzeImagesResult](
+                logId=log_id,
                 result=AnalyzeImagesResult(
                     visionResults=vision_results,
                     visionInfo=result[1],
+                    dataInfo=data_info,
                 ),
             )
 
-        except Exception as e:
-            logging.exception(e)
+        except Exception:
+            logging.exception("Unexpected exception")
             raise HTTPException(status_code=500, detail="Internal server error")
 
     @app.post(
         "/chatocr-vector",
         operation_id="buildVectorStore",
-        responses={422: {"model": Response}},
+        responses={422: {"model": NoResultResponse}},
+        response_model_exclude_none=True,
     )
     async def _build_vector_store(
         request: BuildVectorStoreRequest,
@@ -336,21 +256,20 @@ def create_pipeline_app(pipeline: PPChatOCRPipeline, app_config: AppConfig) -> F
                 pipeline.pipeline.build_vector, **kwargs
             )
 
-            return ResultResponse(
+            return ResultResponse[BuildVectorStoreResult](
                 logId=serving_utils.generate_log_id(),
-                errorCode=0,
-                errorMsg="Success",
                 result=BuildVectorStoreResult(vectorStore=result["vector"]),
             )
 
-        except Exception as e:
-            logging.exception(e)
+        except Exception:
+            logging.exception("Unexpected exception")
             raise HTTPException(status_code=500, detail="Internal server error")
 
     @app.post(
         "/chatocr-retrieval",
         operation_id="retrieveKnowledge",
-        responses={422: {"model": Response}},
+        responses={422: {"model": NoResultResponse}},
+        response_model_exclude_none=True,
     )
     async def _retrieve_knowledge(
         request: RetrieveKnowledgeRequest,
@@ -371,21 +290,19 @@ def create_pipeline_app(pipeline: PPChatOCRPipeline, app_config: AppConfig) -> F
                 pipeline.pipeline.retrieval, **kwargs
             )
 
-            return ResultResponse(
+            return ResultResponse[RetrieveKnowledgeResult](
                 logId=serving_utils.generate_log_id(),
-                errorCode=0,
-                errorMsg="Success",
                 result=RetrieveKnowledgeResult(retrievalResult=result["retrieval"]),
             )
 
-        except Exception as e:
-            logging.exception(e)
+        except Exception:
+            logging.exception("Unexpected exception")
             raise HTTPException(status_code=500, detail="Internal server error")
 
     @app.post(
         "/chatocr-chat",
         operation_id="chat",
-        responses={422: {"model": Response}},
+        responses={422: {"model": NoResultResponse}},
         response_model_exclude_none=True,
     )
     async def _chat(
@@ -431,15 +348,13 @@ def create_pipeline_app(pipeline: PPChatOCRPipeline, app_config: AppConfig) -> F
                 prompts=prompts,
             )
 
-            return ResultResponse(
+            return ResultResponse[ChatResult](
                 logId=serving_utils.generate_log_id(),
-                errorCode=0,
-                errorMsg="Success",
                 result=chat_result,
             )
 
-        except Exception as e:
-            logging.exception(e)
+        except Exception:
+            logging.exception("Unexpected exception")
             raise HTTPException(status_code=500, detail="Internal server error")
 
     return app

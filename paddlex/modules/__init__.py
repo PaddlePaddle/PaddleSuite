@@ -109,4 +109,17 @@ from .bev_fusion_3D import (
     BEVFusionTrainer,
     BEVFusionEvaluator,
     BEVFusionExportor,
+
+from .video_classification import (
+    VideoClsDatasetChecker,
+    VideoClsTrainer,
+    VideoClsEvaluator,
+    VideoClsExportor,
+)
+
+from .multilingual_speech_recognition import (
+    WhisperDatasetChecker,
+    WhisperTrainer,
+    WhisperEvaluator,
+    WhisperExportor,
 )

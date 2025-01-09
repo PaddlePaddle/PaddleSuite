@@ -36,6 +36,14 @@ The <b>Seal Recognition</b> pipeline includes a layout area analysis module, a s
 <td>An efficient layout area localization model trained on the PubLayNet dataset based on PicoDet-1x can locate five types of areas, including text, titles, tables, images, and lists.</td>
 </tr>
 <tr>
+<td>PicoDet_layout_1x_table</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PicoDet_layout_1x_table_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PicoDet_layout_1x_table_pretrained.pdparams">Trained Model</a></td>
+<td>95.7</td>
+<td>12.623</td>
+<td>90.8934</td>
+<td>7.4 M</td>
+<td>An efficient layout area localization model trained on the PubLayNet dataset based on PicoDet-1x can locate one type of tables.</td>
+</tr>
+<tr>
 <td>PicoDet-S_layout_3cls</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PicoDet-S_layout_3cls_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PicoDet-S_layout_3cls_pretrained.pdparams">Trained Model</a></td>
 <td>87.1</td>
 <td>13.5</td>
@@ -187,113 +195,135 @@ After running, the result obtained is:
 
 <details><summary>  👉 Click to expand</summary>
 
-<pre><code>{'input_path': 'seal_text_det.png', 'layout_result': {'input_path': 'seal_text_det.png', 'boxes': [{'cls_id': 2, 'label': 'seal', 'score': 0.9813116192817688, 'coordinate': [0, 5.2238655, 639.59766, 637.6985]}]}, 'ocr_result': [{'input_path': PosixPath('/root/.paddlex/temp/tmp19fn93y5.png'), 'dt_polys': [array([[468, 469],
-       [472, 469],
-       [477, 471],
-       [507, 501],
-       [509, 505],
-       [509, 509],
-       [508, 513],
-       [506, 514],
-       [456, 553],
-       [454, 555],
-       [391, 581],
-       [388, 581],
-       [309, 590],
-       [306, 590],
-       [234, 577],
-       [232, 577],
-       [172, 548],
-       [170, 546],
-       [121, 504],
-       [118, 501],
-       [118, 496],
-       [119, 492],
-       [121, 490],
-       [152, 463],
-       [156, 461],
-       [160, 461],
-       [164, 463],
-       [202, 495],
-       [252, 518],
-       [311, 530],
-       [371, 522],
-       [425, 501],
-       [464, 471]]), array([[442, 439],
-       [445, 442],
-       [447, 447],
-       [449, 490],
-       [448, 494],
-       [446, 497],
-       [440, 499],
-       [197, 500],
-       [193, 499],
-       [190, 496],
-       [188, 491],
-       [188, 448],
-       [189, 444],
-       [192, 441],
-       [197, 439],
-       [438, 438]]), array([[465, 341],
-       [470, 344],
-       [472, 346],
-       [476, 356],
-       [476, 419],
-       [475, 424],
-       [472, 428],
-       [467, 431],
-       [462, 433],
-       [175, 434],
-       [170, 433],
-       [166, 430],
-       [163, 426],
-       [161, 420],
-       [161, 354],
-       [162, 349],
-       [165, 345],
-       [170, 342],
-       [175, 340],
-       [460, 340]]), array([[326,  34],
-       [481,  85],
-       [485,  88],
-       [488,  90],
-       [584, 220],
-       [586, 225],
-       [587, 229],
-       [589, 378],
-       [588, 383],
-       [585, 388],
-       [581, 391],
-       [576, 393],
-       [570, 392],
-       [507, 373],
-       [502, 371],
-       [498, 367],
-       [496, 359],
-       [494, 255],
-       [423, 162],
-       [322, 129],
-       [246, 151],
-       [205, 169],
-       [144, 252],
-       [139, 360],
-       [137, 365],
-       [134, 369],
-       [128, 373],
-       [ 66, 391],
-       [ 61, 392],
-       [ 56, 390],
-       [ 51, 387],
-       [ 48, 382],
-       [ 47, 377],
-       [ 49, 230],
-       [ 50, 225],
-       [ 52, 221],
-       [149,  89],
-       [153,  86],
-       [157,  84],
-       [318,  34],
-       [322,  33]])], 'dt_scores': [0.9943362380813267, 0.9994290391836306, 0.9945320407374245, 0.9908104427126033], 'rec_text': ['5263647368706', '吗繁物', '发票专用章', '天津君和缘商贸有限公司'], 'rec_score': [0.9921098351478577, 0.997374951839447, 0.9999369382858276, 0.9901710152626038]}]}
+<pre><code>
+{'input_path': PosixPath('/root/.paddlex/temp/tmpa8eqnpus.png'), 'layout_result': {'input_path': PosixPath('/root/.paddlex/temp/tmpa8eqnpus.png'), 'boxes': [{'cls_id': 2, 'label': 'seal', 'score': 0.9813321828842163, 'coordinate': [0, 5.1820183, 639.59314, 637.7533]}]}, 'ocr_result': {'dt_polys': [array([[166, 468],
+                        [206, 503],
+                    [249, 523],
+                    [312, 535],
+                    [364, 529],
+                    [390, 521],
+                    [428, 505],
+                    [465, 476],
+                    [468, 474],
+                    [473, 474],
+                    [476, 475],
+                    [478, 477],
+                    [508, 507],
+                    [510, 510],
+                    [511, 514],
+                    [509, 518],
+                    [507, 521],
+                    [458, 559],
+                    [455, 560],
+                    [399, 584],
+                    [399, 584],
+                    [369, 591],
+                    [367, 592],
+                    [308, 597],
+                    [305, 596],
+                    [240, 584],
+                    [239, 584],
+                    [220, 577],
+                    [169, 552],
+                    [166, 551],
+                    [120, 510],
+                    [117, 507],
+                    [116, 503],
+                    [117, 499],
+                    [121, 495],
+                    [153, 468],
+                    [156, 467],
+                    [161, 467]]), array([[439, 444],
+                    [443, 444],
+                    [446, 446],
+                    [448, 448],
+                    [450, 451],
+                    [450, 454],
+                    [448, 498],
+                    [448, 502],
+                    [445, 505],
+                    [442, 507],
+                    [439, 507],
+                    [399, 505],
+                    [196, 506],
+                    [192, 505],
+                    [189, 503],
+                    [187, 500],
+                    [187, 497],
+                    [186, 458],
+                    [186, 456],
+                    [187, 451],
+                    [188, 448],
+                    [192, 444],
+                    [194, 444],
+                    [198, 443]]), array([[463, 347],
+                    [468, 347],
+                    [472, 350],
+                    [474, 353],
+                    [476, 360],
+                    [477, 425],
+                    [476, 429],
+                    [474, 433],
+                    [470, 436],
+                    [466, 438],
+                    [463, 438],
+                    [175, 439],
+                    [170, 438],
+                    [166, 435],
+                    [163, 432],
+                    [161, 426],
+                    [161, 361],
+                    [161, 356],
+                    [163, 352],
+                    [167, 349],
+                    [172, 347],
+                    [184, 346],
+                    [186, 346]]), array([[325,  38],
+                    [485,  91],
+                    [489,  94],
+                    [493,  96],
+                    [587, 225],
+                    [588, 230],
+                    [589, 234],
+                    [592, 384],
+                    [591, 389],
+                    [588, 393],
+                    [585, 397],
+                    [581, 399],
+                    [576, 399],
+                    [572, 398],
+                    [508, 380],
+                    [503, 379],
+                    [499, 375],
+                    [498, 370],
+                    [497, 367],
+                    [493, 258],
+                    [428, 171],
+                    [421, 165],
+                    [323, 136],
+                    [225, 165],
+                    [207, 175],
+                    [144, 260],
+                    [141, 365],
+                    [141, 370],
+                    [138, 374],
+                    [134, 378],
+                    [131, 379],
+                    [ 66, 398],
+                    [ 61, 398],
+                    [ 56, 398],
+                    [ 52, 395],
+                    [ 48, 391],
+                    [ 47, 386],
+                    [ 47, 384],
+                    [ 47, 235],
+                    [ 48, 230],
+                    [ 50, 226],
+                    [146,  96],
+                    [151,  92],
+                    [154,  91],
+                    [315,  38],
+                    [320,  37]])], 'dt_scores': [0.99375725701319, 0.9871711582010613, 0.9937523531067023, 0.9911629231838204], 'rec_text': ['5263647368706', '吗繁物', '发票专天津君和缘商贸有限公司'], 'rec_score': [0.9933745265007019, 0.998288631439209, 0.9999362230300903, 0.9923253655433655], 'input_path': PosixPath('/Users/chenghong0temp/tmpa8eqnpus.png')}, 'src_file_name': 'https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/seal_text_det.png', 'page_id': 0}
 </code></pre></details>
 
 <img src="https://raw.githubusercontent.com/cuicheng01/PaddleX_doc_images/main/images/pipelines/seal_recognition/03.png">
@@ -454,6 +484,11 @@ Below are the API references and multi-language service invocation examples:
 </thead>
 <tbody>
 <tr>
+<td><code>logId</code></td>
+<td><code>string</code></td>
+<td>UUID for the request.</td>
+</tr>
+<tr>
 <td><code>errorCode</code></td>
 <td><code>integer</code></td>
 <td>Error code. Fixed as <code>0</code>.</td>
@@ -463,9 +498,13 @@ Below are the API references and multi-language service invocation examples:
 <td><code>string</code></td>
 <td>Error message. Fixed as <code>"Success"</code>.</td>
 </tr>
+<tr>
+<td><code>result</code></td>
+<td><code>object</code></td>
+<td>Operation result.</td>
+</tr>
 </tbody>
 </table>
-<p>The response body may also have a <code>result</code> property of type <code>object</code>, which stores the operation result information.</p>
 <ul>
 <li>When the request is not processed successfully, the response body properties are as follows:</li>
 </ul>
@@ -478,6 +517,11 @@ Below are the API references and multi-language service invocation examples:
 </tr>
 </thead>
 <tbody>
+<tr>
+<td><code>logId</code></td>
+<td><code>string</code></td>
+<td>UUID for the request.</td>
+</tr>
 <tr>
 <td><code>errorCode</code></td>
 <td><code>integer</code></td>
@@ -510,10 +554,16 @@ Below are the API references and multi-language service invocation examples:
 </thead>
 <tbody>
 <tr>
-<td><code>image</code></td>
+<td><code>file</code></td>
 <td><code>string</code></td>
-<td>The URL of an image file accessible by the service or the Base64 encoded result of the image file content.</td>
+<td>The URL of an image file or PDF file accessible by the service, or the Base64 encoded result of the content of the above-mentioned file types. For PDF files with more than 10 pages, only the content of the first 10 pages will be used.</td>
 <td>Yes</td>
+</tr>
+<tr>
+<td><code>fileType</code></td>
+<td><code>integer</code></td>
+<td>File type. <code>0</code> indicates a PDF file, and <code>1</code> indicates an image file. If this property is not present in the request body, the service will attempt to infer the file type automatically based on the URL.</td>
+<td>No</td>
 </tr>
 <tr>
 <td><code>inferenceParams</code></td>
@@ -537,14 +587,36 @@ Below are the API references and multi-language service invocation examples:
 <tr>
 <td><code>maxLongSide</code></td>
 <td><code>integer</code></td>
-<td>During inference, if the length of the longer side of the input image for the text detection model is greater than <code>maxLongSide</code>, the image will be scaled so that the length of the longer side equals <code>maxLongSide</code>.</td>
+<td>During inference, if the length of the longer side of the input image for the layout detection model is greater than <code>maxLongSide</code>, the image will be scaled so that the length of the longer side equals <code>maxLongSide</code>.</td>
 <td>No</td>
 </tr>
 </tbody>
 </table>
 <ul>
-<li>When the request is processed successfully, the <code>result</code> of the response body has the following properties:</li>
+<li>When the request is processed successfully, the <code>result</code> in the response body has the following properties:</li>
 </ul>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>sealRecResults</code></td>
+<td><code>array</code></td>
+<td>Seal recognition results. The array length is 1 (for image input) or the smaller of the number of document pages and 10 (for PDF input). For PDF input, each element in the array represents the processing result of each page in the PDF file.</td>
+</tr>
+<tr>
+<td><code>dataInfo</code></td>
+<td><code>object</code></td>
+<td>Information about the input data.</td>
+</tr>
+</tbody>
+</table>
+<p>Each element in <code>sealRecResults</code> is an <code>object</code> with the following properties:</p>
 <table>
 <thead>
 <tr>
@@ -558,6 +630,11 @@ Below are the API references and multi-language service invocation examples:
 <td><code>texts</code></td>
 <td><code>array</code></td>
 <td>Positions, contents, and scores of texts.</td>
+</tr>
+<tr>
+<td><code>inputImage</code></td>
+<td><code>string</code></td>
+<td>Input image. The image is in JPEG format and encoded using Base64.</td>
 </tr>
 <tr>
 <td><code>layoutImage</code></td>
@@ -609,396 +686,28 @@ Below are the API references and multi-language service invocation examples:
 import requests
 
 API_URL = &quot;http://localhost:8080/seal-recognition&quot;
-image_path = &quot;./demo.jpg&quot;
-ocr_image_path = &quot;./ocr.jpg&quot;
-layout_image_path = &quot;./layout.jpg&quot;
+file_path = &quot;./demo.jpg&quot;
 
-with open(image_path, &quot;rb&quot;) as file:
-    image_bytes = file.read()
-    image_data = base64.b64encode(image_bytes).decode(&quot;ascii&quot;)
+with open(file_path, &quot;rb&quot;) as file:
+    file_bytes = file.read()
+    file_data = base64.b64encode(file_bytes).decode(&quot;ascii&quot;)
 
-payload = {&quot;image&quot;: image_data}
+payload = {&quot;file&quot;: file_data, &quot;fileType&quot;: 1}
 
 response = requests.post(API_URL, json=payload)
 
 assert response.status_code == 200
 result = response.json()[&quot;result&quot;]
-with open(ocr_image_path, &quot;wb&quot;) as file:
-    file.write(base64.b64decode(result[&quot;ocrImage&quot;]))
-print(f&quot;Output image saved at {ocr_image_path}&quot;)
-with open(layout_image_path, &quot;wb&quot;) as file:
-    file.write(base64.b64decode(result[&quot;layoutImage&quot;]))
-print(f&quot;Output image saved at {layout_image_path}&quot;)
-print(&quot;\nDetected texts:&quot;)
-print(result[&quot;texts&quot;])
-</code></pre></details>
-
-<details><summary>C++</summary>
-
-<pre><code class="language-cpp">#include &lt;iostream&gt;
-#include &quot;cpp-httplib/httplib.h&quot; // https://github.com/Huiyicc/cpp-httplib
-#include &quot;nlohmann/json.hpp&quot; // https://github.com/nlohmann/json
-#include &quot;base64.hpp&quot; // https://github.com/tobiaslocker/base64
-
-int main() {
-    httplib::Client client(&quot;localhost:8080&quot;);
-    const std::string imagePath = &quot;./demo.jpg&quot;;
-    const std::string ocrImagePath = &quot;./ocr.jpg&quot;;
-    const std::string layoutImagePath = &quot;./layout.jpg&quot;;
-
-    httplib::Headers headers = {
-        {&quot;Content-Type&quot;, &quot;application/json&quot;}
-    };
-
-    std::ifstream file(imagePath, std::ios::binary | std::ios::ate);
-    std::streamsize size = file.tellg();
-    file.seekg(0, std::ios::beg);
-
-    std::vector&lt;char&gt; buffer(size);
-    if (!file.read(buffer.data(), size)) {
-        std::cerr &lt;&lt; &quot;Error reading file.&quot; &lt;&lt; std::endl;
-        return 1;
-    }
-    std::string bufferStr(reinterpret_cast&lt;const char*&gt;(buffer.data()), buffer.size());
-    std::string encodedImage = base64::to_base64(bufferStr);
-
-    nlohmann::json jsonObj;
-    jsonObj[&quot;image&quot;] = encodedImage;
-    std::string body = jsonObj.dump();
-
-    auto response = client.Post(&quot;/seal-recognition&quot;, headers, body, &quot;application/json&quot;);
-    if (response &amp;&amp; response-&gt;status == 200) {
-        nlohmann::json jsonResponse = nlohmann::json::parse(response-&gt;body);
-        auto result = jsonResponse[&quot;result&quot;];
-
-        encodedImage = result[&quot;ocrImage&quot;];
-        std::string decoded_string = base64::from_base64(encodedImage);
-        std::vector&lt;unsigned char&gt; decodedOcrImage(decoded_string.begin(), decoded_string.end());
-        std::ofstream outputOcrFile(ocrImagePath, std::ios::binary | std::ios::out);
-        if (outputOcrFile.is_open()) {
-            outputOcrFile.write(reinterpret_cast&lt;char*&gt;(decodedOcrImage.data()), decodedOcrImage.size());
-            outputOcrFile.close();
-            std::cout &lt;&lt; &quot;Output image saved at &quot; &lt;&lt; ocrImagePath &lt;&lt; std::endl;
-        } else {
-            std::cerr &lt;&lt; &quot;Unable to open file for writing: &quot; &lt;&lt; ocrImagePath &lt;&lt; std::endl;
-        }
-
-        encodedImage = result[&quot;layoutImage&quot;];
-        decodedString = base64::from_base64(encodedImage);
-        std::vector&lt;unsigned char&gt; decodedLayoutImage(decodedString.begin(), decodedString.end());
-        std::ofstream outputLayoutFile(layoutImagePath, std::ios::binary | std::ios::out);
-        if (outputLayoutFile.is_open()) {
-            outputLayoutFile.write(reinterpret_cast&lt;char*&gt;(decodedLayoutImage.data()), decodedLayoutImage.size());
-            outputLayoutFile.close();
-            std::cout &lt;&lt; &quot;Output image saved at &quot; &lt;&lt; layoutImagePath &lt;&lt; std::endl;
-        } else {
-            std::cerr &lt;&lt; &quot;Unable to open file for writing: &quot; &lt;&lt; layoutImagePath &lt;&lt; std::endl;
-        }
-
-        auto texts = result[&quot;texts&quot;];
-        std::cout &lt;&lt; &quot;\nDetected texts:&quot; &lt;&lt; std::endl;
-        for (const auto&amp; text : texts) {
-            std::cout &lt;&lt; text &lt;&lt; std::endl;
-        }
-    } else {
-        std::cout &lt;&lt; &quot;Failed to send HTTP request.&quot; &lt;&lt; std::endl;
-        return 1;
-    }
-
-    return 0;
-}
-</code></pre></details>
-
-<details><summary>Java</summary>
-
-<pre><code class="language-java">import okhttp3.*;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.Base64;
-
-public class Main {
-    public static void main(String[] args) throws IOException {
-        String API_URL = &quot;http://localhost:8080/seal-recognition&quot;;
-        String imagePath = &quot;./demo.jpg&quot;;
-        String ocrImagePath = &quot;./ocr.jpg&quot;;
-        String layoutImagePath = &quot;./layout.jpg&quot;;
-
-        File file = new File(imagePath);
-        byte[] fileContent = java.nio.file.Files.readAllBytes(file.toPath());
-        String imageData = Base64.getEncoder().encodeToString(fileContent);
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        ObjectNode params = objectMapper.createObjectNode();
-        params.put(&quot;image&quot;, imageData);
-
-        OkHttpClient client = new OkHttpClient();
-        MediaType JSON = MediaType.Companion.get(&quot;application/json; charset=utf-8&quot;);
-        RequestBody body = RequestBody.Companion.create(params.toString(), JSON);
-        Request request = new Request.Builder()
-                .url(API_URL)
-                .post(body)
-                .build();
-
-        try (Response response = client.newCall(request).execute()) {
-            if (response.isSuccessful()) {
-                String responseBody = response.body().string();
-                JsonNode resultNode = objectMapper.readTree(responseBody);
-                JsonNode result = resultNode.get(&quot;result&quot;);
-                String ocrBase64Image = result.get(&quot;ocrImage&quot;).asText();
-                String layoutBase64Image = result.get(&quot;layoutImage&quot;).asText();
-                JsonNode texts = result.get(&quot;texts&quot;);
-
-                byte[] imageBytes = Base64.getDecoder().decode(ocrBase64Image);
-                try (FileOutputStream fos = new FileOutputStream(ocrImagePath)) {
-                    fos.write(imageBytes);
-                }
-                System.out.println(&quot;Output image saved at &quot; + ocrBase64Image);
-
-                imageBytes = Base64.getDecoder().decode(layoutBase64Image);
-                try (FileOutputStream fos = new FileOutputStream(layoutImagePath)) {
-                    fos.write(imageBytes);
-                }
-                System.out.println(&quot;Output image saved at &quot; + layoutImagePath);
-
-                System.out.println(&quot;\nDetected texts: &quot; + texts.toString());
-            } else {
-                System.err.println(&quot;Request failed with code: &quot; + response.code());
-            }
-        }
-    }
-}
-</code></pre></details>
-
-<details><summary>Go</summary>
-
-<pre><code class="language-go">package main
-
-import (
-    &quot;bytes&quot;
-    &quot;encoding/base64&quot;
-    &quot;encoding/json&quot;
-    &quot;fmt&quot;
-    &quot;io/ioutil&quot;
-    &quot;net/http&quot;
-)
-
-func main() {
-    API_URL := &quot;http://localhost:8080/seal-recognition&quot;
-    imagePath := &quot;./demo.jpg&quot;
-    ocrImagePath := &quot;./ocr.jpg&quot;
-    layoutImagePath := &quot;./layout.jpg&quot;
-
-    imageBytes, err := ioutil.ReadFile(imagePath)
-    if err != nil {
-        fmt.Println(&quot;Error reading image file:&quot;, err)
-        return
-    }
-    imageData := base64.StdEncoding.EncodeToString(imageBytes)
-
-    payload := map[string]string{&quot;image&quot;: imageData}
-    payloadBytes, err := json.Marshal(payload)
-    if err != nil {
-        fmt.Println(&quot;Error marshaling payload:&quot;, err)
-        return
-    }
-
-    client := &amp;http.Client{}
-    req, err := http.NewRequest(&quot;POST&quot;, API_URL, bytes.NewBuffer(payloadBytes))
-    if err != nil {
-        fmt.Println(&quot;Error creating request:&quot;, err)
-        return
-    }
-
-    res, err := client.Do(req)
-    if err != nil {
-        fmt.Println(&quot;Error sending request:&quot;, err)
-        return
-    }
-    defer res.Body.Close()
-
-    body, err := ioutil.ReadAll(res.Body)
-    if err != nil {
-        fmt.Println(&quot;Error reading response body:&quot;, err)
-        return
-    }
-    type Response struct {
-        Result struct {
-            OcrImage      string   `json:&quot;ocrImage&quot;`
-            LayoutImage      string   `json:&quot;layoutImage&quot;`
-            Texts []map[string]interface{} `json:&quot;texts&quot;`
-        } `json:&quot;result&quot;`
-    }
-    var respData Response
-    err = json.Unmarshal([]byte(string(body)), &amp;respData)
-    if err != nil {
-        fmt.Println(&quot;Error unmarshaling response body:&quot;, err)
-        return
-    }
-
-    ocrImageData, err := base64.StdEncoding.DecodeString(respData.Result.OcrImage)
-    if err != nil {
-        fmt.Println(&quot;Error decoding base64 image data:&quot;, err)
-        return
-    }
-    err = ioutil.WriteFile(ocrImagePath, ocrImageData, 0644)
-    if err != nil {
-        fmt.Println(&quot;Error writing image to file:&quot;, err)
-        return
-    }
-    fmt.Printf(&quot;Image saved at %s.jpg\n&quot;, ocrImagePath)
-
-    layoutImageData, err := base64.StdEncoding.DecodeString(respData.Result.LayoutImage)
-    if err != nil {
-        fmt.Println(&quot;Error decoding base64 image data:&quot;, err)
-        return
-    }
-    err = ioutil.WriteFile(layoutImagePath, layoutImageData, 0644)
-    if err != nil {
-        fmt.Println(&quot;Error writing image to file:&quot;, err)
-        return
-    }
-    fmt.Printf(&quot;Image saved at %s.jpg\n&quot;, layoutImagePath)
-
-    fmt.Println(&quot;\nDetected texts:&quot;)
-    for _, text := range respData.Result.Texts {
-        fmt.Println(text)
-    }
-}
-</code></pre></details>
-
-<details><summary>C#</summary>
-
-<pre><code class="language-csharp">using System;
-using System.IO;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json.Linq;
-
-class Program
-{
-    static readonly string API_URL = &quot;http://localhost:8080/seal-recognition&quot;;
-    static readonly string imagePath = &quot;./demo.jpg&quot;;
-    static readonly string ocrImagePath = &quot;./ocr.jpg&quot;;
-    static readonly string layoutImagePath = &quot;./layout.jpg&quot;;
-
-    static async Task Main(string[] args)
-    {
-        var httpClient = new HttpClient();
-
-        byte[] imageBytes = File.ReadAllBytes(imagePath);
-        string image_data = Convert.ToBase64String(imageBytes);
-
-        var payload = new JObject{ { &quot;image&quot;, image_data } };
-        var content = new StringContent(payload.ToString(), Encoding.UTF8, &quot;application/json&quot;);
-
-        HttpResponseMessage response = await httpClient.PostAsync(API_URL, content);
-        response.EnsureSuccessStatusCode();
-
-        string responseBody = await response.Content.ReadAsStringAsync();
-        JObject jsonResponse = JObject.Parse(responseBody);
-
-        string ocrBase64Image = jsonResponse[&quot;result&quot;][&quot;ocrImage&quot;].ToString();
-        byte[] ocrImageBytes = Convert.FromBase64String(ocrBase64Image);
-        File.WriteAllBytes(ocrImagePath, ocrImageBytes);
-        Console.WriteLine($&quot;Output image saved at {ocrImagePath}&quot;);
-
-        string layoutBase64Image = jsonResponse[&quot;result&quot;][&quot;layoutImage&quot;].ToString();
-        byte[] layoutImageBytes = Convert.FromBase64String(layoutBase64Image);
-        File.WriteAllBytes(layoutImagePath, layoutImageBytes);
-        Console.WriteLine($&quot;Output image saved at {layoutImagePath}&quot;);
-
-        Console.WriteLine(&quot;\nDetected texts:&quot;);
-        Console.WriteLine(jsonResponse[&quot;result&quot;][&quot;texts&quot;].ToString());
-    }
-}
-</code></pre></details>
-
-<details><summary>Node.js</summary>
-
-<pre><code class="language-js">const axios = require('axios');
-const fs = require('fs');
-
-const API_URL = 'http://localhost:8080/seal-recognition'
-const imagePath = './demo.jpg'
-const ocrImagePath = &quot;./ocr.jpg&quot;;
-const layoutImagePath = &quot;./layout.jpg&quot;;
-
-let config = {
-   method: 'POST',
-   maxBodyLength: Infinity,
-   url: API_URL,
-   data: JSON.stringify({
-    'image': encodeImageToBase64(imagePath)
-  })
-};
-
-function encodeImageToBase64(filePath) {
-  const bitmap = fs.readFileSync(filePath);
-  return Buffer.from(bitmap).toString('base64');
-}
-
-axios.request(config)
-.then((response) =&gt; {
-    const result = response.data[&quot;result&quot;];
-
-    const imageBuffer = Buffer.from(result[&quot;ocrImage&quot;], 'base64');
-    fs.writeFile(ocrImagePath, imageBuffer, (err) =&gt; {
-      if (err) throw err;
-      console.log(`Output image saved at ${ocrImagePath}`);
-    });
-
-    imageBuffer = Buffer.from(result[&quot;layoutImage&quot;], 'base64');
-    fs.writeFile(layoutImagePath, imageBuffer, (err) =&gt; {
-      if (err) throw err;
-      console.log(`Output image saved at ${layoutImagePath}`);
-    });
-
-    console.log(&quot;\nDetected texts:&quot;);
-    console.log(result[&quot;texts&quot;]);
-})
-.catch((error) =&gt; {
-  console.log(error);
-});
-</code></pre></details>
-
-<details><summary>PHP</summary>
-
-<pre><code class="language-php">&lt;?php
-
-$API_URL = &quot;http://localhost:8080/seal-recognition&quot;;
-$image_path = &quot;./demo.jpg&quot;;
-$ocr_image_path = &quot;./ocr.jpg&quot;;
-$layout_image_path = &quot;./layout.jpg&quot;;
-
-$image_data = base64_encode(file_get_contents($image_path));
-$payload = array(&quot;image&quot; =&gt; $image_data);
-
-$ch = curl_init($API_URL);
-curl_setopt($ch, CURLOPT_POST, true);
-curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
-curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-$response = curl_exec($ch);
-curl_close($ch);
-
-$result = json_decode($response, true)[&quot;result&quot;];
-file_put_contents($ocr_image_path, base64_decode($result[&quot;ocrImage&quot;]));
-echo &quot;Output image saved at &quot; . $ocr_image_path . &quot;\n&quot;;
-
-file_put_contents($layout_image_path, base64_decode($result[&quot;layoutImage&quot;]));
-echo &quot;Output image saved at &quot; . $layout_image_path . &quot;\n&quot;;
-
-echo &quot;\nDetected texts:\n&quot;;
-print_r($result[&quot;texts&quot;]);
-
-?&gt;
+for i, res in enumerate(result[&quot;sealRecResults&quot;]):
+    print(&quot;Detected texts:&quot;)
+    print(res[&quot;texts&quot;])
+    ocr_img_path = f&quot;ocr_{i}.jpg&quot;
+    with open(ocr_img_path, &quot;wb&quot;) as f:
+        f.write(base64.b64decode(res[&quot;ocrImage&quot;]))
+    layout_img_path = f&quot;layout_{i}.jpg&quot;
+    with open(layout_img_path, &quot;wb&quot;) as f:
+        f.write(base64.b64decode(res[&quot;layoutImage&quot;]))
+    print(f&quot;Output images saved at {ocr_img_path} and {layout_img_path}&quot;)
 </code></pre></details>
 </details>
 <br/>
