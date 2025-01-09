@@ -28,9 +28,9 @@ from .formula_recognition import FormulaRecPredictor
 from .instance_segmentation import InstanceSegPredictor
 from .semantic_segmentation import SegPredictor
 from .image_feature import ImageFeaturePredictor
-from .ts_forecast import TSFcPredictor
-from .ts_anomaly import TSAdPredictor
-from .ts_classify import TSClsPredictor
+from .ts_forecasting import TSFcPredictor
+from .ts_anomaly_detection import TSAdPredictor
+from .ts_classification import TSClsPredictor
 from .image_unwarping import WarpPredictor
 from .image_multilabel_classification import MLClasPredictor
 
