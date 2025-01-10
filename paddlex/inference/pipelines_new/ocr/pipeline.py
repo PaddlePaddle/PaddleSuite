@@ -23,6 +23,7 @@ from ..components import CropByPolys, SortQuadBoxes, SortPolyBoxes
 from .result import OCRResult
 from ..doc_preprocessor.result import DocPreprocessorResult
 from ....utils import logging
+import time
 
 
 class OCRPipeline(BasePipeline):
@@ -234,7 +235,7 @@ class OCRPipeline(BasePipeline):
         Returns:
             OCRResult: An iterable of OCRResult objects, each containing the predicted text and other relevant information.
         """
-
+        starttime = time.time()
         input_params = {
             "use_doc_preprocessor": self.use_doc_preprocessor,
             "use_doc_orientation_classify": use_doc_orientation_classify,
@@ -297,5 +298,6 @@ class OCRPipeline(BasePipeline):
                 for rec_res in self.text_rec_model(all_subs_of_img):
                     single_img_res["rec_text"].append(rec_res["rec_text"])
                     single_img_res["rec_score"].append(rec_res["rec_score"])
-
+            endtime = time.time()
+            print("Time:", endtime - starttime)
             yield OCRResult(single_img_res)

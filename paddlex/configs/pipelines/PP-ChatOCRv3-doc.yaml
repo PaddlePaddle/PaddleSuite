@@ -1,22 +1,26 @@
 
 pipeline_name: PP-ChatOCRv3-doc
 
+use_layout_parser: False
+
 SubModules:
   LLM_Chat:
     module_name: chat_bot
     model_name: ernie-3.5
     api_type: qianfan
-    ak: "api_key" # Set this to a real API key
-    sk: "secret_key"  # Set this to a real secret key
-
+    # ak: "api_key" # Set this to a real API key
+    # sk: "secret_key"  # Set this to a real secret key
+    ak: "4iiqB0QfvXTAENgzUwNeDjQ7" 
+    sk: "sHQCw4l5A6jnzbHMa0ZvDi05GT9Qz8tZ"
 
   LLM_Retriever:
     module_name: retriever
     model_name: ernie-3.5
     api_type: qianfan
-    ak: "api_key" # Set this to a real API key
-    sk: "secret_key"  # Set this to a real secret key
-
+    # ak: "api_key" # Set this to a real API key
+    # sk: "secret_key"  # Set this to a real secret key
+    ak: "4iiqB0QfvXTAENgzUwNeDjQ7" 
+    sk: "sHQCw4l5A6jnzbHMa0ZvDi05GT9Qz8tZ"
 
   PromptEngneering:
     KIE_CommonText:

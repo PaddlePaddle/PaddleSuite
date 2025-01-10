@@ -89,7 +89,9 @@ def get_sub_regions_ocr_res(
         OCRResult: A filtered OCR result containing only the relevant text boxes.
     """
     sub_regions_ocr_res = copy.deepcopy(overall_ocr_res)
-    sub_regions_ocr_res["input_img"] = overall_ocr_res["input_img"]
+    sub_regions_ocr_res["doc_preprocessor_image"] = overall_ocr_res[
+        "doc_preprocessor_image"
+    ]
     sub_regions_ocr_res["img_id"] = -1
     sub_regions_ocr_res["dt_polys"] = []
     sub_regions_ocr_res["rec_text"] = []
