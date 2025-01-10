@@ -24,6 +24,7 @@ from .image_classification import ClasPredictor
 from .object_detection import DetPredictor
 from .text_detection import TextDetPredictor
 from .text_recognition import TextRecPredictor
+from .table_structure_recognition import TablePredictor
 from .formula_recognition import FormulaRecPredictor
 from .instance_segmentation import InstanceSegPredictor
 from .semantic_segmentation import SegPredictor

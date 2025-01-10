@@ -14,73 +14,68 @@
 
 import re
 import json
-import erniebot
+import base64
 from typing import Dict
 from .....utils import logging
 from .base import BaseChat
 
 
-class ErnieBotChat(BaseChat):
-    """Ernie Bot Chat"""
+class OpenAIBotChat(BaseChat):
+    """OpenAI Bot Chat"""
 
     entities = [
-        "aistudio",
-        "qianfan",
-    ]
-
-    MODELS = [
-        "ernie-4.0",
-        "ernie-3.5",
-        "ernie-3.5-8k",
-        "ernie-lite",
-        "ernie-tiny-8k",
-        "ernie-speed",
-        "ernie-speed-128k",
-        "ernie-char-8k",
+        "openai",
     ]
 
     def __init__(self, config: Dict) -> None:
-        """Initializes the ErnieBotChat with given configuration.
+        """Initializes the OpenAIBotChat with given configuration.
 
         Args:
-            config (Dict): Configuration dictionary containing model_name, api_type, ak, sk, and access_token.
+            config (Dict): Configuration dictionary containing model_name, api_type, base_url, api_key.
 
         Raises:
-            ValueError: If model_name is not in the predefined entities,
-            api_type is not one of ['aistudio', 'qianfan'],
-            access_token is None for 'aistudio' api_type,
-            or ak and sk are None for 'qianfan' api_type.
+            ValueError: If api_type is not one of ['openai'],
+            base_url is None for api_type is openai,
+            api_key is None for api_type is openai.
         """
         super().__init__()
         model_name = config.get("model_name", None)
         api_type = config.get("api_type", None)
-        ak = config.get("ak", None)
-        sk = config.get("sk", None)
-        access_token = config.get("access_token", None)
+        api_key = config.get("api_key", None)
+        base_url = config.get("base_url", None)
 
-        if model_name not in self.MODELS:
-            raise ValueError(f"model_name must be in {self.MODELS} of ErnieBotChat.")
+        if api_type not in ["openai"]:
+            raise ValueError("api_type must be one of ['openai']")
 
-        if api_type not in ["aistudio", "qianfan"]:
-            raise ValueError("api_type must be one of ['aistudio', 'qianfan']")
+        if api_type == "openai" and api_key is None:
+            raise ValueError("api_key cannot be empty when api_type is openai.")
 
-        if api_type == "aistudio" and access_token is None:
-            raise ValueError("access_token cannot be empty when api_type is aistudio.")
+        if base_url is None:
+            raise ValueError("base_url cannot be empty when api_type is openai.")
 
-        if api_type == "qianfan" and (ak is None or sk is None):
-            raise ValueError("ak and sk cannot be empty when api_type is qianfan.")
+        try:
+            from openai import OpenAI
+        except:
+            raise Exception("openai is not installed, please install it first.")
+
+        self.client = OpenAI(base_url=base_url, api_key=api_key)
 
         self.model_name = model_name
         self.config = config
 
     def generate_chat_results(
-        self, prompt: str, temperature: float = 0.001, max_retries: int = 1
+        self,
+        prompt: str,
+        image: base64 = None,
+        temperature: float = 0.001,
+        max_retries: int = 1,
     ) -> Dict:
         """
         Generate chat results using the specified model and configuration.
 
         Args:
             prompt (str): The user's input prompt.
+            image (base64): The user's input image for MLLM, defaults to None.
             temperature (float, optional): The temperature parameter for llms, defaults to 0.001.
             max_retries (int, optional): The maximum number of retries for llms API calls, defaults to 1.
 
@@ -88,34 +83,51 @@ class ErnieBotChat(BaseChat):
             Dict: The chat completion result from the model.
         """
         try:
-            cur_config = {
-                "api_type": self.config["api_type"],
-                "max_retries": max_retries,
-            }
-            if self.config["api_type"] == "aistudio":
-                cur_config["access_token"] = self.config["access_token"]
-            elif self.config["api_type"] == "qianfan":
-                cur_config["ak"] = self.config["ak"]
-                cur_config["sk"] = self.config["sk"]
-            chat_completion = erniebot.ChatCompletion.create(
-                _config_=cur_config,
-                model=self.model_name,
-                messages=[{"role": "user", "content": prompt}],
-                temperature=float(temperature),
-            )
-            llm_result = chat_completion.get_result()
-            return llm_result
-        except Exception as e:
-            if len(e.args) < 1:
-                self.ERROR_MASSAGE = "暂无权限访问ErnieBot服务，请检查访问令牌。"
-            elif (
-                e.args[-1]
-                == "暂无权限使用，请在 AI Studio 正确获取访问令牌(access token)使用"
-            ):
-                self.ERROR_MASSAGE = "暂无权限访问ErnieBot服务，请检查访问令牌。"
+            if image:
+                chat_completion = self.client.chat.completions.create(
+                    model=self.model_name,
+                    messages=[
+                        {
+                            "role": "system",
+                            # XXX: give a basic prompt for common
+                            "content": "You are a helpful assistant.",
+                        },
+                        {
+                            "role": "user",
+                            "content": [
+                                {"type": "text", "text": prompt},
+                                {
+                                    "type": "image_url",
+                                    "image_url": {
+                                        "url": f"data:image/jpeg;base64,{image}"
+                                    },
+                                },
+                            ],
+                        },
+                    ],
+                    stream=False,
+                    temperature=temperature,
+                    top_p=0.001,
+                )
+                llm_result = chat_completion.choices[0].message.content
+                return llm_result
             else:
-                logging.error(e)
-                self.ERROR_MASSAGE = "大模型调用失败"
+                chat_completion = self.client.completions.create(
+                    model=self.model_name,
+                    prompt=prompt,
+                    max_tokens=self.config.get("max_tokens", 1024),
+                    temperature=float(temperature),
+                    stream=False,
+                )
+                if isinstance(chat_completion, str):
+                    chat_completion = json.loads(chat_completion)
+                    llm_result = chat_completion["choices"][0]["text"]
+                else:
+                    llm_result = chat_completion.choices[0].text
+                return llm_result
+        except Exception as e:
+            logging.error(e)
+            self.ERROR_MASSAGE = "大模型调用失败"
         return None
 
     def fix_llm_result_format(self, llm_result: str) -> dict:

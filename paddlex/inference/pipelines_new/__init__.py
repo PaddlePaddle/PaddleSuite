@@ -25,8 +25,9 @@ from .pp_chatocr import PP_ChatOCRv3_Pipeline, PP_ChatOCRv4_Pipeline
 from .image_classification import ImageClassificationPipeline
 from .seal_recognition import SealRecognitionPipeline
 from .table_recognition import TableRecognitionPipeline
-from .video_detection import VideoDetectionPipeline
+from .formula_recognition import FormulaRecognitionPipeline
 from .video_classification import VideoClassificationPipeline
+from .video_detection import VideoDetectionPipeline
 from .anomaly_detection import AnomalyDetectionPipeline
 from .ts_forecasting import TSFcPipeline
 from .ts_anomaly_detection import TSAnomalyDetPipeline
@@ -136,8 +137,8 @@ def create_chat_bot(config: Dict, *args, **kwargs) -> BaseChat:
     Returns:
         BaseChat: An instance of the chat bot class corresponding to the 'model_name' in the config.
     """
-    model_name = config["model_name"]
-    chat_bot = BaseChat.get(model_name)(config)
+    api_type = config["api_type"]
+    chat_bot = BaseChat.get(api_type)(config)
     return chat_bot
 
 
@@ -157,8 +158,8 @@ def create_retriever(
     Returns:
         BaseRetriever: An instance of a retriever class corresponding to the 'model_name' in the config.
     """
-    model_name = config["model_name"]
-    retriever = BaseRetriever.get(model_name)(config)
+    api_type = config["api_type"]
+    retriever = BaseRetriever.get(api_type)(config)
     return retriever
 
 

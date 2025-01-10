@@ -22,7 +22,6 @@ import pandas as pd
 import numpy as np
 import yaml
 import soundfile
-import decord
 import random
 import platform
 import importlib
