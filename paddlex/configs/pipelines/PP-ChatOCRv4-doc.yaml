@@ -24,6 +24,13 @@ SubModules:
     ak: "4iiqB0QfvXTAENgzUwNeDjQ7" 
     sk: "sHQCw4l5A6jnzbHMa0ZvDi05GT9Qz8tZ"
 
+  MLLM_Chat:
+    module_name: chat_bot
+    model_name: PP-DocBee
+    base_url: "http://127.0.0.1/v1/chat/completions"
+    api_type: openai
+    api_key: "api_key"
+
   PromptEngneering:
     KIE_CommonText:
       module_name: prompt_engneering

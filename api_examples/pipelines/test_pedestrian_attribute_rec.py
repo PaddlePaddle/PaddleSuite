@@ -12,5 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .ernie_bot_chat import ErnieBotChat
-from .openai_bot_chat import OpenAIBotChat
+from paddlex import create_pipeline
+
+pipeline = create_pipeline(pipeline="pedestrian_attribute_recognition")
+
+output = pipeline.predict(
+    "./test_samples/pedestrian_attribute_002.jpg", det_threshold=0.7, cls_threshold=0.7
+)
+
+for res in output:
+    res.print()  ## 打印预测的结构化输出
+    res.save_to_img("./output")  ## 保存结果可视化图像
+    res.save_to_json("./output/")  ## 保存预测的结构化输出
