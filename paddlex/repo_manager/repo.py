@@ -69,6 +69,7 @@ class PPRepository(object):
         self.repo_parent_dir = repo_parent_dir
         self.root_dir = osp.join(repo_parent_dir, self.name)
 
+        print("self.name: ", self.name)
         self.meta = get_repo_meta(self.name)
         self.git_path = self.meta["git_path"]
         self.pkg_name = self.meta["pkg_name"]
