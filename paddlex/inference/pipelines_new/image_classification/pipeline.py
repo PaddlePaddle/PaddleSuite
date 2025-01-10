@@ -60,7 +60,7 @@ class ImageClassificationPipeline(BasePipeline):
         self.topk = image_classification_model_config.get("topk", 5)
 
     def predict(
-        self, input: str | list[str] | np.ndarray | list[np.ndarray], topk=None
+        self, input: str | list[str] | np.ndarray | list[np.ndarray], **kwargs
     ) -> TopkResult:
         """Predicts image classification results for the given input.
 
@@ -71,6 +71,6 @@ class ImageClassificationPipeline(BasePipeline):
         Returns:
             TopkResult: The predicted top k results.
         """
-      
+
         topk = kwargs.pop("topk", self.topk)
         yield from self.image_classification_model(input, topk=topk)

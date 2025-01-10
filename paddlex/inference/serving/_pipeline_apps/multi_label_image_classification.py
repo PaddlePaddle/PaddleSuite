@@ -75,7 +75,7 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
             categories.append(Category(id=id_, name=name, score=score))
         if ctx.config.visualize:
             output_image_base64 = serving_utils.base64_encode(
-                serving_utils.image_to_bytes(result.img)
+                serving_utils.image_to_bytes(result.img["res"])
             )
         else:
             output_image_base64 = None

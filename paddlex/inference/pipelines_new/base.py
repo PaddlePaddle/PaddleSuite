@@ -83,7 +83,7 @@ class BasePipeline(ABC, metaclass=AutoRegisterABCMetaClass):
         if model_dir == None:
             model_dir = config["model_name"]
 
-        from .. import create_predictor
+        from ..models_new import create_predictor
 
         model = create_predictor(
             model=model_dir,
@@ -113,9 +113,7 @@ class BasePipeline(ABC, metaclass=AutoRegisterABCMetaClass):
         """
         from . import create_pipeline
 
-        pipeline_name = config["pipeline_name"]
         pipeline = create_pipeline(
-            pipeline_name,
             config=config,
             device=self.device,
             pp_option=self.pp_option,

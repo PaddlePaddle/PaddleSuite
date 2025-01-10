@@ -90,14 +90,14 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
                     bbox=obj["coordinate"],
                     attributes=[
                         Attribute(label=l, score=s)
-                        for l, s in zip(obj["labels"], obj["cls_scores"])
+                        for l, s in zip(obj["labels"], obj["rec_scores"])
                     ],
                     score=obj["det_score"],
                 )
             )
         if ctx.config.visualize:
             output_image_base64 = serving_utils.base64_encode(
-                serving_utils.image_to_bytes(result.img)
+                serving_utils.image_to_bytes(result.img["res"])
             )
         else:
             output_image_base64 = None
