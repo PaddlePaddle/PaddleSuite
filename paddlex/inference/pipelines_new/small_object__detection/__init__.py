@@ -12,10 +12,4 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from PIL import Image
-
-from ...common.result import BaseResult
-
-
-class IdentityResult(BaseResult):
-    pass
+from .pipeline import SmallObjectDetectionPipeline

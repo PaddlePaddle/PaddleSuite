@@ -70,7 +70,7 @@ class MLClassResult(BaseCVResult):
                 fill=font_color,
                 font=font,
             )
-        return new_image
+        return {"res": new_image}
 
     def _get_font_colormap(self, color_index):
         """

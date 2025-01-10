@@ -31,7 +31,7 @@ class DocTrResult(BaseCVResult):
 
     def _to_img(self) -> np.ndarray:
         result = np.array(self["doctr_img"])
-        return result
+        return {"res": result}
 
     def _to_str(self, _, *args, **kwargs):
         data = copy.deepcopy(self)

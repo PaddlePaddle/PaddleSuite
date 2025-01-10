@@ -36,6 +36,11 @@ from .attribute_recognition import (
     VehicleAttributeRecPipeline,
 )
 
+from .semantic_segmentation import SemanticSegmentationPipeline
+from .instance_segmentation import InstanceSegmentationPipeline
+from .small_object__detection import SmallObjectDetectionPipeline
+from .rotated_object__detection import RotatedObjectDetectionPipeline
+
 
 def get_pipeline_path(pipeline_name: str) -> str:
     """
