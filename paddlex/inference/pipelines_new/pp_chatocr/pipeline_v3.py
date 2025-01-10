@@ -480,7 +480,7 @@ class PP_ChatOCRv3_Pipeline(PP_ChatOCR_Pipeline):
         key_list = self.format_key(key_list)
         key_list_ori = key_list.copy()
         if len(key_list) == 0:
-            return {"error": "输入的key_list无效！"}
+            return {"chat_res": "Error:输入的key_list无效！"}
 
         if not isinstance(visual_info, list):
             visual_info_list = [visual_info]
