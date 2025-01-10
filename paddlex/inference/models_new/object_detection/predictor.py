@@ -75,7 +75,7 @@ class DetPredictor(BasicPredictor):
                 )
         self.imgsz = imgsz
         self.threshold = threshold
-        self.pre_ops, self.infer, self.post_op = self._build(imgsz)
+        self.pre_ops, self.infer, self.post_op = self._build()
 
     def _build_batch_sampler(self):
         return ImageBatchSampler()
@@ -83,7 +83,12 @@ class DetPredictor(BasicPredictor):
     def _get_result_class(self):
         return DetResult
 
-    def _build(self, imgsz: Optional[Tuple[int, int]] = None):
+    def _build(self) -> Tuple:
+        """Build the preprocessors, inference engine, and postprocessors based on the configuration.
+
+        Returns:
+            tuple: A tuple containing the preprocessors, inference engine, and postprocessors.
+        """
         # build preprocess ops
         pre_ops = [ReadImage(format="RGB")]
         for cfg in self.config["Preprocess"]:
@@ -95,10 +100,11 @@ class DetPredictor(BasicPredictor):
             if op:
                 pre_ops.append(op)
         pre_ops.append(self.build_to_batch())
-        if imgsz is not None:
+        if self.imgsz is not None:
             if isinstance(pre_ops[1], Resize):
                 pre_ops.pop(1)
-            pre_ops.insert(1, self.build_resize(imgsz, False, 2))
+            pre_ops.insert(1, self.build_resize(self.imgsz, False, 2))
+
         # build infer
         infer = StaticInfer(
             model_dir=self.model_dir,
