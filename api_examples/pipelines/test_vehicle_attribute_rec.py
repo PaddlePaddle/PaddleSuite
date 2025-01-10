@@ -12,10 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from PIL import Image
+from paddlex import create_pipeline
 
-from ...common.result import BaseResult
+pipeline = create_pipeline(pipeline="vehicle_attribute_recognition")
 
+output = pipeline.predict(
+    "./test_samples/vehicle_attribute_002.jpg", det_threshold=0.7, cls_threshold=0.7
+)
 
-class IdentityResult(BaseResult):
-    pass
+for res in output:
+    res.print()  ## 打印预测的结构化输出
+    res.save_to_img("./output")  ## 保存结果可视化图像
+    res.save_to_json("./output/")  ## 保存预测的结构化输出
