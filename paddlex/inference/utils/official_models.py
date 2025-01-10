@@ -307,6 +307,9 @@ PP-LCNet_x1_0_vehicle_attribute_infer.tar",
     "PP-TSM-R50_8frames_uniform": "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-TSM-R50_8frames_uniform_infer.tar",
     "PP-TSMv2-LCNetV2_8frames_uniform": "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-TSMv2-LCNetV2_8frames_uniform_infer.tar",
     "PP-TSMv2-LCNetV2_16frames_uniform": "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-TSMv2-LCNetV2_16frames_uniform_infer.tar",
+    "GroundingDINO-T": "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/GroundingDINO-T_infer.tar",
+    "SAM-H_box": "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/SAM-H_box_infer.tar",
+    "SAM-H_point": "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/SAM-H_point_infer.tar",
 }
 
 

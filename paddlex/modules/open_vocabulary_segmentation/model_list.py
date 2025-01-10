@@ -14,6 +14,6 @@
 
 
 MODELS = [
-    "SAM-H_points",
-    "SAM-H_boxes",
+    "SAM-H_point",
+    "SAM-H_box",
 ]
