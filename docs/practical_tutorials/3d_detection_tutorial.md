@@ -45,9 +45,9 @@ dataset
 在对数据集校验时，只需一行命令：
 
 ```bash
-python main.py -c paddlex/configs/bev_fusion_3D/bevf_pp_2x8_1x_nusc.yaml \
+python main.py -c paddlex/configs/modules/bev_fusion_3D/bevf_pp_2x8_1x_nusc.yaml \
     -o Global.mode=check_dataset \
-    -o Global.dataset_dir=./paddlex/repo_manager/repos/Paddle3D/data/nuscenes
+    -o Global.dataset_dir=./dataset/nuscenes_demo
 ```
 
 执行上述命令后，PaddleX 会对数据集进行校验。命令运行成功后会在 log 中打印出 `Check dataset passed !` 信息，同时相关产出会保存在当前目录的 `./output/check_dataset` 目录下。校验结果文件保存在 `./output/check_dataset_result.json`，校验结果文件具体内容为
@@ -108,7 +108,7 @@ python main.py -c paddlex/configs/bev_fusion_3D/bevf_pp_2x8_1x_nusc.yaml \
 ```bash
 python main.py -c paddlex/configs/modules/bev_fusion_3D/bevf_pp_2x8_1x_nusc.yaml \
     -o Global.mode=train \
-    -o Global.dataset_dir=./paddlex/repo_manager/repos/Paddle3D/dataset/nuscenes \
+    -o Global.dataset_dir=./dataset/nuscenes_demo \
 ```
 
 在 PaddleX 中模型训练支持：修改训练超参数、单机单卡/多卡训练等功能，只需修改配置文件或追加命令行参数。
@@ -144,9 +144,9 @@ PaddleX 中每个模型都提供了模型开发的配置文件，用于设置相
 在完成模型训练后，可以对指定的模型权重文件在验证集上进行评估，验证模型精度。使用 PaddleX 进行模型评估，只需一行命令：
 
 ```bash
-python main.py -c paddlex/configs/bev_fusion_3D/bevf_pp_2x8_1x_nusc.yaml \
+python main.py -c paddlex/configs/modules/bev_fusion_3D/bevf_pp_2x8_1x_nusc.yaml \
     -o Global.mode=evaluate \
-    -o Global.dataset_dir=./paddlex/repo_manager/repos/Paddle3D/data/nuscenes \
+    -o Global.dataset_dir=./dataset/nuscenes_demo \
     -o Evaluate.weight_path=output_pdparams_path
 ```
 
