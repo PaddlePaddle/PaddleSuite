@@ -357,7 +357,7 @@ class _BaseJsonWriterBackend(object):
 
 class JsonWriterBackend(_BaseJsonWriterBackend):
     def _write_obj(self, out_path, obj, **bk_args):
-        with open(out_path, "w") as f:
+        with open(out_path, "w", encoding="utf-8") as f:
             json.dump(obj, f, **bk_args)
 
 

@@ -42,7 +42,7 @@ class TextRecResult(BaseCVResult):
             fill=(0, 0, 0),
             font=font,
         )
-        return new_image
+        return {"res": new_image}
 
     def adjust_font_size(self, image_width, text, font_path):
         font_size = int(image_width * 0.06)

@@ -26,4 +26,4 @@ class TSAdResult(BaseTSResult):
         Returns:
             Any: The anomaly data formatted for CSV output, typically a DataFrame or similar structure.
         """
-        return self["anomaly"]
+        return {"res": self["anomaly"]}

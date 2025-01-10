@@ -66,7 +66,7 @@ class TopkResult(BaseCVResult):
         text_x = rect_left + 3
         text_y = rect_top
         draw.text((text_x, text_y), label_str, fill=font_color, font=font)
-        return image
+        return {"res": image}
 
     def _get_font_colormap(self, color_index):
         """
