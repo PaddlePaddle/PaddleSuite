@@ -56,7 +56,7 @@ class FormulaRecResult(BaseCVResult):
             logging.warning(
                 "Please refer to 2.3 Formula Recognition Pipeline Visualization in Formula Recognition Pipeline Tutorial to install the LaTeX rendering engine at first."
             )
-            return image
+            return {"res": image}
 
         rec_formula = str(self["rec_formula"])
         image = np.array(image.convert("RGB"))
@@ -83,10 +83,10 @@ class FormulaRecResult(BaseCVResult):
             )
             new_image.paste(image, (0, 0))
             new_image.paste(img_formula, (image.width + 10, 0))
-            return new_image
+            return {"res": new_image}
         except subprocess.CalledProcessError as e:
             logging.warning("Syntax error detected in formula, rendering failed.")
-            return image
+            return {"res": image}
 
 
 def get_align_equation(equation: str) -> str:

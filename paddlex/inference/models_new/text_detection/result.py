@@ -30,4 +30,4 @@ class TextDetResult(BaseCVResult):
         for box in boxes:
             box = np.reshape(np.array(box).astype(int), [-1, 1, 2]).astype(np.int64)
             cv2.polylines(image, [box], True, (0, 0, 255), 2)
-        return image[:, :, ::-1]
+        return {"res": image[:, :, ::-1]}

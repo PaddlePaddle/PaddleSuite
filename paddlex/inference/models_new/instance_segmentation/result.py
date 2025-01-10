@@ -147,7 +147,7 @@ class InstanceSegResult(BaseCVResult):
         else:
             image = draw_segm(image, masks, boxes)
 
-        return image
+        return {"res": image}
 
     def _to_str(self, _, *args, **kwargs):
         data = copy.deepcopy(self)

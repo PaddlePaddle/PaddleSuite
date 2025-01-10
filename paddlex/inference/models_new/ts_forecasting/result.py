@@ -26,4 +26,4 @@ class TSFcResult(BaseTSResult):
         Returns:
             Any: The forecast data formatted for CSV output, typically a DataFrame or similar structure.
         """
-        return self["forecast"]
+        return {"res": self["forecast"]}

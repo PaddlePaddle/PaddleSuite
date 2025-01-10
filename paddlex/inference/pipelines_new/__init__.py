@@ -31,6 +31,15 @@ from .anomaly_detection import AnomalyDetectionPipeline
 from .ts_forecasting import TSFcPipeline
 from .ts_anomaly_detection import TSAnomalyDetPipeline
 from .ts_classification import TSClsPipeline
+from .attribute_recognition import (
+    PedestrianAttributeRecPipeline,
+    VehicleAttributeRecPipeline,
+)
+
+from .semantic_segmentation import SemanticSegmentationPipeline
+from .instance_segmentation import InstanceSegmentationPipeline
+from .small_object__detection import SmallObjectDetectionPipeline
+from .rotated_object__detection import RotatedObjectDetectionPipeline
 
 
 def get_pipeline_path(pipeline_name: str) -> str:
