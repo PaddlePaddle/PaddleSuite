@@ -44,8 +44,6 @@ class BEVFusionTrainer(BaseTrainer):
         self._update_dataset()
         self._update_pretrained_model()
 
-        if self.train_config.batch_size is not None:
-            self.pdx_config.update_batch_size(self.train_config.batch_size)
         if self.train_config.learning_rate is not None:
             self.pdx_config.update_learning_rate(self.train_config.learning_rate)
         # if self.train_config.epochs is not None:
@@ -65,5 +63,10 @@ class BEVFusionTrainer(BaseTrainer):
             dict: the arguments of training function.
         """
         train_args = {"device": self.get_device()}
+        if (
+            self.train_config.resume_path is not None
+            and self.train_config.resume_path != ""
+        ):
+            train_args["resume_path"] = self.train_config.resume_path
         train_args["dy2st"] = self.train_config.get("dy2st", False)
         return train_args
