@@ -58,7 +58,7 @@ TrainReader:
 EvalReader:
   sample_transforms:
     - Decode: {}
-    - Resize: {target_size: [640, 640], keep_ratio: False, interp: 2}
+    - Resize: {target_size: [1088, 1088], keep_ratio: False, interp: 2}
     - NormalizeImage: {mean: [0., 0., 0.], std: [1., 1., 1.], norm_type: none}
     - Permute: {}
   batch_size: 2
