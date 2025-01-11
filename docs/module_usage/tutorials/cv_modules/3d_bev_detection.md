@@ -2,10 +2,10 @@
 comments: true
 ---
 
-# 3D检测模块使用教程
+# 3D融合BEV检测模块使用教程
 
 ## 一、概述
-3D检测模块是计算机视觉和自动驾驶领域关键组成部分，负责在图像或视频中定位和标记出包含特定目标的区域的3D坐标和检测框信息。该模块的性能直接影响到整个视觉或自动驾驶感知系统的准确性和效率。3D检测模块通常会输出目标区域的3D边界框（Bounding Boxes），这些3D边界框将作为输入传递给目标识别模块进行后续处理。
+3D融合BEV检测模块是计算机视觉和自动驾驶领域关键组成部分，负责在图像或视频中定位和标记出包含特定目标的区域的3D坐标和检测框信息。该模块的性能直接影响到整个视觉或自动驾驶感知系统的准确性和效率。3D融合BEV检测模块通常会输出目标区域的3D边界框（Bounding Boxes），这些3D边界框将作为输入传递给目标识别模块进行后续处理。
 
 ## 二、支持模型列表
 
@@ -33,7 +33,7 @@ comments: true
 ## 三、快速集成
 > ❗ 在快速集成前，请先安装 PaddleX 的 wheel 包，详细请参考 [PaddleX本地安装教程](../../../installation/installation.md)
 
-完成 wheel 包的安装后，几行代码即可完成目标检测模块的推理，可以任意切换该模块下的模型，您也可以将3D检测的模块中的模型推理集成到您的项目中。运行以下代码前，请您下载[示例输入](https://paddle-model-ecology.bj.bcebos.com/paddlex/det_3d/demo_det_3d/nuscenes_infos_val.pkl)到本地。
+完成 wheel 包的安装后，几行代码即可完成目标检测模块的推理，可以任意切换该模块下的模型，您也可以将3D融合BEV检测的模块中的模型推理集成到您的项目中。运行以下代码前，请您下载[示例输入](https://paddle-model-ecology.bj.bcebos.com/paddlex/det_3d/demo_det_3d/nuscenes_infos_val.pkl)到本地。
 
 ```python
 from paddlex import create_model
@@ -119,11 +119,11 @@ python main.py -c paddlex/configs/modules/bev_fusion_3D/bevf_pp_2x8_1x_nusc.yaml
 
 <details><summary>👉 <b>格式转换/数据集划分详情（点击展开）</b></summary>
 
-<p>3D检测模块不支持数据格式转换与数据集划分。</p></details>
+<p>3D融合BEV检测模块不支持数据格式转换与数据集划分。</p></details>
 
 
 ### 4.2 模型训练
-一条命令即可完成模型的训练，以此处3D检测模型 `BEVFusion` 的训练为例：
+一条命令即可完成模型的训练，以此处3D融合BEV检测模型 `BEVFusion` 的训练为例：
 
 ```bash
 python main.py -c paddlex/configs/modules/bev_fusion_3D/bevf_pp_2x8_1x_nusc.yaml \
@@ -199,8 +199,8 @@ python main.py -c paddlex/configs/modules/bev_fusion_3D/bevf_pp_2x8_1x_nusc.yaml
 
 1.<b>产线集成</b>
 
-3D检测模块可以集成的PaddleX产线有[3D检测产线](../../../pipeline_usage/tutorials/cv_pipelines/3D_detection.md)，只需要替换模型路径即可完成相关产线的目标检测模块的模型更新。在产线集成中，你可以使用高性能部署和服务化部署来部署你得到的模型。
+3D融合BEV检测模块可以集成的PaddleX产线有[3D检测产线](../../../pipeline_usage/tutorials/cv_pipelines/3D_detection.md)，只需要替换模型路径即可完成相关产线的目标检测模块的模型更新。在产线集成中，你可以使用高性能部署和服务化部署来部署你得到的模型。
 
 2.<b>模块集成</b>
 
-您产出的权重可以直接集成到3D检测模块中，可以参考[快速集成](#三快速集成)的 Python 示例代码，只需要将模型替换为你训练的到的模型路径即可。
+您产出的权重可以直接集成到3D融合BEV检测模块中，可以参考[快速集成](#三快速集成)的 Python 示例代码，只需要将模型替换为你训练的到的模型路径即可。
