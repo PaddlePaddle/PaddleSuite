@@ -34,6 +34,8 @@ from .ts_anomaly_detection import TSAdPredictor
 from .ts_classification import TSClsPredictor
 from .image_unwarping import WarpPredictor
 from .image_multilabel_classification import MLClasPredictor
+from .open_vocabulary_detection import OVDetPredictor
+from .open_vocabulary_segmentation import OVSegPredictor
 
 
 # from .table_recognition import TablePredictor

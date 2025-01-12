@@ -12,6 +12,4 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .tokenizer_utils import PretrainedTokenizer
-from .gpt_tokenizer import GPTTokenizer
-from .bert_tokenizer import BertTokenizer
+from .predictor import OVDetPredictor
