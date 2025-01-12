@@ -316,6 +316,8 @@ PP-LCNet_x1_0_vehicle_attribute_infer.tar",
     "PP-TSM-R50_8frames_uniform": "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-TSM-R50_8frames_uniform_infer.tar",
     "PP-TSMv2-LCNetV2_8frames_uniform": "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-TSMv2-LCNetV2_8frames_uniform_infer.tar",
     "PP-TSMv2-LCNetV2_16frames_uniform": "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-TSMv2-LCNetV2_16frames_uniform_infer.tar",
+    "MaskFormer_tiny": "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/MaskFormer_tiny_infer.tar",
+    "MaskFormer_small": "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/MaskFormer_small_infer.tar",
 }
 
 
