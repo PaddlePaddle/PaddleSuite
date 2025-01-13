@@ -384,6 +384,7 @@ class LayoutParsingResult(dict, StrMixin, JsonMixin, MarkdownMixin, ImgMixin):
         'seal': (158, 158, 158, 100),             # Neutral Gray (from 'dropped_bbox_list')
         'table': (204, 204, 0, 100),              # Olive Yellow (from 'tables_body_list')
         'image': (153, 255, 51, 100),             # Bright Green (from 'imgs_body_list')
+        'figure': (153, 255, 51, 100),             # Bright Green (from 'imgs_body_list')
         'chart': (216, 191, 216, 100),            # Thistle
         'reference': (229, 255, 204, 100),        # Pale Yellow-Green (from 'tables_footnote_list')
         'algorithm': (255, 250, 240, 100)         # Floral White
@@ -747,23 +748,27 @@ class LayoutParsingResult(dict, StrMixin, JsonMixin, MarkdownMixin, ImgMixin):
                     if is_horizontal_1:
                         height1 = bbox2[3] - bbox2[1]
                         width1 = bbox2[2] - bbox2[0]
-                        if self._nearest_edge_distance(bbox1,bbox2)[0] <= 10 and label == "text" and block1['label'] in vision_labels:
-                            blocks[title_text_index]['sub_label'] = 'vision_footnote'
-                            vision_footnote.append(bbox2)
-                        elif height1 < height * title_text_weight[0] and (width1 < width or width1 > 1.5 * width) and label == "text" and block1['label'] in title_labels:
-                            blocks[title_text_index]['sub_label'] = "title_text"
-                            title_text.append((direction_[0], bbox2))
+                        if label == "text" :
+                            if self._nearest_edge_distance(bbox1,bbox2)[0] <= 15 and block1['label'] in vision_labels and \
+                                    width1 < width and height1 < 0.5*height:
+                                blocks[title_text_index]['sub_label'] = 'vision_footnote'
+                                vision_footnote.append(bbox2)
+                            elif height1 < height * title_text_weight[0] and (width1 < width or width1 > 1.5 * width) and block1['label'] in title_labels:
+                                blocks[title_text_index]['sub_label'] = "title_text"
+                                title_text.append((direction_[0], bbox2))
                         elif label == "paragraph_title" and block1['label'] in  sub_title_labels:
                             sub_title.append(bbox2)
                     else:
                         height1 = bbox2[3] - bbox2[1]
                         width1 = bbox2[2] - bbox2[0]
-                        if self._nearest_edge_distance(bbox1,bbox2)[0] <= 10 and label == "text" and block1['label'] in vision_labels:
-                            blocks[title_text_index]['sub_label'] = 'vision_footnote'
-                            vision_footnote.append(bbox2)
-                        elif width1 < width * title_text_weight[1] and label == "text" and block1['label'] in title_labels:
-                            blocks[title_text_index]['sub_label'] = "title_text"
-                            title_text.append((direction_[1], bbox2))
+                        if label == "text":    
+                            if self._nearest_edge_distance(bbox1,bbox2)[0] <= 15 and block1['label'] in vision_labels and \
+                                    height1 < height and width1 < 0.5*width:
+                                blocks[title_text_index]['sub_label'] = 'vision_footnote'
+                                vision_footnote.append(bbox2)
+                            elif width1 < width * title_text_weight[1] and block1['label'] in title_labels:
+                                blocks[title_text_index]['sub_label'] = "title_text"
+                                title_text.append((direction_[1], bbox2))
                         elif label == "paragraph_title" and block1['label'] in  sub_title_labels:
                             sub_title.append(bbox2)
 
@@ -813,7 +818,7 @@ class LayoutParsingResult(dict, StrMixin, JsonMixin, MarkdownMixin, ImgMixin):
             return 
         layout_parsing_result = self['layout_parsing_result']
         parsing_result = layout_parsing_result[block_index]['sub_blocks']
-        # parsing_result, _ = self._remove_overlap_blocks(parsing_result, threshold=0.5, smaller=True)
+        parsing_result, _ = self._remove_overlap_blocks(parsing_result, threshold=0.9, smaller=True)
 
         if is_only_xycut == False:
             # title_labels = ["doc_title","paragraph_title"]
@@ -826,13 +831,13 @@ class LayoutParsingResult(dict, StrMixin, JsonMixin, MarkdownMixin, ImgMixin):
                                                                             no_mask_labels=no_mask_labels, 
                                                                             threshold=0.3)
             # Convert bounding boxes to float and remove overlaps
-            double_text_blocks, title_text_blocks, title_blocks, vision_blocks, vision_footnote_blocks, other_blocks = [], [], [], [], [], []
-
+            double_text_blocks, title_text_blocks, title_blocks, vision_blocks, vision_title_blocks, vision_footnote_blocks, other_blocks = [], [], [], [], [], [], []
+            
             title_labels = ["doc_title", "paragraph_title"]
-            if not is_eval:
-                title_labels.extend(["table_title", 'chart_title', "figure_title"])
             
             vision_labels = ['image','table','seal','chart','figure']
+
+            vision_title_labels = ["table_title", 'chart_title', "figure_title"]
             
             drop_indexes = []
 
@@ -853,6 +858,9 @@ class LayoutParsingResult(dict, StrMixin, JsonMixin, MarkdownMixin, ImgMixin):
                 elif label == "vision_footnote":
                     vision_footnote_blocks.append(block)
                     drop_indexes.append(index) 
+                elif label in vision_title_labels:
+                    vision_title_blocks.append(block)
+                    drop_indexes.append(index)
                 elif label in title_labels:
                     title_blocks.append(block)
                     drop_indexes.append(index) 
@@ -930,10 +938,12 @@ class LayoutParsingResult(dict, StrMixin, JsonMixin, MarkdownMixin, ImgMixin):
                         
                         if distance < min_distance:
                             min_distance = distance
-                            nearest_gt_index = match_block['index']
+                            nearest_gt_index = match_block.get('index',999)
                             
                     if is_add_index:
                         block['index'] = nearest_gt_index
+                    else:
+                        block['sub_index'] = nearest_gt_index
 
                     parsing_result.append(block)
                     
@@ -963,6 +973,7 @@ class LayoutParsingResult(dict, StrMixin, JsonMixin, MarkdownMixin, ImgMixin):
 
                 for idx,block in enumerate(parsing_result):
                     block['index'] = idx+1
+                    block['sub_index'] = idx+1
                 
                 # double text label
                 double_text_blocks.sort(key=lambda x: (x['layout_bbox'][1]//10,x['layout_bbox'][0]//median_width,x['layout_bbox'][1]**2+x['layout_bbox'][0]**2))
@@ -971,6 +982,7 @@ class LayoutParsingResult(dict, StrMixin, JsonMixin, MarkdownMixin, ImgMixin):
 
                 for idx,block in enumerate(parsing_result):
                     block['index'] = idx+1
+                    block['sub_index'] = idx+1
 
                 # title-text label
                 nearest_match_(title_text_blocks,distance_type="title_text")
@@ -980,21 +992,30 @@ class LayoutParsingResult(dict, StrMixin, JsonMixin, MarkdownMixin, ImgMixin):
 
                 for idx,block in enumerate(parsing_result):
                     block['index'] = idx+1
+                    block['sub_index'] = idx+1
 
                 if is_eval == False:
-                    # image,figure,chart,seal label
-                    nearest_match_(vision_blocks,distance_type="nearest_iou_edge_distance")
-                    parsing_result.sort(key=lambda x: (x['index'],x['layout_bbox'][1],x['layout_bbox'][0])) 
+                     # image,figure,chart,seal label
+                    nearest_match_(vision_title_blocks,distance_type="nearest_iou_edge_distance",is_add_index=False)
+                    parsing_result.sort(key=lambda x: (x['sub_index'],x['layout_bbox'][1],x['layout_bbox'][0])) 
 
                     for idx,block in enumerate(parsing_result):
-                        block['index'] = idx+1
+                        block['sub_index'] = idx+1
+
+                    # image,figure,chart,seal label
+                    nearest_match_(vision_blocks,distance_type="nearest_iou_edge_distance",is_add_index=False)
+                    parsing_result.sort(key=lambda x: (x['sub_index'],x['layout_bbox'][1],x['layout_bbox'][0])) 
+
+                    for idx,block in enumerate(parsing_result):
+                        block['sub_index'] = idx+1
                     
                     # vision footnote label
-                    nearest_match_(vision_footnote_blocks,distance_type="vision_footnote")
+                    nearest_match_(vision_footnote_blocks,distance_type="vision_footnote",is_add_index=False)
                     text_label_priority = {'vision_footnote':9999}
-                    parsing_result.sort(key=lambda x: (x['index'],text_label_priority.get(x['sub_label'],0),x['layout_bbox'][1],x['layout_bbox'][0])) 
+                    parsing_result.sort(key=lambda x: (x['sub_index'],text_label_priority.get(x['sub_label'],0),x['layout_bbox'][1],x['layout_bbox'][0])) 
+
                     for idx,block in enumerate(parsing_result):
-                        block['index'] = idx+1
+                        block['sub_index'] = idx+1
                     
                     # header、footnote、header_image... label 
                     nearest_match_(other_blocks,distance_type="manhattan",is_add_index=False)
@@ -1179,7 +1200,7 @@ class LayoutParsingResult(dict, StrMixin, JsonMixin, MarkdownMixin, ImgMixin):
         """Define weights based on the label and orientation."""
         if label == "doc_title":
             return [1, 0.1, 0.1, 1] if horizontal else [0.2, 0.1, 1, 1] # left-down ,  right-left 
-        elif label in ["paragraph_title", "abstract", "figure_title", "chart_title", 'image', 'seal', 'chart', 'figure']:
+        elif label in ["paragraph_title", "abstract", "figure_title", "chart_title"]:
             return [1, 1, 0.1, 1] # down 
         else:
             return [1, 1, 1, 0.1] # up
@@ -1256,7 +1277,7 @@ class LayoutParsingResult(dict, StrMixin, JsonMixin, MarkdownMixin, ImgMixin):
         # Calculate up and left edge distances
         up_edge_distance = y1_prime
         left_edge_distance = x1_prime
-        if label in no_mask_labels and y1 > y2_prime:
+        if (label in no_mask_labels or label == "paragraph_title" or label in vision_labels) and y1 > y2_prime:
             up_edge_distance = -y2_prime
             left_edge_distance = -x2_prime
 

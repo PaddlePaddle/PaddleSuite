@@ -1,4 +1,4 @@
-from utils import calculate_metrics_with_page, load_data_from_json, paddlex_generate_input_data, mineru_generate_input_data
+from .inference.pipelines_new.layout_parsing.utils import calculate_metrics_with_page, load_data_from_json, paddlex_generate_input_data, mineru_generate_input_data
 
 if __name__ == '__main__':
     import json

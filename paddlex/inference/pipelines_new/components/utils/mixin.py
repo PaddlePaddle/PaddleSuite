@@ -275,7 +275,7 @@ class MarkdownMixin:
                 sub_blocks = block['sub_blocks']
                 # last_label = None
                 # last_left = float('inf')
-                for sub_block in sorted(sub_blocks, key=lambda x: x.get('index',999)):
+                for sub_block in sorted(sub_blocks, key=lambda x: x.get('sub_index',999)):
                     label = sub_block.get('label')
                     handler = handlers.get(label)
                     if handler:

@@ -12,10 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-__all__ = ["convert_points_to_boxes", "get_sub_regions_ocr_res"]
+__all__ = ["convert_points_to_boxes", "get_sub_regions_ocr_res","get_sub_regions_ocr_res","calculate_metrics_with_page"]
 
 import numpy as np
 import copy
+import json
 from typing import List
 from nltk.translate.bleu_score import sentence_bleu
 from scipy.stats import kendalltau
@@ -177,7 +178,7 @@ def get_structure_res(
             - The label as a key with either table HTML or image data and text.
             - "layout_bbox": The coordinates of the layout box.
     """
-    
+
     structure_boxes = []
     input_img = overall_ocr_res["input_img"]
 
