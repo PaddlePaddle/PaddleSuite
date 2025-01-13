@@ -213,7 +213,7 @@ class DetPredictor(BasicPredictor):
             interp = {
                 0: "NEAREST",
                 1: "LINEAR",
-                2: "CUBIC",
+                2: "BICUBIC",
                 3: "AREA",
                 4: "LANCZOS4",
             }[interp]

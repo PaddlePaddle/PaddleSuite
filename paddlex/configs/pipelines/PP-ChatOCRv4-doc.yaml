@@ -1,6 +1,8 @@
 
 pipeline_name: PP-ChatOCRv4-doc
 
+use_layout_parser: False
+
 use_mllm_predict: True
 
 SubModules:
