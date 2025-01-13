@@ -20,6 +20,7 @@ from PIL import Image, ImageDraw, ImageFont
 
 from ....utils.fonts import PINGFANG_FONT_FILE_PATH
 from ...utils.color_map import get_colormap
+from ...utils.io import VideoReader
 from ...common.result import BaseVideoResult
 
 
@@ -27,7 +28,7 @@ class DetVideoResult(BaseVideoResult):
 
     def _to_video(self):
         """Draw label on image"""
-        video_reader = self._video_reader
+        video_reader = VideoReader(backend="decord")
         video = video_reader.read(self["input_path"])
         video = list(video)
         write_fps = video_reader.get_fps()
