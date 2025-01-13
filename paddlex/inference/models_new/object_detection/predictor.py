@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Any, List, Sequence, Optional
+from typing import Any, List, Sequence, Optional, Union, Tuple
 
 import numpy as np
 
@@ -34,6 +34,7 @@ from .processors import (
     WarpAffine,
 )
 from .result import DetResult
+from .utils import STATIC_SHAPE_MODEL_LIST
 
 
 class DetPredictor(BasicPredictor):
@@ -43,15 +44,36 @@ class DetPredictor(BasicPredictor):
     _FUNC_MAP = {}
     register = FuncRegister(_FUNC_MAP)
 
-    def __init__(self, *args, threshold: Optional[float] = None, **kwargs):
+    def __init__(
+        self,
+        *args,
+        imgsz: Optional[Union[int, Tuple[int, int]]] = None,
+        threshold: Optional[float] = None,
+        **kwargs,
+    ):
         """Initializes DetPredictor.
         Args:
             *args: Arbitrary positional arguments passed to the superclass.
+            imgsz (Optional[Union[int, Tuple[int, int]]], optional): The input image size (w, h). Defaults to None.
             threshold (Optional[float], optional): The threshold for filtering out low-confidence predictions.
                 Defaults to None.
             **kwargs: Arbitrary keyword arguments passed to the superclass.
         """
         super().__init__(*args, **kwargs)
+
+        if imgsz is not None:
+            assert (
+                self.model_name not in STATIC_SHAPE_MODEL_LIST
+            ), f"The model {self.model_name} is not supported set input shape"
+            if isinstance(imgsz, int):
+                imgsz = (imgsz, imgsz)
+            elif isinstance(imgsz, (tuple, list)):
+                assert len(imgsz) == 2, f"The length of `imgsz` should be 2."
+            else:
+                raise ValueError(
+                    f"The type of `imgsz` must be int or Tuple[int, int], but got {type(imgsz)}."
+                )
+        self.imgsz = imgsz
         self.threshold = threshold
         self.pre_ops, self.infer, self.post_op = self._build()
 
@@ -61,7 +83,12 @@ class DetPredictor(BasicPredictor):
     def _get_result_class(self):
         return DetResult
 
-    def _build(self):
+    def _build(self) -> Tuple:
+        """Build the preprocessors, inference engine, and postprocessors based on the configuration.
+
+        Returns:
+            tuple: A tuple containing the preprocessors, inference engine, and postprocessors.
+        """
         # build preprocess ops
         pre_ops = [ReadImage(format="RGB")]
         for cfg in self.config["Preprocess"]:
@@ -73,6 +100,10 @@ class DetPredictor(BasicPredictor):
             if op:
                 pre_ops.append(op)
         pre_ops.append(self.build_to_batch())
+        if self.imgsz is not None:
+            if isinstance(pre_ops[1], Resize):
+                pre_ops.pop(1)
+            pre_ops.insert(1, self.build_resize(self.imgsz, False, 2))
 
         # build infer
         infer = StaticInfer(
@@ -231,6 +262,7 @@ class DetPredictor(BasicPredictor):
     def build_to_batch(self):
         model_names_required_imgsize = [
             "DETR",
+            "DINO",
             "RCNN",
             "YOLOv3",
             "CenterNet",

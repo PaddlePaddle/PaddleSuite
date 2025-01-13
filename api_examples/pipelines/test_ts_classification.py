@@ -1,4 +1,4 @@
-# copyright (c) 2024 PaddlePaddle Authors. All Rights Reserve.
+# copyright (c) 2025 PaddlePaddle Authors. All Rights Reserve.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,18 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Any
-from ...common.result import BaseTSResult
+from paddlex import create_pipeline
 
+pipeline = create_pipeline(pipeline="ts_classification")
+output = pipeline.predict("./test_samples/ts_cls.csv")
 
-class TSAdResult(BaseTSResult):
-    """A class representing the result of a time series anomaly detection task."""
-
-    def _to_csv(self) -> Any:
-        """
-        Converts the anomaly detection results to a CSV format.
-
-        Returns:
-            Any: The anomaly data formatted for CSV output, typically a DataFrame or similar structure.
-        """
-        return self["anomaly"]
+for res in output:
+    print(res)
+    res.print()  ## 打印预测的结构化输出
+    res.save_to_csv("./output/")  ## 保存结果到csv文件

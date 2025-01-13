@@ -62,6 +62,13 @@ class _ModelBasedInference(_BaseModel):
     def set_predictor(self, **kwargs):
         self._predictor.set_predictor(**kwargs)
 
+    def __getattr__(self, name):
+        if hasattr(self._predictor, name):
+            return getattr(self._predictor, name)
+        raise AttributeError(
+            f"'{self.__class__.__name__}' object has no attribute '{name}'"
+        )
+
 
 class _ModelBasedConfig(_BaseModel):
     def __init__(self, config=None, *args, **kwargs):
