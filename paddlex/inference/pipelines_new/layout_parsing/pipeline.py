@@ -17,7 +17,7 @@ import os, sys
 import numpy as np
 import cv2
 from ..base import BasePipeline
-from .utils import convert_points_to_boxes, get_sub_regions_ocr_res
+from .utils import convert_points_to_boxes, get_sub_regions_ocr_res, get_structure_res
 from .result import LayoutParsingResult
 from ....utils import logging
 from ...utils.pp_option import PaddlePredictorOption
@@ -237,7 +237,7 @@ class LayoutParsingPipeline(BasePipeline):
 
     def predict(
         self,
-        input: str | list[str] | np.ndarray | list[np.ndarray],
+        inputs: str | list[str] | np.ndarray | list[np.ndarray],
         use_doc_orientation_classify: bool = False,
         use_doc_unwarping: bool = False,
         use_general_ocr: bool = True,
@@ -278,7 +278,7 @@ class LayoutParsingPipeline(BasePipeline):
         if not self.check_input_params_valid(input_params):
             yield None
 
-        for img_id, batch_data in enumerate(self.batch_sampler(input)):
+        for img_id, batch_data in enumerate(self.batch_sampler(inputs)):
             image_array = self.img_reader(batch_data)[0]
             img_id += 1
 
@@ -287,6 +287,7 @@ class LayoutParsingPipeline(BasePipeline):
             )
 
             layout_det_res = next(self.layout_det_model(doc_preprocessor_image))
+            # print(layout_det_res)
 
             if input_params["use_general_ocr"] or input_params["use_table_recognition"]:
                 overall_ocr_res = self.predict_overall_ocr_res(doc_preprocessor_image)
@@ -328,6 +329,17 @@ class LayoutParsingPipeline(BasePipeline):
                 seal_res_list = seal_res_list["seal_res_list"]
             else:
                 seal_res_list = []
+            
+            for table_res in table_res_list:
+                table_res['layout_bbox'] = table_res['cell_box_list'][0]
+            structure_res = get_structure_res(overall_ocr_res, layout_det_res,table_res_list)
+            img_size = image_array.shape[0],image_array.shape[1]
+
+            structure_res_list = [{
+                "block_bbox":[0,0,2550,2550],
+                "block_size":img_size,
+                "sub_blocks":structure_res
+            },]
 
             single_img_res = {
                 "layout_det_res": layout_det_res,
@@ -336,7 +348,12 @@ class LayoutParsingPipeline(BasePipeline):
                 "text_paragraphs_ocr_res": text_paragraphs_ocr_res,
                 "table_res_list": table_res_list,
                 "seal_res_list": seal_res_list,
+                "layout_parsing_result": structure_res_list,
+                "image_array": image_array,
                 "input_params": input_params,
                 "img_id": img_id,
             }
-            yield LayoutParsingResult(single_img_res)
+
+            yield LayoutParsingResult(single_img_res,img_id,inputs)
+
+    

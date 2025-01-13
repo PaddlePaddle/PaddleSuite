@@ -9,7 +9,7 @@ use_table_recognition: True
 SubModules:
   LayoutDetection:
     module_name: layout_detection
-    model_name: RT-DETR-H_layout_3cls
+    model_name: RT-DETR-H_layout_23cls
     model_dir: null
     batch_size: 1
 

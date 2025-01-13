@@ -28,6 +28,7 @@ from ....utils.io import (
     HtmlWriter,
     XlsxWriter,
     TextWriter,
+    MarkdownWriter
 )
 
 #### [TODO] need tingquan to add explanatory notes
@@ -204,3 +205,95 @@ class XlsxMixin:
         if not str(save_path).endswith(".xlsx"):
             save_path = Path(save_path) / f"{Path(self['input_path']).stem}.xlsx"
         _save_list_data(self._xlsx_writer.write, save_path, self.html, *args, **kwargs)
+
+
+class MarkdownMixin:
+    def __init__(self):
+        self._markdown_writer = MarkdownWriter()
+        self._show_funcs.append(self.save_to_markdown)
+
+    def _to_markdown(self):
+        def _format_data(obj):
+            def format_title(content_value):
+                content_value = content_value.rstrip('.')
+                level = content_value.count('.') + 1 if '.' in content_value else 1
+                return f"{'#' * level} {content_value}".replace('-\n', '').replace('\n', ' ')
+
+            def format_centered_text(key):
+                return f'<div style="text-align: center;">{sub_block[key]}</div>'.replace('-\n', '').replace('\n', ' ')+'\n'
+
+            def format_image():
+                img_tags = []
+                if 'img' in sub_block['image']:
+                    img_tags.append('<div style="text-align: center;"><img src="{}" alt="Image" /></div>'.format(
+                        sub_block["image"]["img"].replace('-\n', '').replace('\n', ' '))
+                    )
+                if 'image_text' in sub_block['image']:
+                    img_tags.append('<div style="text-align: center;">{}</div>'.format(
+                        sub_block["image"]["image_text"].replace('-\n', '').replace('\n', ' '))
+                    )
+                return '\n'.join(img_tags)
+            
+            def format_chart():
+                img_tags = []
+                if 'img' in sub_block['chart']:
+                    img_tags.append('<div style="text-align: center;"><img src="{}" alt="Image" /></div>'.format(
+                        sub_block["chart"]["img"].replace('-\n', '').replace('\n', ' '))
+                    )
+                if 'image_text' in sub_block['chart']:
+                    img_tags.append('<div style="text-align: center;">{}</div>'.format(
+                        sub_block["chart"]["image_text"].replace('-\n', '').replace('\n', ' '))
+                    )
+                return '\n'.join(img_tags)
+
+            def format_table():
+                return "\n"+sub_block['table']
+
+            handlers = {
+                'paragraph_title': lambda: format_title(sub_block['paragraph_title']),
+                # 'text_without_layout': lambda: format_title(sub_block['text_without_layout']),
+                'doc_title': lambda: f"# {sub_block['doc_title']}".replace('-\n', '').replace('\n', ' '),
+                'table_title': lambda: format_centered_text('table_title'),
+                'figure_title': lambda: format_centered_text('figure_title'),
+                'chart_title': lambda: format_centered_text('chart_title'),
+                'text': lambda: sub_block['text'].replace('-\n', '').replace('\n', ' ').strip(),
+                # 'number': lambda: str(sub_block['number']),
+                'abstract': lambda: "\n"+f"*Abstract*: {sub_block['abstract']}".replace('-\n', '').replace('\n', ' '),
+                'content': lambda: sub_block['content'].replace('-\n', '').replace('\n', ' ').strip(),
+                'image': format_image,
+                'chart': format_chart,
+                'formula': lambda: f"$${sub_block['formula']}$$".replace('-\n', '').replace('\n', ' '),
+                'table': format_table,
+                # 'reference': lambda: "\n"+f"**Reference**: {sub_block['reference']}".replace('-\n', '').replace('\n', ' ').replace('[','\n['),
+                'reference': lambda: "\n"+f"**Reference**: {sub_block['reference']}",
+                'algorithm': lambda: "\n"+f"**Algorithm**: {sub_block['algorithm']}".replace('-\n', '').replace('\n', ' '),
+                'seal': lambda: "\n"+f"**Seal**: {sub_block['seal']}".replace('-\n', '').replace('\n', ' '),
+            }
+            parsing_result = obj['layout_parsing_result']
+            markdown_content = ""
+            for block in parsing_result: # for each block show ordering results
+                sub_blocks = block['sub_blocks']
+                # last_label = None
+                # last_left = float('inf')
+                for sub_block in sorted(sub_blocks, key=lambda x: x.get('index',999)):
+                    label = sub_block.get('label')
+                    handler = handlers.get(label)
+                    if handler:
+                        # if label == last_label == "text"  and abs(last_left - sub_block['layout_bbox'][0]) < 2:
+                        #     markdown_content += "\n\n"+handler()
+                        # else:
+                        markdown_content += "\n"+handler()
+                        # last_label = label
+                        # last_left = sub_block['layout_bbox'][0]
+
+            return markdown_content
+        return _format_data(self)
+
+    @property
+    def markdown(self):
+        return self._to_markdown()
+
+    def save_to_markdown(self, save_path, *args, **kwargs):
+        if not str(save_path).endswith(".md"):
+            save_path = Path(save_path) / f"{Path(self['input_path']).stem}.md"
+        _save_list_data(self._markdown_writer.write, save_path, self.markdown, *args, **kwargs)
