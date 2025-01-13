@@ -51,6 +51,7 @@ def draw_segm(im, masks, mask_info, alpha=0.7):
         # draw box prompt
         if mask_info[i]["label"] == "box_prompt":
             x0, y0, x1, y1 = mask_info[i]["prompt"]
+            x0, y0, x1, y1 = int(x0), int(y0), int(x1), int(y1)
             cv2.rectangle(
                 im, (x0, y0), (x1, y1), tuple(color_mask.astype("int32").tolist()), 1
             )
