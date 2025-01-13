@@ -74,8 +74,13 @@ class PP_ChatOCRv3_Pipeline(PP_ChatOCR_Pipeline):
             None
         """
 
-        layout_parsing_config = config["SubPipelines"]["LayoutParser"]
-        self.layout_parsing_pipeline = self.create_pipeline(layout_parsing_config)
+        self.use_layout_parser = True
+        if "use_layout_parser" in config:
+            self.use_layout_parser = config["use_layout_parser"]
+
+        if self.use_layout_parser:
+            layout_parsing_config = config["SubPipelines"]["LayoutParser"]
+            self.layout_parsing_pipeline = self.create_pipeline(layout_parsing_config)
 
         from .. import create_chat_bot
 
@@ -170,6 +175,10 @@ class PP_ChatOCRv3_Pipeline(PP_ChatOCR_Pipeline):
         Returns:
             dict: A dictionary containing the layout parsing result and visual information.
         """
+
+        if self.use_layout_parser == False:
+            logging.error("The models for layout parser are not initialized.")
+            yield None
 
         for layout_parsing_result in self.layout_parsing_pipeline.predict(
             input,
