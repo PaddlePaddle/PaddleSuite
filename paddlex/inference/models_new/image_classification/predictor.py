@@ -114,7 +114,8 @@ class ClasPredictor(BasicPredictor):
         """
         batch_raw_imgs = self.preprocessors["Read"](imgs=batch_data)
         batch_imgs = self.preprocessors["Resize"](imgs=batch_raw_imgs)
-        batch_imgs = self.preprocessors["Crop"](imgs=batch_imgs)
+        if "Crop" in self.preprocessors:
+            batch_imgs = self.preprocessors["Crop"](imgs=batch_imgs)
         batch_imgs = self.preprocessors["Normalize"](imgs=batch_imgs)
         batch_imgs = self.preprocessors["ToCHW"](imgs=batch_imgs)
         x = self.preprocessors["ToBatch"](imgs=batch_imgs)

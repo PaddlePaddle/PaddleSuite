@@ -23,8 +23,10 @@ from .doc_preprocessor import DocPreprocessorPipeline
 from .layout_parsing import LayoutParsingPipeline
 from .pp_chatocr import PP_ChatOCRv3_Pipeline, PP_ChatOCRv4_Pipeline
 from .image_classification import ImageClassificationPipeline
+from .object_detection import ObjectDetectionPipeline
 from .seal_recognition import SealRecognitionPipeline
 from .table_recognition import TableRecognitionPipeline
+from .multilingual_speech_recognition import MultilingualSpeechRecognitionPipeline
 from .formula_recognition import FormulaRecognitionPipeline
 from .video_classification import VideoClassificationPipeline
 from .video_detection import VideoDetectionPipeline
@@ -32,6 +34,16 @@ from .anomaly_detection import AnomalyDetectionPipeline
 from .ts_forecasting import TSFcPipeline
 from .ts_anomaly_detection import TSAnomalyDetPipeline
 from .ts_classification import TSClsPipeline
+from .pp_shitu_v2 import ShiTuV2Pipeline
+from .attribute_recognition import (
+    PedestrianAttributeRecPipeline,
+    VehicleAttributeRecPipeline,
+)
+
+from .semantic_segmentation import SemanticSegmentationPipeline
+from .instance_segmentation import InstanceSegmentationPipeline
+from .small_object__detection import SmallObjectDetectionPipeline
+from .rotated_object__detection import RotatedObjectDetectionPipeline
 
 
 def get_pipeline_path(pipeline_name: str) -> str:

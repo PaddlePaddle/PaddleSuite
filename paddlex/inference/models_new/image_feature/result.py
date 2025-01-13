@@ -14,12 +14,8 @@
 
 from PIL import Image
 
-from ...common.result import BaseCVResult
+from ...common.result import BaseResult
 
 
-class IdentityResult(BaseCVResult):
-
-    def _to_img(self):
-        """This module does not support visualization; it simply outputs the input images"""
-        image = Image.fromarray(self["input_img"])
-        return image
+class IdentityResult(BaseResult):
+    pass
