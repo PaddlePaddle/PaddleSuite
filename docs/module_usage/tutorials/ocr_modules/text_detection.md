@@ -90,6 +90,15 @@ for res in output:
 ```
 关于更多 PaddleX 的单模型推理的 API 的使用方法，可以参考 [PaddleX单模型Python脚本使用说明](../../../module_usage/instructions/model_python_API.md)。
 
+运行后，得到的结果为：
+
+可视化图片如下：
+
+上述Python脚本中，执行了如下几个步骤：
+* `create_model`实例化文本检测模型（此处以`PP-OCRv4_mobile_det`为例
+* 调用文本识别模型的`predict`方法进行推理，具体参数如下：
+* 对预测结果进行处理：
+
 ## 四、二次开发
 如果你追求更高精度的现有模型，可以使用 PaddleX 的二次开发能力开发更好的文本检测模型。在使用 PaddleX 开发文本检测模型之前，请务必安装 PaddleX 的 PaddleOCR 插件，安装过程可以参考 [PaddleX本地安装教程](../../../installation/installation.md)。
 
