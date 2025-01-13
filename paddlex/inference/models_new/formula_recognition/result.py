@@ -36,7 +36,8 @@ class FormulaRecResult(BaseCVResult):
     def _to_str(self, *args, **kwargs):
         data = copy.deepcopy(self)
         data.pop("input_img")
-        return StrMixin._to_str(data, *args, **kwargs).replace("\\\\", "\\")
+        _str = StrMixin._to_str(data, *args, **kwargs)["res"].replace("\\\\", "\\")
+        return {"res": _str}
 
     def _to_json(self, *args, **kwargs):
         data = copy.deepcopy(self)
