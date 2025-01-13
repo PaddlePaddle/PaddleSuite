@@ -78,8 +78,6 @@ class Resize(CommonResize):
         """
         for data in datas:
             ori_img = data["img"]
-            if "ori_img" not in data:
-                data["ori_img"] = ori_img
             if "ori_img_size" not in data:
                 data["ori_img_size"] = [ori_img.shape[1], ori_img.shape[0]]
             ori_img_size = data["ori_img_size"]

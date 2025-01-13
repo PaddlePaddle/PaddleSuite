@@ -14,9 +14,8 @@
 
 import cv2
 import math
-from typing import List
 
-from PIL import Image
+import matplotlib.pyplot as plt
 import numpy as np
 
 from ...common.result import BaseCVResult
@@ -28,21 +27,10 @@ def get_color(idx):
     return color
 
 
-def draw_keypoints(imgfile, results, visual_thresh=0.1, ids=None):
-    try:
-        import matplotlib.pyplot as plt
-        import matplotlib
-
-        plt.switch_backend("agg")
-    except Exception as e:
-        print(
-            "Matplotlib not found, please install matplotlib."
-            "for example: `pip install matplotlib`."
-        )
-        raise e
+def draw_keypoints(img, results, visual_thresh=0.1, ids=None):
+    plt.switch_backend("agg")
     skeletons = results["keypoints"]
     skeletons = np.array(skeletons)
-    kpt_nums = 17
     if len(skeletons) > 0:
         kpt_nums = skeletons.shape[1]
     if kpt_nums == 17:  # plot coco keypoint
@@ -105,11 +93,7 @@ def draw_keypoints(imgfile, results, visual_thresh=0.1, ids=None):
         [255, 0, 170],
         [255, 0, 85],
     ]
-    cmap = matplotlib.cm.get_cmap("hsv")
     plt.figure()
-
-    img = cv2.imread(imgfile) if isinstance(imgfile, str) else imgfile
-
     color_set = results["colors"] if "colors" in results else None
 
     if "bbox" in results and ids is None:
