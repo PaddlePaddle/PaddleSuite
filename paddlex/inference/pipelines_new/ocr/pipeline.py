@@ -52,14 +52,14 @@ class OCRPipeline(BasePipeline):
             device=device, pp_option=pp_option, use_hpip=use_hpip, hpi_params=hpi_params
         )
 
-        self.use_doc_preprocessor = config.get("use_doc_preprocessor", False)
+        self.use_doc_preprocessor = config.get("use_doc_preprocessor", True)
         if self.use_doc_preprocessor:
             doc_preprocessor_config = config["SubPipelines"]["DocPreprocessor"]
             self.doc_preprocessor_pipeline = self.create_pipeline(
                 doc_preprocessor_config
             )
 
-        self.use_textline_orientation = config.get("use_textline_orientation", False)
+        self.use_textline_orientation = config.get("use_textline_orientation", True)
         if self.use_textline_orientation:
             textline_orientation_config = config["SubModules"]["TextLineOrientation"]
             # TODO: add batch_size
