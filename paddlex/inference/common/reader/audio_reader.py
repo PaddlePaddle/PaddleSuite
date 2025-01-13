@@ -26,12 +26,12 @@ class ReadAudio:
 
         """
         super().__init__()
-        self._audio_reader = AudioReader()
+        self._audio_reader = AudioReader(backend="wav")
 
     def read(self, input):
         if isinstance(input, str):
-            audio, sample_rate = self._audio_reader.read_file(input)
-            if sample_rate != "16000":
+            audio, sample_rate = self._audio_reader.read(input)
+            if sample_rate != 16000:
                 raise ValueError(
                     f"ReadAudio only supports 16k pcm or wav file.\n"
                     f"However, got: {sample_rate}."

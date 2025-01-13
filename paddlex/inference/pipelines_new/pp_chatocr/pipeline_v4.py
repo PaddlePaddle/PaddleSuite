@@ -76,8 +76,13 @@ class PP_ChatOCRv4_Pipeline(PP_ChatOCR_Pipeline):
             None
         """
 
-        layout_parsing_config = config["SubPipelines"]["LayoutParser"]
-        self.layout_parsing_pipeline = self.create_pipeline(layout_parsing_config)
+        self.use_layout_parser = True
+        if "use_layout_parser" in config:
+            self.use_layout_parser = config["use_layout_parser"]
+
+        if self.use_layout_parser:
+            layout_parsing_config = config["SubPipelines"]["LayoutParser"]
+            self.layout_parsing_pipeline = self.create_pipeline(layout_parsing_config)
 
         from .. import create_chat_bot
 
@@ -184,6 +189,9 @@ class PP_ChatOCRv4_Pipeline(PP_ChatOCR_Pipeline):
         Returns:
             dict: A dictionary containing the layout parsing result and visual information.
         """
+        if self.use_layout_parser == False:
+            logging.error("The models for layout parser are not initialized.")
+            yield None
 
         for layout_parsing_result in self.layout_parsing_pipeline.predict(
             input,
@@ -484,7 +492,7 @@ class PP_ChatOCRv4_Pipeline(PP_ChatOCR_Pipeline):
             vector = vector_info["vector"]
             if not vector_info["flag_too_short_text"]:
                 related_text = self.retriever.similarity_retrieval(
-                    question_key_list, vector, topk=5, min_characters=min_characters
+                    question_key_list, vector, topk=50, min_characters=min_characters
                 )
             else:
                 if len(vector) > 0:
