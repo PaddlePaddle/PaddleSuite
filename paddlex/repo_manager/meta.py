@@ -143,6 +143,7 @@ REPO_META = {
         "path_env": "PADDLE_PDX_PADDLE3D_PATH",
         "requires": ["PaddleSeg", "PaddleDetection"],
         "pdx_pkg_deps": ["nuscenes-devkit", "pyquaternion"],
+        "main_req_file": "requirements_pdx.txt",
     },
     "PaddleVideo": {
         "git_path": "/PaddlePaddle/PaddleVideo.git",
