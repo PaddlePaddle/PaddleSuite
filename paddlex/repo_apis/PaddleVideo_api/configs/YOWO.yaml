@@ -141,3 +141,4 @@ save_interval: 1
 epochs: 5 #Mandatory, total epoch
 log_level: "INFO" #Optional, the logger level. default: "INFO"
 val_interval: 1
+label_dict_path: data/ucf24/label_map.txt
