@@ -19,25 +19,60 @@ The text detection module is a crucial component in OCR (Optical Character Recog
 <th>Description</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td>PP-OCRv4_server_det</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-OCRv4_server_det_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-OCRv4_server_det_pretrained.pdparams">Trained Model</a></td>
-<td>82.69</td>
-<td>83.3501</td>
-<td>2434.01</td>
-<td>109</td>
-<td>The server-side text detection model of PP-OCRv4, featuring higher accuracy and suitable for deployment on high-performance servers</td>
-</tr>
-<tr>
-<td>PP-OCRv4_mobile_det</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-OCRv4_mobile_det_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-OCRv4_mobile_det_pretrained.pdparams">Trained Model</a></td>
-<td>77.79</td>
-<td>10.6923</td>
-<td>120.177</td>
-<td>4.7</td>
-<td>The mobile text detection model of PP-OCRv4, optimized for efficiency and suitable for deployment on edge devices</td>
-</tr>
+<tbody> 
+<tr> 
+<td>PP-OCRv3_server_det</td>
+<td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0rc0/PP-OCRv3_server_det_infer.tar">Inference Model</a>/<a href="">Training Model</a></td> 
+<td></td> 
+<td></td> 
+<td></td> 
+<td></td> 
+<td rowspan = "2">The PP-OCRv3 detection model upgrades the CML collaborative mutual learning text detection distillation strategy in PP-OCRv2, further optimizing the effects of the teacher model and the student model. In the optimization of the teacher model, the large receptive field PAN structure LK-PAN is proposed and the DML distillation strategy is introduced. In the optimization of the student model, the FPN structure with residual attention mechanism RSE-FPN is proposed.</td> 
+</tr> 
+<tr> 
+<td>PP-OCRv3_mobile_det</td>
+<td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0rc0/PP-OCRv3_mobile_det_infer.tar">Inference Model</a>/<a href="">Training Model</a></td> 
+<td></td> 
+<td></td> 
+<td></td> 
+<td></td> 
+</tr> 
+<tr> 
+<td>PP-OCRv4_server_det</td>
+<td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-OCRv4_server_det_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-OCRv4_server_det_pretrained.pdparams">Training Model</a></td> 
+<td>82.69</td> 
+<td>83.3501</td> 
+<td>2434.01</td> 
+<td>109</td> 
+<td rowspan = "2">The server text detection model of PP-OCRv4 has higher precision and is suitable for deployment on servers with better performance.</td> </tr> 
+<tr> 
+<td>PP-OCRv4_server_seal_det</td>
+<td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0rc0/PP-OCRv4_server_seal_det_infer.tar">Inference Model</a>/<a href="">Training Model</a></td> 
+<td></td> 
+<td></td> 
+<td></td> 
+<td></td> 
+</tr> 
+<tr> 
+<td>PP-OCRv4_mobile_det</td>
+<td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-OCRv4_mobile_det_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-OCRv4_mobile_det_pretrained.pdparams">Training Model</a></td> 
+<td>77.79</td> 
+<td>10.6923</td> 
+<td>120.177</td> 
+<td>4.7</td> 
+<td rowspan = "2">The mobile text detection model of PP-OCRv4 has higher efficiency and is suitable for deployment on end-side devices.</td> 
+</tr> 
+<tr> 
+<td>PP-OCRv4_mobile_seal_det</td>
+<td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0rc0/PP-OCRv4_mobile_seal_det_infer.tar">Inference Model</a>/<a href="">Training Model</a></td> 
+<td></td> 
+<td></td> 
+<td></td> 
+<td></td> 
+</tr> 
 </tbody>
 </table>
+
 ## III. Quick Integration
 > ❗ Before quick integration, please install the PaddleX wheel package. For detailed instructions, refer to the [PaddleX Local Installation Guide](../../../installation/installation.en.md).
 

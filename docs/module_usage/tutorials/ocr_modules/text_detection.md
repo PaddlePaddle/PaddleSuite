@@ -23,12 +23,37 @@ comments: true
 </thead>
 <tbody>
 <tr>
+<td>PP-OCRv3_server_det</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0rc0/\
+PP-OCRv3_server_det_infer.tar">推理模型</a>/<a href="">训练模型</a></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td rowspan = "2">PP-OCRv3检测模型对PP-OCRv2中的CML协同互学习文本检测蒸馏策略进行了升级，分别针对教师模型和学生模型进行进一步效果优化。其中，在对教师模型优化时，提出了大感受野的PAN结构LK-PAN和引入了DML蒸馏策略；在对学生模型优化时，提出了残差注意力机制的FPN结构RSE-FPN。</td>
+</tr>
+<tr>
+<td>PP-OCRv3_mobile_det</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0rc0/\
+PP-OCRv3_mobile_det_infer.tar">推理模型</a>/<a href="">训练模型</a></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
 <td>PP-OCRv4_server_det</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-OCRv4_server_det_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-OCRv4_server_det_pretrained.pdparams">训练模型</a></td>
 <td>82.69</td>
 <td>83.3501</td>
 <td>2434.01</td>
 <td>109</td>
-<td>PP-OCRv4 的服务端文本检测模型，精度更高，适合在性能较好的服务器上部署</td>
+<td rowspan = "2">PP-OCRv4 的服务端文本检测模型，精度更高，适合在性能较好的服务器上部署</td>
+</tr>
+<tr>
+<td>PP-OCRv4_server_seal_det</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0rc0/\
+PP-OCRv4_server_seal_det_infer.tar">推理模型</a>/<a href="">训练模型</a></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
 </tr>
 <tr>
 <td>PP-OCRv4_mobile_det</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-OCRv4_mobile_det_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-OCRv4_mobile_det_pretrained.pdparams">训练模型</a></td>
@@ -36,10 +61,19 @@ comments: true
 <td>10.6923</td>
 <td>120.177</td>
 <td>4.7</td>
-<td>PP-OCRv4 的移动端文本检测模型，效率更高，适合在端侧设备部署</td>
+<td rowspan = "2">PP-OCRv4 的移动端文本检测模型，效率更高，适合在端侧设备部署</td>
+</tr>
+<tr>
+<td>PP-OCRv4_mobile_seal_det</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0rc0/\
+PP-OCRv4_mobile_seal_det_infer.tar">推理模型</a>/<a href="">训练模型</a></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
 </tr>
 </tbody>
 </table>
+
 ## 三、快速集成
 > ❗ 在快速集成前，请先安装 PaddleX 的 wheel 包，详细请参考 [PaddleX本地安装教程](../../../installation/installation.md)。
 >

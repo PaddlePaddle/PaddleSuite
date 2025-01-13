@@ -18,26 +18,49 @@ The text recognition module is the core component of an OCR (Optical Character R
 <th>Model Size (M)</th>
 <th>Description</th>
 </tr>
+<table>
 <tr>
-<td>PP-OCRv4_mobile_rec</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-OCRv4_mobile_rec_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-OCRv4_mobile_rec_pretrained.pdparams">Trained Model</a></td>
+<th>Model</th><th>Model Download Link</th>
+<th>Recognition Avg Accuracy(%)</th>
+<th>GPU Inference Time (ms)</th>
+<th>CPU Inference Time (ms)</th>
+<th>Model Storage Size (M)</th>
+<th>Introduction</th>
+</tr>
+<tr>
+<td>en_PP-OCRv4_mobile_rec</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0rc0/en_PP-OCRv4_mobile_rec_infer.tar">Inference Model</a>/<a href="">Training Model</a></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td rowspan="4">PP-OCRv4 is the next version of the text recognition model PP-OCRv3 developed by the Baidu PaddlePaddle Vision Team. By introducing data augmentation schemes and strategies such as the GTC-NRTR guidance branch, it further improves text recognition accuracy without changing the model inference speed. This model provides two different versions, server and mobile, to meet the industrial needs of different scenarios.</td>
+</tr>
+<tr>
+<td>PP-OCRv4_server_rec_doc</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0rc0/PP-OCRv4_server_rec_doc_infer.tar">Inference Model</a>/<a href="">Training Model</a></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>PP-OCRv4_mobile_rec</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-OCRv4_mobile_rec_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-OCRv4_mobile_rec_pretrained.pdparams">Training Model</a></td>
 <td>78.20</td>
 <td>7.95018</td>
 <td>46.7868</td>
 <td>10.6 M</td>
-<td rowspan="2">PP-OCRv4, developed by Baidu's PaddlePaddle Vision Team, is the next version of the PP-OCRv3 text recognition model. By introducing data augmentation schemes, GTC-NRTR guidance branches, and other strategies, it further improves text recognition accuracy without compromising model inference speed. The model offers both server and mobile versions to meet industrial needs in different scenarios.</td>
 </tr>
 <tr>
-<td>PP-OCRv4_server_rec </td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-OCRv4_server_rec_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-OCRv4_server_rec_pretrained.pdparams">Trained Model</a></td>
+<td>PP-OCRv4_server_rec </td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-OCRv4_server_rec_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-OCRv4_server_rec_pretrained.pdparams">Training Model</a></td>
 <td>79.20</td>
 <td>7.19439</td>
 <td>140.179</td>
 <td>71.2 M</td>
 </tr>
 </table>
+</table>
 
 <b>Note: The evaluation set for the above accuracy metrics is PaddleOCR's self-built Chinese dataset, covering street scenes, web images, documents, handwriting, and more, with 1.1w images for text recognition. GPU inference time for all models is based on an NVIDIA Tesla T4 machine with FP32 precision. CPU inference speed is based on an Intel(R) Xeon(R) Gold 5117 CPU @ 2.00GHz with 8 threads and FP32 precision.</b>
 
-> ❗ The above list features the <b>2 core models</b> that the image classification module primarily supports. In total, this module supports <b>4 models</b>. The complete list of models is as follows:
+> ❗ The above list features the <b>4 core models</b> that the image classification module primarily supports. In total, this module supports <b>18 models</b>. The complete list of models is as follows:
 
 <details><summary> 👉Model List Details</summary>
 
@@ -47,19 +70,119 @@ The text recognition module is the core component of an OCR (Optical Character R
 <th>Recognition Avg Accuracy(%)</th>
 <th>GPU Inference Time (ms)</th>
 <th>CPU Inference Time (ms)</th>
-<th>Model Size (M)</th>
-<th>Description</th>
+<th>Model Storage Size (M)</th>
+<th>Introduction</th>
 </tr>
 <tr>
-<td>PP-OCRv4_mobile_rec</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-OCRv4_mobile_rec_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-OCRv4_mobile_rec_pretrained.pdparams">Trained Model</a></td>
+<td>PP-OCRv3_mobile_rec</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0rc0/PP-OCRv3_mobile_rec_infer.tar">Inference Model</a>/<a href="">Training Model</a></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td rowspan = "12">PP-OCRv3 is an upgrade of PP-OCRv2, with a total of 9 improvements made to the detection and recognition models. The PP-OCRv3 detection model upgrades the CML collaborative mutual learning text detection distillation strategy in PP-OCRv2, further optimizing the effects of the teacher and student models. In the optimization of the teacher model, the large receptive field PAN structure LK-PAN and the introduction of the DML distillation strategy were proposed. In the optimization of the student model, the FPN structure with residual attention mechanism RSE-FPN was proposed.
+The recognition module of PP-OCRv3 is optimized based on the text recognition algorithm SVTR. SVTR no longer uses the RNN structure, and by introducing the Transformers structure, it more effectively mines the contextual information of text line images, thereby improving text recognition capabilities. PP-OCRv3 accelerates the model and improves the effect through six aspects: lightweight text recognition network SVTR_LCNet, attention loss guiding CTC loss training strategy, data augmentation strategy TextConAug for mining text contextual information, TextRotNet self-supervised pre-training model, UDML joint mutual learning strategy, and UIM unlabeled data mining plan.</td>
+</tr>
+<tr>
+<td>en_PP-OCRv3_mobile_rec</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0rc0/en_PP-OCRv3_mobile_rec_infer.tar">Inference Model</a>/<a href="">Training Model</a></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>korean_PP-OCRv3_mobile_rec</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0rc0/korean_PP-OCRv3_mobile_rec_infer.tar">Inference Model</a>/<a href="">Training Model</a></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>japan_PP-OCRv3_mobile_rec</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0rc0/japan_PP-OCRv3_mobile_rec_infer.tar">Inference Model</a>/<a href="">Training Model</a></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>chinese_cht_PP-OCRv3_mobile_rec</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0rc0/chinese_cht_PP-OCRv3_mobile_rec_infer.tar">Inference Model</a>/<a href="">Training Model</a></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>te_PP-OCRv3_mobile_rec</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0rc0/te_PP-OCRv3_mobile_rec_infer.tar">Inference Model</a>/<a href="">Training Model</a></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>ka_PP-OCRv3_mobile_rec</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0rc0/ka_PP-OCRv3_mobile_rec_infer.tar">Inference Model</a>/<a href="">Training Model</a></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>ta_PP-OCRv3_mobile_rec</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0rc0/ta_PP-OCRv3_mobile_rec_infer.tar">Inference Model</a>/<a href="">Training Model</a></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>latin_PP-OCRv3_mobile_rec</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0rc0/latin_PP-OCRv3_mobile_rec_infer.tar">Inference Model</a>/<a href="">Training Model</a></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>arabic_PP-OCRv3_mobile_rec</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0rc0/arabic_PP-OCRv3_mobile_rec_infer.tar">Inference Model</a>/<a href="">Training Model</a></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>cyrillic_PP-OCRv3_mobile_rec</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0rc0/cyrillic_PP-OCRv3_mobile_rec_infer.tar">Inference Model</a>/<a href="">Training Model</a></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>devanagari_PP-OCRv3_mobile_rec</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0rc0/devanagari_PP-OCRv3_mobile_rec_infer.tar">Inference Model</a>/<a href="">Training Model</a></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>en_PP-OCRv4_mobile_rec</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0rc0/en_PP-OCRv4_mobile_rec_infer.tar">Inference Model</a>/<a href="">Training Model</a></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td rowspan="4">PP-OCRv4 is the next version of the text recognition model PP-OCRv3 developed by the Baidu PaddlePaddle Vision Team. By introducing data augmentation schemes and strategies such as the GTC-NRTR guidance branch, it further improves text recognition accuracy without changing the model inference speed. This model provides two different versions, server and mobile, to meet the industrial needs of different scenarios.</td>
+</tr>
+<tr>
+<td>PP-OCRv4_server_rec_doc</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0rc0/PP-OCRv4_server_rec_doc_infer.tar">Inference Model</a>/<a href="">Training Model</a></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>PP-OCRv4_mobile_rec</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-OCRv4_mobile_rec_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-OCRv4_mobile_rec_pretrained.pdparams">Training Model</a></td>
 <td>78.20</td>
 <td>7.95018</td>
 <td>46.7868</td>
 <td>10.6 M</td>
-<td rowspan="2">PP-OCRv4, developed by Baidu's PaddlePaddle Vision Team, is the next version of the PP-OCRv3 text recognition model. By introducing data augmentation schemes, GTC-NRTR guidance branches, and other strategies, it further improves text recognition accuracy without compromising model inference speed. The model offers both server and mobile versions to meet industrial needs in different scenarios.</td>
 </tr>
 <tr>
-<td>PP-OCRv4_server_rec </td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-OCRv4_server_rec_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-OCRv4_server_rec_pretrained.pdparams">Trained Model</a></td>
+<td>PP-OCRv4_server_rec </td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-OCRv4_server_rec_infer.tar">Inference Model</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-OCRv4_server_rec_pretrained.pdparams">Training Model</a></td>
 <td>79.20</td>
 <td>7.19439</td>
 <td>140.179</td>
