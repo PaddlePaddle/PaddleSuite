@@ -139,10 +139,18 @@ class ClasPredictor(BasicPredictor):
         assert resize_short or size
         if resize_short:
             op = ResizeByShort(
-                target_short_edge=resize_short, size_divisor=None, interp="LINEAR"
+                target_short_edge=resize_short,
+                size_divisor=None,
+                interp=interpolation,
+                backend=backend,
             )
         else:
-            op = Resize(target_size=size)
+            op = Resize(
+                target_size=size,
+                size_divisor=None,
+                interp=interpolation,
+                backend=backend,
+            )
         return "Resize", op
 
     @register("CropImage")
