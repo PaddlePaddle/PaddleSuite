@@ -90,6 +90,7 @@ class VideoDetConfig(BaseConfig):
                 "DATASET.test.image_dir": dataset_path,
                 "DATASET.test.file_path": os.path.join(dataset_path, "val.txt"),
                 "METRIC.gt_folder": os.path.join(dataset_path, "val.txt"),
+                "label_dict_path": os.path.join(dataset_path, "label_map.txt"),
             }
         else:
             raise ValueError(f"{repr(dataset_type)} is not supported.")
