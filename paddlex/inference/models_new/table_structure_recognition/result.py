@@ -12,13 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import copy
 import cv2
 import numpy as np
 from pathlib import Path
 import PIL
 from PIL import Image, ImageDraw, ImageFont
 
-from ...common.result import BaseResult, BaseCVResult, HtmlMixin, XlsxMixin
+from ...common.result import BaseCVResult, StrMixin, JsonMixin
 
 
 class TableRecResult(BaseCVResult):
@@ -51,3 +52,13 @@ class TableRecResult(BaseCVResult):
             box = np.reshape(np.array(box), [-1, 1, 2]).astype(np.int64)
             image = cv2.polylines(np.array(image), [box], True, (255, 0, 0), 2)
         return image
+
+    def _to_str(self, *args, **kwargs):
+        data = copy.deepcopy(self)
+        data.pop("input_img")
+        return StrMixin._to_str(data, *args, **kwargs)
+
+    def _to_json(self, *args, **kwargs):
+        data = copy.deepcopy(self)
+        data.pop("input_img")
+        return JsonMixin._to_json(data, *args, **kwargs)

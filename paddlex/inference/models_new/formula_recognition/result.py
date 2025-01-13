@@ -17,6 +17,7 @@ from typing import Any, Dict, Optional, List
 import cv2
 import PIL
 import fitz
+import copy
 import math
 import random
 import tempfile
@@ -25,7 +26,7 @@ import numpy as np
 from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
 
-from ...common.result import BaseCVResult
+from ...common.result import BaseCVResult, StrMixin, JsonMixin
 from ....utils import logging
 from ....utils.fonts import PINGFANG_FONT_FILE_PATH
 from ....utils.file_interface import custom_open
@@ -33,7 +34,14 @@ from ....utils.file_interface import custom_open
 
 class FormulaRecResult(BaseCVResult):
     def _to_str(self, *args, **kwargs):
-        return super()._to_str(*args, **kwargs).replace("\\\\", "\\")
+        data = copy.deepcopy(self)
+        data.pop("input_img")
+        return StrMixin._to_str(data, *args, **kwargs).replace("\\\\", "\\")
+
+    def _to_json(self, *args, **kwargs):
+        data = copy.deepcopy(self)
+        data.pop("input_img")
+        return JsonMixin._to_json(data, *args, **kwargs)
 
     def _to_img(
         self,
