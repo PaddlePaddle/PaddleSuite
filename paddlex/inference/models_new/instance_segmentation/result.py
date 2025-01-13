@@ -20,7 +20,7 @@ import PIL
 from PIL import Image, ImageDraw, ImageFont
 
 from ...utils.color_map import get_colormap, font_colormap
-from ...common.result import BaseCVResult
+from ...common.result import BaseCVResult, StrMixin, JsonMixin
 from ....utils.fonts import PINGFANG_FONT_FILE_PATH
 from ..object_detection.result import draw_box
 
@@ -149,7 +149,13 @@ class InstanceSegResult(BaseCVResult):
 
         return {"res": image}
 
-    def _to_str(self, _, *args, **kwargs):
+    def _to_str(self, *args, **kwargs):
         data = copy.deepcopy(self)
+        data.pop("input_img")
         data["masks"] = "..."
-        return super()._to_str(data, *args, **kwargs)
+        return StrMixin._to_str(data, *args, **kwargs)
+
+    def _to_json(self, *args, **kwargs):
+        data = copy.deepcopy(self)
+        data.pop("input_img")
+        return JsonMixin._to_json(data, *args, **kwargs)

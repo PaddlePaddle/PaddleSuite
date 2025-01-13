@@ -37,7 +37,7 @@ class VideoBatchSampler(BaseBatchSampler):
     def _get_files_list(self, fp):
         file_list = []
         if fp is None or not os.path.exists(fp):
-            raise Exception(f"Not found any img file in path: {fp}")
+            raise Exception(f"Not found any video file in path: {fp}")
         if os.path.isfile(fp) and fp.split(".")[-1] in self.SUFFIX:
             file_list.append(fp)
         elif os.path.isdir(fp):

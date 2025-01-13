@@ -12,10 +12,24 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import copy
 from PIL import Image
 
-from ...common.result import BaseResult
+from ...common.result import BaseResult, StrMixin, JsonMixin
 
 
-class IdentityResult(BaseResult):
-    pass
+class IdentityResult(BaseResult, StrMixin, JsonMixin):
+    def __init__(self, data: dict) -> None:
+        super().__init__(data)
+        StrMixin.__init__(self)
+        JsonMixin.__init__(self)
+
+    def _to_str(self, *args, **kwargs):
+        data = copy.deepcopy(self)
+        data.pop("input_img")
+        return StrMixin._to_str(data, *args, **kwargs)
+
+    def _to_json(self, *args, **kwargs):
+        data = copy.deepcopy(self)
+        data.pop("input_img")
+        return JsonMixin._to_json(data, *args, **kwargs)
