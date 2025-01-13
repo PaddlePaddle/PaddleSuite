@@ -25,7 +25,7 @@ from .base_batch_sampler import BaseBatchSampler
 
 class VideoBatchSampler(BaseBatchSampler):
 
-    SUFFIX = ["mp4", "avi", "mkv"]
+    SUFFIX = ["mp4", "avi", "mkv", "webm"]
 
     # XXX: auto download for url
     def _download_from_url(self, in_path):
@@ -37,7 +37,7 @@ class VideoBatchSampler(BaseBatchSampler):
     def _get_files_list(self, fp):
         file_list = []
         if fp is None or not os.path.exists(fp):
-            raise Exception(f"Not found any img file in path: {fp}")
+            raise Exception(f"Not found any video file in path: {fp}")
         if os.path.isfile(fp) and fp.split(".")[-1] in self.SUFFIX:
             file_list.append(fp)
         elif os.path.isdir(fp):

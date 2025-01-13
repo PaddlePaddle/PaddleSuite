@@ -24,13 +24,14 @@ from .image_classification import ClasPredictor
 from .object_detection import DetPredictor
 from .text_detection import TextDetPredictor
 from .text_recognition import TextRecPredictor
+from .table_structure_recognition import TablePredictor
 from .formula_recognition import FormulaRecPredictor
 from .instance_segmentation import InstanceSegPredictor
 from .semantic_segmentation import SegPredictor
 from .image_feature import ImageFeaturePredictor
-from .ts_forecast import TSFcPredictor
-from .ts_anomaly import TSAdPredictor
-from .ts_classify import TSClsPredictor
+from .ts_forecasting import TSFcPredictor
+from .ts_anomaly_detection import TSAdPredictor
+from .ts_classification import TSClsPredictor
 from .image_unwarping import WarpPredictor
 from .image_multilabel_classification import MLClasPredictor
 from .open_vocabulary_detection import OVDetPredictor
@@ -40,7 +41,9 @@ from .open_vocabulary_segmentation import OVSegPredictor
 # from .table_recognition import TablePredictor
 # from .general_recognition import ShiTuRecPredictor
 from .anomaly_detection import UadPredictor
+
 # from .face_recognition import FaceRecPredictor
+from .multilingual_speech_recognition import WhisperPredictor
 from .video_classification import VideoClasPredictor
 
 

@@ -28,6 +28,11 @@ class ErnieBotRetriever(BaseRetriever):
     """Ernie Bot Retriever"""
 
     entities = [
+        "aistudio",
+        "qianfan",
+    ]
+
+    MODELS = [
         "ernie-4.0",
         "ernie-3.5",
         "ernie-3.5-8k",
@@ -45,7 +50,7 @@ class ErnieBotRetriever(BaseRetriever):
         Args:
             config (Dict): A dictionary containing configuration settings.
                 - model_name (str): The name of the model to use.
-                - api_type (str): The type of API to use ('aistudio' or 'qianfan').
+                - api_type (str): The type of API to use ('aistudio', 'qianfan' or 'openai').
                 - ak (str, optional): The access key for 'qianfan' API.
                 - sk (str, optional): The secret key for 'qianfan' API.
                 - access_token (str, optional): The access token for 'aistudio' API.
@@ -64,8 +69,8 @@ class ErnieBotRetriever(BaseRetriever):
         sk = config.get("sk", None)
         access_token = config.get("access_token", None)
 
-        if model_name not in self.entities:
-            raise ValueError(f"model_name must be in {self.entities} of ErnieBotChat.")
+        if model_name not in self.MODELS:
+            raise ValueError(f"model_name must be in {self.MODELS} of ErnieBotChat.")
 
         if api_type not in ["aistudio", "qianfan"]:
             raise ValueError("api_type must be one of ['aistudio', 'qianfan']")

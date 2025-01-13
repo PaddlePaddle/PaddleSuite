@@ -110,3 +110,10 @@ from .video_classification import (
     VideoClsEvaluator,
     VideoClsExportor,
 )
+
+from .multilingual_speech_recognition import (
+    WhisperDatasetChecker,
+    WhisperTrainer,
+    WhisperEvaluator,
+    WhisperExportor,
+)

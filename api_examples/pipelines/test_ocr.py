@@ -14,11 +14,60 @@
 
 from paddlex import create_pipeline
 
-pipeline = create_pipeline(pipeline="OCR")
+pipeline = create_pipeline(pipeline="OCR", limit_side_len=320)
 
-output = pipeline.predict("./test_samples/general_ocr_002.png")
-
+output = pipeline.predict(
+    "./test_samples/general_ocr_002.png",
+    use_doc_orientation_classify=True,
+    use_doc_unwarping=False,
+    use_textline_orientation=False,
+    unclip_ratio=3.0,
+    limit_side_len=1920,
+)
+# output = pipeline.predict(
+#     "./test_samples/general_ocr_002.png",
+#     use_doc_orientation_classify=True,
+#     use_doc_unwarping=True,
+#     use_textline_orientation=False,
+# )
+# output = pipeline.predict(
+#     "./test_samples/general_ocr_002.png",
+#     use_doc_orientation_classify=True,
+#     use_doc_unwarping=False,
+#     use_textline_orientation=True,
+# )
+# output = pipeline.predict(
+#     "./test_samples/general_ocr_002.png",
+#     use_doc_orientation_classify=True,
+#     use_doc_unwarping=False,
+#     use_textline_orientation=False,
+# )
+# output = pipeline.predict(
+#     "./test_samples/general_ocr_002.png",
+#     use_doc_orientation_classify=False,
+#     use_doc_unwarping=True,
+#     use_textline_orientation=True,
+# )
+# output = pipeline.predict(
+#     "./test_samples/general_ocr_002.png",
+#     use_doc_orientation_classify=False,
+#     use_doc_unwarping=True,
+#     use_textline_orientation=False,
+# )
+# output = pipeline.predict(
+#     "./test_samples/general_ocr_002.png",
+#     use_doc_orientation_classify=False,
+#     use_doc_unwarping=False,
+#     use_textline_orientation=True,
+# )
+# output = pipeline.predict(
+#     "./test_samples/general_ocr_002.png",
+#     use_doc_orientation_classify=False,
+#     use_doc_unwarping=False,
+#     use_textline_orientation=False,
+# )
 # output = pipeline.predict("./test_samples/财报1.pdf")
 for res in output:
     print(res)
     res.save_to_img("./output")
+    res.save_to_json("./output/res.json")
