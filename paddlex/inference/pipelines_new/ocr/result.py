@@ -69,8 +69,8 @@ class OCRResult(BaseCVResult):
         Returns:
             PIL.Image: An image with detection boxes, texts, and scores blended on it.
         """
-        boxes = self["rec_box"]
-        txts = self["rec_text"]
+        boxes = self["rec_boxes"]
+        txts = self["rec_texts"]
         image = self["doc_preprocessor_res"]["output_img"]
         h, w = image.shape[0:2]
         image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)

@@ -380,9 +380,9 @@ class OCRPipeline(BasePipeline):
                 "text_type": self.text_type,
             }
 
-            single_img_res["rec_text"] = []
-            single_img_res["rec_score"] = []
-            single_img_res["rec_box"] = []
+            single_img_res["rec_texts"] = []
+            single_img_res["rec_scores"] = []
+            single_img_res["rec_boxes"] = []
             if len(dt_polys) > 0:
                 all_subs_of_img = list(
                     self._crop_by_polys(doc_preprocessor_image, dt_polys)
@@ -402,7 +402,7 @@ class OCRPipeline(BasePipeline):
                 for rec_res in self.text_rec_model(all_subs_of_img):
                     rno += 1
                     if rec_res["rec_score"] >= text_rec_score_thresh:
-                        single_img_res["rec_text"].append(rec_res["rec_text"])
-                        single_img_res["rec_score"].append(rec_res["rec_score"])
-                        single_img_res["rec_box"].append(dt_polys[rno])
+                        single_img_res["rec_texts"].append(rec_res["rec_text"])
+                        single_img_res["rec_scores"].append(rec_res["rec_score"])
+                        single_img_res["rec_boxes"].append(dt_polys[rno])
             yield OCRResult(single_img_res)
