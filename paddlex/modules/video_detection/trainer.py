@@ -32,7 +32,7 @@ class VideoDetTrainer(BaseTrainer):
         Args:
             src_label_dict_path (str): path to label dict file to be saved.
         """
-        dst_label_dict_path = Path(self.global_config.output).joinpath("label_dict.txt")
+        dst_label_dict_path = Path(self.global_config.output).joinpath("label_map.txt")
         shutil.copyfile(src_label_dict_path, dst_label_dict_path)
 
     def update_config(self):
