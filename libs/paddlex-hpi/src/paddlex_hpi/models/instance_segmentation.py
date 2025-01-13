@@ -47,10 +47,10 @@ class InstanceSegPredictor(CVPredictor):
             device=device,
             hpi_params=hpi_params,
         )
+        if threshold and self.model_name == "SOLOv2":
+            raise TypeError("SOLOv2 does not support `threshold` in PaddleX HPI.")
         self._pp_params = self._get_pp_params()
         self._threshold = threshold or self._pp_params.threshold
-        if self._threshold and self.model_name == "SOLOv2":
-            raise TypeError("SOLOv2 does not support `threshold` in PaddleX HPI.")
 
     def _build_ui_model(
         self, option: ui.RuntimeOption
