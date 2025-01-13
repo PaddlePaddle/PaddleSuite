@@ -45,3 +45,5 @@ jinja2
 regex
 ######## For Speech #######
 soundfile
+######## For 3D BEVFusion #######
+nuscenes-devkit
