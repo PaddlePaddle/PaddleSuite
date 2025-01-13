@@ -23,11 +23,10 @@ class FaceRecResult(BaseCVResult):
         boxes = [
             {
                 "coordinate": box["coordinate"],
-                "label": box["labels"][0],
-                "score": box["rec_scores"][0],
+                "label": box["labels"][0] if box["labels"] is not None else "Unknown",
+                "score": box["rec_scores"][0] if box["rec_scores"] is not None else 0,
             }
             for box in self["boxes"]
-            if box["rec_scores"] is not None
         ]
         image = draw_box(self["input_img"], boxes)
-        return image
+        return {"res": image}

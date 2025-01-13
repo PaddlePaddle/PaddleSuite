@@ -21,21 +21,28 @@ class FaceRecPipeline(ShiTuV2Pipeline):
 
     entities = "face_recognition"
 
-    def get_rec_result(self, det_res, indexer):
+    def get_rec_result(
+        self, raw_img, det_res, indexer, rec_threshold, hamming_radius, topk
+    ):
         if len(det_res["boxes"]) == 0:
             return {"label": [], "score": []}
-        subs_of_img = list(self._crop_by_boxes(det_res))
+        subs_of_img = list(self.crop_by_boxes(raw_img, det_res["boxes"]))
         img_list = [img["img"] for img in subs_of_img]
         all_rec_res = list(self.rec_model(img_list))
-        all_rec_res = next(indexer(all_rec_res))
+        all_rec_res = indexer(
+            [rec_res["feature"] for rec_res in all_rec_res],
+            score_thres=rec_threshold,
+            hamming_radius=hamming_radius,
+            topk=topk,
+        )
         output = {"label": [], "score": []}
         for res in all_rec_res:
             output["label"].append(res["label"])
             output["score"].append(res["score"])
         return output
 
-    def get_final_result(self, det_res, rec_res):
-        single_img_res = {"input_path": det_res["input_path"], "boxes": []}
+    def get_final_result(self, input_data, raw_img, det_res, rec_res):
+        single_img_res = {"input_path": input_data, "input_img": raw_img, "boxes": []}
         for i, obj in enumerate(det_res["boxes"]):
             rec_scores = rec_res["score"][i]
             labels = rec_res["label"][i]
