@@ -12,8 +12,26 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from ._app import create_app_config
-from ._pipeline_apps import create_pipeline_app
-from ._server import run_server
+import pickle
+import uuid
 
-__all__ = ["create_app_config", "create_pipeline_app", "run_server"]
+import faiss
+
+from ....pipelines_new.components.retrieval.faiss import IndexData
+
+
+# XXX: I have to implement serialization and deserialization functions myself,
+# which is fragile.
+def serialize_index_data(index_data: IndexData) -> bytes:
+    tup = (index_data.index_bytes, index_data.index_info)
+    return pickle.dumps(tup)
+
+
+def deserialize_index_data(index_data_bytes: bytes) -> IndexData:
+    tup = pickle.loads(index_data_bytes)
+    index = faiss.deserialize_index(tup[0])
+    return IndexData(index, tup[1])
+
+
+def generate_index_key() -> str:
+    return str(uuid.uuid4())

@@ -14,93 +14,15 @@
 
 import os
 import tempfile
-from typing import Any, List, Optional
+from typing import Any, Dict, List
 
 from fastapi import FastAPI
-from pydantic import BaseModel, Field
-from typing_extensions import Annotated, TypeAlias
 
 from .. import _utils as serving_utils
 from .._app import AppConfig, create_app, main_operation
-from .._models import DataInfo, ResultResponse
+from .._models import ResultResponse
+from ..schemas import pp_chatocrv3_doc as schema
 from ._common import ocr as ocr_common
-
-
-class InferenceParams(BaseModel):
-    maxLongSide: Optional[Annotated[int, Field(gt=0)]] = None
-
-
-class AnalyzeImagesRequest(ocr_common.InferRequest):
-    useGeneralOcr: bool = True
-    useSealRecognition: bool = True
-    useTableRecognition: bool = True
-    inferenceParams: Optional[InferenceParams] = None
-
-
-Point: TypeAlias = Annotated[List[int], Field(min_length=2, max_length=2)]
-Polygon: TypeAlias = Annotated[List[Point], Field(min_length=3)]
-BoundingBox: TypeAlias = Annotated[List[float], Field(min_length=4, max_length=4)]
-
-
-class Text(BaseModel):
-    poly: Polygon
-    text: str
-    score: float
-
-
-class Table(BaseModel):
-    bbox: BoundingBox
-    html: str
-
-
-class VisualResult(BaseModel):
-    texts: List[Text]
-    tables: List[Table]
-    inputImage: Optional[str] = None
-    layoutImage: Optional[str] = None
-    ocrImage: Optional[str] = None
-
-
-class AnalyzeImagesResult(BaseModel):
-    visualResults: List[VisualResult]
-    visualInfo: dict
-    dataInfo: DataInfo
-
-
-class BuildVectorStoreRequest(BaseModel):
-    visualInfo: dict
-    minCharacters: int = 3500
-    llmRequestInterval: float = 1.0
-
-
-class BuildVectorStoreResult(BaseModel):
-    vectorInfo: dict
-
-
-class ChatRequest(BaseModel):
-    keyList: List[str]
-    visualInfo: dict
-    useVectorRetrieval: bool = True
-    vectorInfo: Optional[dict] = None
-    minCharacters: int = 3500
-    textTaskDescription: Optional[str] = None
-    textOutputFormat: Optional[str] = None
-    # Is the "Str" in the name unnecessary? Keep the names consistent with the
-    # parameters of the wrapped function though.
-    textRulesStr: Optional[str] = None
-    # Should this be just "text" instead of "text content", given that there is
-    # no container?
-    textFewShotDemoTextContent: Optional[str] = None
-    textFewShotDemoKeyValueList: Optional[str] = None
-    tableTaskDescription: Optional[str] = None
-    tableOutputFormat: Optional[str] = None
-    tableRulesStr: Optional[str] = None
-    tableFewShotDemoTextContent: Optional[str] = None
-    tableFewShotDemoKeyValueList: Optional[str] = None
-
-
-class ChatResult(BaseModel):
-    chatResult: dict
 
 
 # XXX: Since the pipeline class does not provide serialization and
@@ -138,12 +60,12 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
 
     @main_operation(
         app,
-        "/chatocr-visual",
+        schema.ANALYZE_IMAGES_ENDPOINT,
         "analyzeImages",
     )
     async def _analyze_images(
-        request: AnalyzeImagesRequest,
-    ) -> ResultResponse[AnalyzeImagesResult]:
+        request: schema.AnalyzeImagesRequest,
+    ) -> ResultResponse[schema.AnalyzeImagesResult]:
         pipeline = ctx.pipeline
 
         log_id = serving_utils.generate_log_id()
@@ -165,17 +87,17 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
             use_table_recognition=request.useTableRecognition,
         )
 
-        visual_results: List[VisualResult] = []
+        visual_results: List[Dict[str, Any]] = []
         for i, (img, item) in enumerate(zip(images, result["layout_parsing_result"])):
-            texts: List[Text] = []
+            texts: List[dict] = []
             for poly, text, score in zip(
                 item["ocr_result"]["dt_polys"],
                 item["ocr_result"]["rec_text"],
                 item["ocr_result"]["rec_score"],
             ):
-                texts.append(Text(poly=poly, text=text, score=score))
+                texts.append(dict(poly=poly, text=text, score=score))
             tables = [
-                Table(bbox=r["layout_bbox"], html=r["html"])
+                dict(bbox=r["layout_bbox"], html=r["html"])
                 for r in item["table_result"]
             ]
             if ctx.config.visualize:
@@ -189,7 +111,7 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
                 )
             else:
                 input_img, layout_img, ocr_img = None, None, None
-            visual_result = VisualResult(
+            visual_result = dict(
                 texts=texts,
                 tables=tables,
                 inputImage=input_img,
@@ -198,9 +120,9 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
             )
             visual_results.append(visual_result)
 
-        return ResultResponse[AnalyzeImagesResult](
+        return ResultResponse[schema.AnalyzeImagesResult](
             logId=log_id,
-            result=AnalyzeImagesResult(
+            result=schema.AnalyzeImagesResult(
                 visualResults=visual_results,
                 visualInfo=result["visual_info"],
                 dataInfo=data_info,
@@ -209,12 +131,12 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
 
     @main_operation(
         app,
-        "/chatocr-vector",
+        schema.BUILD_VECTOR_STORE_ENDPOINT,
         "buildVectorStore",
     )
     async def _build_vector_store(
-        request: BuildVectorStoreRequest,
-    ) -> ResultResponse[BuildVectorStoreResult]:
+        request: schema.BuildVectorStoreRequest,
+    ) -> ResultResponse[schema.BuildVectorStoreResult]:
         pipeline = ctx.pipeline
 
         vector_info = await serving_utils.call_async(
@@ -228,19 +150,19 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
             _serialize_vector_info, pipeline.pipeline, vector_info
         )
 
-        return ResultResponse[BuildVectorStoreResult](
+        return ResultResponse[schema.BuildVectorStoreResult](
             logId=serving_utils.generate_log_id(),
-            result=BuildVectorStoreResult(vectorInfo=vector_info),
+            result=schema.BuildVectorStoreResult(vectorInfo=vector_info),
         )
 
     @main_operation(
         app,
-        "/chatocr-chat",
+        schema.CHAT_ENDPOINT,
         "chat",
     )
     async def _chat(
-        request: ChatRequest,
-    ) -> ResultResponse[ChatResult]:
+        request: schema.ChatRequest,
+    ) -> ResultResponse[schema.ChatResult]:
         pipeline = ctx.pipeline
 
         if request.vectorInfo:
@@ -271,13 +193,11 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
             table_few_shot_demo_key_value_list=request.tableFewShotDemoKeyValueList,
         )
 
-        chat_result = ChatResult(
-            chatResult=result["chat_res"],
-        )
-
-        return ResultResponse[ChatResult](
+        return ResultResponse[schema.ChatResult](
             logId=serving_utils.generate_log_id(),
-            result=chat_result,
+            result=schema.ChatResult(
+                chatResult=result["chat_res"],
+            ),
         )
 
     return app

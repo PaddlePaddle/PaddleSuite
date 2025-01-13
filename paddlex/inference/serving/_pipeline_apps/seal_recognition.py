@@ -12,39 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Any, List, Optional, Type
+from typing import Any, Dict, List
 
 from fastapi import FastAPI
-from pydantic import BaseModel, Field
-from typing_extensions import Annotated, TypeAlias
 
 from .. import _utils as serving_utils
 from .._app import AppConfig, create_app, main_operation
-from .._models import DataInfo, ResultResponse
+from .._models import ResultResponse
+from ..schemas.seal_recognition import INFER_ENDPOINT, InferRequest, InferResult
 from ._common import ocr as ocr_common
-
-InferRequest: Type[ocr_common.InferRequest] = ocr_common.InferRequest
-
-Point: TypeAlias = Annotated[List[int], Field(min_length=2, max_length=2)]
-Polygon: TypeAlias = Annotated[List[Point], Field(min_length=3)]
-
-
-class Text(BaseModel):
-    poly: Polygon
-    text: str
-    score: float
-
-
-class SealRecResult(BaseModel):
-    texts: List[Text]
-    inputImage: Optional[str] = None
-    layoutImage: Optional[str] = None
-    ocrImage: Optional[str] = None
-
-
-class InferResult(BaseModel):
-    sealRecResults: List[SealRecResult]
-    dataInfo: DataInfo
 
 
 def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
@@ -56,7 +32,7 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
 
     @main_operation(
         app,
-        "/seal-recognition",
+        INFER_ENDPOINT,
         "infer",
     )
     async def _infer(request: InferRequest) -> ResultResponse[InferResult]:
@@ -72,15 +48,15 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
             use_doc_unwarping=request.useDocUnwarping,
         )
 
-        seal_rec_results: List[SealRecResult] = []
+        seal_rec_results: List[Dict[str, Any]] = []
         for i, (img, item) in enumerate(zip(images, result)):
-            texts: List[Text] = []
+            texts: List[Dict[str, Any]] = []
             for poly, text, score in zip(
                 item["ocr_result"]["dt_polys"],
                 item["ocr_result"]["rec_text"],
                 item["ocr_result"]["rec_score"],
             ):
-                texts.append(Text(poly=poly, text=text, score=score))
+                texts.append(dict(poly=poly, text=text, score=score))
             if ctx.config.visualize:
                 input_img, layout_img, ocr_img = await ocr_common.postprocess_images(
                     log_id=log_id,
@@ -93,7 +69,7 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
             else:
                 input_img, layout_img, ocr_img = None, None, None
             seal_rec_results.append(
-                SealRecResult(
+                dict(
                     texts=texts,
                     inputImage=input_img,
                     layoutImage=layout_img,

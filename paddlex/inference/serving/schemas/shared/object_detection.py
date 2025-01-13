@@ -12,8 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from ._app import create_app_config
-from ._pipeline_apps import create_pipeline_app
-from ._server import run_server
+from typing import List
 
-__all__ = ["create_app_config", "create_pipeline_app", "run_server"]
+from pydantic import Field
+from typing_extensions import Annotated, TypeAlias
+
+__all__ = ["BoundingBox"]
+
+BoundingBox: TypeAlias = Annotated[List[float], Field(min_length=4, max_length=4)]

@@ -65,6 +65,9 @@ def infer_file_type(url: str) -> Optional[FileType]:
 
     file_type = mimetypes.guess_type(filename)[0]
 
+    if file_type is None:
+        return None
+
     if file_type.startswith("image/"):
         return "IMAGE"
     elif file_type == "application/pdf":
@@ -81,7 +84,10 @@ def infer_file_ext(file: str) -> Optional[str]:
     if is_url(file):
         url_parts = urlparse(file)
         filename = url_parts.path.split("/")[-1]
-        return mimetypes.guess_extension(mimetypes.guess_type(filename)[0])
+        mime_type = mimetypes.guess_type(filename)[0]
+        if mime_type is None:
+            return None
+        return mimetypes.guess_extension(mime_type)
     else:
         bytes_ = base64.b64decode(file)
         return filetype.guess_extension(bytes_)
@@ -113,7 +119,7 @@ def csv_bytes_to_data_frame(data: bytes) -> pd.DataFrame:
     return df
 
 
-def data_frame_to_bytes(df: pd.DataFrame) -> str:
+def data_frame_to_bytes(df: pd.DataFrame) -> bytes:
     return df.to_csv().encode("utf-8")
 
 
@@ -170,12 +176,21 @@ def file_to_images(
 ) -> Tuple[List[np.ndarray], PDFInfo]: ...
 
 
+@overload
+def file_to_images(
+    file_bytes: bytes,
+    file_type: Literal["IMAGE", "PDF"],
+    *,
+    max_num_imgs: Optional[int] = ...,
+) -> Union[Tuple[List[np.ndarray], ImageInfo], Tuple[List[np.ndarray], PDFInfo]]: ...
+
+
 def file_to_images(
     file_bytes: bytes,
     file_type: Literal["IMAGE", "PDF"],
     *,
     max_num_imgs: Optional[int] = None,
-) -> Tuple[List[np.ndarray], Union[ImageInfo, PDFInfo]]:
+) -> Union[Tuple[List[np.ndarray], ImageInfo], Tuple[List[np.ndarray], PDFInfo]]:
     if file_type == "IMAGE":
         images = [image_bytes_to_array(file_bytes)]
         data_info = get_image_info(images[0])

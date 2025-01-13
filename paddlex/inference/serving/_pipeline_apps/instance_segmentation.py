@@ -12,41 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Any, List, Optional
+from typing import Any, Dict, List
 
 import numpy as np
 import pycocotools.mask as mask_util
 from fastapi import FastAPI
-from pydantic import BaseModel, Field
-from typing_extensions import Annotated, TypeAlias
 
 from .. import _utils as serving_utils
 from .._app import AppConfig, create_app, main_operation
 from .._models import ResultResponse
-
-
-class InferRequest(BaseModel):
-    image: str
-
-
-BoundingBox: TypeAlias = Annotated[List[float], Field(min_length=4, max_length=4)]
-
-
-class Mask(BaseModel):
-    rleResult: str
-    size: Annotated[List[int], Field(min_length=2, max_length=2)]
-
-
-class Instance(BaseModel):
-    bbox: BoundingBox
-    categoryId: int
-    score: float
-    mask: Mask
-
-
-class InferResult(BaseModel):
-    instances: List[Instance]
-    image: Optional[str] = None
+from ..schemas.instance_segmentation import INFER_ENDPOINT, InferRequest, InferResult
 
 
 def _rle(mask: np.ndarray) -> str:
@@ -63,7 +38,7 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
 
     @main_operation(
         app,
-        "/instance-segmentation",
+        INFER_ENDPOINT,
         "infer",
     )
     async def _infer(request: InferRequest) -> ResultResponse[InferResult]:
@@ -75,12 +50,12 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
 
         result = (await pipeline.infer(image))[0]
 
-        instances: List[Instance] = []
+        instances: List[Dict[str, Any]] = []
         for obj, mask in zip(result["boxes"], result["masks"]):
             rle_res = _rle(mask)
-            mask = Mask(rleResult=rle_res, size=mask.shape)
+            mask = dict(rleResult=rle_res, size=mask.shape)
             instances.append(
-                Instance(
+                dict(
                     bbox=obj["coordinate"],
                     categoryId=obj["cls_id"],
                     score=obj["score"],

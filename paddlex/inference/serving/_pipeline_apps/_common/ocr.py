@@ -18,29 +18,17 @@ from typing import Awaitable, Final, List, Optional, Tuple, Union
 import numpy as np
 from fastapi import HTTPException
 from numpy.typing import ArrayLike
-from pydantic import BaseModel
-from typing_extensions import Literal, TypeAlias
+from typing_extensions import Literal
 
-from .....utils import logging
 from ... import _utils as serving_utils
 from ..._app import AppContext
 from ..._models import ImageInfo, PDFInfo
 from ..._storage import SupportsGetURL, create_storage
+from ...schemas.shared.ocr import BaseInferRequest
 from .image import postprocess_image
 
 DEFAULT_MAX_NUM_INPUT_IMGS: Final[int] = 10
 DEFAULT_MAX_OUTPUT_IMG_SIZE: Final[Tuple[int, int]] = (2000, 2000)
-
-FileType: TypeAlias = Literal[0, 1]
-
-
-class InferRequest(BaseModel):
-    file: str
-    fileType: Optional[FileType] = None
-    # Should it be "Classification" instead of "Classify"? Keep the names
-    # consistent with the parameters of the wrapped function though.
-    useDocOrientationClassify: bool = False
-    useDocUnwarping: bool = False
 
 
 def update_app_context(app_context: AppContext) -> None:
@@ -67,24 +55,26 @@ def update_app_context(app_context: AppContext) -> None:
     )
 
 
-def get_file_type(request: InferRequest) -> Literal["PDF", "IMAGE"]:
+def get_file_type(request: BaseInferRequest) -> Literal["PDF", "IMAGE"]:
     if request.fileType is None:
         if serving_utils.is_url(request.file):
-            file_type = serving_utils.infer_file_type(request.file)
-            if file_type not in ("PDF", "IMAGE"):
+            maybe_file_type = serving_utils.infer_file_type(request.file)
+            if maybe_file_type is None or not (
+                maybe_file_type == "PDF" or maybe_file_type == "IMAGE"
+            ):
                 raise HTTPException(status_code=422, detail="Unsupported file type")
+            file_type = maybe_file_type
         else:
             raise HTTPException(
                 status_code=422, detail="File type cannot be determined"
             )
     else:
         file_type = "PDF" if request.fileType == 0 else "IMAGE"
-
     return file_type
 
 
 async def get_images(
-    request: InferRequest, app_context: AppContext
+    request: BaseInferRequest, app_context: AppContext
 ) -> Tuple[List[np.ndarray], Union[ImageInfo, PDFInfo]]:
     file_type = get_file_type(request)
     # XXX: Should we return 422?
@@ -106,7 +96,7 @@ async def get_images(
 async def postprocess_images(
     *,
     log_id: str,
-    index: str,
+    index: int,
     app_context: AppContext,
     input_image: Optional[ArrayLike] = None,
     layout_image: Optional[ArrayLike] = None,

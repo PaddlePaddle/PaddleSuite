@@ -12,25 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Any, List, Optional
+from typing import Any
 
 from fastapi import FastAPI
-from pydantic import BaseModel, Field
-from typing_extensions import Annotated
 
 from .. import _utils as serving_utils
 from .._app import AppConfig, create_app, main_operation
 from .._models import ResultResponse
-
-
-class InferRequest(BaseModel):
-    image: str
-
-
-class InferResult(BaseModel):
-    labelMap: List[int]
-    size: Annotated[List[int], Field(min_length=2, max_length=2)]
-    image: Optional[str] = None
+from ..schemas.semantic_segmentation import INFER_ENDPOINT, InferRequest, InferResult
 
 
 def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
@@ -40,7 +29,7 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
 
     @main_operation(
         app,
-        "/semantic-segmentation",
+        INFER_ENDPOINT,
         "infer",
     )
     async def _infer(request: InferRequest) -> ResultResponse[InferResult]:
@@ -49,8 +38,12 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
 
         file_bytes = await serving_utils.get_raw_bytes(request.image, aiohttp_session)
         image = serving_utils.image_bytes_to_array(file_bytes)
+        if request.inferenceParams is not None:
+            target_size = request.inferenceParams.targetSize
+        else:
+            target_size = None
 
-        result = (await pipeline.infer(image))[0]
+        result = (await pipeline.infer(image, target_size=target_size))[0]
 
         pred = result["pred"][0].tolist()
         size = [len(pred), len(pred[0])]

@@ -68,6 +68,12 @@ class PipelineWrapper(Generic[_PipelineT]):
     async def infer(self, *args: Any, **kwargs: Any) -> List[Any]:
         def _infer() -> List[Any]:
             output = list(self._pipeline(*args, **kwargs))
+            if (
+                len(output) == 1
+                and isinstance(output[0], dict)
+                and output[0].keys() == {"error"}
+            ):
+                raise fastapi.HTTPException(status_code=500, detail=output[0]["error"])
             return output
 
         return await self.call(_infer)
@@ -195,7 +201,7 @@ def create_app(
 # TODO: Precise type hints
 def main_operation(
     app: fastapi.FastAPI, path: str, operation_id: str, **kwargs: Any
-) -> callable:
+) -> Callable:
     return app.post(
         path,
         operation_id=operation_id,

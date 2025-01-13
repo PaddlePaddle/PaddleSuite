@@ -12,44 +12,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Any, List, Optional
+from typing import Any, Dict, List
 
 from fastapi import FastAPI
-from pydantic import BaseModel, Field
-from typing_extensions import Annotated, TypeAlias
 
 from .. import _utils as serving_utils
 from .._app import AppConfig, create_app, main_operation
 from .._models import ResultResponse
-
-
-class InferenceParams(BaseModel):
-    detThreshold: Optional[float] = None
-    clsThreshold: Optional[float] = None
-
-
-class InferRequest(BaseModel):
-    image: str
-    inferenceParams: Optional[InferenceParams] = None
-
-
-BoundingBox: TypeAlias = Annotated[List[float], Field(min_length=4, max_length=4)]
-
-
-class Attribute(BaseModel):
-    label: str
-    score: float
-
-
-class Vehicle(BaseModel):
-    bbox: BoundingBox
-    attributes: List[Attribute]
-    score: float
-
-
-class InferResult(BaseModel):
-    vehicles: List[Vehicle]
-    image: Optional[str] = None
+from ..schemas.vehicle_attribute_recognition import (
+    INFER_ENDPOINT,
+    InferRequest,
+    InferResult,
+)
 
 
 def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
@@ -59,7 +33,7 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
 
     @main_operation(
         app,
-        "/vehicle-attribute-recognition",
+        INFER_ENDPOINT,
         "infer",
     )
     async def _infer(request: InferRequest) -> ResultResponse[InferResult]:
@@ -83,14 +57,14 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
             )
         )[0]
 
-        vehicles: List[Vehicle] = []
+        objs: List[Dict[str, Any]] = []
         for obj in result["boxes"]:
-            vehicles.append(
-                Vehicle(
+            objs.append(
+                dict(
                     bbox=obj["coordinate"],
                     attributes=[
-                        Attribute(label=l, score=s)
-                        for l, s in zip(obj["labels"], obj["rec_scores"])
+                        dict(label=l, score=s)
+                        for l, s in zip(obj["labels"], obj["cls_scores"])
                     ],
                     score=obj["det_score"],
                 )
@@ -104,7 +78,7 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
 
         return ResultResponse[InferResult](
             logId=serving_utils.generate_log_id(),
-            result=InferResult(vehicles=vehicles, image=output_image_base64),
+            result=InferResult(vehicles=objs, image=output_image_base64),
         )
 
     return app

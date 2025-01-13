@@ -12,25 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Any, List, Optional
+from typing import Any
 
 from fastapi import FastAPI
-from pydantic import BaseModel, Field
-from typing_extensions import Annotated
 
 from .. import _utils as serving_utils
 from .._app import AppConfig, create_app, main_operation
 from .._models import ResultResponse
-
-
-class InferRequest(BaseModel):
-    image: str
-
-
-class InferResult(BaseModel):
-    labelMap: List[int]
-    size: Annotated[List[int], Field(min_length=2, max_length=2)]
-    image: Optional[str] = None
+from ..schemas.anomaly_detection import INFER_ENDPOINT, InferRequest, InferResult
 
 
 def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
@@ -40,7 +29,7 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
 
     @main_operation(
         app,
-        "/image-anomaly-detection",
+        INFER_ENDPOINT,
         "infer",
     )
     async def _infer(request: InferRequest) -> ResultResponse[InferResult]:

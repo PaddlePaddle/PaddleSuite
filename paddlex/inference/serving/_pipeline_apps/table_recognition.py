@@ -12,38 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Any, List, Optional, Type
+from typing import Any, Dict, List
 
 from fastapi import FastAPI
-from pydantic import BaseModel, Field
-from typing_extensions import Annotated, TypeAlias
 
 from .. import _utils as serving_utils
 from .._app import AppConfig, create_app, main_operation
-from .._models import DataInfo, ResultResponse
+from .._models import ResultResponse
+from ..schemas.table_recognition import INFER_ENDPOINT, InferRequest, InferResult
 from ._common import ocr as ocr_common
-
-InferRequest: Type[ocr_common.InferRequest] = ocr_common.InferRequest
-
-Point: TypeAlias = Annotated[List[int], Field(min_length=2, max_length=2)]
-BoundingBox: TypeAlias = Annotated[List[float], Field(min_length=4, max_length=4)]
-
-
-class Table(BaseModel):
-    bbox: BoundingBox
-    html: str
-
-
-class TableRecResult(BaseModel):
-    tables: List[Table]
-    inputImage: Optional[str] = None
-    layoutImage: Optional[str] = None
-    ocrImage: Optional[str] = None
-
-
-class InferResult(BaseModel):
-    tableRecResults: List[TableRecResult]
-    dataInfo: DataInfo
 
 
 def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
@@ -55,7 +32,7 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
 
     @main_operation(
         app,
-        "/table-recognition",
+        INFER_ENDPOINT,
         "infer",
     )
     async def _infer(request: InferRequest) -> ResultResponse[InferResult]:
@@ -71,12 +48,12 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
             use_doc_unwarping=request.useDocUnwarping,
         )
 
-        table_rec_results: List[TableRecResult] = []
+        table_rec_results: List[Dict[str, Any]] = []
         for i, (img, item) in enumerate(zip(images, result)):
-            tables: List[Table] = []
+            tables: List[Dict[str, Any]] = []
             for subitem in item["table_result"]:
                 tables.append(
-                    Table(
+                    dict(
                         bbox=subitem["layout_bbox"],
                         html=subitem["html"],
                     )
@@ -93,7 +70,7 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
             else:
                 input_img, layout_img, ocr_img = None, None, None
             table_rec_results.append(
-                TableRecResult(
+                dict(
                     tables=tables,
                     inputImage=input_img,
                     layoutImage=layout_img,

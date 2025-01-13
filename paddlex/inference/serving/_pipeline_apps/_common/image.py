@@ -44,12 +44,13 @@ def postprocess_image(
     ext = os.path.splitext(filename)[1]
     image = np.asarray(image)
     h, w = image.shape[0:2]
-    if w > max_img_size[1] or h > max_img_size[0]:
-        if w / h > max_img_size[0] / max_img_size[1]:
-            factor = max_img_size[0] / w
-        else:
-            factor = max_img_size[1] / h
-        image = cv2.resize(image, (int(factor * w), int(factor * h)))
+    if max_img_size is not None:
+        if w > max_img_size[1] or h > max_img_size[0]:
+            if w / h > max_img_size[0] / max_img_size[1]:
+                factor = max_img_size[0] / w
+            else:
+                factor = max_img_size[1] / h
+            image = cv2.resize(image, (int(factor * w), int(factor * h)))
     img_bytes = serving_utils.image_array_to_bytes(image, ext=ext)
     if file_storage is not None:
         file_storage.set(key, img_bytes)

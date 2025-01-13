@@ -13,34 +13,14 @@
 # limitations under the License.
 
 import os
-from typing import Any, List, Optional
+from typing import Any, Dict, List
 
-from fastapi import FastAPI
-from pydantic import BaseModel, Field
-from typing_extensions import Annotated
+from fastapi import FastAPI, HTTPException
 
+from ...schemas.video_classification import INFER_ENDPOINT, InferRequest, InferResult
 from .. import _utils as serving_utils
 from .._app import AppConfig, create_app, main_operation
 from .._models import ResultResponse
-
-
-class InferenceParams(BaseModel):
-    topK: Optional[Annotated[int, Field(gt=0)]] = None
-
-
-class InferRequest(BaseModel):
-    video: str
-    inferenceParams: Optional[InferenceParams] = None
-
-
-class Category(BaseModel):
-    id: int
-    name: str
-    score: float
-
-
-class InferResult(BaseModel):
-    categories: List[Category]
 
 
 def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
@@ -50,7 +30,7 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
 
     @main_operation(
         app,
-        "/video-classification",
+        INFER_ENDPOINT,
         "infer",
     )
     async def _infer(request: InferRequest) -> ResultResponse[InferResult]:
@@ -58,10 +38,15 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
         aiohttp_session = ctx.aiohttp_session
 
         file_bytes = await serving_utils.get_raw_bytes(request.video, aiohttp_session)
+        ext = serving_utils.infer_file_ext(request.video)
+        if ext is None:
+            raise HTTPException(
+                status_code=422, detail="File extension cannot be inferred"
+            )
         video_path = await serving_utils.call_async(
             serving_utils.write_to_temp_file,
             file_bytes,
-            suffix=serving_utils.infer_file_ext(request.video),
+            suffix=ext,
         )
 
         if request.inferenceParams is not None:
@@ -78,9 +63,9 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
             cat_names = result["label_names"]
         else:
             cat_names = [str(id_) for id_ in result["class_ids"]]
-        categories: List[Category] = []
+        categories: List[Dict[str, Any]] = []
         for id_, name, score in zip(result["class_ids"], cat_names, result["scores"]):
-            categories.append(Category(id=id_, name=name, score=score))
+            categories.append(dict(id=id_, name=name, score=score))
 
         return ResultResponse[InferResult](
             logId=serving_utils.generate_log_id(),

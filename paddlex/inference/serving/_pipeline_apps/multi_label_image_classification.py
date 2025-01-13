@@ -12,34 +12,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List
 
 from fastapi import FastAPI
-from pydantic import BaseModel
 
 from .. import _utils as serving_utils
 from .._app import AppConfig, create_app, main_operation
 from .._models import ResultResponse
-
-
-class InferenceParams(BaseModel):
-    threshold: Optional[Union[float, Dict[Union[str, int], float], List[float]]] = None
-
-
-class InferRequest(BaseModel):
-    image: str
-    inferenceParams: Optional[InferenceParams] = None
-
-
-class Category(BaseModel):
-    id: int
-    name: str
-    score: float
-
-
-class InferResult(BaseModel):
-    categories: List[Category]
-    image: Optional[str] = None
+from ..schemas.multi_label_image_classification import (
+    INFER_ENDPOINT,
+    InferRequest,
+    InferResult,
+)
 
 
 def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
@@ -49,7 +33,7 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
 
     @main_operation(
         app,
-        "/multilabel-image-classification",
+        INFER_ENDPOINT,
         "infer",
     )
     async def _infer(request: InferRequest) -> ResultResponse[InferResult]:
@@ -70,9 +54,9 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
             cat_names = result["label_names"]
         else:
             cat_names = [str(id_) for id_ in result["class_ids"]]
-        categories: List[Category] = []
+        categories: List[Dict[str, Any]] = []
         for id_, name, score in zip(result["class_ids"], cat_names, result["scores"]):
-            categories.append(Category(id=id_, name=name, score=score))
+            categories.append(dict(id=id_, name=name, score=score))
         if ctx.config.visualize:
             output_image_base64 = serving_utils.base64_encode(
                 serving_utils.image_to_bytes(result.img["res"])

@@ -12,8 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from ._app import create_app_config
-from ._pipeline_apps import create_pipeline_app
-from ._server import run_server
+from pydantic import BaseModel
 
-__all__ = ["create_app_config", "create_pipeline_app", "run_server"]
+__all__ = ["Category"]
+
+
+class Category(BaseModel):
+    id: int
+    name: str
+    score: float

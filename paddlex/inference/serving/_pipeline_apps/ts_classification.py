@@ -15,20 +15,11 @@
 from typing import Any
 
 from fastapi import FastAPI
-from pydantic import BaseModel
 
 from .. import _utils as serving_utils
 from .._app import AppConfig, create_app, main_operation
 from .._models import ResultResponse
-
-
-class InferRequest(BaseModel):
-    csv: str
-
-
-class InferResult(BaseModel):
-    label: str
-    score: float
+from ..schemas.ts_classification import INFER_ENDPOINT, InferRequest, InferResult
 
 
 def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
@@ -38,7 +29,7 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
 
     @main_operation(
         app,
-        "/time-series-classification",
+        INFER_ENDPOINT,
         "infer",
     )
     async def _infer(request: InferRequest) -> ResultResponse[InferResult]:

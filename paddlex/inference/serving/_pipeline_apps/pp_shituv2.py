@@ -12,101 +12,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# TODO: Add caching to improve performance
-
 import asyncio
-import pickle
-import uuid
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Final, List
 
-import faiss
 from fastapi import FastAPI
-from pydantic import BaseModel, Field
-from typing_extensions import Annotated, TypeAlias
 
-from ...pipelines_new.components.retrieval.faiss import IndexData
 from .. import _utils as serving_utils
 from .._app import AppConfig, create_app, main_operation
 from .._models import ResultResponse
 from .._storage import create_storage
+from ..schemas import pp_shituv2 as schema
+from ._common import image_recognition as ir_common
 
-DEFAULT_INDEX_DIR = ".indexes"
-
-
-class ImageLabelPair(BaseModel):
-    image: str
-    label: str
-
-
-class BuildIndexRequest(BaseModel):
-    imageLabelPairs: List[ImageLabelPair]
-
-
-class BuildIndexResult(BaseModel):
-    indexKey: str
-    idMap: Dict[int, str]
-
-
-class AddImagesToIndexRequest(BaseModel):
-    imageLabelPairs: List[ImageLabelPair]
-    indexKey: Optional[str] = None
-
-
-class AddImagesToIndexResult(BaseModel):
-    idMap: Dict[int, str]
-
-
-class RemoveImagesFromIndexRequest(BaseModel):
-    ids: List[int]
-    indexKey: Optional[str] = None
-
-
-class RemoveImagesFromIndexResult(BaseModel):
-    idMap: Dict[int, str]
-
-
-class InferenceParams(BaseModel):
-    detThreshold: Optional[float] = None
-    recThreshold: Optional[float] = None
-    topK: Optional[int] = None
-
-
-class InferRequest(BaseModel):
-    image: str
-    indexKey: Optional[str] = None
-    inferenceParams: Optional[InferenceParams] = None
-
-
-BoundingBox: TypeAlias = Annotated[List[float], Field(min_length=4, max_length=4)]
-
-
-class RecResult(BaseModel):
-    label: str
-    score: float
-
-
-class DetectedObject(BaseModel):
-    bbox: BoundingBox
-    recResults: List[RecResult]
-    score: float
-
-
-class InferResult(BaseModel):
-    detectedObjects: List[DetectedObject]
-    image: Optional[str] = None
-
-
-# XXX: I have to implement serialization and deserialization functions myself,
-# which is fragile.
-def _serialize_index_data(index_data: IndexData) -> bytes:
-    tup = (index_data.index_bytes, index_data.index_info)
-    return pickle.dumps(tup)
-
-
-def _deserialize_index_data(index_data_bytes: bytes) -> IndexData:
-    tup = pickle.loads(index_data_bytes)
-    index = faiss.deserialize_index(tup[0])
-    return IndexData(index, tup[1])
+DEFAULT_INDEX_DIR: Final[str] = ".index"
 
 
 def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
@@ -123,12 +41,12 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
 
     @main_operation(
         app,
-        "/shitu-index-build",
+        schema.BUILD_INDEX_ENDPOINT,
         "buildIndex",
     )
     async def _build_index(
-        request: BuildIndexRequest,
-    ) -> ResultResponse[BuildIndexResult]:
+        request: schema.BuildIndexRequest,
+    ) -> ResultResponse[schema.BuildIndexResult]:
         pipeline = ctx.pipeline
         aiohttp_session = ctx.aiohttp_session
 
@@ -150,25 +68,25 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
         )
 
         index_storage = ctx.extra["index_storage"]
-        index_key = str(uuid.uuid4())
+        index_key = ir_common.generate_index_key()
         index_data_bytes = await serving_utils.call_async(
-            _serialize_index_data, index_data
+            ir_common.serialize_index_data, index_data
         )
         await serving_utils.call_async(index_storage.set, index_key, index_data_bytes)
 
-        return ResultResponse[BuildIndexResult](
+        return ResultResponse[schema.BuildIndexResult](
             logId=serving_utils.generate_log_id(),
-            result=BuildIndexResult(indexKey=index_key, idMap=index_data.id_map),
+            result=schema.BuildIndexResult(indexKey=index_key, idMap=index_data.id_map),
         )
 
     @main_operation(
         app,
-        "/shitu-index-add",
-        "buildIndex",
+        schema.ADD_IMAGES_TO_INDEX_ENDPOINT,
+        "addImagesToIndex",
     )
     async def _add_images_to_index(
-        request: AddImagesToIndexRequest,
-    ) -> ResultResponse[AddImagesToIndexResult]:
+        request: schema.AddImagesToIndexRequest,
+    ) -> ResultResponse[schema.AddImagesToIndexResult]:
         pipeline = ctx.pipeline
         aiohttp_session = ctx.aiohttp_session
 
@@ -185,7 +103,7 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
                 index_storage.get, request.indexKey
             )
             index_data = await serving_utils.call_async(
-                _deserialize_index_data, index_data_bytes
+                ir_common.deserialize_index_data, index_data_bytes
             )
         else:
             index_data = None
@@ -195,25 +113,25 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
         )
 
         index_data_bytes = await serving_utils.call_async(
-            _serialize_index_data, index_data
+            ir_common.serialize_index_data, index_data
         )
         await serving_utils.call_async(
             index_storage.set, request.indexKey, index_data_bytes
         )
 
-        return ResultResponse[AddImagesToIndexResult](
+        return ResultResponse[schema.AddImagesToIndexResult](
             logId=serving_utils.generate_log_id(),
-            result=AddImagesToIndexResult(idMap=index_data.id_map),
+            result=schema.AddImagesToIndexResult(idMap=index_data.id_map),
         )
 
     @main_operation(
         app,
-        "/shitu-index-remove",
-        "buildIndex",
+        schema.REMOVE_IMAGES_FROM_INDEX_ENDPOINT,
+        "removeImagesFromIndex",
     )
     async def _remove_images_from_index(
-        request: RemoveImagesFromIndexRequest,
-    ) -> ResultResponse[RemoveImagesFromIndexResult]:
+        request: schema.RemoveImagesFromIndexRequest,
+    ) -> ResultResponse[schema.RemoveImagesFromIndexResult]:
         pipeline = ctx.pipeline
 
         if request.indexKey is not None:
@@ -222,7 +140,7 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
                 index_storage.get, request.indexKey
             )
             index_data = await serving_utils.call_async(
-                _deserialize_index_data, index_data_bytes
+                ir_common.deserialize_index_data, index_data_bytes
             )
         else:
             index_data = None
@@ -232,23 +150,25 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
         )
 
         index_data_bytes = await serving_utils.call_async(
-            _serialize_index_data, index_data
+            ir_common.serialize_index_data, index_data
         )
         await serving_utils.call_async(
             index_storage.set, request.indexKey, index_data_bytes
         )
 
-        return ResultResponse[RemoveImagesFromIndexResult](
+        return ResultResponse[schema.RemoveImagesFromIndexResult](
             logId=serving_utils.generate_log_id(),
-            result=RemoveImagesFromIndexResult(idMap=index_data.id_map),
+            result=schema.RemoveImagesFromIndexResult(idMap=index_data.id_map),
         )
 
     @main_operation(
         app,
-        "/shitu-infer",
+        schema.INFER_ENDPOINT,
         "infer",
     )
-    async def _infer(request: InferRequest) -> ResultResponse[InferResult]:
+    async def _infer(
+        request: schema.InferRequest,
+    ) -> ResultResponse[schema.InferResult]:
         pipeline = ctx.pipeline
         aiohttp_session = ctx.aiohttp_session
 
@@ -261,7 +181,7 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
                 index_storage.get, request.indexKey
             )
             index_data = await serving_utils.call_async(
-                _deserialize_index_data, index_data_bytes
+                ir_common.deserialize_index_data, index_data_bytes
             )
         else:
             index_data = None
@@ -286,19 +206,19 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
             )
         )[0]
 
-        objects: List[DetectedObject] = []
+        objs: List[Dict[str, Any]] = []
         for obj in result["boxes"]:
-            rec_results: List[RecResult] = []
+            rec_results: List[Dict[str, Any]] = []
             if obj["rec_scores"] is not None:
                 for label, score in zip(obj["labels"], obj["rec_scores"]):
                     rec_results.append(
-                        RecResult(
+                        dict(
                             label=label,
                             score=score,
                         )
                     )
-            objects.append(
-                DetectedObject(
+            objs.append(
+                dict(
                     bbox=obj["coordinate"],
                     recResults=rec_results,
                     score=obj["det_score"],
@@ -311,9 +231,9 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
         else:
             output_image_base64 = None
 
-        return ResultResponse[InferResult](
+        return ResultResponse[schema.InferResult](
             logId=serving_utils.generate_log_id(),
-            result=InferResult(detectedObjects=objects, image=output_image_base64),
+            result=schema.InferResult(detectedObjects=objs, image=output_image_base64),
         )
 
     return app

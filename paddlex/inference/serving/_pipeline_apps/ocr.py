@@ -12,46 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Any, List, Optional
+from typing import Any, Dict, List
 
 from fastapi import FastAPI
-from pydantic import BaseModel, Field
-from typing_extensions import Annotated, TypeAlias
 
 from .. import _utils as serving_utils
 from .._app import AppConfig, create_app, main_operation
-from .._models import DataInfo, ResultResponse
+from .._models import ResultResponse
+from ..schemas.ocr import INFER_ENDPOINT, InferRequest, InferResult
 from ._common import image as image_common
 from ._common import ocr as ocr_common
-
-
-class InferenceParams(BaseModel):
-    maxLongSide: Optional[Annotated[int, Field(gt=0)]] = None
-
-
-class InferRequest(ocr_common.InferRequest):
-    useTextLineOrientation: Optional[bool] = False
-    inferenceParams: Optional[InferenceParams] = None
-
-
-Point: TypeAlias = Annotated[List[int], Field(min_length=2, max_length=2)]
-Polygon: TypeAlias = Annotated[List[Point], Field(min_length=3)]
-
-
-class Text(BaseModel):
-    poly: Polygon
-    text: str
-    score: float
-
-
-class OCRResult(BaseModel):
-    texts: List[Text]
-    image: Optional[str] = None
-
-
-class InferResult(BaseModel):
-    ocrResults: List[OCRResult]
-    dataInfo: DataInfo
 
 
 def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
@@ -63,7 +33,7 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
 
     @main_operation(
         app,
-        "/ocr",
+        INFER_ENDPOINT,
         "infer",
     )
     async def _infer(request: InferRequest) -> ResultResponse[InferResult]:
@@ -85,13 +55,13 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
             use_doc_unwarping=request.useDocUnwarping,
         )
 
-        ocr_results: List[OCRResult] = []
+        ocr_results: List[Dict[str, Any]] = []
         for i, item in enumerate(result):
-            texts: List[Text] = []
+            texts: List[Dict[str, Any]] = []
             for poly, text, score in zip(
                 item["dt_polys"], item["rec_text"], item["rec_score"]
             ):
-                texts.append(Text(poly=poly, text=text, score=score))
+                texts.append(dict(poly=poly, text=text, score=score))
             if ctx.config.visualize:
                 image = await serving_utils.call_async(
                     image_common.postprocess_image,
@@ -104,7 +74,7 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
                 )
             else:
                 image = None
-            ocr_results.append(OCRResult(texts=texts, image=image))
+            ocr_results.append(dict(texts=texts, image=image))
 
         return ResultResponse[InferResult](
             logId=log_id,

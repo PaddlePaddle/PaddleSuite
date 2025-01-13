@@ -12,49 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Any, List, Optional
+from typing import Any, Dict, List
 
 from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel, Field
-from typing_extensions import Annotated, Literal, TypeAlias
 
 from ....utils import logging
 from .. import _utils as serving_utils
 from .._app import AppConfig, create_app, main_operation
-from .._models import DataInfo, ResultResponse
+from .._models import ResultResponse
+from ..schemas.layout_parsing import INFER_ENDPOINT, InferRequest, InferResult
 from ._common import image as image_common
 from ._common import ocr as ocr_common
-
-
-class InferenceParams(BaseModel):
-    maxLongSide: Optional[Annotated[int, Field(gt=0)]] = None
-
-
-class InferRequest(ocr_common.InferRequest):
-    useGeneralOcr: bool = True
-    useSealRecognition: bool = True
-    useTableRecognition: bool = True
-    inferenceParams: Optional[InferenceParams] = None
-
-
-BoundingBox: TypeAlias = Annotated[List[float], Field(min_length=4, max_length=4)]
-
-
-class LayoutElement(BaseModel):
-    bbox: BoundingBox
-    label: str
-    text: str
-    layoutType: Literal["single", "double"]
-    image: Optional[str] = None
-
-
-class LayoutParsingResult(BaseModel):
-    layoutElements: List[LayoutElement]
-
-
-class InferResult(BaseModel):
-    layoutParsingResults: List[LayoutParsingResult]
-    dataInfo: DataInfo
 
 
 def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
@@ -66,7 +34,7 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
 
     @main_operation(
         app,
-        "/layout-parsing",
+        INFER_ENDPOINT,
         "infer",
     )
     async def _infer(
@@ -90,9 +58,9 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
             use_seal_text_det_model=request.useSealTextDet,
         )
 
-        layout_parsing_results: List[LayoutParsingResult] = []
+        layout_parsing_results: List[Dict[str, Any]] = []
         for i, item in enumerate(result):
-            layout_elements: List[LayoutElement] = []
+            layout_elements: List[Dict[str, Any]] = []
             for j, subitem in enumerate(
                 item["layout_parsing_result"]["parsing_result"]
             ):
@@ -122,7 +90,7 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
                     text = subitem[label]
                     image = None
                 layout_elements.append(
-                    LayoutElement(
+                    dict(
                         bbox=subitem["layout_bbox"],
                         label=label,
                         text=text,
@@ -130,9 +98,7 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
                         image=image,
                     )
                 )
-            layout_parsing_results.append(
-                LayoutParsingResult(layoutElements=layout_elements)
-            )
+            layout_parsing_results.append(dict(layoutElements=layout_elements))
 
         return ResultResponse[InferResult](
             logId=log_id,

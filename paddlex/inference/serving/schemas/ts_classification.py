@@ -12,8 +12,26 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from ._app import create_app_config
-from ._pipeline_apps import create_pipeline_app
-from ._server import run_server
+from typing import Final
 
-__all__ = ["create_app_config", "create_pipeline_app", "run_server"]
+from pydantic import BaseModel
+
+from .._models import MainOperations
+
+__all__ = ["INFER_ENDPOINT", "InferRequest", "InferResult", "MAIN_OPERATIONS"]
+
+INFER_ENDPOINT: Final[str] = "/time-series-classification"
+
+
+class InferRequest(BaseModel):
+    csv: str
+
+
+class InferResult(BaseModel):
+    label: str
+    score: float
+
+
+MAIN_OPERATIONS: Final[MainOperations] = {
+    "infer": (INFER_ENDPOINT, InferRequest, InferResult),
+}
