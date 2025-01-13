@@ -18,15 +18,6 @@ The text recognition module is the core component of an OCR (Optical Character R
 <th>Model Size (M)</th>
 <th>Description</th>
 </tr>
-<table>
-<tr>
-<th>Model</th><th>Model Download Link</th>
-<th>Recognition Avg Accuracy(%)</th>
-<th>GPU Inference Time (ms)</th>
-<th>CPU Inference Time (ms)</th>
-<th>Model Storage Size (M)</th>
-<th>Introduction</th>
-</tr>
 <tr>
 <td>en_PP-OCRv4_mobile_rec</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0rc0/en_PP-OCRv4_mobile_rec_infer.tar">Inference Model</a>/<a href="">Training Model</a></td>
 <td></td>
