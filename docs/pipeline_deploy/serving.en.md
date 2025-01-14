@@ -42,7 +42,7 @@ paddlex --serve --pipeline {pipeline name or path to pipeline config file} [{oth
 Take the general image classification pipeline as an example:
 
 ```bash
-paddlex --serve --pipeline image_classifcation
+paddlex --serve --pipeline image_classification
 ```
 
 You can see the following information:

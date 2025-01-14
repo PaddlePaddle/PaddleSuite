@@ -42,7 +42,7 @@ paddlex --serve --pipeline {产线名称或产线配置文件路径} [{其他命
 以通用图像分类产线为例：
 
 ```bash
-paddlex --serve --pipeline image_classifcation
+paddlex --serve --pipeline image_classification
 ```
 
 可以看到类似以下展示的信息：
