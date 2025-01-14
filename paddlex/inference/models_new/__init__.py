@@ -22,6 +22,7 @@ from .base import BasePredictor, BasicPredictor
 
 from .image_classification import ClasPredictor
 from .object_detection import DetPredictor
+from .keypoint_detection import KptPredictor
 from .text_detection import TextDetPredictor
 from .text_recognition import TextRecPredictor
 from .table_structure_recognition import TablePredictor
