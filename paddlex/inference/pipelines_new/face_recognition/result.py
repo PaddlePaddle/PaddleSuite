@@ -28,5 +28,5 @@ class FaceRecResult(BaseCVResult):
             }
             for box in self["boxes"]
         ]
-        image = draw_box(self["input_img"], boxes)
+        image = draw_box(self["input_img"][..., ::-1], boxes)
         return {"res": image}
