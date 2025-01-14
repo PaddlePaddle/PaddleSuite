@@ -1,6 +1,7 @@
 
 pipeline_name: seal_recognition
 
+use_layout_detection: True
 use_doc_preprocessor: True
 
 SubModules:

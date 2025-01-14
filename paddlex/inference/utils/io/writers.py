@@ -35,6 +35,7 @@ __all__ = [
     "HtmlWriter",
     "XlsxWriter",
     "YAMLWriter",
+    "VideoWriter",
 ]
 
 
@@ -112,6 +113,28 @@ class ImageWriter(_BaseWriter):
     def get_type(self):
         """get type"""
         return WriterType.IMAGE
+
+
+class VideoWriter(_BaseWriter):
+    """VideoWriter"""
+
+    def __init__(self, backend="opencv", **bk_args):
+        super().__init__(backend=backend, **bk_args)
+
+    def write(self, out_path, obj):
+        """write"""
+        return self._backend.write_obj(str(out_path), obj)
+
+    def _init_backend(self, bk_type, bk_args):
+        """init backend"""
+        if bk_type == "opencv":
+            return OpenCVVideoWriterBackend(**bk_args)
+        else:
+            raise ValueError("Unsupported backend type")
+
+    def get_type(self):
+        """get type"""
+        return WriterType.VIDEO
 
 
 class TextWriter(_BaseWriter):
@@ -294,6 +317,30 @@ class PILImageWriterBackend(_ImageWriterBackend):
         return img.save(out_path, format=self.format)
 
 
+class _VideoWriterBackend(_BaseWriterBackend):
+    """_VideoWriterBackend"""
+
+    pass
+
+
+class OpenCVVideoWriterBackend(_VideoWriterBackend):
+    """OpenCVImageWriterBackend"""
+
+    def _write_obj(self, out_path, obj):
+        """write video object by OpenCV"""
+        obj, fps = obj
+        if isinstance(obj, np.ndarray):
+            vr = obj
+            width, height = vr[0].shape[1], vr[0].shape[0]
+            fourcc = cv2.VideoWriter_fourcc(*"mp4v")  # Alternatively, use 'XVID'
+            out = cv2.VideoWriter(out_path, fourcc, fps, (width, height))
+            for frame in vr:
+                out.write(frame)
+            out.release()
+        else:
+            raise TypeError("Unsupported object type")
+
+
 class _BaseJsonWriterBackend(object):
     def __init__(self, indent=4, ensure_ascii=False):
         super().__init__()
@@ -310,7 +357,7 @@ class _BaseJsonWriterBackend(object):
 
 class JsonWriterBackend(_BaseJsonWriterBackend):
     def _write_obj(self, out_path, obj, **bk_args):
-        with open(out_path, "w") as f:
+        with open(out_path, "w", encoding="utf-8") as f:
             json.dump(obj, f, **bk_args)
 
 

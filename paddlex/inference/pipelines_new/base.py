@@ -12,12 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from abc import ABC, abstractmethod
-from ...utils.subclass_register import AutoRegisterABCMetaClass
-import yaml
-import codecs
 from pathlib import Path
 from typing import Any, Dict, Optional
+from abc import ABC, abstractmethod
+import yaml
+import codecs
+from ...utils.subclass_register import AutoRegisterABCMetaClass
 from ..utils.pp_option import PaddlePredictorOption
 from ..models import BasePredictor
 
@@ -67,12 +67,13 @@ class BasePipeline(ABC, metaclass=AutoRegisterABCMetaClass):
         """
         raise NotImplementedError("The method `predict` has not been implemented yet.")
 
-    def create_model(self, config: Dict) -> BasePredictor:
+    def create_model(self, config: Dict, **kwargs) -> BasePredictor:
         """
         Create a model instance based on the given configuration.
 
         Args:
             config (Dict): A dictionary containing configuration settings.
+            **kwargs: The model arguments that needed to be pass.
 
         Returns:
             BasePredictor: An instance of the model.
@@ -82,21 +83,16 @@ class BasePipeline(ABC, metaclass=AutoRegisterABCMetaClass):
         if model_dir == None:
             model_dir = config["model_name"]
 
-        from ...model import create_model
+        from .. import create_predictor
 
-        model = create_model(
+        model = create_predictor(
             model=model_dir,
             device=self.device,
             pp_option=self.pp_option,
             use_hpip=self.use_hpip,
             hpi_params=self.hpi_params,
+            **kwargs,
         )
-
-        # [TODO] Support initializing with additional parameters
-        if "batch_size" in config:
-            batch_size = config["batch_size"]
-            model.set_predictor(batch_size=batch_size)
-
         return model
 
     def create_pipeline(self, config: Dict):

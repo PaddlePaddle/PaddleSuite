@@ -12,36 +12,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import os
+from pathlib import Path
+import copy
 import math
 import random
 import numpy as np
 import cv2
 import PIL
 from PIL import Image, ImageDraw, ImageFont
-
 from ....utils.fonts import PINGFANG_FONT_FILE_PATH, create_font
-from ..components import CVResult
+from ...common.result import BaseCVResult
 
 
-class OCRResult(CVResult):
+class OCRResult(BaseCVResult):
     """OCR result"""
-
-    def save_to_img(self, save_path: str, *args, **kwargs) -> None:
-        """
-        Save the image to the specified path with the appropriate extension.
-
-        If the save_path does not end with '.jpg' or '.png', it appends '_res_ocr_<img_id>.jpg'
-        to the path where <img_id> is the id of the image.
-
-        Args:
-            save_path (str): The path to save the image.
-            *args: Additional positional arguments.
-            **kwargs: Additional keyword arguments.
-        """
-        if not str(save_path).lower().endswith((".jpg", ".png")):
-            img_id = self["img_id"]
-            save_path = save_path + "/res_ocr_%d.jpg" % img_id
-        super().save_to_img(save_path, *args, **kwargs)
 
     def get_minarea_rect(self, points: np.ndarray) -> np.ndarray:
         """
@@ -84,26 +69,17 @@ class OCRResult(CVResult):
         Returns:
             PIL.Image: An image with detection boxes, texts, and scores blended on it.
         """
-
-        # TODO(gaotingquan): mv to postprocess
-        drop_score = 0.5
-
-        boxes = self["dt_polys"]
-        txts = self["rec_text"]
-        scores = self["rec_score"]
-        image = self["input_img"]
+        boxes = self["rec_boxes"]
+        txts = self["rec_texts"]
+        image = self["doc_preprocessor_res"]["output_img"]
         h, w = image.shape[0:2]
         image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         img_left = Image.fromarray(image_rgb)
         img_right = np.ones((h, w, 3), dtype=np.uint8) * 255
         random.seed(0)
         draw_left = ImageDraw.Draw(img_left)
-        if txts is None or len(txts) != len(boxes):
-            txts = [None] * len(boxes)
         for idx, (box, txt) in enumerate(zip(boxes, txts)):
             try:
-                if scores is not None and scores[idx] < drop_score:
-                    continue
                 color = (
                     random.randint(0, 255),
                     random.randint(0, 255),
@@ -131,7 +107,15 @@ class OCRResult(CVResult):
         img_show = Image.new("RGB", (w * 2, h), (255, 255, 255))
         img_show.paste(img_left, (0, 0, w, h))
         img_show.paste(Image.fromarray(img_right), (w, 0, w * 2, h))
-        return img_show
+
+        model_settings = self["model_settings"]
+        if model_settings["use_doc_preprocessor"]:
+            return {
+                **self["doc_preprocessor_res"].img,
+                f"ocr_res_img": img_show,
+            }
+        else:
+            return {f"ocr_res_img": img_show}
 
 
 # Adds a function comment according to Google Style Guide

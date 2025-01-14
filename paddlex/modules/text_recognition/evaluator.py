@@ -17,9 +17,6 @@ from pathlib import Path
 
 from ..base import BaseEvaluator
 from .model_list import MODELS
-from ..formula_recognition.model_list import MODELS as MODELS_LaTeX
-
-MODELS = MODELS + MODELS_LaTeX
 
 
 class TextRecEvaluator(BaseEvaluator):
