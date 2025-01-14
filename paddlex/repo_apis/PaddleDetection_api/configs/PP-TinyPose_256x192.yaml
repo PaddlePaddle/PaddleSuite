@@ -13,6 +13,7 @@ train_width: &train_width 192
 trainsize: &trainsize [*train_width, *train_height]
 hmsize: &hmsize [48, 64]
 flip_perm: &flip_perm [[1, 2], [3, 4], [5, 6], [7, 8], [9, 10], [11, 12], [13, 14], [15, 16]]
+use_ema: true
 
 
 #####model

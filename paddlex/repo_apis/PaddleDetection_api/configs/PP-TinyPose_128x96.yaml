@@ -13,6 +13,7 @@ train_width: &train_width 96
 trainsize: &trainsize [*train_width, *train_height]
 hmsize: &hmsize [24, 32]
 flip_perm: &flip_perm [[1, 2], [3, 4], [5, 6], [7, 8], [9, 10], [11, 12], [13, 14], [15, 16]]
+use_ema: true
 
 # AMP training
 init_loss_scaling: 32752
