@@ -126,9 +126,9 @@ class StaticInfer:
     def _create(
         self,
     ) -> Tuple[
-        paddle.base.libpaddle.PaddleInferPredictor,
-        paddle.base.libpaddle.PaddleInferTensor,
-        paddle.base.libpaddle.PaddleInferTensor,
+        "paddle.base.libpaddle.PaddleInferPredictor",
+        "paddle.base.libpaddle.PaddleInferTensor",
+        "paddle.base.libpaddle.PaddleInferTensor",
     ]:
         """_create"""
         from lazy_paddle.inference import Config, create_predictor

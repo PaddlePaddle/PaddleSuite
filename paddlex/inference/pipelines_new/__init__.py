@@ -28,7 +28,9 @@ from .seal_recognition import SealRecognitionPipeline
 from .table_recognition import TableRecognitionPipeline
 from .multilingual_speech_recognition import MultilingualSpeechRecognitionPipeline
 from .formula_recognition import FormulaRecognitionPipeline
+from .image_multilabel_classification import ImageMultiLabelClassificationPipeline
 from .video_classification import VideoClassificationPipeline
+from .video_detection import VideoDetectionPipeline
 from .anomaly_detection import AnomalyDetectionPipeline
 from .ts_forecasting import TSFcPipeline
 from .ts_anomaly_detection import TSAnomalyDetPipeline
@@ -44,6 +46,7 @@ from .semantic_segmentation import SemanticSegmentationPipeline
 from .instance_segmentation import InstanceSegmentationPipeline
 from .small_object__detection import SmallObjectDetectionPipeline
 from .rotated_object__detection import RotatedObjectDetectionPipeline
+from .keypoint_detection import KeypointDetectionPipeline
 
 
 def get_pipeline_path(pipeline_name: str) -> str:

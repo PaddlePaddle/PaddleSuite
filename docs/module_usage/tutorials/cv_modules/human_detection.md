@@ -241,4 +241,13 @@ python main.py -c paddlex/configs/human_detection/PP-YOLOE-S_human.yaml \
 其他相关参数均可通过修改`.yaml`配置文件中的`Global`和`Predict`下的字段来进行设置，详细请参考[PaddleX通用模型配置文件参数说明](../../instructions/config_parameters_common.md)。
 
 #### 4.4.2 模型集成
+
+模型可以直接集成到 PaddleX 产线中，也可以直接集成到您自己的项目中。
+
+1.**产线集成**
+
+行人检测模块可以集成的PaddleX产线有[**人体关键点检测**](../../../pipeline_usage/tutorials/cv_pipelines/human_keypoint_detection.md)，只需要替换模型路径即可完成相关产线的关键点检测模块的模型更新。在产线集成中，你可以使用高性能部署和服务化部署来部署你得到的模型。
+
+2.**模块集成**
+
 您产出的权重可以直接集成到行人检测模块中，可以参考[快速集成](#三快速集成)的 Python 示例代码，只需要将模型替换为你训练的到的模型路径即可。

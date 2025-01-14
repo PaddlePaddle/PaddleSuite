@@ -29,7 +29,7 @@ Number = Union[int, float]
 class ReadImage(CommonReadImage):
     """Reads images from a list of raw image data or file paths."""
 
-    def __call__(self, raw_imgs: List[Union[ndarray, str]]) -> List[dict]:
+    def __call__(self, raw_imgs: List[Union[ndarray, str, dict]]) -> List[dict]:
         """Processes the input list of raw image data or file paths and returns a list of dictionaries containing image information.
 
         Args:
@@ -43,6 +43,18 @@ class ReadImage(CommonReadImage):
             data = dict()
             if isinstance(raw_img, str):
                 data["img_path"] = raw_img
+            if isinstance(raw_img, dict):
+                if "img" in raw_img:
+                    src_img = raw_img["img"]
+                elif "img_path" in raw_img:
+                    src_img = raw_img["img_path"]
+                    data["img_path"] = src_img
+                else:
+                    raise ValueError(
+                        "When raw_img is dict, must have one of keys ['img', 'img_path']."
+                    )
+                data.update(raw_img)
+                raw_img = src_img
             img = self.read(raw_img)
             data["img"] = img
             data["ori_img"] = img
