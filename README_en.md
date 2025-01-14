@@ -289,7 +289,7 @@ In addition, PaddleX provides developers with a full-process efficient model tra
     <th>Ascend 910B</th>
     <th>Kunlunxin R200/R300</th>
     <th>Cambricon MLU370X8</th>
-    <th>Haiguang Z100</th>
+    <th>Haiguang Z100/K100AI</th>
   </tr>
   <tr>
     <td>OCR</td>
