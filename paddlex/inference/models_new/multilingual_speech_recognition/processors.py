@@ -937,7 +937,7 @@ def transcribe(
     prompt_reset_since = 0
 
     initial_prompt = decode_options.pop("initial_prompt", None) or []
-    if initial_prompt:
+    if initial_prompt and initial_prompt != "None":
         initial_prompt = tokenizer.encode(" " + initial_prompt.strip()).input_ids
         all_tokens.extend(initial_prompt)
 
@@ -959,7 +959,7 @@ def transcribe(
                 "text": text,
                 "tokens": result.tokens,
                 "temperature": result.temperature,
-                "avg_logprob": result.avg_logprob.tolist(),
+                "avg_logprob": result.avg_logprob,
                 "compression_ratio": result.compression_ratio,
                 "no_speech_prob": result.no_speech_prob,
             }
@@ -1251,10 +1251,9 @@ class BeamSearchDecoder(TokenDecoder):
             for j in range(self.beam_size):
                 idx = i * self.beam_size + j
                 prefix = tokens[idx].tolist()
-                logprob, token = paddle.topk(logprobs[idx], k=self.beam_size + 1)
-                for logprob, token in zip(logprob, token):
-                    new_logprob = sum_logprobs[idx] + logprob
-                    sequence = tuple(prefix + [token])
+                for logprob, token in zip(*logprobs[idx].topk(self.beam_size + 1)):
+                    new_logprob = (sum_logprobs[idx] + logprob).item()
+                    sequence = tuple(prefix + [token.item()])
                     scores[sequence] = new_logprob
                     sources[sequence] = idx
 
