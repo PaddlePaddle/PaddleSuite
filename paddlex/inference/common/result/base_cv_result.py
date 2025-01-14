@@ -30,8 +30,6 @@ class BaseCVResult(BaseResult, StrMixin, JsonMixin, ImgMixin):
         Raises:
             AssertionError: If the required key (`BaseCVResult.INPUT_IMG_KEY`) are not found in the data.
         """
-        self._img_writer = ImageWriter(backend="pillow")
-
         super().__init__(data)
         StrMixin.__init__(self)
         JsonMixin.__init__(self)
