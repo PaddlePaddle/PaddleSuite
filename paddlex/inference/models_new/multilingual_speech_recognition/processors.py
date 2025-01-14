@@ -1253,7 +1253,8 @@ class BeamSearchDecoder(TokenDecoder):
             for j in range(self.beam_size):
                 idx = i * self.beam_size + j
                 prefix = tokens[idx].tolist()
-                for logprob, token in zip(*logprobs[idx].topk(self.beam_size + 1)):
+                logprob, token = paddle.topk(logprobs[idx], k=self.beam_size + 1)
+                for logprob, token in zip(logprob, token):
                     new_logprob = (sum_logprobs[idx] + logprob).item()
                     sequence = tuple(prefix + [token.item()])
                     scores[sequence] = new_logprob
