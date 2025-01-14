@@ -89,7 +89,7 @@ class DetVideoResult(BaseVideoResult):
 
             image = cv2.cvtColor(np.array(image), cv2.COLOR_RGB2BGR)
             video_list.append(image)
-        return np.array(video_list), write_fps
+        return {"res": (np.array(video_list), write_fps)}
 
     def _get_font_colormap(self, color_index):
         """
