@@ -13,18 +13,21 @@
 # limitations under the License.
 
 import os, sys
-from typing import Tuple
+from typing import Tuple, List, Dict, Any
 import cv2
 import PIL
 import math
+import copy
 import random
 import tempfile
 import subprocess
 import numpy as np
 from pathlib import Path
+import PIL
 from PIL import Image, ImageDraw, ImageFont
 
 from ...common.result import BaseCVResult
+from ...common.result.mixin import JsonMixin, ImgMixin, StrMixin
 from ....utils import logging
 from ....utils.fonts import PINGFANG_FONT_FILE_PATH
 from ...models_new.formula_recognition.result import (
@@ -36,53 +39,111 @@ from ...models_new.formula_recognition.result import (
     create_font,
     crop_white_area,
     draw_box_txt_fine,
+    draw_formula_module,
 )
 
 
-class FormulaRecognitionResult(dict):
-    """Layout Parsing Result"""
+class FormulaRecognitionResult(BaseCVResult):
+    """Formula Recognition Result"""
 
-    def __init__(self, data) -> None:
-        """Initializes a new instance of the class with the specified data."""
-        super().__init__(data)
-
-    def save_to_img(self, save_path: str) -> None:
+    def _to_str(self, *args: List, **kwargs: Dict) -> Dict[str, Any]:
         """
-        Saves an image with overlaid formula recognition results.
-
-        This function attempts to save an image with recognized formulas highlighted
-        and annotated. It verifies the environment setup before proceeding and logs
-        a warning if the necessary rendering engine is not installed. The output image
-        consists of two halves: the left side shows the original image with bounding
-        boxes, and the right side shows the recognized formulas.
+        Convert the object to a string representation.
 
         Args:
-            save_path (str): The directory path where the output image will be saved.
+            *args: Additional positional arguments for the superclass's _to_str method.
+            **kwargs: Additional keyword arguments for the superclass's _to_str method.
 
         Returns:
-            None
+            str: A string representation of the object with specified fields removed.
         """
+        data = copy.deepcopy(self)
+        for tno in range(len(self["formula_res_list"])):
+            data["formula_res_list"][tno].pop("input_path", None)
+            data["formula_res_list"][tno].pop("input_img", None)
+        data.pop("layout_det_res", None)
+        data.pop("doc_preprocessor_res", None)
+        return StrMixin._to_str(data, *args, **kwargs)
+
+    def _to_json(self, *args: List, **kwargs: Dict) -> Dict[str, Any]:
+        """
+        Convert the object to a JSON-compatible dictionary.
+
+        Args:
+            *args: Additional positional arguments for the superclass's _to_json method.
+            **kwargs: Additional keyword arguments for the superclass's _to_json method.
+
+        Returns:
+            Dict[str, Any]: A JSON-compatible dictionary representation of the object
+            with specified fields removed.
+        """
+        data = copy.deepcopy(self)
+        for tno in range(len(self["formula_res_list"])):
+            data["formula_res_list"][tno].pop("input_path", None)
+            data["formula_res_list"][tno].pop("input_img", None)
+        data["layout_det_res"].pop("input_path", None)
+        data["layout_det_res"].pop("input_img", None)
+        data["doc_preprocessor_res"].pop("output_img", None)
+        return JsonMixin._to_json(data, *args, **kwargs)
+
+    def _to_img(self) -> PIL.Image:
+        """
+        Converts the internal data to a PIL Image with detection and recognition results.
+
+        Returns:
+            PIL.Image: An image with detection boxes, texts, and scores blended on it.
+        """
+        image = Image.fromarray(self["doc_preprocessor_res"]["output_img"])
         try:
             env_valid()
         except subprocess.CalledProcessError as e:
             logging.warning(
                 "Please refer to 2.3 Formula Recognition Pipeline Visualization in Formula Recognition Pipeline Tutorial to install the LaTeX rendering engine at first."
             )
-            return None
-        if not os.path.exists(save_path):
-            os.makedirs(save_path)
-        img_id = self["img_id"]
-        img_name = self["img_name"]
+            return image
+
         if len(self["layout_det_res"]) <= 0:
-            return
-        image = Image.fromarray(self["layout_det_res"]["input_img"])
+            image = np.array(image.convert("RGB"))
+            rec_formula = self["formula_res_list"][0]["rec_formula"]
+            xywh = crop_white_area(image)
+            if xywh is not None:
+                x, y, w, h = xywh
+                image = image[y : y + h, x : x + w]
+            image = Image.fromarray(image)
+            image_width, image_height = image.size
+            box = [
+                [0, 0],
+                [image_width, 0],
+                [image_width, image_height],
+                [0, image_height],
+            ]
+            try:
+                img_formula = draw_formula_module(
+                    image.size, box, rec_formula, is_debug=False
+                )
+                img_formula = Image.fromarray(img_formula)
+                render_width, render_height = img_formula.size
+                resize_height = render_height
+                resize_width = int(resize_height * image_width / image_height)
+                image = image.resize((resize_width, resize_height), Image.LANCZOS)
+
+                new_image_width = image.width + int(render_width) + 10
+                new_image = Image.new(
+                    "RGB", (new_image_width, render_height), (255, 255, 255)
+                )
+                new_image.paste(image, (0, 0))
+                new_image.paste(img_formula, (image.width + 10, 0))
+                return {f"formula_res_img": new_image}
+            except subprocess.CalledProcessError as e:
+                logging.warning("Syntax error detected in formula, rendering failed.")
+                return {f"formula_res_img": image}
+
         h, w = image.height, image.width
         img_left = image.copy()
         img_right = np.ones((h, w, 3), dtype=np.uint8) * 255
         random.seed(0)
         draw_left = ImageDraw.Draw(img_left)
 
-        formula_save_path = os.path.join(save_path, "formula_img_{}.jpg".format(img_id))
         formula_res_list = self["formula_res_list"]
         for tno in range(len(self["formula_res_list"])):
             formula_res = self["formula_res_list"][tno]
@@ -117,38 +178,14 @@ class FormulaRecognitionResult(dict):
         img_show = Image.new("RGB", (int(w * 2), h), (255, 255, 255))
         img_show.paste(img_left, (0, 0, w, h))
         img_show.paste(Image.fromarray(img_right), (w, 0, w * 2, h))
-        img_show.save(formula_save_path)
-
-    def save_results(self, save_path: str) -> None:
-        """Save the formula recognition results to the specified directory.
-
-        Args:
-            save_path (str): The directory path to save the results.
-        """
-        if not os.path.exists(save_path):
-            os.makedirs(save_path)
-        if not os.path.isdir(save_path):
-            return
-
-        img_id = self["img_id"]
-        layout_det_res = self["layout_det_res"]
-        if len(layout_det_res) > 0:
-            save_img_path = Path(save_path) / f"layout_det_result_img{img_id}.jpg"
-            layout_det_res.save_to_img(save_img_path)
-        self.save_to_img(save_path)
-        input_params = self["input_params"]
-        if input_params["use_doc_preprocessor"]:
-            save_img_path = Path(save_path) / f"doc_preprocessor_result_img{img_id}.jpg"
-            self["doc_preprocessor_res"].save_to_img(save_img_path)
-        for tno in range(len(self["formula_res_list"])):
-            formula_res = self["formula_res_list"][tno]
-            formula_region_id = formula_res["formula_region_id"]
-            save_img_path = (
-                Path(save_path)
-                / f"formula_res_img{img_id}_region{formula_region_id}.jpg"
-            )
-            formula_res.save_to_img(save_img_path)
-        return
+        model_settings = self["model_settings"]
+        if model_settings["use_doc_preprocessor"]:
+            return {
+                **self["doc_preprocessor_res"].img,
+                f"formula_res_img": img_show,
+            }
+        else:
+            return {f"formula_res_img": img_show}
 
 
 def draw_box_formula_fine(
