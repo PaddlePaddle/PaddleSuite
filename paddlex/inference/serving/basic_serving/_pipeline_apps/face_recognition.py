@@ -13,14 +13,15 @@
 # limitations under the License.
 
 import asyncio
-from typing import Any, Dict, Final, List
+from operator import attrgetter
+from typing import Any, Dict, List
 
 from fastapi import FastAPI
 
+from ....pipelines_new.components import IndexData
 from ...infra import utils as serving_utils
 from ...infra.config import AppConfig
 from ...infra.models import ResultResponse
-from ...infra.storage import create_storage
 from ...schemas import face_recognition as schema
 from .._app import create_app, main_operation
 from ._common import image_recognition as ir_common
@@ -31,20 +32,12 @@ from ._common import image_recognition as ir_common
 # pipelines?
 
 
-DEFAULT_INDEX_DIR: Final[str] = ".index"
-
-
 def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
     app, ctx = create_app(
         pipeline=pipeline, app_config=app_config, app_aiohttp_session=True
     )
 
-    if ctx.config.extra and "index_storage" in ctx.config.extra:
-        ctx.extra["index_storage"] = create_storage(ctx.config.extra["index_storage"])
-    else:
-        ctx.extra["index_storage"] = create_storage(
-            {"type": "file_system", "directory": DEFAULT_INDEX_DIR}
-        )
+    ir_common.update_app_context(ctx)
 
     @main_operation(
         app,
@@ -57,9 +50,11 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
         pipeline = ctx.pipeline
         aiohttp_session = ctx.aiohttp_session
 
-        images = [pair.image for pair in request.imageLabelPairs]
         file_bytes_list = await asyncio.gather(
-            *(serving_utils.get_raw_bytes_async(img, aiohttp_session) for img in images)
+            *(
+                serving_utils.get_raw_bytes_async(img, aiohttp_session)
+                for img in map(attrgetter("image"), request.imageLabelPairs)
+            )
         )
         images = [serving_utils.image_bytes_to_array(item) for item in file_bytes_list]
         labels = [pair.label for pair in request.imageLabelPairs]
@@ -76,9 +71,7 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
 
         index_storage = ctx.extra["index_storage"]
         index_key = ir_common.generate_index_key()
-        index_data_bytes = await serving_utils.call_async(
-            ir_common.serialize_index_data, index_data
-        )
+        index_data_bytes = index_data.to_bytes()
         await serving_utils.call_async(index_storage.set, index_key, index_data_bytes)
 
         return ResultResponse[schema.BuildIndexResult](
@@ -97,9 +90,11 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
         pipeline = ctx.pipeline
         aiohttp_session = ctx.aiohttp_session
 
-        images = [pair.image for pair in request.imageLabelPairs]
         file_bytes_list = await asyncio.gather(
-            *(serving_utils.get_raw_bytes_async(img, aiohttp_session) for img in images)
+            *(
+                serving_utils.get_raw_bytes_async(img, aiohttp_session)
+                for img in map(attrgetter("image"), request.imageLabelPairs)
+            )
         )
         images = [serving_utils.image_bytes_to_array(item) for item in file_bytes_list]
         labels = [pair.label for pair in request.imageLabelPairs]
@@ -109,9 +104,7 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
             index_data_bytes = await serving_utils.call_async(
                 index_storage.get, request.indexKey
             )
-            index_data = await serving_utils.call_async(
-                ir_common.deserialize_index_data, index_data_bytes
-            )
+            index_data = IndexData.from_bytes(index_data_bytes)
         else:
             index_data = None
 
@@ -119,9 +112,7 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
             pipeline.pipeline.append_index, images, labels, index_data
         )
 
-        index_data_bytes = await serving_utils.call_async(
-            ir_common.serialize_index_data, index_data
-        )
+        index_data_bytes = index_data.to_bytes()
         await serving_utils.call_async(
             index_storage.set, request.indexKey, index_data_bytes
         )
@@ -146,9 +137,7 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
             index_data_bytes = await serving_utils.call_async(
                 index_storage.get, request.indexKey
             )
-            index_data = await serving_utils.call_async(
-                ir_common.deserialize_index_data, index_data_bytes
-            )
+            index_data = IndexData.from_bytes(index_data_bytes)
         else:
             index_data = None
 
@@ -156,9 +145,7 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
             pipeline.pipeline.remove_index, request.ids, index_data
         )
 
-        index_data_bytes = await serving_utils.call_async(
-            ir_common.serialize_index_data, index_data
-        )
+        index_data_bytes = index_data.to_bytes()
         await serving_utils.call_async(
             index_storage.set, request.indexKey, index_data_bytes
         )
@@ -189,9 +176,7 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
             index_data_bytes = await serving_utils.call_async(
                 index_storage.get, request.indexKey
             )
-            index_data = await serving_utils.call_async(
-                ir_common.deserialize_index_data, index_data_bytes
-            )
+            index_data = IndexData.from_bytes(index_data_bytes)
         else:
             index_data = None
 

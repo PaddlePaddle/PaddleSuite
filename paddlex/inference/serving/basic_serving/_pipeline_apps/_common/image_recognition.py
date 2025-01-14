@@ -12,25 +12,24 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import pickle
 import uuid
+from typing import Final
 
-import faiss
+from ....infra.storage import create_storage
+from ..._app import AppContext
 
-from .....pipelines_new.components.faisser import IndexData
-
-
-# XXX: I have to implement serialization and deserialization functions myself,
-# which is fragile.
-def serialize_index_data(index_data: IndexData) -> bytes:
-    tup = (index_data.index_bytes, index_data.index_info)
-    return pickle.dumps(tup)
+DEFAULT_INDEX_DIR: Final[str] = ".index"
 
 
-def deserialize_index_data(index_data_bytes: bytes) -> IndexData:
-    tup = pickle.loads(index_data_bytes)
-    index = faiss.deserialize_index(tup[0])
-    return IndexData(index, tup[1])
+def update_app_context(app_context: AppContext) -> None:
+    if app_context.config.extra and "index_storage" in app_context.config.extra:
+        app_context.extra["index_storage"] = create_storage(
+            app_context.config.extra["index_storage"]
+        )
+    else:
+        app_context.extra["index_storage"] = create_storage(
+            {"type": "file_system", "directory": DEFAULT_INDEX_DIR}
+        )
 
 
 def generate_index_key() -> str:
