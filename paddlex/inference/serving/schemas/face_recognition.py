@@ -16,7 +16,7 @@ from typing import Dict, Final, List, Optional
 
 from pydantic import BaseModel
 
-from .._models import MainOperations
+from ..infra.models import MainOperations
 from .shared import object_detection
 
 __all__ = [

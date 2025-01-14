@@ -16,7 +16,7 @@ from typing import Final
 
 from pydantic import BaseModel
 
-from .._models import MainOperations
+from ..infra.models import MainOperations
 
 __all__ = ["INFER_ENDPOINT", "InferRequest", "InferResult", "MAIN_OPERATIONS"]
 

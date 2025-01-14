@@ -12,28 +12,25 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Final, List, Optional
+from typing import Any, Dict, Final, Mapping, Optional
 
 from pydantic import BaseModel
 
-from ..infra.models import MainOperations
-from .shared import image_segmentation
+__all__ = [
+    "SERVING_CONFIG_KEY",
+    "AppConfig",
+    "create_app_config",
+]
 
-__all__ = ["INFER_ENDPOINT", "InferRequest", "InferResult", "MAIN_OPERATIONS"]
-
-INFER_ENDPOINT: Final[str] = "/image-anomaly-detection"
-
-
-class InferRequest(BaseModel):
-    image: str
+SERVING_CONFIG_KEY: Final[str] = "Serving"
 
 
-class InferResult(BaseModel):
-    labelMap: List[int]
-    size: image_segmentation.Size
-    image: Optional[str] = None
+class AppConfig(BaseModel):
+    visualize: bool = True
+    extra: Optional[Dict[str, Any]] = None
 
 
-MAIN_OPERATIONS: Final[MainOperations] = {
-    "infer": (INFER_ENDPOINT, InferRequest, InferResult),
-}
+def create_app_config(pipeline_config: Mapping[str, Any], **kwargs: Any) -> AppConfig:
+    app_config = pipeline_config.get(SERVING_CONFIG_KEY, {})
+    app_config.update(kwargs)
+    return AppConfig.model_validate(app_config)

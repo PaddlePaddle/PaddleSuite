@@ -12,28 +12,26 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Final, List, Optional
+import pickle
+import uuid
 
-from pydantic import BaseModel
+import faiss
 
-from ..infra.models import MainOperations
-from .shared import image_segmentation
-
-__all__ = ["INFER_ENDPOINT", "InferRequest", "InferResult", "MAIN_OPERATIONS"]
-
-INFER_ENDPOINT: Final[str] = "/image-anomaly-detection"
+from .....pipelines_new.components.faisser import IndexData
 
 
-class InferRequest(BaseModel):
-    image: str
+# XXX: I have to implement serialization and deserialization functions myself,
+# which is fragile.
+def serialize_index_data(index_data: IndexData) -> bytes:
+    tup = (index_data.index_bytes, index_data.index_info)
+    return pickle.dumps(tup)
 
 
-class InferResult(BaseModel):
-    labelMap: List[int]
-    size: image_segmentation.Size
-    image: Optional[str] = None
+def deserialize_index_data(index_data_bytes: bytes) -> IndexData:
+    tup = pickle.loads(index_data_bytes)
+    index = faiss.deserialize_index(tup[0])
+    return IndexData(index, tup[1])
 
 
-MAIN_OPERATIONS: Final[MainOperations] = {
-    "infer": (INFER_ENDPOINT, InferRequest, InferResult),
-}
+def generate_index_key() -> str:
+    return str(uuid.uuid4())

@@ -17,7 +17,7 @@ from typing import Final, List, Literal, Optional
 from pydantic import BaseModel, Field
 from typing_extensions import Annotated
 
-from .._models import DataInfo, MainOperations
+from ..infra.models import DataInfo, MainOperations
 from .shared import object_detection, ocr
 
 __all__ = [

@@ -16,7 +16,7 @@ from typing import Final, List, Optional, Union
 
 from pydantic import BaseModel
 
-from .._models import MainOperations
+from ..infra.models import MainOperations
 from .shared import image_segmentation
 
 __all__ = [

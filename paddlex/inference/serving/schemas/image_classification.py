@@ -17,7 +17,7 @@ from typing import Final, List, Optional
 from pydantic import BaseModel, Field
 from typing_extensions import Annotated
 
-from .._models import MainOperations
+from ..infra.models import MainOperations
 from .shared import classification
 
 __all__ = [

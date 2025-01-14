@@ -12,36 +12,44 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Dict, Final, List, Optional, Union
+from typing import Final, List
 
 from pydantic import BaseModel
 
 from ..infra.models import MainOperations
-from .shared import classification
 
 __all__ = [
     "INFER_ENDPOINT",
-    "InferenceParams",
     "InferRequest",
+    "Segment",
     "InferResult",
     "MAIN_OPERATIONS",
 ]
 
-INFER_ENDPOINT: Final[str] = "/multilabel-image-classification"
-
-
-class InferenceParams(BaseModel):
-    threshold: Optional[Union[float, Dict[Union[str, int], float], List[float]]] = None
+INFER_ENDPOINT: Final[str] = "/multilingual-speech-recognition"
 
 
 class InferRequest(BaseModel):
-    image: str
-    inferenceParams: Optional[InferenceParams] = None
+    audio: str
+
+
+class Segment(BaseModel):
+    id: int
+    seek: int
+    start: float
+    end: float
+    text: str
+    tokens: List[int]
+    temperature: float
+    avgLogProb: float
+    compressionRatio: float
+    noSpeechProb: float
 
 
 class InferResult(BaseModel):
-    categories: List[classification.Category]
-    image: Optional[str] = None
+    text: str
+    segments: List[Segment]
+    language: str
 
 
 MAIN_OPERATIONS: Final[MainOperations] = {

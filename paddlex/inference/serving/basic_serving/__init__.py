@@ -12,28 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Final, List, Optional
+from ._pipeline_apps import create_pipeline_app
+from ._server import run_server
 
-from pydantic import BaseModel
-
-from ..infra.models import MainOperations
-from .shared import image_segmentation
-
-__all__ = ["INFER_ENDPOINT", "InferRequest", "InferResult", "MAIN_OPERATIONS"]
-
-INFER_ENDPOINT: Final[str] = "/image-anomaly-detection"
-
-
-class InferRequest(BaseModel):
-    image: str
-
-
-class InferResult(BaseModel):
-    labelMap: List[int]
-    size: image_segmentation.Size
-    image: Optional[str] = None
-
-
-MAIN_OPERATIONS: Final[MainOperations] = {
-    "infer": (INFER_ENDPOINT, InferRequest, InferResult),
-}
+__all__ = ["create_pipeline_app", "run_server"]

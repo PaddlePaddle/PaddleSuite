@@ -17,7 +17,7 @@ from typing import Final, List, Optional
 from pydantic import BaseModel, Field
 from typing_extensions import Annotated
 
-from .._models import MainOperations
+from ..infra.models import MainOperations
 from .shared import classification
 
 __all__ = [
@@ -36,7 +36,7 @@ class InferenceParams(BaseModel):
 
 
 class InferRequest(BaseModel):
-    image: str
+    video: str
     inferenceParams: Optional[InferenceParams] = None
 
 
