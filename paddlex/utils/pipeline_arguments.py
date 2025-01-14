@@ -84,4 +84,5 @@ PIPELINE_ARGUMENTS = {
             "help": "Sets the Top-K value for image classification.",
         },
     ],
+    "ts_classification": None,
 }

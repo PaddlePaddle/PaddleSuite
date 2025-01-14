@@ -86,11 +86,15 @@ def args_cfg():
     pipeline_name = args.pipeline
 
     if pipeline_name not in PIPELINE_ARGUMENTS:
-        logging.error(f"Unsupported pipeline: {pipeline_name}")
-        parser.print_help()
+        support_pipelines = ", ".join(PIPELINE_ARGUMENTS.keys())
+        logging.error(
+            f"Unsupported pipeline: {pipeline_name}, CLI predict only supports these pipelines: {support_pipelines}\n"
+        )
         sys.exit(1)
 
     pipeline_args = PIPELINE_ARGUMENTS[pipeline_name]
+    if pipeline_args is None:
+        pipeline_args = []
     for arg in pipeline_args:
         parser.add_argument(arg["name"], type=arg.get("type"), help=arg.get("help"))
 
