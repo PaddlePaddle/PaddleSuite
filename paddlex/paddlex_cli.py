@@ -24,6 +24,7 @@ from .inference.pipelines import create_pipeline_from_config, load_pipeline_conf
 from .repo_manager import setup, get_all_supported_repo_names
 from .utils import logging
 from .utils.interactive_get_pipeline import interactive_get_pipeline
+from .utils.pipeline_arguments import PIPELINE_ARGUMENTS
 
 
 def _install_serving_deps():
@@ -80,12 +81,25 @@ def args_cfg():
     parser.add_argument("--update_license", action="store_true")
     parser.add_argument("--get_pipeline_config", type=str, default=None, help="")
 
+    # Parse known arguments to get the pipeline name
+    args, remaining_args = parser.parse_known_args()
+    pipeline_name = args.pipeline
+
+    if pipeline_name not in PIPELINE_ARGUMENTS:
+        logging.error(f"Unsupported pipeline: {pipeline_name}")
+        parser.print_help()
+        sys.exit(1)
+
+    pipeline_args = PIPELINE_ARGUMENTS[pipeline_name]
+    for arg in pipeline_args:
+        parser.add_argument(arg["name"], type=arg.get("type"), help=arg.get("help"))
+
     ################# serving #################
     parser.add_argument("--serve", action="store_true")
     parser.add_argument("--host", type=str, default="0.0.0.0")
     parser.add_argument("--port", type=int, default=8080)
 
-    return parser
+    return parser, pipeline_args
 
 
 def install(args):
@@ -121,16 +135,23 @@ def _get_hpi_params(serial_number, update_license):
 
 
 def pipeline_predict(
-    pipeline, input, device, save_path, use_hpip, serial_number, update_license
+    pipeline,
+    input,
+    device,
+    save_path,
+    use_hpip,
+    serial_number,
+    update_license,
+    **pipeline_args,
 ):
     """pipeline predict"""
     hpi_params = _get_hpi_params(serial_number, update_license)
     pipeline = create_pipeline(
         pipeline, device=device, use_hpip=use_hpip, hpi_params=hpi_params
     )
-    result = pipeline(input)
+    result = pipeline.predict(input, **pipeline_args)
     for res in result:
-        res.print(json_format=False)
+        res.print()
         if save_path:
             res.save_all(save_path=save_path)
 
@@ -150,7 +171,8 @@ def serve(pipeline, *, device, use_hpip, serial_number, update_license, host, po
 # for CLI
 def main():
     """API for commad line"""
-    args = args_cfg().parse_args()
+    parser, pipeline_args = args_cfg()
+    args = parser.parse_args()
     if len(sys.argv) == 1:
         logging.warning("No arguments provided. Displaying help information:")
         args_cfg().print_help()
@@ -172,6 +194,13 @@ def main():
         if args.get_pipeline_config is not None:
             interactive_get_pipeline(args.get_pipeline_config, args.save_path)
         else:
+            pipeline_args_dict = {}
+            for arg in pipeline_args:
+                arg_name = arg["name"].lstrip("-")
+                if hasattr(args, arg_name):
+                    pipeline_args_dict[arg_name] = getattr(args, arg_name)
+                else:
+                    logging.warning(f"Argument {arg_name} is missing in args")
             return pipeline_predict(
                 args.pipeline,
                 args.input,
@@ -180,4 +209,5 @@ def main():
                 use_hpip=args.use_hpip,
                 serial_number=args.serial_number,
                 update_license=args.update_license,
+                **pipeline_args_dict,
             )
