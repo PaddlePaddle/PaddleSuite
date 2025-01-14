@@ -1,0 +1,7 @@
+Global:
+  pipeline_name: bev_detection_3d
+  input: https://paddle-model-ecology.bj.bcebos.com/paddlex/det_3d/demo_det_3d/nuscenes_infos_val.pkl
+  
+Pipeline:
+  model: BEVFusion
+  batch_size: 1
