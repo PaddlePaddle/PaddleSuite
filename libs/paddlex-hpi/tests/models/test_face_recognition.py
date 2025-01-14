@@ -12,18 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import numpy as np
-from paddlex.inference.results import SegResult
+from paddlex.inference.results import BaseResult
 from tests.models.base import BaseTestPredictor
 
-from paddlex_hpi.models import UadPredictor
+from paddlex_hpi.models import FaceRecPredictor
 
-MODEL_URL = "https://paddle-model-ecology.bj.bcebos.com/paddlex/PaddleX3.0/deploy/paddlex_hpi/tests/models/uad_model.zip"
-INPUT_DATA_URL = "https://paddle-model-ecology.bj.bcebos.com/paddlex/PaddleX3.0/deploy/paddlex_hpi/tests/models/uad_input.png"
-EXPECTED_RESULT_URL = "https://paddle-model-ecology.bj.bcebos.com/paddlex/PaddleX3.0/deploy/paddlex_hpi/tests/models/uad_result.json"
+MODEL_URL = "https://paddle-model-ecology.bj.bcebos.com/paddlex/PaddleX3.0/deploy/paddlex_hpi/tests/models/face_rec_model.zip"
+INPUT_DATA_URL = "https://paddle-model-ecology.bj.bcebos.com/paddlex/PaddleX3.0/deploy/paddlex_hpi/tests/models/face_rec_input.jpg"
+EXPECTED_RESULT_URL = "https://paddle-model-ecology.bj.bcebos.com/paddlex/PaddleX3.0/deploy/paddlex_hpi/tests/models/face_rec_result.json"
 
 
-class TestUadPredictor(BaseTestPredictor):
+class TestFaceRecPredictor(BaseTestPredictor):
     @property
     def model_url(self):
         return MODEL_URL
@@ -38,14 +37,15 @@ class TestUadPredictor(BaseTestPredictor):
 
     @property
     def predictor_cls(self):
-        return UadPredictor
+        return FaceRecPredictor
 
     def _check_result(self, result, expected_result):
-        assert isinstance(result, SegResult)
+        assert isinstance(result, BaseResult)
         assert "input_img" in result
         result.pop("input_img")
         assert set(result) == set(expected_result)
-        pred = result["pred"]
-        expected_pred = np.array(expected_result["pred"], dtype=np.int32)
-        assert pred.shape == expected_pred.shape
-        assert (pred != expected_pred).sum() / pred.size < 0.01
+        expected_result = expected_result["feature"]
+        result = result["feature"].tolist()
+        assert sum([abs(x - y) for x, y in zip(result, expected_result)]) < 0.001 * len(
+            result
+        )
