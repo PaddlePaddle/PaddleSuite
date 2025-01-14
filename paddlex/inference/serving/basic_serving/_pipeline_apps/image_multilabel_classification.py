@@ -17,14 +17,14 @@ from typing import Any, Dict, List
 from fastapi import FastAPI
 
 from ...infra import utils as serving_utils
+from .._app import create_app, main_operation
 from ...infra.config import AppConfig
 from ...infra.models import ResultResponse
-from ...schemas.multi_label_image_classification import (
+from ...schemas.image_multilabel_classification import (
     INFER_ENDPOINT,
     InferRequest,
     InferResult,
 )
-from .._app import create_app, main_operation
 
 
 def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:

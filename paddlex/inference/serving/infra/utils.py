@@ -33,7 +33,7 @@ import yarl
 from PIL import Image
 from typing_extensions import Literal, ParamSpec, TypeAlias, assert_never
 
-from ._models import ImageInfo, PDFInfo, PDFPageInfo
+from .models import ImageInfo, PDFInfo, PDFPageInfo
 
 __all__ = [
     "FileType",
