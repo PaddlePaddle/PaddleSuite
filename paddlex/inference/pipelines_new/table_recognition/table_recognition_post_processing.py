@@ -225,7 +225,7 @@ def get_table_recognition_res(
     table_ocr_pred = get_sub_regions_ocr_res(overall_ocr_res, table_box)
 
     crop_start_point = [table_box[0][0], table_box[0][1]]
-    img_shape = overall_ocr_res["input_img"].shape[0:2]
+    img_shape = overall_ocr_res["doc_preprocessor_image"].shape[0:2]
 
     convert_table_structure_pred_bbox(table_structure_pred, crop_start_point, img_shape)
 

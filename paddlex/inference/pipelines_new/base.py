@@ -93,12 +93,6 @@ class BasePipeline(ABC, metaclass=AutoRegisterABCMetaClass):
             hpi_params=self.hpi_params,
             **kwargs,
         )
-
-        # [TODO] Support initializing with additional parameters
-        if "batch_size" in config:
-            batch_size = config["batch_size"]
-            model.set_predictor(batch_size=batch_size)
-
         return model
 
     def create_pipeline(self, config: Dict):
