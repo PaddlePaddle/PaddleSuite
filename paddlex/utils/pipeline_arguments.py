@@ -84,5 +84,36 @@ PIPELINE_ARGUMENTS = {
             "help": "Sets the Top-K value for image classification.",
         },
     ],
+    "image_multilabel_classification": [
+        {
+            "name": "--threshold",
+            "type": float,
+            "help": "Sets the threshold for image multilabel classification.",
+        },
+    ],
+    "pedestrian_attribute_recognition": [
+        {
+            "name": "--det_threshold",
+            "type": float,
+            "help": "Sets the threshold for human detection.",
+        },
+        {
+            "name": "--cls_threshold",
+            "type": float,
+            "help": "Sets the threshold for pedestrian attribute recognition.",
+        },
+    ],
+    "vehicle_attribute_recognition": [
+        {
+            "name": "--det_threshold",
+            "type": float,
+            "help": "Sets the threshold for vehicle detection.",
+        },
+        {
+            "name": "--cls_threshold",
+            "type": float,
+            "help": "Sets the threshold for vehicle attribute recognition.",
+        },
+    ],
     "ts_classification": None,
 }
