@@ -936,10 +936,12 @@ def transcribe(
     all_segments = []
     prompt_reset_since = 0
 
-    initial_prompt = decode_options.pop("initial_prompt", None) or []
-    if initial_prompt and initial_prompt != "None":
+    initial_prompt = decode_options.pop("initial_prompt", None)
+    if initial_prompt is not None and initial_prompt != "None":
         initial_prompt = tokenizer.encode(" " + initial_prompt.strip()).input_ids
         all_tokens.extend(initial_prompt)
+    else:
+        initial_prompt = []
 
     def add_segment(
         *, start: float, end: float, text_tokens: paddle.Tensor, result: DecodingResult
