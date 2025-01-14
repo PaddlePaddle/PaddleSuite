@@ -41,9 +41,9 @@ ResultT = TypeVar("ResultT", bound=BaseModel)
 
 class ResultResponse(BaseModel, Generic[ResultT]):
     logId: str
+    result: ResultT
     errorCode: Literal[0] = 0
     errorMsg: Literal["Success"] = "Success"
-    result: ResultT
 
 
 Response: TypeAlias = Union[ResultResponse, NoResultResponse]
