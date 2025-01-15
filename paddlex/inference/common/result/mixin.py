@@ -35,88 +35,37 @@ from ...utils.io import (
 )
 
 
-def _save_list_data(save_func, save_path, data, *args, **kwargs):
-    """
-    Save list type data to the specified path.
-    If data type is a list, iterate through it and save each element using save_func with a modified filename (appending an index and the original file extension).
-
-    Args:
-        save_func (Callable): The function to be used for saving data.
-        save_path (Union[str, Path]): The path to save the data.
-        data (Union[None, list, Any]): The data to be saved. If None, the function will return immediately.
-        *args: Additional positional arguments to be passed to save_func.
-        **kwargs: Additional keyword arguments to be passed to save_func.
-
-    Returns:
-        None
-    """
-    save_path = Path(save_path)
-    if data is None:
-        return
-    if isinstance(data, list):
-        for idx, single in enumerate(data):
-            save_func(
-                (
-                    save_path.parent / f"{save_path.stem}_{idx}{save_path.suffix}"
-                ).as_posix(),
-                single,
-                *args,
-                **kwargs,
-            )
-    save_func(save_path.as_posix(), data, *args, **kwargs)
-    logging.info(f"The result has been saved in {save_path}.")
-
-
 class StrMixin:
     """Mixin class for adding string conversion capabilities."""
 
     @property
-    def str(self) -> str:
+    def str(self) -> Dict[str, str]:
         """Property to get the string representation of the result.
 
         Returns:
-            str: The str type string representation of the result.
+            Dict[str, str]: The string representation of the result.
         """
 
-        return self._to_str(self)
+        return self._to_str()
 
     def _to_str(
         self,
-        data: dict,
-        json_format: bool = False,
-        indent: int = 4,
-        ensure_ascii: bool = False,
-    ) -> str:
+    ):
         """Convert the given result data to a string representation.
 
         Args:
-            data (dict): The data would be converted to str.
             json_format (bool): If True, return a JSON formatted string. Default is False.
             indent (int): Number of spaces to indent for JSON formatting. Default is 4.
             ensure_ascii (bool): If True, ensure all characters are ASCII. Default is False.
 
         Returns:
-            str: The string representation of the data.
+            Dict[str, str]: The string representation of the result.
         """
-        if json_format:
-            return json.dumps(data.json, indent=indent, ensure_ascii=ensure_ascii)
-        else:
-            return str(data)
+        return {"res": str(self)}
 
-    def print(
-        self, json_format: bool = False, indent: int = 4, ensure_ascii: bool = False
-    ) -> None:
-        """Print the string representation of the result.
-
-        Args:
-            json_format (bool): If True, print a JSON formatted string. Default is False.
-            indent (int): Number of spaces to indent for JSON formatting. Default is 4.
-            ensure_ascii (bool): If True, ensure all characters are ASCII. Default is False.
-        """
-        str_ = self._to_str(
-            self, json_format=json_format, indent=indent, ensure_ascii=ensure_ascii
-        )
-        logging.info(str_)
+    def print(self) -> None:
+        """Print the string representation of the result."""
+        logging.info(self.str)
 
 
 class JsonMixin:
@@ -126,11 +75,11 @@ class JsonMixin:
         self._json_writer = JsonWriter()
         self._save_funcs.append(self.save_to_json)
 
-    def _to_json(self) -> Dict[str, Any]:
+    def _to_json(self) -> Dict[str, Dict[str, Any]]:
         """Convert the object to a JSON-serializable format.
 
         Returns:
-            Dict[str, Any]: A dictionary representation of the object that is JSON-serializable.
+            Dict[str, Dict[str, Any]]: A dictionary representation of the object that is JSON-serializable.
         """
 
         def _format_data(obj):
@@ -157,14 +106,14 @@ class JsonMixin:
             else:
                 return obj
 
-        return _format_data(copy.deepcopy(self))
+        return {"res": _format_data(copy.deepcopy(self))}
 
     @property
-    def json(self) -> Dict[str, Any]:
+    def json(self) -> Dict[str, Dict[str, Any]]:
         """Property to get the JSON representation of the result.
 
         Returns:
-            Dict[str, Any]: The dict type JSON representation of the result.
+            Dict[str, Dict[str, Any]]: The dict type JSON representation of the result.
         """
 
         return self._to_json()
@@ -192,16 +141,28 @@ class JsonMixin:
             return mime_type is not None and mime_type == "application/json"
 
         if not _is_json_file(save_path):
-            save_path = Path(save_path) / f"{Path(self['input_path']).stem}.json"
-            save_path = save_path.as_posix()
-        self._json_writer.write(
-            save_path,
-            self.json,
-            indent=indent,
-            ensure_ascii=ensure_ascii,
-            *args,
-            **kwargs,
-        )
+            fp = Path(self["input_path"])
+            stem = fp.stem
+            suffix = fp.suffix
+            base_save_path = Path(save_path)
+            for key in self.json:
+                save_path = base_save_path / f"{stem}_{key}.json"
+                self._json_writer.write(
+                    save_path.as_posix(), self.json[key], *args, **kwargs
+                )
+        else:
+            if len(self.json) > 1:
+                logging.warning(
+                    f"The result has multiple json files need to be saved. But the `save_path` has been specfied as `{save_path}`!"
+                )
+            self._json_writer.write(
+                save_path,
+                self.json[list(self.json.keys())[0]],
+                indent=indent,
+                ensure_ascii=ensure_ascii,
+                *args,
+                **kwargs,
+            )
 
 
 class Base64Mixin:
@@ -218,21 +179,21 @@ class Base64Mixin:
         self._save_funcs.append(self.save_to_base64)
 
     @abstractmethod
-    def _to_base64(self) -> str:
+    def _to_base64(self) -> Dict[str, str]:
         """Abstract method to convert the result to Base64.
 
         Returns:
-        str: The str type Base64 representation result.
+            Dict[str, str]: The str type Base64 representation result.
         """
         raise NotImplementedError
 
     @property
-    def base64(self) -> str:
+    def base64(self) -> Dict[str, str]:
         """
         Property that returns the Base64 encoded content.
 
         Returns:
-            str: The base64 representation of the result.
+            Dict[str, str]: The base64 representation of the result.
         """
         return self._to_base64()
 
@@ -245,13 +206,24 @@ class Base64Mixin:
             *args: Additional positional arguments that will be passed to the base64 writer.
             **kwargs: Additional keyword arguments that will be passed to the base64 writer.
         """
-
         if not str(save_path).lower().endswith((".b64")):
             fp = Path(self["input_path"])
-            save_path = Path(save_path) / f"{fp.stem}{fp.suffix}"
+            stem = fp.stem
+            suffix = fp.suffix
+            base_save_path = Path(save_path)
+            for key in self.base64:
+                save_path = base_save_path / f"{stem}_{key}.b64"
+                self._base64_writer.write(
+                    save_path.as_posix(), self.base64[key], *args, **kwargs
+                )
         else:
-            save_path = Path(save_path)
-        self._base64_writer.write(save_path.as_posix(), self.base64, *args, **kwargs)
+            if len(self.base64) > 1:
+                logging.warning(
+                    f"The result has multiple base64 files need to be saved. But the `save_path` has been specfied as `{save_path}`!"
+                )
+            self._base64_writer.write(
+                save_path, self.base64[list(self.base64.keys())[0]], *args, **kwargs
+            )
 
 
 class ImgMixin:
@@ -269,26 +241,22 @@ class ImgMixin:
         self._save_funcs.append(self.save_to_img)
 
     @abstractmethod
-    def _to_img(self) -> Union[np.ndarray, Image.Image]:
+    def _to_img(self) -> Dict[str, Image.Image]:
         """Abstract method to convert the result to an image.
 
         Returns:
-        Union[np.ndarray, Image.Image]: The image representation result.
+            Dict[str, Image.Image]: The image representation result.
         """
         raise NotImplementedError
 
     @property
-    def img(self) -> Image.Image:
+    def img(self) -> Dict[str, Image.Image]:
         """Property to get the image representation of the result.
 
         Returns:
-            Image.Image: The image representation of the result.
+            Dict[str, Image.Image]: The image representation of the result.
         """
-        image = self._to_img()
-        # The img must be a PIL.Image obj
-        if isinstance(image, np.ndarray):
-            return Image.fromarray(image)
-        return image
+        return self._to_img()
 
     def save_to_img(self, save_path: str, *args: List, **kwargs: Dict) -> None:
         """Saves the image representation of the result to the specified path.
@@ -305,9 +273,22 @@ class ImgMixin:
 
         if not _is_image_file(save_path):
             fp = Path(self["input_path"])
-            save_path = Path(save_path) / f"{fp.stem}{fp.suffix}"
-            save_path = save_path.as_posix()
-        self._img_writer.write(save_path, self.img, *args, **kwargs)
+            stem = fp.stem
+            suffix = fp.suffix
+            base_save_path = Path(save_path)
+            for key in self.img:
+                save_path = base_save_path / f"{stem}_{key}{suffix}"
+                self._img_writer.write(
+                    save_path.as_posix(), self.img[key], *args, **kwargs
+                )
+        else:
+            if len(self.img) > 1:
+                logging.warning(
+                    f"The result has multiple img files need to be saved. But the `save_path` has been specfied as `{save_path}`!"
+                )
+            self._img_writer.write(
+                save_path, self.img[list(self.img.keys())[0]], *args, **kwargs
+            )
 
 
 class CSVMixin:
@@ -327,20 +308,20 @@ class CSVMixin:
         self._save_funcs.append(self.save_to_csv)
 
     @property
-    def csv(self) -> pd.DataFrame:
+    def csv(self) -> Dict[str, pd.DataFrame]:
         """Property to get the pandas Dataframe representation of the result.
 
         Returns:
-            pandas.DataFrame: The pandas.DataFrame representation of the result.
+            Dict[str, pd.DataFrame]: The pandas.DataFrame representation of the result.
         """
         return self._to_csv()
 
     @abstractmethod
-    def _to_csv(self) -> pd.DataFrame:
+    def _to_csv(self) -> Dict[str, pd.DataFrame]:
         """Abstract method to convert the result to pandas.DataFrame.
 
         Returns:
-        pandas.DataFrame: The pandas.DataFrame representation result.
+            Dict[str, pd.DataFrame]: The pandas.DataFrame representation result.
         """
         raise NotImplementedError
 
@@ -353,11 +334,28 @@ class CSVMixin:
             *args: Optional positional arguments to pass to the CSV writer's write method.
             **kwargs: Optional keyword arguments to pass to the CSV writer's write method.
         """
-        if not str(save_path).endswith(".csv"):
-            save_path = Path(save_path) / f"{Path(self['input_path']).stem}.csv"
+
+        def _is_csv_file(file_path):
+            mime_type, _ = mimetypes.guess_type(file_path)
+            return mime_type is not None and mime_type == "text/csv"
+
+        if not _is_csv_file(save_path):
+            fp = Path(self["input_path"])
+            stem = fp.stem
+            base_save_path = Path(save_path)
+            for key in self.csv:
+                save_path = base_save_path / f"{stem}_{key}.csv"
+                self._csv_writer.write(
+                    save_path.as_posix(), self.csv[key], *args, **kwargs
+                )
         else:
-            save_path = Path(save_path)
-        self._csv_writer.write(save_path.as_posix(), self.csv, *args, **kwargs)
+            if len(self.csv) > 1:
+                logging.warning(
+                    f"The result has multiple csv files need to be saved. But the `save_path` has been specfied as `{save_path}`!"
+                )
+            self._csv_writer.write(
+                save_path, self.csv[list(self.csv.keys())[0]], *args, **kwargs
+            )
 
 
 class HtmlMixin:
@@ -375,7 +373,7 @@ class HtmlMixin:
         self._save_funcs.append(self.save_to_html)
 
     @property
-    def html(self) -> str:
+    def html(self) -> Dict[str, str]:
         """Property to get the HTML representation of the result.
 
         Returns:
@@ -384,11 +382,11 @@ class HtmlMixin:
         return self._to_html()
 
     @abstractmethod
-    def _to_html(self) -> str:
+    def _to_html(self) -> Dict[str, str]:
         """Abstract method to convert the result to str type HTML representation.
 
         Returns:
-        str: The str type HTML representation result.
+            Dict[str, str]: The str type HTML representation result.
         """
         raise NotImplementedError
 
@@ -404,7 +402,7 @@ class HtmlMixin:
             save_path = Path(save_path) / f"{Path(self['input_path']).stem}.html"
         else:
             save_path = Path(save_path)
-        self._html_writer.write(save_path.as_posix(), self.html, *args, **kwargs)
+        self._html_writer.write(save_path.as_posix(), self.html["res"], *args, **kwargs)
 
 
 class XlsxMixin:
@@ -421,20 +419,20 @@ class XlsxMixin:
         self._save_funcs.append(self.save_to_xlsx)
 
     @property
-    def xlsx(self) -> str:
+    def xlsx(self) -> Dict[str, str]:
         """Property to get the XLSX representation of the result.
 
         Returns:
-            str: The str type XLSX representation of the result.
+            Dict[str, str]: The str type XLSX representation of the result.
         """
         return self._to_xlsx()
 
     @abstractmethod
-    def _to_xlsx(self) -> str:
+    def _to_xlsx(self) -> Dict[str, str]:
         """Abstract method to convert the result to str type XLSX representation.
 
         Returns:
-        str: The str type HTML representation result.
+            Dict[str, str]: The str type HTML representation result.
         """
         raise NotImplementedError
 
@@ -455,22 +453,67 @@ class XlsxMixin:
 
 
 class VideoMixin:
-    def __init__(self, backend="opencv", *args, **kwargs):
+    """Mixin class for adding Video handling capabilities."""
+
+    def __init__(self, backend: str = "opencv", *args: List, **kwargs: Dict) -> None:
+        """Initializes VideoMixin.
+
+        Args:
+            backend (str): The backend to use for video processing. Defaults to "opencv".
+            *args: Additional positional arguments to pass to the VideoWriter.
+            **kwargs: Additional keyword arguments to pass to the VideoWriter.
+        """
         self._backend = backend
         self._save_funcs.append(self.save_to_video)
 
     @abstractmethod
-    def _to_video(self):
+    def _to_video(self) -> Dict[str, np.array]:
+        """Abstract method to convert the result to a video.
+
+        Returns:
+            Dict[str, np.array]: The video representation result.
+        """
         raise NotImplementedError
 
     @property
-    def video(self):
-        video = self._to_video()
-        return video
+    def video(self) -> Dict[str, np.array]:
+        """Property to get the video representation of the result.
 
-    def save_to_video(self, save_path, *args, **kwargs):
+        Returns:
+            Dict[str, np.array]: The video representation of the result.
+        """
+        return self._to_video()
+
+    def save_to_video(self, save_path: str, *args: List, **kwargs: Dict) -> None:
+        """Saves the video representation of the result to the specified path.
+
+        Args:
+            save_path (str): The path to save the video. If the save path does not end with .mp4 or .avi, it appends the input path's stem and suffix to the save path.
+            *args: Additional positional arguments that will be passed to the video writer.
+            **kwargs: Additional keyword arguments that will be passed to the video writer.
+        """
+
+        def _is_video_file(file_path):
+            mime_type, _ = mimetypes.guess_type(file_path)
+            return mime_type is not None and mime_type.startswith("video/")
+
         video_writer = VideoWriter(backend=self._backend, *args, **kwargs)
-        if not str(save_path).lower().endswith((".mp4", ".avi", ".mkv", ".webm")):
+
+        if not _is_video_file(save_path):
             fp = Path(self["input_path"])
-            save_path = Path(save_path) / f"{fp.stem}{fp.suffix}"
-        _save_list_data(video_writer.write, save_path, self.video, *args, **kwargs)
+            stem = fp.stem
+            suffix = fp.suffix
+            base_save_path = Path(save_path)
+            for key in self.video:
+                save_path = base_save_path / f"{stem}_{key}{suffix}"
+                video_writer.write(
+                    save_path.as_posix(), self.video[key], *args, **kwargs
+                )
+        else:
+            if len(self.video) > 1:
+                logging.warning(
+                    f"The result has multiple video files need to be saved. But the `save_path` has been specfied as `{save_path}`!"
+                )
+            video_writer.write(
+                save_path, self.video[list(self.video.keys())[0]], *args, **kwargs
+            )

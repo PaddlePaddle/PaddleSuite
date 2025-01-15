@@ -16,7 +16,7 @@ import numpy as np
 from PIL import Image
 import copy
 
-from ...common.result import BaseCVResult
+from ...common.result import BaseCVResult, StrMixin, JsonMixin
 
 
 class SegResult(BaseCVResult):
@@ -28,7 +28,7 @@ class SegResult(BaseCVResult):
         pc_map = self.get_pseudo_color_map(seg_map[0])
         if pc_map.mode == "P":
             pc_map = pc_map.convert("RGB")
-        return pc_map
+        return {"res": pc_map}
 
     def get_pseudo_color_map(self, pred):
         """get_pseudo_color_map"""
@@ -60,7 +60,13 @@ class SegResult(BaseCVResult):
             color_map[: len(custom_color)] = custom_color
         return color_map
 
-    def _to_str(self, _, *args, **kwargs):
+    def _to_str(self, *args, **kwargs):
         data = copy.deepcopy(self)
+        data.pop("input_img")
         data["pred"] = "..."
-        return super()._to_str(data, *args, **kwargs)
+        return StrMixin._to_str(data, *args, **kwargs)
+
+    def _to_json(self, *args, **kwargs):
+        data = copy.deepcopy(self)
+        data.pop("input_img")
+        return JsonMixin._to_json(data, *args, **kwargs)

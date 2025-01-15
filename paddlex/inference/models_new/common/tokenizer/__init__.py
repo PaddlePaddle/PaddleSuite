@@ -14,3 +14,4 @@
 
 from .tokenizer_utils import PretrainedTokenizer
 from .gpt_tokenizer import GPTTokenizer
+from .bert_tokenizer import BertTokenizer

@@ -110,11 +110,24 @@ from .bev_fusion_3D import (
     BEVFusionEvaluator,
     BEVFusionExportor,
 )
+from .keypoint_detection import (
+    KeypointDatasetChecker,
+    KeypointTrainer,
+    KeypointEvaluator,
+    KeypointExportor,
+)
 from .video_classification import (
     VideoClsDatasetChecker,
     VideoClsTrainer,
     VideoClsEvaluator,
     VideoClsExportor,
+)
+
+from .video_detection import (
+    VideoDetDatasetChecker,
+    VideoDetTrainer,
+    VideoDetEvaluator,
+    VideoDetExportor,
 )
 
 from .multilingual_speech_recognition import (

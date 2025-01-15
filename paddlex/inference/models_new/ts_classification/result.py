@@ -26,4 +26,4 @@ class TSClsResult(BaseTSResult):
         Returns:
             Any: The classification data formatted for CSV output, typically a DataFrame or similar structure.
         """
-        return self["classification"]
+        return {"res": self["classification"]}
