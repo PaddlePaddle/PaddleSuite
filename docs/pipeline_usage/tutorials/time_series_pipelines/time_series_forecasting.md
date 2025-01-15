@@ -361,7 +361,7 @@ for res in output:
 <tr>
 <td><code>csv</code></td>
 <td><code>string</code></td>
-<td>服务可访问的CSV文件的URL或CSV文件内容的Base64编码结果。CSV文件需要使用UTF-8编码。</td>
+<td>服务器可访问的CSV文件的URL或CSV文件内容的Base64编码结果。CSV文件需要使用UTF-8编码。</td>
 <td>是</td>
 </tr>
 </tbody>

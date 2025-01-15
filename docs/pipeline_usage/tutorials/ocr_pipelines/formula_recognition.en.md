@@ -377,38 +377,13 @@ Below are the API reference and multi-language service invocation examples for t
 <tr>
 <td><code>file</code></td>
 <td><code>string</code></td>
-<td>The URL of an image file or PDF file accessible by the service, or the Base64 encoded result of the content of the above-mentioned file types. For PDF files with more than 10 pages, only the content of the first 10 pages will be used.</td>
+<td>The URL of an image file or PDF file accessible by the server, or the Base64 encoded result of the content of the above-mentioned file types. For PDF files with more than 10 pages, only the content of the first 10 pages will be used.</td>
 <td>Yes</td>
 </tr>
 <tr>
 <td><code>fileType</code></td>
 <td><code>integer</code></td>
 <td>File type. <code>0</code> indicates a PDF file, and <code>1</code> indicates an image file. If this property is not present in the request body, the service will attempt to infer the file type automatically based on the URL.</td>
-<td>No</td>
-</tr>
-<tr>
-<td><code>inferenceParams</code></td>
-<td><code>object</code></td>
-<td>Inference parameters.</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
-<p>Properties of <code>inferenceParams</code>:</p>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-<th>Required</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>maxLongSide</code></td>
-<td><code>integer</code></td>
-<td>During inference, if the length of the longer side of the input image for the layout detection model is greater than <code>maxLongSide</code>, the image will be scaled so that the length of the longer side equals <code>maxLongSide</code>.</td>
 <td>No</td>
 </tr>
 </tbody>

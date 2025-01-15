@@ -368,7 +368,7 @@ Below are the API reference and multi-language service invocation examples for t
 
 <details><summary>API Reference</summary>
 
-<p>For main operations provided by the service:</p>
+<p>For primary operations provided by the service:</p>
 <ul>
 <li>The HTTP request method is POST.</li>
 <li>The request body and the response body are both JSON data (JSON objects).</li>
@@ -434,7 +434,7 @@ Below are the API reference and multi-language service invocation examples for t
 </tr>
 </tbody>
 </table>
-<p>The main operations provided by the service are as follows:</p>
+<p>The primary operations provided by the service are as follows:</p>
 <ul>
 <li><b><code>buildIndex</code></b></li>
 </ul>
@@ -474,7 +474,7 @@ Below are the API reference and multi-language service invocation examples for t
 <tr>
 <td><code>image</code></td>
 <td><code>string</code></td>
-<td>The URL of an image file accessible by the service, or the Base64 encoding result of the image file content.</td>
+<td>The URL of an image file accessible by the server, or the Base64 encoding result of the image file content.</td>
 </tr>
 <tr>
 <td><code>label</code></td>
@@ -535,7 +535,7 @@ Below are the API reference and multi-language service invocation examples for t
 <td><code>indexKey</code></td>
 <td><code>string</code></td>
 <td>The key corresponding to the index. Provided by the <code>buildIndex</code> operation.</td>
-<td>Yes</td>
+<td>No</td>
 </tr>
 </tbody>
 </table>
@@ -552,7 +552,7 @@ Below are the API reference and multi-language service invocation examples for t
 <tr>
 <td><code>image</code></td>
 <td><code>string</code></td>
-<td>The URL of an image file accessible by the service, or the Base64 encoding result of the image file content.</td>
+<td>The URL of an image file accessible by the server, or the Base64 encoding result of the image file content.</td>
 </tr>
 <tr>
 <td><code>label</code></td>
@@ -608,7 +608,7 @@ Below are the API reference and multi-language service invocation examples for t
 <td><code>indexKey</code></td>
 <td><code>string</code></td>
 <td>The key corresponding to the index. Provided by the <code>buildIndex</code> operation.</td>
-<td>Yes</td>
+<td>No</td>
 </tr>
 </tbody>
 </table>
@@ -652,7 +652,7 @@ Below are the API reference and multi-language service invocation examples for t
 <tr>
 <td><code>image</code></td>
 <td><code>string</code></td>
-<td>The URL of an image file accessible by the service, or the Base64 encoding result of the image file content.</td>
+<td>The URL of an image file accessible by the server, or the Base64 encoding result of the image file content.</td>
 <td>Yes</td>
 </tr>
 <tr>
