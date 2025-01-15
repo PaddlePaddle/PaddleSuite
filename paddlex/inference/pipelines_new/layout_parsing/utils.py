@@ -12,39 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-__all__ = ["convert_points_to_boxes", "get_sub_regions_ocr_res"]
+__all__ = ["get_sub_regions_ocr_res"]
 
 import numpy as np
 import copy
 from ..ocr.result import OCRResult
-
-
-def convert_points_to_boxes(dt_polys: list) -> np.ndarray:
-    """
-    Converts a list of polygons to a numpy array of bounding boxes.
-
-    Args:
-        dt_polys (list): A list of polygons, where each polygon is represented
-                        as a list of (x, y) points.
-
-    Returns:
-        np.ndarray: A numpy array of bounding boxes, where each box is represented
-                    as [left, top, right, bottom].
-                    If the input list is empty, returns an empty numpy array.
-    """
-
-    if len(dt_polys) > 0:
-        dt_polys_tmp = dt_polys.copy()
-        dt_polys_tmp = np.array(dt_polys_tmp)
-        boxes_left = np.min(dt_polys_tmp[:, :, 0], axis=1)
-        boxes_right = np.max(dt_polys_tmp[:, :, 0], axis=1)
-        boxes_top = np.min(dt_polys_tmp[:, :, 1], axis=1)
-        boxes_bottom = np.max(dt_polys_tmp[:, :, 1], axis=1)
-        dt_boxes = np.array([boxes_left, boxes_top, boxes_right, boxes_bottom])
-        dt_boxes = dt_boxes.T
-    else:
-        dt_boxes = np.array([])
-    return dt_boxes
 
 
 def get_overlap_boxes_idx(src_boxes: np.ndarray, ref_boxes: np.ndarray) -> list:
@@ -88,17 +60,13 @@ def get_sub_regions_ocr_res(
     Returns:
         OCRResult: A filtered OCR result containing only the relevant text boxes.
     """
-    sub_regions_ocr_res = copy.deepcopy(overall_ocr_res)
-    sub_regions_ocr_res["doc_preprocessor_image"] = overall_ocr_res[
-        "doc_preprocessor_image"
-    ]
-    sub_regions_ocr_res["img_id"] = -1
-    sub_regions_ocr_res["dt_polys"] = []
-    sub_regions_ocr_res["rec_text"] = []
-    sub_regions_ocr_res["rec_score"] = []
-    sub_regions_ocr_res["dt_boxes"] = []
+    sub_regions_ocr_res = {}
+    sub_regions_ocr_res["rec_polys"] = []
+    sub_regions_ocr_res["rec_texts"] = []
+    sub_regions_ocr_res["rec_scores"] = []
+    sub_regions_ocr_res["rec_boxes"] = []
 
-    overall_text_boxes = overall_ocr_res["dt_boxes"]
+    overall_text_boxes = overall_ocr_res["rec_boxes"]
     match_idx_list = get_overlap_boxes_idx(overall_text_boxes, object_boxes)
     match_idx_list = list(set(match_idx_list))
     for box_no in range(len(overall_text_boxes)):
@@ -113,10 +81,16 @@ def get_sub_regions_ocr_res(
             else:
                 flag_match = False
         if flag_match:
-            sub_regions_ocr_res["dt_polys"].append(overall_ocr_res["dt_polys"][box_no])
-            sub_regions_ocr_res["rec_text"].append(overall_ocr_res["rec_text"][box_no])
-            sub_regions_ocr_res["rec_score"].append(
-                overall_ocr_res["rec_score"][box_no]
+            sub_regions_ocr_res["rec_polys"].append(
+                overall_ocr_res["rec_polys"][box_no]
             )
-            sub_regions_ocr_res["dt_boxes"].append(overall_ocr_res["dt_boxes"][box_no])
+            sub_regions_ocr_res["rec_texts"].append(
+                overall_ocr_res["rec_texts"][box_no]
+            )
+            sub_regions_ocr_res["rec_scores"].append(
+                overall_ocr_res["rec_scores"][box_no]
+            )
+            sub_regions_ocr_res["rec_boxes"].append(
+                overall_ocr_res["rec_boxes"][box_no]
+            )
     return sub_regions_ocr_res
