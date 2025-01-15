@@ -20,11 +20,11 @@ fi
 
 if [ "$ENABLE_PADDLE_BACKEND" = "ON" ] && [ -z "$PADDLEINFERENCE_URL" ]; then
     if [ "$WITH_GPU" = "ON" ]; then
-        PADDLEINFERENCE_URL=https://paddle-qa.bj.bcebos.com/paddle-pipeline/GITHUB_Docker_Compile_Test_Cuda118_cudnn860_Trt8522_R1/396a3f594f154081b444a3ab40e7f28d89c32521/paddle_inference.tgz
-        PADDLEINFERENCE_VERSION="3.0.0-beta2"
+        PADDLEINFERENCE_URL=https://paddle-qa.bj.bcebos.com/paddle-pipeline/GITHUB_Docker_Compile_Test_Cuda118_cudnn860_Trt8522_R1/791e99fc54c36151b9e5f1245e0fc8ae5d8a282b/paddle_inference.tgz
+        PADDLEINFERENCE_VERSION="3.0.0-rc"
     else
-        PADDLEINFERENCE_URL=https://paddle-qa.bj.bcebos.com/paddle-pipeline/GITHUB_Docker_Compile_Test_CPU_R1/396a3f594f154081b444a3ab40e7f28d89c32521/paddle_inference.tgz
-        PADDLEINFERENCE_VERSION="3.0.0-beta2"
+        PADDLEINFERENCE_URL=https://paddle-qa.bj.bcebos.com/paddle-pipeline/GITHUB_Docker_Compile_Test_CPU_R1/791e99fc54c36151b9e5f1245e0fc8ae5d8a282b/paddle_inference.tgz
+        PADDLEINFERENCE_VERSION="3.0.0-rc"
     fi
 fi
 
