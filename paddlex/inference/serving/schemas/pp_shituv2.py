@@ -16,7 +16,7 @@ from typing import Dict, Final, List, Optional
 
 from pydantic import BaseModel
 
-from ..infra.models import MainOperations
+from ..infra.models import PrimaryOperations
 from .shared import object_detection
 
 __all__ = [
@@ -36,7 +36,7 @@ __all__ = [
     "RecResult",
     "DetectedObject",
     "InferResult",
-    "MAIN_OPERATIONS",
+    "PRIMARY_OPERATIONS",
 ]
 
 
@@ -112,7 +112,7 @@ class InferResult(BaseModel):
     image: Optional[str] = None
 
 
-MAIN_OPERATIONS: Final[MainOperations] = {
+PRIMARY_OPERATIONS: Final[PrimaryOperations] = {
     "buildIndex": (BUILD_INDEX_ENDPOINT, BuildIndexRequest, BuildIndexResult),
     "addImagesToIndex": (
         ADD_IMAGES_TO_INDEX_ENDPOINT,

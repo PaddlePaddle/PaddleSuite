@@ -17,7 +17,7 @@ from typing import Final, List, Optional
 from pydantic import BaseModel, Field
 from typing_extensions import Annotated
 
-from ..infra.models import DataInfo, MainOperations
+from ..infra.models import DataInfo, PrimaryOperations
 from .shared import ocr
 
 __all__ = [
@@ -32,7 +32,7 @@ __all__ = [
     "CHAT_ENDPOINT",
     "ChatRequest",
     "ChatResult",
-    "MAIN_OPERATIONS",
+    "PRIMARY_OPERATIONS",
 ]
 
 ANALYZE_IMAGES_ENDPOINT: Final[str] = "/chatocr-visual"
@@ -105,7 +105,7 @@ class ChatResult(BaseModel):
     chatResult: dict
 
 
-MAIN_OPERATIONS: Final[MainOperations] = {
+PRIMARY_OPERATIONS: Final[PrimaryOperations] = {
     "analyzeImages": (
         ANALYZE_IMAGES_ENDPOINT,
         AnalyzeImagesRequest,

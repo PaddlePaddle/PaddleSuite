@@ -16,10 +16,10 @@ from typing import Final, List, Optional
 
 from pydantic import BaseModel
 
-from ..infra.models import MainOperations
+from ..infra.models import PrimaryOperations
 from .shared import image_segmentation
 
-__all__ = ["INFER_ENDPOINT", "InferRequest", "InferResult", "MAIN_OPERATIONS"]
+__all__ = ["INFER_ENDPOINT", "InferRequest", "InferResult", "PRIMARY_OPERATIONS"]
 
 INFER_ENDPOINT: Final[str] = "/image-anomaly-detection"
 
@@ -34,6 +34,6 @@ class InferResult(BaseModel):
     image: Optional[str] = None
 
 
-MAIN_OPERATIONS: Final[MainOperations] = {
+PRIMARY_OPERATIONS: Final[PrimaryOperations] = {
     "infer": (INFER_ENDPOINT, InferRequest, InferResult),
 }

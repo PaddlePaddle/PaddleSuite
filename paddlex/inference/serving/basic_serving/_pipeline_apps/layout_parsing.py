@@ -21,7 +21,7 @@ from ...infra import utils as serving_utils
 from ...infra.config import AppConfig
 from ...infra.models import ResultResponse
 from ...schemas.layout_parsing import INFER_ENDPOINT, InferRequest, InferResult
-from .._app import create_app, main_operation
+from .._app import create_app, primary_operation
 from ._common import image as image_common
 from ._common import ocr as ocr_common
 
@@ -33,7 +33,7 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
 
     ocr_common.update_app_context(ctx)
 
-    @main_operation(
+    @primary_operation(
         app,
         INFER_ENDPOINT,
         "infer",

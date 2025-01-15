@@ -16,7 +16,7 @@ from typing import Final, List, Optional
 
 from pydantic import BaseModel
 
-from ..infra.models import MainOperations
+from ..infra.models import PrimaryOperations
 from .shared import object_detection
 
 __all__ = [
@@ -26,7 +26,7 @@ __all__ = [
     "Attribute",
     "Pedestrian",
     "InferResult",
-    "MAIN_OPERATIONS",
+    "PRIMARY_OPERATIONS",
 ]
 
 INFER_ENDPOINT: Final[str] = "/pedestrian-attribute-recognition"
@@ -58,6 +58,6 @@ class InferResult(BaseModel):
     image: Optional[str] = None
 
 
-MAIN_OPERATIONS: Final[MainOperations] = {
+PRIMARY_OPERATIONS: Final[PrimaryOperations] = {
     "infer": (INFER_ENDPOINT, InferRequest, InferResult),
 }

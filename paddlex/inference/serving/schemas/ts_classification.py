@@ -16,9 +16,9 @@ from typing import Final
 
 from pydantic import BaseModel
 
-from ..infra.models import MainOperations
+from ..infra.models import PrimaryOperations
 
-__all__ = ["INFER_ENDPOINT", "InferRequest", "InferResult", "MAIN_OPERATIONS"]
+__all__ = ["INFER_ENDPOINT", "InferRequest", "InferResult", "PRIMARY_OPERATIONS"]
 
 INFER_ENDPOINT: Final[str] = "/time-series-classification"
 
@@ -32,6 +32,6 @@ class InferResult(BaseModel):
     score: float
 
 
-MAIN_OPERATIONS: Final[MainOperations] = {
+PRIMARY_OPERATIONS: Final[PrimaryOperations] = {
     "infer": (INFER_ENDPOINT, InferRequest, InferResult),
 }

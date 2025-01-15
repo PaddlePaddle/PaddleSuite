@@ -17,7 +17,7 @@ from typing import Final, List, Optional
 from pydantic import BaseModel, Field
 from typing_extensions import Annotated
 
-from ..infra.models import MainOperations
+from ..infra.models import PrimaryOperations
 from .shared import classification
 
 __all__ = [
@@ -25,7 +25,7 @@ __all__ = [
     "InferenceParams",
     "InferRequest",
     "InferResult",
-    "MAIN_OPERATIONS",
+    "PRIMARY_OPERATIONS",
 ]
 
 INFER_ENDPOINT: Final[str] = "/video-classification"
@@ -44,6 +44,6 @@ class InferResult(BaseModel):
     categories: List[classification.Category]
 
 
-MAIN_OPERATIONS: Final[MainOperations] = {
+PRIMARY_OPERATIONS: Final[PrimaryOperations] = {
     "infer": (INFER_ENDPOINT, InferRequest, InferResult),
 }

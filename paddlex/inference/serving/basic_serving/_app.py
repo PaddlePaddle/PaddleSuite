@@ -184,7 +184,7 @@ def create_app(
 
 
 # TODO: Precise type hints
-def main_operation(
+def primary_operation(
     app: fastapi.FastAPI, path: str, operation_id: str, **kwargs: Any
 ) -> Callable:
     return app.post(

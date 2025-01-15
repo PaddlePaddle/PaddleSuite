@@ -16,7 +16,7 @@ from typing import Dict, Final, List, Optional, Union
 
 from pydantic import BaseModel
 
-from ..infra.models import MainOperations
+from ..infra.models import PrimaryOperations
 from .shared import classification
 
 __all__ = [
@@ -24,7 +24,7 @@ __all__ = [
     "InferenceParams",
     "InferRequest",
     "InferResult",
-    "MAIN_OPERATIONS",
+    "PRIMARY_OPERATIONS",
 ]
 
 INFER_ENDPOINT: Final[str] = "/multilabel-image-classification"
@@ -44,6 +44,6 @@ class InferResult(BaseModel):
     image: Optional[str] = None
 
 
-MAIN_OPERATIONS: Final[MainOperations] = {
+PRIMARY_OPERATIONS: Final[PrimaryOperations] = {
     "infer": (INFER_ENDPOINT, InferRequest, InferResult),
 }

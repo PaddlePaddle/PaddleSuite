@@ -17,7 +17,7 @@ from typing import Final, List, Literal, Optional
 from pydantic import BaseModel, Field
 from typing_extensions import Annotated
 
-from ..infra.models import DataInfo, MainOperations
+from ..infra.models import DataInfo, PrimaryOperations
 from .shared import object_detection, ocr
 
 __all__ = [
@@ -27,7 +27,7 @@ __all__ = [
     "LayoutElement",
     "LayoutParsingResult",
     "InferResult",
-    "MAIN_OPERATIONS",
+    "PRIMARY_OPERATIONS",
 ]
 
 INFER_ENDPOINT: Final[str] = "/layout-parsing"
@@ -61,6 +61,6 @@ class InferResult(BaseModel):
     dataInfo: DataInfo
 
 
-MAIN_OPERATIONS: Final[MainOperations] = {
+PRIMARY_OPERATIONS: Final[PrimaryOperations] = {
     "infer": (INFER_ENDPOINT, InferRequest, InferResult),
 }

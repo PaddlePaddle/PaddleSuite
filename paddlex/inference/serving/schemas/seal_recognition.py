@@ -16,7 +16,7 @@ from typing import Final, List, Optional
 
 from pydantic import BaseModel
 
-from ..infra.models import DataInfo, MainOperations
+from ..infra.models import DataInfo, PrimaryOperations
 from .shared import ocr
 
 __all__ = [
@@ -24,7 +24,7 @@ __all__ = [
     "InferRequest",
     "SealRecResult",
     "InferResult",
-    "MAIN_OPERATIONS",
+    "PRIMARY_OPERATIONS",
 ]
 
 INFER_ENDPOINT: Final[str] = "/seal-recognition"
@@ -46,6 +46,6 @@ class InferResult(BaseModel):
     dataInfo: DataInfo
 
 
-MAIN_OPERATIONS: Final[MainOperations] = {
+PRIMARY_OPERATIONS: Final[PrimaryOperations] = {
     "infer": (INFER_ENDPOINT, InferRequest, InferResult),
 }

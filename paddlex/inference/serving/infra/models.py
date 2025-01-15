@@ -26,7 +26,7 @@ __all__ = [
     "PDFPageInfo",
     "PDFInfo",
     "DataInfo",
-    "MainOperations",
+    "PrimaryOperations",
 ]
 
 
@@ -69,4 +69,4 @@ class PDFInfo(BaseModel):
 DataInfo: TypeAlias = Annotated[Union[ImageInfo, PDFInfo], Discriminator("type")]
 
 # Should we use generics?
-MainOperations: TypeAlias = Dict[str, Tuple[str, BaseModel, BaseModel]]
+PrimaryOperations: TypeAlias = Dict[str, Tuple[str, BaseModel, BaseModel]]

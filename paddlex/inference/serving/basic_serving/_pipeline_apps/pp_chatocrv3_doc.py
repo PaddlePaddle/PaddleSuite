@@ -22,7 +22,7 @@ from ...infra import utils as serving_utils
 from ...infra.config import AppConfig
 from ...infra.models import ResultResponse
 from ...schemas import pp_chatocrv3_doc as schema
-from .._app import create_app, main_operation
+from .._app import create_app, primary_operation
 from ._common import ocr as ocr_common
 
 
@@ -59,7 +59,7 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
 
     ocr_common.update_app_context(ctx)
 
-    @main_operation(
+    @primary_operation(
         app,
         schema.ANALYZE_IMAGES_ENDPOINT,
         "analyzeImages",
@@ -130,7 +130,7 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
             ),
         )
 
-    @main_operation(
+    @primary_operation(
         app,
         schema.BUILD_VECTOR_STORE_ENDPOINT,
         "buildVectorStore",
@@ -156,7 +156,7 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
             result=schema.BuildVectorStoreResult(vectorInfo=vector_info),
         )
 
-    @main_operation(
+    @primary_operation(
         app,
         schema.CHAT_ENDPOINT,
         "chat",

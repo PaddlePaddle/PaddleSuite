@@ -25,7 +25,7 @@ from ...schemas.multilingual_speech_recognition import (
     InferRequest,
     InferResult,
 )
-from .._app import create_app, main_operation
+from .._app import create_app, primary_operation
 
 
 def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
@@ -33,7 +33,7 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
         pipeline=pipeline, app_config=app_config, app_aiohttp_session=True
     )
 
-    @main_operation(
+    @primary_operation(
         app,
         INFER_ENDPOINT,
         "infer",

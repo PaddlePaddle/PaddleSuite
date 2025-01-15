@@ -23,7 +23,7 @@ from ...infra import utils as serving_utils
 from ...infra.config import AppConfig
 from ...infra.models import ResultResponse
 from ...schemas import face_recognition as schema
-from .._app import create_app, main_operation
+from .._app import create_app, primary_operation
 from ._common import image_recognition as ir_common
 
 # XXX: Currently the implementations of the face recognition and PP-ShiTuV2
@@ -39,7 +39,7 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
 
     ir_common.update_app_context(ctx)
 
-    @main_operation(
+    @primary_operation(
         app,
         schema.BUILD_INDEX_ENDPOINT,
         "buildIndex",
@@ -79,7 +79,7 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
             result=schema.BuildIndexResult(indexKey=index_key, idMap=index_data.id_map),
         )
 
-    @main_operation(
+    @primary_operation(
         app,
         schema.ADD_IMAGES_TO_INDEX_ENDPOINT,
         "addImagesToIndex",
@@ -122,7 +122,7 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
             result=schema.AddImagesToIndexResult(idMap=index_data.id_map),
         )
 
-    @main_operation(
+    @primary_operation(
         app,
         schema.REMOVE_IMAGES_FROM_INDEX_ENDPOINT,
         "removeImagesFromIndex",
@@ -155,7 +155,7 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
             result=schema.RemoveImagesFromIndexResult(idMap=index_data.id_map),
         )
 
-    @main_operation(
+    @primary_operation(
         app,
         schema.INFER_ENDPOINT,
         "infer",

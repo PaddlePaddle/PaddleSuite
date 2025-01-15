@@ -16,7 +16,7 @@ from typing import Final, List, Optional
 
 from pydantic import BaseModel
 
-from ..infra.models import MainOperations
+from ..infra.models import PrimaryOperations
 from .shared import image_segmentation, object_detection
 
 __all__ = [
@@ -25,7 +25,7 @@ __all__ = [
     "Mask",
     "Instance",
     "InferResult",
-    "MAIN_OPERATIONS",
+    "PRIMARY_OPERATIONS",
 ]
 
 INFER_ENDPOINT: Final[str] = "/instance-segmentation"
@@ -52,6 +52,6 @@ class InferResult(BaseModel):
     image: Optional[str] = None
 
 
-MAIN_OPERATIONS: Final[MainOperations] = {
+PRIMARY_OPERATIONS: Final[PrimaryOperations] = {
     "infer": (INFER_ENDPOINT, InferRequest, InferResult),
 }
