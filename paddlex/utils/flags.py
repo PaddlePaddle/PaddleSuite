@@ -28,6 +28,7 @@ __all__ = [
     "FLAGS_json_format_model",
     "USE_NEW_INFERENCE",
     "NEW_PREDICTOR",
+    "USE_PIR_TRT",
 ]
 
 
@@ -50,6 +51,8 @@ EAGER_INITIALIZATION = get_flag_from_env_var("PADDLE_PDX_EAGER_INIT", True)
 FLAGS_json_format_model = get_flag_from_env_var("FLAGS_json_format_model", None)
 USE_NEW_INFERENCE = get_flag_from_env_var("USE_NEW_INFERENCE", False)
 NEW_PREDICTOR = get_flag_from_env_var("PADDLE_PDX_NEW_PREDICTOR", False)
+USE_PIR_TRT = get_flag_from_env_var("PADDLE_PDX_USE_PIR_TRT", False)
+
 
 # Inference Benchmark
 INFER_BENCHMARK = get_flag_from_env_var("PADDLE_PDX_INFER_BENCHMARK", None)
