@@ -719,7 +719,7 @@ Below are the API reference and multi-language service invocation examples for t
 <tr>
 <td><code>fileType</code></td>
 <td><code>integer</code></td>
-<td>File type. <code>0</code> represents PDF files, <code>1</code> represents image files. If this property is not present in the request body, the service will attempt to infer the file type automatically based on the URL.</td>
+<td>File type. <code>0</code> represents PDF files, <code>1</code> represents image files. If this property is not present in the request body, the file type will be inferred based on the URL.</td>
 <td>No</td>
 </tr>
 <tr>

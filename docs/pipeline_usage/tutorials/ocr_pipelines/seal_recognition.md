@@ -572,7 +572,7 @@ for res in output:
 <tr>
 <td><code>fileType</code></td>
 <td><code>integer</code></td>
-<td>文件类型。<code>0</code>表示PDF文件，<code>1</code>表示图像文件。若请求体无此属性，则服务将尝试根据URL自动推断文件类型。</td>
+<td>文件类型。<code>0</code>表示PDF文件，<code>1</code>表示图像文件。若请求体无此属性，则将根据URL推断文件类型。</td>
 <td>否</td>
 </tr>
 </tbody>

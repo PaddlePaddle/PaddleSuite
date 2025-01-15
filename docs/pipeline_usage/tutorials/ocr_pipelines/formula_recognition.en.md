@@ -383,7 +383,7 @@ Below are the API reference and multi-language service invocation examples for t
 <tr>
 <td><code>fileType</code></td>
 <td><code>integer</code></td>
-<td>File type. <code>0</code> indicates a PDF file, and <code>1</code> indicates an image file. If this property is not present in the request body, the service will attempt to infer the file type automatically based on the URL.</td>
+<td>File type. <code>0</code> indicates a PDF file, and <code>1</code> indicates an image file. If this property is not present in the request body, the file type will be inferred based on the URL.</td>
 <td>No</td>
 </tr>
 </tbody>
