@@ -18,7 +18,9 @@ import numpy as np
 import cv2
 from ..base import BasePipeline
 from ..components import CropByBoxes
-from ..layout_parsing.utils import convert_points_to_boxes
+
+# from ..layout_parsing.utils import convert_points_to_boxes
+from ..components import convert_points_to_boxes
 
 from .result import FormulaRecognitionResult
 from ...models_new.formula_recognition.result import (

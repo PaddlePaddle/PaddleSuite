@@ -35,6 +35,9 @@ from .ts_anomaly_detection import TSAdPredictor
 from .ts_classification import TSClsPredictor
 from .image_unwarping import WarpPredictor
 from .image_multilabel_classification import MLClasPredictor
+from .face_feature import FaceFeaturePredictor
+from .open_vocabulary_detection import OVDetPredictor
+from .open_vocabulary_segmentation import OVSegPredictor
 
 
 # from .table_recognition import TablePredictor
@@ -44,6 +47,7 @@ from .anomaly_detection import UadPredictor
 # from .face_recognition import FaceRecPredictor
 from .multilingual_speech_recognition import WhisperPredictor
 from .video_classification import VideoClasPredictor
+from .video_detection import VideoDetPredictor
 
 
 def _create_hp_predictor(

@@ -30,11 +30,13 @@ from .multilingual_speech_recognition import MultilingualSpeechRecognitionPipeli
 from .formula_recognition import FormulaRecognitionPipeline
 from .image_multilabel_classification import ImageMultiLabelClassificationPipeline
 from .video_classification import VideoClassificationPipeline
+from .video_detection import VideoDetectionPipeline
 from .anomaly_detection import AnomalyDetectionPipeline
 from .ts_forecasting import TSFcPipeline
 from .ts_anomaly_detection import TSAnomalyDetPipeline
 from .ts_classification import TSClsPipeline
 from .pp_shitu_v2 import ShiTuV2Pipeline
+from .face_recognition import FaceRecPipeline
 from .attribute_recognition import (
     PedestrianAttributeRecPipeline,
     VehicleAttributeRecPipeline,

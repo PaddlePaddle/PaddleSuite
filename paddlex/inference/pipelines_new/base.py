@@ -78,6 +78,8 @@ class BasePipeline(ABC, metaclass=AutoRegisterABCMetaClass):
         Returns:
             BasePredictor: An instance of the model.
         """
+        if "model_config_error" in config:
+            raise ValueError(config["model_config_error"])
 
         model_dir = config["model_dir"]
         if model_dir == None:
@@ -105,6 +107,9 @@ class BasePipeline(ABC, metaclass=AutoRegisterABCMetaClass):
         Returns:
             BasePipeline: An instance of the created pipeline.
         """
+        if "pipeline_config_error" in config:
+            raise ValueError(config["pipeline_config_error"])
+
         from . import create_pipeline
 
         pipeline_name = config["pipeline_name"]

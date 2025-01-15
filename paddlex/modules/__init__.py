@@ -118,6 +118,13 @@ from .video_classification import (
     VideoClsExportor,
 )
 
+from .video_detection import (
+    VideoDetDatasetChecker,
+    VideoDetTrainer,
+    VideoDetEvaluator,
+    VideoDetExportor,
+)
+
 from .multilingual_speech_recognition import (
     WhisperDatasetChecker,
     WhisperTrainer,

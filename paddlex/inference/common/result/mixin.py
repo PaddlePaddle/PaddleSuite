@@ -398,11 +398,28 @@ class HtmlMixin:
             *args: Additional positional arguments.
             **kwargs: Additional keyword arguments.
         """
-        if not str(save_path).endswith(".html"):
-            save_path = Path(save_path) / f"{Path(self['input_path']).stem}.html"
+
+        def _is_html_file(file_path):
+            mime_type, _ = mimetypes.guess_type(file_path)
+            return mime_type is not None and mime_type == "text/html"
+
+        if not _is_html_file(save_path):
+            fp = Path(self["input_path"])
+            stem = fp.stem
+            base_save_path = Path(save_path)
+            for key in self.html:
+                save_path = base_save_path / f"{stem}_{key}.html"
+                self._html_writer.write(
+                    save_path.as_posix(), self.html[key], *args, **kwargs
+                )
         else:
-            save_path = Path(save_path)
-        self._html_writer.write(save_path.as_posix(), self.html["res"], *args, **kwargs)
+            if len(self.html) > 1:
+                logging.warning(
+                    f"The result has multiple html files need to be saved. But the `save_path` has been specfied as `{save_path}`!"
+                )
+            self._html_writer.write(
+                save_path, self.html[list(self.html.keys())[0]], *args, **kwargs
+            )
 
 
 class XlsxMixin:
@@ -445,11 +462,32 @@ class XlsxMixin:
             *args: Additional positional arguments to pass to the XLSX writer.
             **kwargs: Additional keyword arguments to pass to the XLSX writer.
         """
-        if not str(save_path).endswith(".xlsx"):
-            save_path = Path(save_path) / f"{Path(self['input_path']).stem}.xlsx"
+
+        def _is_xlsx_file(file_path):
+            mime_type, _ = mimetypes.guess_type(file_path)
+            return (
+                mime_type is not None
+                and mime_type
+                == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            )
+
+        if not _is_xlsx_file(save_path):
+            fp = Path(self["input_path"])
+            stem = fp.stem
+            base_save_path = Path(save_path)
+            for key in self.xlsx:
+                save_path = base_save_path / f"{stem}_{key}.xlsx"
+                self._xlsx_writer.write(
+                    save_path.as_posix(), self.xlsx[key], *args, **kwargs
+                )
         else:
-            save_path = Path(save_path)
-        self._xlsx_writer.write(save_path.as_posix(), self.xlsx, *args, **kwargs)
+            if len(self.xlsx) > 1:
+                logging.warning(
+                    f"The result has multiple xlsx files need to be saved. But the `save_path` has been specfied as `{save_path}`!"
+                )
+            self._xlsx_writer.write(
+                save_path, self.xlsx[list(self.xlsx.keys())[0]], *args, **kwargs
+            )
 
 
 class VideoMixin:
