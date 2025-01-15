@@ -141,7 +141,10 @@ class SealRecognitionPipeline(BasePipeline):
         if use_doc_orientation_classify is None and use_doc_unwarping is None:
             use_doc_preprocessor = self.use_doc_preprocessor
         else:
-            use_doc_preprocessor = True
+            if use_doc_orientation_classify is True or use_doc_unwarping is True:
+                use_doc_preprocessor = True
+            else:
+                use_doc_preprocessor = False
 
         if use_layout_detection is None:
             use_layout_detection = self.use_layout_detection
