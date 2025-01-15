@@ -36,6 +36,7 @@ from .ts_forecasting import TSFcPipeline
 from .ts_anomaly_detection import TSAnomalyDetPipeline
 from .ts_classification import TSClsPipeline
 from .pp_shitu_v2 import ShiTuV2Pipeline
+from .face_recognition import FaceRecPipeline
 from .attribute_recognition import (
     PedestrianAttributeRecPipeline,
     VehicleAttributeRecPipeline,
