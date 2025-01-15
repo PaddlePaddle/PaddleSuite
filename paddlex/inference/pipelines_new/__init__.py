@@ -44,14 +44,11 @@ from .attribute_recognition import (
 
 from .semantic_segmentation import SemanticSegmentationPipeline
 from .instance_segmentation import InstanceSegmentationPipeline
-from .small_object__detection import SmallObjectDetectionPipeline
-from .rotated_object__detection import RotatedObjectDetectionPipeline
+from .small_object_detection import SmallObjectDetectionPipeline
+from .rotated_object_detection import RotatedObjectDetectionPipeline
 from .keypoint_detection import KeypointDetectionPipeline
-
-from .semantic_segmentation import SemanticSegmentationPipeline
-from .instance_segmentation import InstanceSegmentationPipeline
-from .small_object__detection import SmallObjectDetectionPipeline
-from .rotated_object__detection import RotatedObjectDetectionPipeline
+from .open_vocabulary_detection import OpenVocabularyDetectionPipeline
+from .open_vocabulary_segmentation import OpenVocabularySegmentationPipeline
 
 
 def get_pipeline_path(pipeline_name: str) -> str:

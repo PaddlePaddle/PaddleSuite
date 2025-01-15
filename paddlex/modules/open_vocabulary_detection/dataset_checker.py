@@ -12,7 +12,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .dataset_checker import OVSegDatasetChecker
-from .trainer import OVSegTrainer
-from .evaluator import OVSegEvaluator
-from .exportor import OVSegExportor
+from .model_list import MODELS
+from ..base import BaseDatasetChecker
+from ...utils.errors import UnsupportedAPIError
+
+
+class OVDetDatasetChecker(BaseDatasetChecker):
+    """Dataset Checker for Open Vocabulary Detection Model"""
+
+    entities = MODELS
+
+    def __init__(self, config):
+        # not support for now
+        raise UnsupportedAPIError(
+            "open vocabulary detection models do not support data check for now."
+        )

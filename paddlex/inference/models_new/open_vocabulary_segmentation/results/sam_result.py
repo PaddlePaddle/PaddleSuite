@@ -18,9 +18,11 @@ import numpy as np
 import copy, random
 import PIL
 from PIL import Image, ImageDraw, ImageFont
+from ....common.result import BaseCVResult, StrMixin, JsonMixin
 
 from ....utils.color_map import get_colormap
 from ....common.result import BaseCVResult
+
 
 def draw_segm(im, masks, mask_info, alpha=0.7):
     """
@@ -101,13 +103,15 @@ def draw_segm(im, masks, mask_info, alpha=0.7):
             )
     return Image.fromarray(im.astype("uint8"))
 
+
 class SAMSegResult(BaseCVResult):
     """Save Result Transform for SAM"""
+
     def __init__(self, data: dict) -> None:
 
         data["masks"] = [mask.squeeze(0) for mask in list(data["masks"])]
-        
-        prompts = data['prompts']
+
+        prompts = data["prompts"]
         assert isinstance(prompts, dict) and len(prompts) == 1
         prompt_type, prompts = list(prompts.items())[0]
         mask_infos = [
@@ -129,10 +133,16 @@ class SAMSegResult(BaseCVResult):
         mask_infos = self["mask_infos"]
         masks = self["masks"]
         image = draw_segm(image, masks, mask_infos)
-
-        return image
+        return {"res": image}
 
     def _to_str(self, _, *args, **kwargs):
         data = copy.deepcopy(self)
         data["masks"] = "..."
-        return super()._to_str(data, *args, **kwargs)
+        data["input_img"] = "..."
+        return StrMixin._to_str(data, *args, **kwargs)
+
+    def _to_json(self, *args, **kwargs):
+        data = copy.deepcopy(self)
+        data["masks"] = "..."
+        data["input_img"] = "..."
+        return JsonMixin._to_json(data, *args, **kwargs)
