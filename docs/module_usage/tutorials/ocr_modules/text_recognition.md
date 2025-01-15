@@ -33,7 +33,7 @@ PP-OCRv4_server_rec_doc_infer.tar">推理模型</a>/<a href="">训练模型</a><
 <td>7.95018</td>
 <td>46.7868</td>
 <td>10.6 M</td>
-<td>PP-OCRv4识别模型在PP-OCRv3的基础上进一步升级，速度可比情况下，中英文场景效果进一步提升，80 语种多语言模型平均识别准确率提升 8%以上</td>
+<td>PP-OCRv4的轻量级识别模型，推理效率高，可以部署在包含端侧设备的多种硬件设备中</td>
 </tr>
 <tr>
 <td>PP-OCRv4_server_rec </td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-OCRv4_server_rec_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-OCRv4_server_rec_pretrained.pdparams">训练模型</a></td>
@@ -41,7 +41,7 @@ PP-OCRv4_server_rec_doc_infer.tar">推理模型</a>/<a href="">训练模型</a><
 <td>7.19439</td>
 <td>140.179</td>
 <td>71.2 M</td>
-<td>高精度服务端文本识别模型，具有高精度、速度快、多语言支持等特点，适用于多种场景的文字识别任务。</td>
+<td>PP-OCRv4的服务器端模型，推理精度高，可以部署在多种不同的服务器上</td>
 </tr>
 <tr>
 <td>en_PP-OCRv4_mobile_rec</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0rc0/\
@@ -50,13 +50,13 @@ en_PP-OCRv4_mobile_rec_infer.tar">推理模型</a>/<a href="">训练模型</a></
 <td></td>
 <td></td>
 <td></td>
-<td>PaddleOCR于2023年5月发布的超轻量英文文本识别模型，体积小、速度快，可在CPU上实现毫秒级预测，相比PP-OCRv3英文模型，识别准确率提升6%，适用于多种场景的文字识别任务。</td>
+<td>基于PP-OCRv4识别模型训练得到的超轻量英文识别模型，支持英文、数字识别</td>
 </tr>
 </table>
 
 <b>注：以上精度指标的评估集是 PaddleOCR 自建的中文数据集，覆盖街景、网图、文档、手写多个场景，其中文本识别包含 1.1w 张图片。所有模型 GPU 推理耗时基于 NVIDIA Tesla T4 机器，精度类型为 FP32， CPU 推理速度基于 Intel(R) Xeon(R) Gold 5117 CPU @ 2.00GHz，线程数为8，精度类型为 FP32。</b>
 
-> ❗ 以上列出的是目标检测模块重点支持的<b>2个核心模型</b>，该模块总共支持<b>4个模型</b>，完整的模型列表如下：
+> ❗ 以上列出的是文本识别模块重点支持的<b>4个核心模型</b>，该模块总共支持<b>18个全量模型</b>，包含多个多语言文本识别模型，完整的模型列表如下：
 
 <details><summary> 👉模型列表详情</summary>
 
@@ -293,20 +293,20 @@ devanagari_PP-OCRv3_mobile_rec_infer.tar">推理模型</a>/<a href="">训练模�
 
 ```python
 from paddlex import create_model
-model = create_model(model="PP-OCRv4_mobile_rec")
+model = create_model(model_name="PP-OCRv4_mobile_rec")
 output = model.predict(input="general_ocr_rec_001.png", batch_size=1)
 for res in output:
-    res.print(json_format=False)
+    res.print()
     res.save_to_img(save_path="./output/")
     res.save_to_json(save_path="./output/res.json")
 ```
 
 运行后，得到的结果为：
 ```bash
-{'input_path': 'general_ocr_rec_001.png', 'rec_text': '绿洲仕格维花园公寓', 'rec_score': 0.9875298738479614}
+{'res': "{'input_path': 'general_ocr_rec_001.png', 'rec_text': '绿洲仕格维花园公寓', 'rec_score': 0.9875510334968567}"}
 ```
 
-参数含义如下：
+运行结果参数含义如下：
 - `input_path`：表示输入待预测文本行图像的路径
 - `rec_text`：表示文本行图像的预测文本
 - `rec_score`：表示文本行图像的预测置信度
@@ -316,11 +316,9 @@ for res in output:
 
 <img src="https://raw.githubusercontent.com/cuicheng01/PaddleX_doc_images/refs/heads/main/images/modules/text_recog/general_ocr_rec_001.png">
 
-上述Python脚本中，执行了如下几个步骤：
+相关方法、参数等说明如下：
+
 * `create_model`实例化文本识别模型（此处以`PP-OCRv4_mobile_rec`为例），具体说明如下：
-
-
-
 <table>
 <thead>
 <tr>
@@ -332,7 +330,7 @@ for res in output:
 </tr>
 </thead>
 <tr>
-<td><code>model</code></td>
+<td><code>model_name</code></td>
 <td>模型名称</td>
 <td><code>str</code></td>
 <td>无</td>
@@ -343,11 +341,13 @@ for res in output:
 <td>模型存储路径</td>
 <td><code>str</code></td>
 <td>无</td>
-<td><code>null</code></td>
+<td>无</td>
 </tr>
 </table>
 
-* 调用文本识别模型的`predict`方法进行推理预测，`predict` 方法参数为`input`，用于输入待预测数据，支持多种输入类型，具体说明如下：
+* 其中，`model_name` 必须指定，指定 `model_name` 后，默认使用 PaddleX 内置的模型参数，在此基础上，指定 `model_dir` 时，使用用户自定义的模型。
+
+* 调用文本识别模型的 `predict()` 方法进行推理预测，`predict()` 方法参数有 `input` 和 `batch_size`，具体说明如下：
 
 <table>
 <thead>
@@ -379,15 +379,8 @@ for res in output:
 <td><code>batch_size</code></td>
 <td>批大小</td>
 <td><code>int</code></td>
-<td>无</td>
+<td>任意整数</td>
 <td>1</td>
-</tr>
-<tr>
-<td><code>score_thresh</code></td>
-<td>分数阈值</td>
-<td><code>float</code></td>
-<td>无</td>
-<td><code>0.0</code></td>
 </tr>
 </table>
 
@@ -409,19 +402,19 @@ for res in output:
 <td rowspan = "3">打印结果到终端</td>
 <td><code>format_json</code></td>
 <td><code>bool</code></td>
-<td>是否对输出内容进行使用<code>json</code>缩进格式化</td>
+<td>是否对输出内容进行使用 <code>JSON</code> 缩进格式化</td>
 <td><code>True</code></td>
 </tr>
 <tr>
 <td><code>indent</code></td>
 <td><code>int</code></td>
-<td>json格式化设置，仅当<code>format_json</code>为<code>True</code>时有效</td>
+<td>指定缩进级别，以美化输出的 <code>JSON</code> 数据，使其更具可读性，仅当 <code>format_json</code> 为 <code>True</code> 时有效</td>
 <td>4</td>
 </tr>
 <tr>
 <td><code>ensure_ascii</code></td>
 <td><code>bool</code></td>
-<td>json格式化设置，仅当<code>format_json</code>为<code>True</code>时有效</td>
+<td>控制是否将非 <code>ASCII</code> 字符转义为 <code>Unicode</code>。设置为 <code>True</code> 时，所有非 <code>ASCII</code> 字符将被转义；<code>False</code> 则保留原始字符，仅当<code>format_json</code>为<code>True</code>时有效</td>
 <td><code>False</code></td>
 </tr>
 <tr>
@@ -435,13 +428,13 @@ for res in output:
 <tr>
 <td><code>indent</code></td>
 <td><code>int</code></td>
-<td>json格式化设置</td>
+<td>指定缩进级别，以美化输出的 <code>JSON</code> 数据，使其更具可读性，仅当 <code>format_json</code> 为 <code>True</code> 时有效</td>
 <td>4</td>
 </tr>
 <tr>
 <td><code>ensure_ascii</code></td>
 <td><code>bool</code></td>
-<td>json格式化设置</td>
+<td>控制是否将非 <code>ASCII</code> 字符转义为 <code>Unicode</code>。设置为 <code>True</code> 时，所有非 <code>ASCII</code> 字符将被转义；<code>False</code> 则保留原始字符，仅当<code>format_json</code>为<code>True</code>时有效</td>
 <td><code>False</code></td>
 </tr>
 <tr>
@@ -454,7 +447,7 @@ for res in output:
 </tr>
 </table>
 
-* 此外，也支持通过属性获取结果可视化图像和`json`结果:
+* 此外，也支持通过属性获取带结果的可视化图像和预测结果，具体如下：
 
 <table>
 <thead>
