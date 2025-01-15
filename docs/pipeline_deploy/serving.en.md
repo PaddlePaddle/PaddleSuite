@@ -340,4 +340,4 @@ python -m pip install -r requirements.txt
 
 The `client.py` script in the `client` directory contains examples of how to call the service and provides a command-line interface.
 
-The services deployed using the high-stability serving solution offer the main operations that match those of the basic serving solution. For each main operation, the endpoint names and the request and response data fields are consistent with the basic serving solution. Please refer to the "Development Integration/Deployment" section in the tutorials for each pipeline. The tutorials for each pipeline can be found [here](../pipeline_usage/pipeline_develop_guide.en.md).
+The services deployed using the high-stability serving solution offer the primary operations that match those of the basic serving solution. For each primary operation, the endpoint names and the request and response data fields are consistent with the basic serving solution. Please refer to the "Development Integration/Deployment" section in the tutorials for each pipeline. The tutorials for each pipeline can be found [here](../pipeline_usage/pipeline_develop_guide.en.md).

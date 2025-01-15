@@ -468,7 +468,7 @@ Below are the API reference and multi-language service invocation examples for t
 
 <details><summary>API Reference</summary>
 
-<p>For main operations provided by the service:</p>
+<p>For primary operations provided by the service:</p>
 <ul>
 <li>The HTTP request method is POST.</li>
 <li>The request body and the response body are both JSON data (JSON objects).</li>
@@ -534,7 +534,7 @@ Below are the API reference and multi-language service invocation examples for t
 </tr>
 </tbody>
 </table>
-<p>Main operations provided by the service:</p>
+<p>Primary operations provided by the service:</p>
 <ul>
 <li><b><code>infer</code></b></li>
 </ul>
