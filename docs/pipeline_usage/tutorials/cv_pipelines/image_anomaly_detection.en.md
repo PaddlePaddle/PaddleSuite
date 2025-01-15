@@ -305,7 +305,7 @@ Below are the API references and multi-language service invocation examples:
 <tr>
 <td><code>image</code></td>
 <td><code>string</code></td>
-<td>The URL of the image file accessible by the server or the Base64 encoded result of the image file content.</td>
+<td>The URL of the image file accessible by the service or the Base64 encoded result of the image file content.</td>
 <td>Yes</td>
 </tr>
 </tbody>

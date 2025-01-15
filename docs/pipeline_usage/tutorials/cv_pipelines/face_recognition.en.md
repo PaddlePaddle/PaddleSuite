@@ -505,7 +505,7 @@ Below are the API reference and multi-language service invocation examples:
 <tr>
 <td><code>image</code></td>
 <td><code>string</code></td>
-<td>The URL of the image file accessible to the server or the Base64 encoded content of the image file.</td>
+<td>The URL of the image file accessible to the service or the Base64 encoded content of the image file.</td>
 </tr>
 <tr>
 <td><code>label</code></td>
@@ -566,7 +566,7 @@ Below are the API reference and multi-language service invocation examples:
 <td><code>indexKey</code></td>
 <td><code>string</code></td>
 <td>The key corresponding to the index. Provided by the <code>buildIndex</code> operation.</td>
-<td>No</td>
+<td>Yes</td>
 </tr>
 </tbody>
 </table>
@@ -583,7 +583,7 @@ Below are the API reference and multi-language service invocation examples:
 <tr>
 <td><code>image</code></td>
 <td><code>string</code></td>
-<td>The URL of the image file accessible to the server or the Base64 encoded content of the image file.</td>
+<td>The URL of the image file accessible to the service or the Base64 encoded content of the image file.</td>
 </tr>
 <tr>
 <td><code>label</code></td>
@@ -639,7 +639,7 @@ Below are the API reference and multi-language service invocation examples:
 <td><code>indexKey</code></td>
 <td><code>string</code></td>
 <td>The key corresponding to the index. Provided by the <code>buildIndex</code> operation.</td>
-<td>No</td>
+<td>Yes</td>
 </tr>
 </tbody>
 </table>
@@ -683,7 +683,7 @@ Below are the API reference and multi-language service invocation examples:
 <tr>
 <td><code>image</code></td>
 <td><code>string</code></td>
-<td>The URL of the image file accessible to the server or the Base64 encoded content of the image file.</td>
+<td>The URL of the image file accessible to the service or the Base64 encoded content of the image file.</td>
 <td>Yes</td>
 </tr>
 <tr>

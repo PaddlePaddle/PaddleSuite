@@ -307,7 +307,7 @@ for res in output:
 <tr>
 <td><code>video</code></td>
 <td><code>string</code></td>
-<td>服务器可访问的视频文件的URL或视频文件内容的Base64编码结果。</td>
+<td>服务可访问的视频文件的URL或视频文件内容的Base64编码结果。</td>
 <td>是</td>
 </tr>
 <tr>

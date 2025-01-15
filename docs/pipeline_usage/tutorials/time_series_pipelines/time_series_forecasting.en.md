@@ -359,7 +359,7 @@ Below are the API references and multi-language service invocation examples:
 <tr>
 <td><code>csv</code></td>
 <td><code>string</code></td>
-<td>The URL of a CSV file accessible by the server or the Base64 encoded result of the CSV file content. The CSV file must be encoded in UTF-8.</td>
+<td>The URL of a CSV file accessible by the service or the Base64 encoded result of the CSV file content. The CSV file must be encoded in UTF-8.</td>
 <td>Yes</td>
 </tr>
 </tbody>
