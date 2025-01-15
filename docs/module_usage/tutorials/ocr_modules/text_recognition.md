@@ -86,7 +86,7 @@ PP-OCRv4_server_rec_doc_infer.tar">推理模型</a>/<a href="">训练模型</a><
 <td>7.95018</td>
 <td>46.7868</td>
 <td>10.6 M</td>
-<td>PP-OCRv4识别模型在PP-OCRv3的基础上进一步升级，速度可比情况下，中英文场景效果进一步提升，80 语种多语言模型平均识别准确率提升 8%以上</td>
+<td>PP-OCRv4的轻量级识别模型，推理效率高，可以部署在包含端侧设备的多种硬件设备中</td>
 </tr>
 <tr>
 <td>PP-OCRv4_server_rec </td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-OCRv4_server_rec_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-OCRv4_server_rec_pretrained.pdparams">训练模型</a></td>
@@ -94,7 +94,7 @@ PP-OCRv4_server_rec_doc_infer.tar">推理模型</a>/<a href="">训练模型</a><
 <td>7.19439</td>
 <td>140.179</td>
 <td>71.2 M</td>
-<td>高精度服务端文本识别模型，具有高精度、速度快、多语言支持等特点，适用于多种场景的文字识别任务。</td>
+<td>PP-OCRv4的服务器端模型，推理精度高，可以部署在多种不同的服务器上</td>
 </tr>
 <tr>
 <td>PP-OCRv3_mobile_rec</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0rc0/\
@@ -103,7 +103,7 @@ PP-OCRv3_mobile_rec_infer.tar">推理模型</a>/<a href="">训练模型</a></td>
 <td></td>
 <td></td>
 <td></td>
-<td>超轻量级OCR模型，适用于移动端应用。它采用基于Transformer的编码器-解码器结构，通过数据增强和混合精度训练等技术，提升了识别精度和效率。模型大小为10.6M，适合在资源受限的设备上部署，可用于手机拍照翻译、名片识别等场景。</td>
+<td>PP-OCRv3的轻量级识别模型，推理效率高，可以部署在包含端侧设备的多种硬件设备中</td>
 </tr>
 </table>
 
@@ -170,7 +170,7 @@ en_PP-OCRv4_mobile_rec_infer.tar">推理模型</a>/<a href="">训练模型</a></
 <td></td>
 <td></td>
 <td></td>
-<td>【最新】在PP-OCRv3的基础上进一步升级，在速度可比的情况下，精度进一步提升</td>
+<td>基于PP-OCRv4识别模型训练得到的超轻量英文识别模型，支持英文、数字识别</td>
 </tr>
 <tr>
 <td>en_PP-OCRv3_mobile_rec</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0rc0/\
@@ -179,7 +179,7 @@ en_PP-OCRv3_mobile_rec_infer.tar">推理模型</a>/<a href="">训练模型</a></
 <td></td>
 <td></td>
 <td></td>
-<td>超轻量模型，支持英文、数字识别</td>
+<td>基于PP-OCRv3识别模型训练得到的超轻量英文识别模型，支持英文、数字识别</td>
 </tr>
 </table>
 
@@ -201,7 +201,7 @@ korean_PP-OCRv3_mobile_rec_infer.tar">推理模型</a>/<a href="">训练模型</
 <td></td>
 <td></td>
 <td></td>
-<td>韩文识别</td>
+<td>基于PP-OCRv3识别模型训练得到的超轻量韩文识别模型，支持韩文、数字识别</td>
 </tr>
 <tr>
 <td>japan_PP-OCRv3_mobile_rec</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0rc0/\
@@ -210,7 +210,7 @@ japan_PP-OCRv3_mobile_rec_infer.tar">推理模型</a>/<a href="">训练模型</a
 <td></td>
 <td></td>
 <td></td>
-<td>日文识别</td>
+<td>基于PP-OCRv3识别模型训练得到的超轻量日文识别模型，支持日文、数字识别</td>
 </tr>
 <tr>
 <td>chinese_cht_PP-OCRv3_mobile_rec</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0rc0/\
@@ -219,7 +219,7 @@ chinese_cht_PP-OCRv3_mobile_rec_infer.tar">推理模型</a>/<a href="">训练模
 <td></td>
 <td></td>
 <td></td>
-<td>中文繁体识别</td>
+<td>基于PP-OCRv3识别模型训练得到的超轻量繁体中文识别模型，支持繁体中文、数字识别</td>
 </tr>
 <tr>
 <td>te_PP-OCRv3_mobile_rec</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0rc0/\
@@ -228,7 +228,7 @@ te_PP-OCRv3_mobile_rec_infer.tar">推理模型</a>/<a href="">训练模型</a></
 <td></td>
 <td></td>
 <td></td>
-<td>泰卢固文识别</td>
+<td>基于PP-OCRv3识别模型训练得到的超轻量泰卢固文识别模型，支持泰卢固文、数字识别</td>
 </tr>
 <tr>
 <td>ka_PP-OCRv3_mobile_rec</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0rc0/\
@@ -237,7 +237,7 @@ ka_PP-OCRv3_mobile_rec_infer.tar">推理模型</a>/<a href="">训练模型</a></
 <td></td>
 <td></td>
 <td></td>
-<td>卡纳达文识别</td>
+<td>基于PP-OCRv3识别模型训练得到的超轻量卡纳达文识别模型，支持卡纳达文、数字识别</td>
 </tr>
 <tr>
 <td>ta_PP-OCRv3_mobile_rec</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0rc0/\
@@ -246,7 +246,7 @@ ta_PP-OCRv3_mobile_rec_infer.tar">推理模型</a>/<a href="">训练模型</a></
 <td></td>
 <td></td>
 <td></td>
-<td>泰米尔文识别</td>
+<td>基于PP-OCRv3识别模型训练得到的超轻量泰米尔文识别模型，支持泰米尔文、数字识别</td>
 </tr>
 <tr>
 <td>latin_PP-OCRv3_mobile_rec</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0rc0/\
@@ -255,7 +255,7 @@ latin_PP-OCRv3_mobile_rec_infer.tar">推理模型</a>/<a href="">训练模型</a
 <td></td>
 <td></td>
 <td></td>
-<td>拉丁文识别</td>
+<td>基于PP-OCRv3识别模型训练得到的超轻量拉丁文识别模型，支持拉丁文、数字识别</td>
 </tr>
 <tr>
 <td>arabic_PP-OCRv3_mobile_rec</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0rc0/\
@@ -264,7 +264,7 @@ arabic_PP-OCRv3_mobile_rec_infer.tar">推理模型</a>/<a href="">训练模型</
 <td></td>
 <td></td>
 <td></td>
-<td>阿拉伯字母</td>
+<td>基于PP-OCRv3识别模型训练得到的超轻量阿拉伯字母识别模型，支持阿拉伯字母、数字识别</td>
 </tr>
 <tr>
 <td>cyrillic_PP-OCRv3_mobile_rec</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0rc0/\
@@ -273,7 +273,7 @@ cyrillic_PP-OCRv3_mobile_rec_infer.tar">推理模型</a>/<a href="">训练模型
 <td></td>
 <td></td>
 <td></td>
-<td>斯拉夫字母</td>
+<td>基于PP-OCRv3识别模型训练得到的超轻量斯拉夫字母识别模型，支持斯拉夫字母、数字识别</td>
 </tr>
 <tr>
 <td>devanagari_PP-OCRv3_mobile_rec</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0rc0/\
@@ -282,7 +282,7 @@ devanagari_PP-OCRv3_mobile_rec_infer.tar">推理模型</a>/<a href="">训练模�
 <td></td>
 <td></td>
 <td></td>
-<td>梵文字母</td>
+<td>基于PP-OCRv3识别模型训练得到的超轻量梵文字母识别模型，支持梵文字母、数字识别</td>
 </tr>
 </table>
 
@@ -293,26 +293,33 @@ devanagari_PP-OCRv3_mobile_rec_infer.tar">推理模型</a>/<a href="">训练模�
 
 ```python
 from paddlex import create_model
-model = create_model("PP-OCRv4_mobile_rec")
-output = model.predict("general_ocr_rec_001.png", batch_size=1)
+model = create_model(model="PP-OCRv4_mobile_rec")
+output = model.predict(input="general_ocr_rec_001.png", batch_size=1)
 for res in output:
     res.print(json_format=False)
-    res.save_to_img("./output/")
-    res.save_to_json("./output/res.json")
+    res.save_to_img(save_path="./output/")
+    res.save_to_json(save_path="./output/res.json")
 ```
-关于更多 PaddleX 的单模型推理的 API 的使用方法，可以参考[PaddleX单模型Python脚本使用说明](../../instructions/model_python_API.md)。
 
 运行后，得到的结果为：
 ```bash
 {'input_path': 'general_ocr_rec_001.png', 'rec_text': '绿洲仕格维花园公寓', 'rec_score': 0.9875298738479614}
 ```
+
+参数含义如下：
+- `input_path`：表示输入待预测文本行图像的路径
+- `rec_text`：表示文本行图像的预测文本
+- `rec_score`：表示文本行图像的预测置信度
+
+
 可视化图片如下：
 
 <img src="https://raw.githubusercontent.com/cuicheng01/PaddleX_doc_images/refs/heads/main/images/modules/text_recog/general_ocr_rec_001.png">
 
 上述Python脚本中，执行了如下几个步骤：
-* `create_model`实例化文本识别模型（此处以`PP-OCRv4_mobile_rec`为例）
-* 调用文本识别模型的`predict`方法进行推理预测，`predict` 方法参数为`x`，用于输入待预测数据，支持多种输入类型，具体说明如下：
+* `create_model`实例化文本识别模型（此处以`PP-OCRv4_mobile_rec`为例），具体说明如下：
+
+
 
 <table>
 <thead>
@@ -325,30 +332,7 @@ for res in output:
 </tr>
 </thead>
 <tr>
-<td><code>x</code></td>
-<td>待预测数据，支持多种输入类型</td>
-<td><code>Python Var</code>/<code>str</code>/<code>dict</code>/<code>list</code></td>
-<td>
-<ul>
-  <li><b>Python变量</b>，如<code>numpy.ndarray</code>表示的图像数据</li>
-  <li><b>文件路径</b>，如图像文件的本地路径：<code>/root/data/img.jpg</code></li>
-  <li><b>URL链接</b>，如图像文件的网络URL：<a href = "https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/general_ocr_001.png">示例</a></li>
-  <li><b>本地目录</b>，该目录下需包含待预测数据文件，如本地路径：<code>/root/data/</code></li>
-  <li><b>字典</b>，字典的<code>key</code>需与具体任务对应，如图像分类任务对应<code>\"img\"</code>，字典的<code>val</code>支持上述类型数据，例如：<code>{\"img\": \"/root/data1\"}</code></li>
-  <li><b>列表</b>，列表元素需为上述类型数据，如<code>[numpy.ndarray, numpy.ndarray]</code>，<code>[\"/root/data/img1.jpg\", \"/root/data/img2.jpg\"]</code>，<code>[\"/root/data1\", \"/root/data2\"]</code>，<code>[{\"img\": \"/root/data1\"}, {\"img\": \"/root/data2/img.jpg\"}]</code></li>
-</ul>
-</td>
-<td>无</td>
-</tr>
-<tr>
-<td><code>module_name</code></td>
-<td>单功能模块名称</td>
-<td><code>str</code></td>
-<td>无</td>
-<td><code>text_recognition</code></td>
-</tr>
-<tr>
-<td><code>model_name</code></td>
+<td><code>model</code></td>
 <td>模型名称</td>
 <td><code>str</code></td>
 <td>无</td>
@@ -361,6 +345,36 @@ for res in output:
 <td>无</td>
 <td><code>null</code></td>
 </tr>
+</table>
+
+* 调用文本识别模型的`predict`方法进行推理预测，`predict` 方法参数为`input`，用于输入待预测数据，支持多种输入类型，具体说明如下：
+
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>参数说明</th>
+<th>参数类型</th>
+<th>可选项</th>
+<th>默认值</th>
+</tr>
+</thead>
+<tr>
+<td><code>input</code></td>
+<td>待预测数据，支持多种输入类型</td>
+<td><code>Python Var</code>/<code>str</code>/<code>dict</code>/<code>list</code></td>
+<td>
+<ul>
+  <li><b>Python变量</b>，如<code>numpy.ndarray</code>表示的图像数据</li>
+  <li><b>文件路径</b>，如图像文件的本地路径：<code>/root/data/img.jpg</code></li>
+  <li><b>URL链接</b>，如图像文件的网络URL：<a href = "https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/general_ocr_rec_001.png">示例</a></li>
+  <li><b>本地目录</b>，该目录下需包含待预测数据文件，如本地路径：<code>/root/data/</code></li>
+  <li><b>字典</b>，字典的<code>key</code>需与具体任务对应，如图像分类任务对应<code>\"img\"</code>，字典的<code>val</code>支持上述类型数据，例如：<code>{\"img\": \"/root/data1\"}</code></li>
+  <li><b>列表</b>，列表元素需为上述类型数据，如<code>[numpy.ndarray, numpy.ndarray]</code>，<code>[\"/root/data/img1.jpg\", \"/root/data/img2.jpg\"]</code>，<code>[\"/root/data1\", \"/root/data2\"]</code>，<code>[{\"img\": \"/root/data1\"}, {\"img\": \"/root/data2/img.jpg\"}]</code></li>
+</ul>
+</td>
+<td>无</td>
+</tr>
 <tr>
 <td><code>batch_size</code></td>
 <td>批大小</td>
@@ -371,9 +385,9 @@ for res in output:
 <tr>
 <td><code>score_thresh</code></td>
 <td>分数阈值</td>
-<td><code>int</code></td>
+<td><code>float</code></td>
 <td>无</td>
-<td><code>0</code></td>
+<td><code>0.0</code></td>
 </tr>
 </table>
 
@@ -391,7 +405,7 @@ for res in output:
 </tr>
 </thead>
 <tr>
-<td rowspan = "3"><code>print</code></td>
+<td rowspan = "3"><code>print()</code></td>
 <td rowspan = "3">打印结果到终端</td>
 <td><code>format_json</code></td>
 <td><code>bool</code></td>
@@ -411,7 +425,7 @@ for res in output:
 <td><code>False</code></td>
 </tr>
 <tr>
-<td rowspan = "3"><code>save_to_json</code></td>
+<td rowspan = "3"><code>save_to_json()</code></td>
 <td rowspan = "3">将结果保存为json格式的文件</td>
 <td><code>save_path</code></td>
 <td><code>str</code></td>
@@ -431,7 +445,7 @@ for res in output:
 <td><code>False</code></td>
 </tr>
 <tr>
-<td><code>save_to_img</code></td>
+<td><code>save_to_img()</code></td>
 <td>将结果保存为图像格式的文件</td>
 <td><code>save_path</code></td>
 <td><code>str</code></td>
@@ -440,7 +454,28 @@ for res in output:
 </tr>
 </table>
 
+* 此外，也支持通过属性获取结果可视化图像和`json`结果:
 
+<table>
+<thead>
+<tr>
+<th>属性</th>
+<th>属性说明</th>
+</tr>
+</thead>
+<tr>
+<td rowspan = "1"><code>json</code></td>
+<td rowspan = "1">获取预测的<code>json</code>格式的结果</td>
+</tr>
+<tr>
+<td rowspan = "1"><code>img</code></td>
+<td rowspan = "1">获取格式为<code>dict</code>的可视化图像</td>
+</tr>
+
+</table>
+
+
+关于更多 PaddleX 的单模型推理的 API 的使用方法，可以参考[PaddleX单模型Python脚本使用说明](../../instructions/model_python_API.md)。
 
 ## 四、二次开发
 如果你追求更高精度的现有模型，可以使用 PaddleX 的二次开发能力，开发更好的文本识别模型。在使用 PaddleX 开发文本识别模型之前，请务必安装 PaddleX 的 OCR 相关模型训练插件，安装过程可以参考[PaddleX本地安装教程](../../../installation/installation.md)中的二次开发部分。
