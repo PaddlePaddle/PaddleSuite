@@ -12,7 +12,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .base_result import CVResult, BaseResult
-from .sort_boxes import SortQuadBoxes, SortPolyBoxes
-from .crop_image_regions import CropByPolys, CropByBoxes
-from .convert_points_and_boxes import convert_points_to_boxes
+from ...common.result import BaseCVResult
+from ..pp_shitu_v2.result import draw_box
+
+
+class FaceRecResult(BaseCVResult):
+
+    def _to_img(self):
+        """apply"""
+        boxes = [
+            {
+                "coordinate": box["coordinate"],
+                "label": box["labels"][0] if box["labels"] is not None else "Unknown",
+                "score": box["rec_scores"][0] if box["rec_scores"] is not None else 0,
+            }
+            for box in self["boxes"]
+        ]
+        image = draw_box(self["input_img"][..., ::-1], boxes)
+        return {"res": image}
