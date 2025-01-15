@@ -26,5 +26,6 @@ output = pipeline.predict("./test_samples/general_video_classification_001.mp4",
 for res in output:
     print(res)
     res.print()  ## 打印预测的结构化输出
+    res.save_to_video("./output/1.mp4")  ## 保存结果可视化视频
     res.save_to_video("./output/")  ## 保存结果可视化视频
     res.save_to_json("./output/")  ## 保存预测的结构化输出

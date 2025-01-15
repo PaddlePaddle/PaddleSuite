@@ -23,23 +23,31 @@ output = pipeline.predict(
 )
 
 # output = pipeline.predict(
-#     "./test_samples/doc_distort_test.jpg",
+#     "./test_samples/img_rot180_demo.jpg",
 #     use_doc_orientation_classify=False,
-#     use_doc_unwarping=True
+#     use_doc_unwarping=True,
+# )
+
+# output = pipeline.predict(
+#     "./test_samples/img_rot180_demo.jpg",
+#     use_doc_orientation_classify=True,
+#     use_doc_unwarping=True,
+# )
+
+# output = pipeline.predict(
+#     "./test_samples/img_rot180_demo.jpg",
+#     use_doc_orientation_classify=False,
+#     use_doc_unwarping=False,
 # )
 
 # output = pipeline.predict(
 #     "./test_samples/doc_distort_test.jpg",
 #     use_doc_orientation_classify=True,
 #     use_doc_unwarping=True
-# )
-
-# output = pipeline.predict(
-#     "./test_samples/test_doc_processer.pdf",
-#     use_doc_orientation_classify=True,
-#     use_doc_unwarping=False
 # )
 
 for res in output:
     print(res)
+    res.print()
     res.save_to_img("./output")
+    res.save_to_json("./output")

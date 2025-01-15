@@ -63,13 +63,16 @@ class TablePredictor(CVPredictor):
 
         bbox_list = []
         structure_list = []
+        structure_score_list = []
         for ui_result in ui_results:
             bbox_list.append(ui_result.table_boxes)
             structure_list.append(ui_result.table_structure)
+            structure_score_list.append(0.0)
 
         return {
             "input_path": batch_data,
             "input_img": batch_raw_imgs,
             "bbox": bbox_list,
             "structure": structure_list,
+            "structure_score": structure_score_list,
         }

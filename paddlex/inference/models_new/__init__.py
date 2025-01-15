@@ -22,6 +22,7 @@ from .base import BasePredictor, BasicPredictor
 
 from .image_classification import ClasPredictor
 from .object_detection import DetPredictor
+from .keypoint_detection import KptPredictor
 from .text_detection import TextDetPredictor
 from .text_recognition import TextRecPredictor
 from .table_structure_recognition import TablePredictor
@@ -41,9 +42,11 @@ from .open_vocabulary_segmentation import OVSegPredictor
 # from .table_recognition import TablePredictor
 # from .general_recognition import ShiTuRecPredictor
 from .anomaly_detection import UadPredictor
+
 # from .face_recognition import FaceRecPredictor
 from .multilingual_speech_recognition import WhisperPredictor
 from .video_classification import VideoClasPredictor
+from .video_detection import VideoDetPredictor
 
 
 def _create_hp_predictor(

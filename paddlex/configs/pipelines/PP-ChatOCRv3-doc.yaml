@@ -1,6 +1,8 @@
 
 pipeline_name: PP-ChatOCRv3-doc
 
+use_layout_parser: False
+
 SubModules:
   LLM_Chat:
     module_name: chat_bot
@@ -9,14 +11,12 @@ SubModules:
     ak: "api_key" # Set this to a real API key
     sk: "secret_key"  # Set this to a real secret key
 
-
   LLM_Retriever:
     module_name: retriever
     model_name: ernie-3.5
     api_type: qianfan
     ak: "api_key" # Set this to a real API key
     sk: "secret_key"  # Set this to a real secret key
-
 
   PromptEngneering:
     KIE_CommonText:

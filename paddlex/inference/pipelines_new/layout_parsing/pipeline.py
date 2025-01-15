@@ -17,7 +17,8 @@ import os, sys
 import numpy as np
 import cv2
 from ..base import BasePipeline
-from .utils import convert_points_to_boxes, get_sub_regions_ocr_res
+from .utils import get_sub_regions_ocr_res
+from ..components import convert_points_to_boxes
 from .result import LayoutParsingResult
 from ....utils import logging
 from ...utils.pp_option import PaddlePredictorOption

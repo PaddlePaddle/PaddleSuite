@@ -12,14 +12,24 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import copy
 from PIL import Image
 
-from ...common.result import BaseCVResult
+from ...common.result import BaseResult, StrMixin, JsonMixin
 
 
-class IdentityResult(BaseCVResult):
+class IdentityResult(BaseResult, StrMixin, JsonMixin):
+    def __init__(self, data: dict) -> None:
+        super().__init__(data)
+        StrMixin.__init__(self)
+        JsonMixin.__init__(self)
 
-    def _to_img(self):
-        """This module does not support visualization; it simply outputs the input images"""
-        image = Image.fromarray(self["input_img"])
-        return image
+    def _to_str(self, *args, **kwargs):
+        data = copy.deepcopy(self)
+        data.pop("input_img")
+        return StrMixin._to_str(data, *args, **kwargs)
+
+    def _to_json(self, *args, **kwargs):
+        data = copy.deepcopy(self)
+        data.pop("input_img")
+        return JsonMixin._to_json(data, *args, **kwargs)
