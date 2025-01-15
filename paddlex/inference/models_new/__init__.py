@@ -22,26 +22,31 @@ from .base import BasePredictor, BasicPredictor
 
 from .image_classification import ClasPredictor
 from .object_detection import DetPredictor
+from .keypoint_detection import KptPredictor
 from .text_detection import TextDetPredictor
 from .text_recognition import TextRecPredictor
-
-# from .table_recognition import TablePredictor
-# from .object_detection import DetPredictor
+from .table_structure_recognition import TablePredictor
+from .formula_recognition import FormulaRecPredictor
 from .instance_segmentation import InstanceSegPredictor
 from .semantic_segmentation import SegPredictor
 from .image_feature import ImageFeaturePredictor
-
-# from .general_recognition import ShiTuRecPredictor
-
-from .ts_forecast import TSFcPredictor
-from .ts_anomaly import TSAdPredictor
-from .ts_classify import TSClsPredictor
+from .ts_forecasting import TSFcPredictor
+from .ts_anomaly_detection import TSAdPredictor
+from .ts_classification import TSClsPredictor
 from .image_unwarping import WarpPredictor
+from .image_multilabel_classification import MLClasPredictor
+from .open_vocabulary_detection import OVDetPredictor
+from .open_vocabulary_segmentation import OVSegPredictor
 
-# from .multilabel_classification import MLClasPredictor
-# from .anomaly_detection import UadPredictor
-# from .formula_recognition import LaTeXOCRPredictor
+
+# from .table_recognition import TablePredictor
+# from .general_recognition import ShiTuRecPredictor
+from .anomaly_detection import UadPredictor
+
 # from .face_recognition import FaceRecPredictor
+from .multilingual_speech_recognition import WhisperPredictor
+from .video_classification import VideoClasPredictor
+from .video_detection import VideoDetPredictor
 
 
 def _create_hp_predictor(

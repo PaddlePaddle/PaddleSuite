@@ -18,12 +18,34 @@ from .base import BasePipeline
 from ..utils.pp_option import PaddlePredictorOption
 from .components import BaseChat, BaseRetriever, BaseGeneratePrompt
 from ...utils.config import parse_config
-
 from .ocr import OCRPipeline
 from .doc_preprocessor import DocPreprocessorPipeline
 from .layout_parsing import LayoutParsingPipeline
-from .pp_chatocrv3_doc import PP_ChatOCRv3_doc_Pipeline
+from .pp_chatocr import PP_ChatOCRv3_Pipeline, PP_ChatOCRv4_Pipeline
 from .image_classification import ImageClassificationPipeline
+from .object_detection import ObjectDetectionPipeline
+from .seal_recognition import SealRecognitionPipeline
+from .table_recognition import TableRecognitionPipeline
+from .multilingual_speech_recognition import MultilingualSpeechRecognitionPipeline
+from .formula_recognition import FormulaRecognitionPipeline
+from .image_multilabel_classification import ImageMultiLabelClassificationPipeline
+from .video_classification import VideoClassificationPipeline
+from .video_detection import VideoDetectionPipeline
+from .anomaly_detection import AnomalyDetectionPipeline
+from .ts_forecasting import TSFcPipeline
+from .ts_anomaly_detection import TSAnomalyDetPipeline
+from .ts_classification import TSClsPipeline
+from .pp_shitu_v2 import ShiTuV2Pipeline
+from .attribute_recognition import (
+    PedestrianAttributeRecPipeline,
+    VehicleAttributeRecPipeline,
+)
+
+from .semantic_segmentation import SemanticSegmentationPipeline
+from .instance_segmentation import InstanceSegmentationPipeline
+from .small_object__detection import SmallObjectDetectionPipeline
+from .rotated_object__detection import RotatedObjectDetectionPipeline
+from .keypoint_detection import KeypointDetectionPipeline
 
 
 def get_pipeline_path(pipeline_name: str) -> str:
@@ -129,8 +151,8 @@ def create_chat_bot(config: Dict, *args, **kwargs) -> BaseChat:
     Returns:
         BaseChat: An instance of the chat bot class corresponding to the 'model_name' in the config.
     """
-    model_name = config["model_name"]
-    chat_bot = BaseChat.get(model_name)(config)
+    api_type = config["api_type"]
+    chat_bot = BaseChat.get(api_type)(config)
     return chat_bot
 
 
@@ -150,8 +172,8 @@ def create_retriever(
     Returns:
         BaseRetriever: An instance of a retriever class corresponding to the 'model_name' in the config.
     """
-    model_name = config["model_name"]
-    retriever = BaseRetriever.get(model_name)(config)
+    api_type = config["api_type"]
+    retriever = BaseRetriever.get(api_type)(config)
     return retriever
 
 

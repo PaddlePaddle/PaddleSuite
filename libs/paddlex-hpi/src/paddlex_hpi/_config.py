@@ -14,7 +14,7 @@
 
 import warnings
 from pathlib import Path
-from typing import Any, Dict, List, Mapping, Optional, Tuple, Type, Union
+from typing import Any, Dict, Literal, List, Mapping, Optional, Tuple, Type, Union
 
 import ultra_infer as ui
 from paddlex.utils import logging
@@ -22,6 +22,7 @@ from pydantic import BaseModel, ConfigDict, Field, field_validator
 from typing_extensions import Annotated, TypeAlias, TypedDict, assert_never
 
 from paddlex_hpi._model_info import get_model_info
+from paddlex_hpi._strategy import SelectSpecificStrategy, SelectFirstStrategy
 from paddlex_hpi._utils.typing import Backend, DeviceType
 
 
@@ -36,6 +37,7 @@ class PaddleInferConfig(_BackendConfig):
     enable_trt: bool = False
     trt_dynamic_shapes: Optional[Dict[str, List[List[int]]]] = None
     trt_dynamic_shape_input_data: Optional[Dict[str, List[List[float]]]] = None
+    trt_precision: Literal["FP32", "FP16"] = "FP32"
     enable_log_info: bool = False
 
     def update_ui_option(self, option: ui.RuntimeOption, model_dir: Path) -> None:
@@ -43,16 +45,18 @@ class PaddleInferConfig(_BackendConfig):
         option.set_cpu_thread_num(self.cpu_num_threads)
         option.paddle_infer_option.enable_mkldnn = self.enable_mkldnn
         option.paddle_infer_option.enable_trt = self.enable_trt
-        option.trt_option.serialize_file = str(model_dir / "trt_serialized.trt")
-        if self.trt_dynamic_shapes is not None:
-            for name, shapes in self.trt_dynamic_shapes.items():
-                option.trt_option.set_shape(name, *shapes)
-        if self.trt_dynamic_shape_input_data is not None:
-            for name, data in self.trt_dynamic_shape_input_data.items():
-                option.trt_option.set_input_data(name, *data)
         if self.enable_trt:
+            option.trt_option.serialize_file = str(model_dir / "trt_serialized.trt")
             option.paddle_infer_option.collect_trt_shape = True
             option.paddle_infer_option.collect_trt_shape_by_device = True
+            if self.trt_dynamic_shapes is not None:
+                for name, shapes in self.trt_dynamic_shapes.items():
+                    option.trt_option.set_shape(name, *shapes)
+            if self.trt_dynamic_shape_input_data is not None:
+                for name, data in self.trt_dynamic_shape_input_data.items():
+                    option.trt_option.set_input_data(name, *data)
+            if self.trt_precision == "FP16":
+                option.trt_option.enable_fp16 = True
         option.paddle_infer_option.enable_log_info = self.enable_log_info
 
 
@@ -73,11 +77,16 @@ class ONNXRuntimeConfig(_BackendConfig):
 
 
 class TensorRTConfig(_BackendConfig):
+    precision: Literal["FP32", "FP16"] = "FP32"
     dynamic_shapes: Optional[Dict[str, List[List[int]]]] = None
 
     def update_ui_option(self, option: ui.RuntimeOption, model_dir: Path) -> None:
         option.use_trt_backend()
-        option.trt_option.serialize_file = str(model_dir / "trt_serialized.trt")
+        option.trt_option.serialize_file = str(
+            model_dir / f"trt_serialized_{self.precision}.trt"
+        )
+        if self.precision == "FP16":
+            option.trt_option.enable_fp16 = True
         if self.dynamic_shapes is not None:
             for name, shapes in self.dynamic_shapes.items():
                 option.trt_option.set_shape(name, *shapes)
@@ -146,7 +155,7 @@ class HPIConfig(BaseModel):
     ] = None
 
     def get_backend_and_config(
-        self, model_name: str, device_type: DeviceType
+        self, model_name: str, device_type: DeviceType, onnx_format: bool
     ) -> Tuple[Backend, BackendConfig]:
         # Do we need an extensible selector?
         model_info = get_model_info(model_name, device_type)
@@ -154,21 +163,17 @@ class HPIConfig(BaseModel):
             backend_config_pairs = model_info["backend_config_pairs"]
         else:
             backend_config_pairs = []
-        config_dict: Dict[str, Any] = {}
-        if self.selected_backends and device_type in self.selected_backends:
-            backend = self.selected_backends[device_type]
-            for pair in backend_config_pairs:
-                # Use the first one
-                if pair[0] == self.selected_backends[device_type]:
-                    config_dict.update(pair[1])
-                    break
+
+        use_specific_backend = (
+            self.selected_backends and device_type in self.selected_backends
+        )
+        if use_specific_backend:
+            specified_backend = self.selected_backends[device_type]
+            strategy = SelectSpecificStrategy(onnx_format, specified_backend)
         else:
-            if backend_config_pairs:
-                # Currently we select the first one
-                backend = backend_config_pairs[0][0]
-                config_dict.update(backend_config_pairs[0][1])
-            else:
-                backend = "paddle_infer"
+            strategy = SelectFirstStrategy(onnx_format)
+
+        backend, config_dict = strategy.select_backend_and_config(backend_config_pairs)
         if self.backend_configs and backend in self.backend_configs:
             config_dict.update(
                 self.backend_configs[backend].model_dump(exclude_unset=True)

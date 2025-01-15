@@ -14,9 +14,6 @@
 
 from ..base import BaseExportor
 from .model_list import MODELS
-from ..formula_recognition.model_list import MODELS as MODELS_LaTeX
-
-MODELS = MODELS + MODELS_LaTeX
 
 
 class TextRecExportor(BaseExportor):

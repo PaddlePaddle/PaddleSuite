@@ -1,7 +1,9 @@
 
 pipeline_name: table_recognition
 
+use_layout_detection: True
 use_doc_preprocessor: True
+use_ocr_model: True
 
 SubModules:
   LayoutDetection:

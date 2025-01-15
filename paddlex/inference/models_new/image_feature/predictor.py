@@ -117,7 +117,7 @@ class ImageFeaturePredictor(BasicPredictor):
         return {
             "input_path": batch_data,
             "input_img": batch_raw_imgs,
-            "features": features,
+            "feature": features,
         }
 
     @register("ResizeImage")
@@ -144,7 +144,6 @@ class ImageFeaturePredictor(BasicPredictor):
         channel_num=3,
     ):
         assert channel_num == 3
-        assert order == "hwc"
         return "Normalize", Normalize(scale=scale, mean=mean, std=std)
 
     @register("ToCHWImage")
