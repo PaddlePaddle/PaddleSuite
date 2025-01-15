@@ -164,6 +164,22 @@ class JsonMixin:
                 **kwargs,
             )
 
+    def print(
+        self, json_format: bool = False, indent: int = 4, ensure_ascii: bool = False
+    ) -> None:
+        """Print the string representation of the result.
+
+        Args:
+            json_format (bool): If True, print a JSON formatted string. Default is False.
+            indent (int): Number of spaces to indent for JSON formatting. Default is 4.
+            ensure_ascii (bool): If True, ensure all characters are ASCII. Default is False.
+        """
+        if json_format:
+            str_ = json.dumps(self.json, indent=indent, ensure_ascii=ensure_ascii)
+        else:
+            str_ = str(self.json)
+        logging.info(str_)
+
 
 class Base64Mixin:
     """Mixin class for adding Base64 encoding capabilities."""
