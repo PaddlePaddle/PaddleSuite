@@ -308,3 +308,6 @@ The image feature module can be integrated into the <b>General Image Recognition
 2.<b>Module Integration</b>
 
 The weights you produce can be directly integrated into the image feature module. Refer to the Python example code in [Quick Integration](#iii-quick-integration), and simply replace the model with the path to your trained model.
+
+!!! tip
+    For some frequently asked questions about our project, please refer to [FAQ](../../../FAQ.en.md). If your question has not been answered, feel free to raise it in [Issues](https://github.com/PaddlePaddle/PaddleX/issues).

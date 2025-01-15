@@ -779,3 +779,6 @@ paddlex --pipeline multilabel_classification --input small_object_detection.jpg 
 ```
 
 If you want to use the General Small Object Detection Pipeline on a wider range of hardware, please refer to the [PaddleX Multi-Device Usage Guide](../../../other_devices_support/multi_devices_use_guide.en.md).
+
+!!! tip
+    For some frequently asked questions about our project, please refer to [FAQ](../../../FAQ.en.md). If your question has not been answered, feel free to raise it in [Issues](https://github.com/PaddlePaddle/PaddleX/issues).

@@ -272,3 +272,6 @@ The pedestrian attribute recognition module can be integrated into the [General 
 2.<b>Module Integration</b>
 
 The weights you produce can be directly integrated into the pedestrian attribute recognition module. Refer to the Python example code in <a href="#lable">Quick Integration</a>  and simply replace the model with the path to your trained model.
+
+!!! tip
+    For some frequently asked questions about our project, please refer to [FAQ](../../../FAQ.en.md). If your question has not been answered, feel free to raise it in [Issues](https://github.com/PaddlePaddle/PaddleX/issues).

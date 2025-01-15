@@ -243,3 +243,6 @@ Other related parameters can be set by modifying the fields under `Global` and `
 
 #### 4.4.2 Model Integration
 The weights you produce can be directly integrated into the human detection module. You can refer to the Python sample code in [Quick Integration](#iii-quick-integration) and simply replace the model with the path to your trained model.
+
+!!! tip
+    For some frequently asked questions about our project, please refer to [FAQ](../../../FAQ.en.md). If your question has not been answered, feel free to raise it in [Issues](https://github.com/PaddlePaddle/PaddleX/issues).

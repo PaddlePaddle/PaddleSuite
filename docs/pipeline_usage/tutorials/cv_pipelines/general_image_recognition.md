@@ -888,3 +888,6 @@ pipeline = create_pipeline(
 ```
 
 若您想在更多种类的硬件上使用通用图像识别产线，请参考[PaddleX多硬件使用指南](../../../other_devices_support/multi_devices_use_guide.md)。
+
+!!! tip
+    关于我们项目的一些常见问题解答，请参考[FAQ](../../../FAQ.md)。如果您的问题没有得到解答，请随时在 [Issues](https://github.com/PaddlePaddle/PaddleX/issues) 中提出。

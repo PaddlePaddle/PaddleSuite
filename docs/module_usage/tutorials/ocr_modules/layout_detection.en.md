@@ -301,3 +301,6 @@ The structure analysis module can be integrated into PaddleX pipelines such as t
 
 1. <b>Module Integration</b>
 The weights you produce can be directly integrated into the layout area localization module. You can refer to the Python example code in the [Quick Integration](#quick) section, simply replacing the model with the path to your trained model.
+
+!!! tip
+    For some frequently asked questions about our project, please refer to [FAQ](../../../FAQ.en.md). If your question has not been answered, feel free to raise it in [Issues](https://github.com/PaddlePaddle/PaddleX/issues).

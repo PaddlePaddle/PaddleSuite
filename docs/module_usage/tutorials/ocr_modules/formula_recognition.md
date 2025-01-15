@@ -263,3 +263,6 @@ python main.py -c paddlex/configs/formula_recognition/LaTeX_OCR_rec.yaml \
 #### 4.4.2 模型集成
 
 您产出的权重可以直接集成到公式识别模块中，可以参考[快速集成](#三快速集成)的 Python 示例代码，只需要将模型替换为你训练的到的模型路径即可。
+
+!!! tip
+    关于我们项目的一些常见问题解答，请参考[FAQ](../../../FAQ.md)。如果您的问题没有得到解答，请随时在 [Issues](https://github.com/PaddlePaddle/PaddleX/issues) 中提出。
