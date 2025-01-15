@@ -55,8 +55,8 @@ class KeypointDetectionPipeline(BasePipeline):
         model_kwargs = {}
         if "threshold" in model_cfg:
             model_kwargs["threshold"] = model_cfg["threshold"]
-        if "imgsz" in model_cfg:
-            model_kwargs["imgsz"] = model_cfg["imgsz"]
+        if "img_size" in model_cfg:
+            model_kwargs["img_size"] = model_cfg["img_size"]
         self.det_model = self.create_model(model_cfg, **model_kwargs)
 
         # create keypoint detection model
