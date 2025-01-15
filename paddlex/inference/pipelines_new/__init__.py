@@ -129,6 +129,7 @@ def create_pipeline(
     else:
         pipeline_name = pipeline
 
+    hpi_params = hpi_params or config.get("hpi_params", None)
     pipeline = BasePipeline.get(pipeline_name)(
         config=config,
         device=device,
