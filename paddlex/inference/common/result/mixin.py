@@ -434,7 +434,6 @@ class XlsxMixin:
         """
         self._xlsx_writer = XlsxWriter(*args, **kwargs)
         self._save_funcs.append(self.save_to_xlsx)
-        print("ok")
 
     @property
     def xlsx(self) -> Dict[str, str]:
