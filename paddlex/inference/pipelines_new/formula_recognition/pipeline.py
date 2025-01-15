@@ -17,10 +17,7 @@ from typing import Any, Dict, Optional
 import numpy as np
 import cv2
 from ..base import BasePipeline
-from ..components import CropByBoxes
-
-# from ..layout_parsing.utils import convert_points_to_boxes
-from ..components import convert_points_to_boxes
+from ..components import CropByBoxes, convert_points_to_boxes
 
 from .result import FormulaRecognitionResult
 from ...models_new.formula_recognition.result import (
@@ -50,7 +47,7 @@ class FormulaRecognitionPipeline(BasePipeline):
         use_hpip: bool = False,
         hpi_params: Optional[Dict[str, Any]] = None,
     ) -> None:
-        """Initializes the layout parsing pipeline.
+        """Initializes the formula recognition pipeline.
 
         Args:
             config (Dict): Configuration dictionary containing various settings.
@@ -64,30 +61,67 @@ class FormulaRecognitionPipeline(BasePipeline):
             device=device, pp_option=pp_option, use_hpip=use_hpip, hpi_params=hpi_params
         )
 
-        self.use_doc_preprocessor = False
-        if "use_doc_preprocessor" in config:
-            self.use_doc_preprocessor = config["use_doc_preprocessor"]
-
+        self.use_doc_preprocessor = config.get("use_doc_preprocessor", True)
         if self.use_doc_preprocessor:
-            doc_preprocessor_config = config["SubPipelines"]["DocPreprocessor"]
+            doc_preprocessor_config = config.get("SubPipelines", {}).get(
+                "DocPreprocessor",
+                {
+                    "pipeline_config_error": "config error for doc_preprocessor_pipeline!"
+                },
+            )
             self.doc_preprocessor_pipeline = self.create_pipeline(
                 doc_preprocessor_config
             )
 
-        self.use_layout_detection = True
-        if "use_layout_detection" in config:
-            self.use_layout_detection = config["use_layout_detection"]
+        self.use_layout_detection = config.get("use_layout_detection", True)
+
         if self.use_layout_detection:
-            layout_det_config = config["SubModules"]["LayoutDetection"]
+            layout_det_config = config.get("SubModules", {}).get(
+                "LayoutDetection",
+                {"model_config_error": "config error for layout_det_model!"},
+            )
             self.layout_det_model = self.create_model(layout_det_config)
 
-        formula_recognition_config = config["SubModules"]["FormulaRecognition"]
+        formula_recognition_config = config.get("SubModules", {}).get(
+            "FormulaRecognition",
+            {"model_config_error": "config error for formula_rec_model!"},
+        )
         self.formula_recognition_model = self.create_model(formula_recognition_config)
 
         self._crop_by_boxes = CropByBoxes()
 
         self.batch_sampler = ImageBatchSampler(batch_size=1)
         self.img_reader = ReadImage(format="BGR")
+
+    def get_model_settings(
+        self,
+        use_doc_orientation_classify: Optional[bool],
+        use_doc_unwarping: Optional[bool],
+        use_layout_detection: Optional[bool],
+    ) -> dict:
+        """
+        Get the model settings based on the provided parameters or default values.
+
+        Args:
+            use_doc_orientation_classify (Optional[bool]): Whether to use document orientation classification.
+            use_doc_unwarping (Optional[bool]): Whether to use document unwarping.
+            use_layout_detection (Optional[bool]): Whether to use layout detection.
+
+        Returns:
+            dict: A dictionary containing the model settings.
+        """
+        if use_doc_orientation_classify is None and use_doc_unwarping is None:
+            use_doc_preprocessor = self.use_doc_preprocessor
+        else:
+            use_doc_preprocessor = True
+
+        if use_layout_detection is None:
+            use_layout_detection = self.use_layout_detection
+
+        return dict(
+            use_doc_preprocessor=use_doc_preprocessor,
+            use_layout_detection=use_layout_detection,
+        )
 
     def check_model_settings_valid(
         self, model_settings: Dict, layout_det_res: DetResult
@@ -122,64 +156,6 @@ class FormulaRecognitionPipeline(BasePipeline):
                 return False
 
         return True
-
-    def predict_doc_preprocessor_res(
-        self, image_array: np.ndarray, model_settings: dict
-    ) -> tuple[DocPreprocessorResult, np.ndarray]:
-        """
-        Preprocess the document image based on input parameters.
-
-        Args:
-            image_array (np.ndarray): The input image array.
-            model_settings (dict): Dictionary containing preprocessing parameters.
-
-        Returns:
-            tuple[DocPreprocessorResult, np.ndarray]: A tuple containing the preprocessing
-                                              result dictionary and the processed image array.
-        """
-        if model_settings["use_doc_preprocessor"]:
-            use_doc_orientation_classify = model_settings[
-                "use_doc_orientation_classify"
-            ]
-            use_doc_unwarping = model_settings["use_doc_unwarping"]
-            doc_preprocessor_res = next(
-                self.doc_preprocessor_pipeline(
-                    image_array,
-                    use_doc_orientation_classify=use_doc_orientation_classify,
-                    use_doc_unwarping=use_doc_unwarping,
-                )
-            )
-        else:
-            doc_preprocessor_res = {"output_img": image_array}
-        return doc_preprocessor_res
-
-    def get_model_settings(
-        self,
-        use_layout_detection: Optional[bool],
-        use_doc_orientation_classify: Optional[bool],
-        use_doc_unwarping: Optional[bool],
-    ) -> dict:
-        """
-        Get the model settings based on the provided parameters or default values.
-
-        Args:
-            use_doc_orientation_classify (Optional[bool]): Whether to use document orientation classification.
-            use_doc_unwarping (Optional[bool]): Whether to use document unwarping.
-
-        Returns:
-            dict: A dictionary containing the model settings.
-        """
-        if use_doc_orientation_classify is None:
-            use_doc_orientation_classify = self.use_doc_orientation_classify
-        if use_doc_unwarping is None:
-            use_doc_unwarping = self.use_doc_unwarping
-        if use_layout_detection is None:
-            use_layout_detection = self.use_layout_detection
-        return dict(
-            use_doc_orientation_classify=use_doc_orientation_classify,
-            use_doc_unwarping=use_doc_unwarping,
-            use_layout_detection=use_layout_detection,
-        )
 
     def predict_single_formula_recognition_res(
         self,
@@ -225,23 +201,11 @@ class FormulaRecognitionPipeline(BasePipeline):
             formulaRecognitionResult: The predicted formula recognition result.
         """
 
-        model_settings = {
-            "use_layout_detection": use_layout_detection,
-            "use_doc_preprocessor": self.use_doc_preprocessor,
-            "use_doc_orientation_classify": use_doc_orientation_classify,
-            "use_doc_unwarping": use_doc_unwarping,
-        }
-
         model_settings = self.get_model_settings(
-            use_layout_detection, use_doc_orientation_classify, use_doc_unwarping
+            use_doc_orientation_classify,
+            use_doc_unwarping,
+            use_layout_detection,
         )
-        if (
-            model_settings["use_doc_orientation_classify"]
-            or model_settings["use_doc_unwarping"]
-        ):
-            model_settings["use_doc_preprocessor"] = True
-        else:
-            model_settings["use_doc_preprocessor"] = False
 
         if not self.check_model_settings_valid(model_settings, layout_det_res):
             yield {"error": "the input params for model settings are invalid!"}
@@ -249,15 +213,22 @@ class FormulaRecognitionPipeline(BasePipeline):
         for img_id, batch_data in enumerate(self.batch_sampler(input)):
             if not isinstance(batch_data[0], str):
                 # TODO: add support input_pth for ndarray and pdf
-                input_path = f"{img_id}"
+                input_path = f"{img_id}.jpg"
             else:
                 input_path = batch_data[0]
 
             image_array = self.img_reader(batch_data)[0]
 
-            doc_preprocessor_res = self.predict_doc_preprocessor_res(
-                image_array, model_settings
-            )
+            if model_settings["use_doc_preprocessor"]:
+                doc_preprocessor_res = next(
+                    self.doc_preprocessor_pipeline(
+                        image_array,
+                        use_doc_orientation_classify=use_doc_orientation_classify,
+                        use_doc_unwarping=use_doc_unwarping,
+                    )
+                )
+            else:
+                doc_preprocessor_res = {"output_img": image_array}
 
             doc_preprocessor_image = doc_preprocessor_res["output_img"]
 

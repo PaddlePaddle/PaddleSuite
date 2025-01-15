@@ -26,8 +26,7 @@ from pathlib import Path
 import PIL
 from PIL import Image, ImageDraw, ImageFont
 
-from ...common.result import BaseCVResult
-from ...common.result.mixin import JsonMixin, ImgMixin, StrMixin
+from ...common.result import BaseCVResult, JsonMixin, ImgMixin, StrMixin
 from ....utils import logging
 from ....utils.fonts import PINGFANG_FONT_FILE_PATH
 from ...models_new.formula_recognition.result import (
@@ -46,52 +45,12 @@ from ...models_new.formula_recognition.result import (
 class FormulaRecognitionResult(BaseCVResult):
     """Formula Recognition Result"""
 
-    def _to_str(self, *args: List, **kwargs: Dict) -> Dict[str, Any]:
-        """
-        Convert the object to a string representation.
-
-        Args:
-            *args: Additional positional arguments for the superclass's _to_str method.
-            **kwargs: Additional keyword arguments for the superclass's _to_str method.
-
-        Returns:
-            str: A string representation of the object with specified fields removed.
-        """
-        data = copy.deepcopy(self)
-        for tno in range(len(self["formula_res_list"])):
-            data["formula_res_list"][tno].pop("input_path", None)
-            data["formula_res_list"][tno].pop("input_img", None)
-        data.pop("layout_det_res", None)
-        data.pop("doc_preprocessor_res", None)
-        return StrMixin._to_str(data, *args, **kwargs)
-
-    def _to_json(self, *args: List, **kwargs: Dict) -> Dict[str, Any]:
-        """
-        Convert the object to a JSON-compatible dictionary.
-
-        Args:
-            *args: Additional positional arguments for the superclass's _to_json method.
-            **kwargs: Additional keyword arguments for the superclass's _to_json method.
-
-        Returns:
-            Dict[str, Any]: A JSON-compatible dictionary representation of the object
-            with specified fields removed.
-        """
-        data = copy.deepcopy(self)
-        for tno in range(len(self["formula_res_list"])):
-            data["formula_res_list"][tno].pop("input_path", None)
-            data["formula_res_list"][tno].pop("input_img", None)
-        data["layout_det_res"].pop("input_path", None)
-        data["layout_det_res"].pop("input_img", None)
-        data["doc_preprocessor_res"].pop("output_img", None)
-        return JsonMixin._to_json(data, *args, **kwargs)
-
-    def _to_img(self) -> PIL.Image:
+    def _to_img(self) -> Dict[str, Image.Image]:
         """
         Converts the internal data to a PIL Image with detection and recognition results.
 
         Returns:
-            PIL.Image: An image with detection boxes, texts, and scores blended on it.
+            Dict[str, Image.Image]: An image with detection boxes, texts, and scores blended on it.
         """
         image = Image.fromarray(self["doc_preprocessor_res"]["output_img"])
         try:
@@ -100,7 +59,7 @@ class FormulaRecognitionResult(BaseCVResult):
             logging.warning(
                 "Please refer to 2.3 Formula Recognition Pipeline Visualization in Formula Recognition Pipeline Tutorial to install the LaTeX rendering engine at first."
             )
-            return image
+            return {f"formula_res_img": image}
 
         if len(self["layout_det_res"]) <= 0:
             image = np.array(image.convert("RGB"))
@@ -178,14 +137,73 @@ class FormulaRecognitionResult(BaseCVResult):
         img_show = Image.new("RGB", (int(w * 2), h), (255, 255, 255))
         img_show.paste(img_left, (0, 0, w, h))
         img_show.paste(Image.fromarray(img_right), (w, 0, w * 2, h))
+
         model_settings = self["model_settings"]
+        res_img_dict = {f"formula_res_img": img_show}
         if model_settings["use_doc_preprocessor"]:
-            return {
-                **self["doc_preprocessor_res"].img,
-                f"formula_res_img": img_show,
+            res_img_dict.update(**self["doc_preprocessor_res"].img)
+        return res_img_dict
+
+    def _to_str(self, *args, **kwargs) -> Dict[str, str]:
+        """Converts the instance's attributes to a dictionary and then to a string.
+
+        Args:
+            *args: Additional positional arguments passed to the base class method.
+            **kwargs: Additional keyword arguments passed to the base class method.
+
+        Returns:
+            Dict[str, str]: A dictionary with the instance's attributes converted to strings.
+        """
+        data = {}
+        data["input_path"] = self["input_path"]
+        data["model_settings"] = self["model_settings"]
+        if self["model_settings"]["use_doc_preprocessor"]:
+            data["doc_preprocessor_res"] = self["doc_preprocessor_res"].str["res"]
+
+        data["formula_res_list"] = []
+        for tno in range(len(self["formula_res_list"])):
+            rec_formula_dict = {
+                "rec_formula": self["formula_res_list"][tno]["rec_formula"],
+                "formula_region_id": self["formula_res_list"][tno]["formula_region_id"],
             }
-        else:
-            return {f"formula_res_img": img_show}
+            if "dt_polys" in self["formula_res_list"][tno]:
+                rec_formula_dict["dt_polys"] = (
+                    self["formula_res_list"][tno]["dt_polys"],
+                )
+            data["formula_res_list"].append(rec_formula_dict)
+
+        return StrMixin._to_str(data, *args, **kwargs)
+
+    def _to_json(self, *args, **kwargs) -> Dict[str, str]:
+        """
+        Converts the object's data to a JSON dictionary.
+
+        Args:
+            *args: Positional arguments passed to the JsonMixin._to_json method.
+            **kwargs: Keyword arguments passed to the JsonMixin._to_json method.
+
+        Returns:
+            Dict[str, str]: A dictionary containing the object's data in JSON format.
+        """
+        data = {}
+        data["input_path"] = self["input_path"]
+        data["model_settings"] = self["model_settings"]
+        if self["model_settings"]["use_doc_preprocessor"]:
+            data["doc_preprocessor_res"] = self["doc_preprocessor_res"].str["res"]
+
+        data["formula_res_list"] = []
+        for tno in range(len(self["formula_res_list"])):
+            rec_formula_dict = {
+                "rec_formula": self["formula_res_list"][tno]["rec_formula"],
+                "formula_region_id": self["formula_res_list"][tno]["formula_region_id"],
+            }
+            if "dt_polys" in self["formula_res_list"][tno]:
+                rec_formula_dict["dt_polys"] = (
+                    self["formula_res_list"][tno]["dt_polys"],
+                )
+            data["formula_res_list"].append(rec_formula_dict)
+
+        return JsonMixin._to_json(data, *args, **kwargs)
 
 
 def draw_box_formula_fine(

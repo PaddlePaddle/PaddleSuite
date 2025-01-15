@@ -39,8 +39,7 @@ output = pipeline.predict(
 # )
 
 for res in output:
-    # print(res)
-    # TODO: need to check the json format
+    print(res)
     res.print()
-    res.save_to_json("./output/")
     res.save_to_img("./output")
+    res.save_to_json("./output")
