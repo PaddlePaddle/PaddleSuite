@@ -275,6 +275,7 @@ class OpenCVVideoReaderBackend(_VideoReaderBackend):
     def __init__(self, **bk_args):
         super().__init__()
         self.cap_init_args = bk_args
+        self.num_seg = bk_args.get("num_seg", None)
         self._cap = None
         self._pos = 0
         self._max_num_frames = None
@@ -293,11 +294,27 @@ class OpenCVVideoReaderBackend(_VideoReaderBackend):
 
     def _read_frames(self, cap):
         """read frames"""
-        while True:
-            ret, frame = cap.read()
-            if not ret:
-                break
-            yield frame
+        if self.num_seg:
+            queue = []
+            while True:
+                ret, frame = cap.read()
+                if not ret:
+                    break
+                queue = []
+                if (
+                    len(queue) <= 0
+                ):  # At initialization, populate queue with initial frame
+                    for i in range(self.num_seg):
+                        queue.append(frame)
+                queue.append(frame)
+                queue.pop(0)
+                yield queue.copy()
+        else:
+            while True:
+                ret, frame = cap.read()
+                if not ret:
+                    break
+                yield frame
         self._cap_release()
 
     def _cap_open(self, video_path):
