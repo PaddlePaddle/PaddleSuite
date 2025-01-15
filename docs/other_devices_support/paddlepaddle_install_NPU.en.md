@@ -10,9 +10,9 @@ Currently, PaddleX supports the Ascend 910B chip (more models are under support.
 * Pull the image. This image is only for the development environment and does not contain a pre-compiled PaddlePaddle installation package. The image has CANN-8.0.T13, the Ascend operator library, installed by default.
 ```bash
 # For X86 architecture
-docker pull registry.baidubce.com/device/paddle-npu:cann80T13-ubuntu20-x86_64-gcc84-py39
+docker pull ccr-2vdh3abv-pub.cnc.bj.baidubce.com/device/paddle-npu:cann80T13-ubuntu20-x86_64-gcc84-py39
 # For Aarch64 architecture
-docker pull registry.baidubce.com/device/paddle-npu:cann80T13-ubuntu20-aarch64-gcc84-py39
+docker pull ccr-2vdh3abv-pub.cnc.bj.baidubce.com/device/paddle-npu:cann80T13-ubuntu20-aarch64-gcc84-py39
 ```
 * Start the container with the following command. ASCEND_RT_VISIBLE_DEVICES specifies the visible NPU card numbers.
 ```bash
@@ -22,7 +22,7 @@ docker run -it --name paddle-npu-dev -v $(pwd):/work \
     -v /usr/local/bin/npu-smi:/usr/local/bin/npu-smi \
     -v /usr/local/dcmi:/usr/local/dcmi \
     -e ASCEND_RT_VISIBLE_DEVICES="0,1,2,3,4,5,6,7" \
-    registry.baidubce.com/device/paddle-npu:cann80T13-ubuntu20-$(uname -m)-gcc84-py39 /bin/bash
+    ccr-2vdh3abv-pub.cnc.bj.baidubce.com/device/paddle-npu:cann80T13-ubuntu20-$(uname -m)-gcc84-py39 /bin/bash
 ```
 ## 2. Install Paddle Package
 Currently, Python 3.9 wheel installation packages are provided. If you have a need for other Python versions, you can refer to the [PaddlePaddle official documentation](https://www.paddlepaddle.org.cn/en/install/quick) to compile and install them yourself.

@@ -11,7 +11,7 @@ Pull the image. This image is for development only and does not include a pre-co
 
 ```bash
 # Applicable to X86 architecture, Arch64 architecture image is not provided for now
-docker pull registry.baidubce.com/device/paddle-mlu:ctr2.15.0-ubuntu20-gcc84-py310
+docker pull ccr-2vdh3abv-pub.cnc.bj.baidubce.com/device/paddle-mlu:ubuntu20-x86_64-gcc84-py310
 ```
 
 Start the container with the following command as a reference:
@@ -21,7 +21,7 @@ docker run -it --name paddle-mlu-dev -v $(pwd):/work \
   -w=/work --shm-size=128G --network=host --privileged  \
   --cap-add=SYS_PTRACE --security-opt seccomp=unconfined \
   -v /usr/bin/cnmon:/usr/bin/cnmon \
-  registry.baidubce.com/device/paddle-mlu:ctr2.15.0-ubuntu20-gcc84-py310 /bin/bash
+  ccr-2vdh3abv-pub.cnc.bj.baidubce.com/device/paddle-mlu:ubuntu20-x86_64-gcc84-py310 /bin/bash
 ```
 
 ## 2. Install Paddle Package

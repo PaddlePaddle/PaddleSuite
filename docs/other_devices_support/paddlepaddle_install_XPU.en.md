@@ -10,8 +10,8 @@ Currently, PaddleX supports Kunlun R200/R300 and other chips. Considering enviro
 Pull the image. This image is only for the development environment and does not include a pre-compiled PaddlePaddle installation package.
 
 ```bash
-docker pull registry.baidubce.com/device/paddle-xpu:ubuntu20-x86_64-gcc84-py310 # For X86 architecture
-docker pull registry.baidubce.com/device/paddle-xpu:kylinv10-aarch64-gcc82-py310 # For ARM architecture
+docker pull ccr-2vdh3abv-pub.cnc.bj.baidubce.com/device/paddle-xpu:ubuntu20-x86_64-gcc84-py310 # For X86 architecture
+docker pull ccr-2vdh3abv-pub.cnc.bj.baidubce.com/device/paddle-xpu:kylinv10-aarch64-gcc82-py310 # For ARM architecture
 ```
 Refer to the following command to start the container:
 
@@ -19,7 +19,7 @@ Refer to the following command to start the container:
 docker run -it --name=xxx -m 81920M --memory-swap=81920M \
     --shm-size=128G --privileged --net=host \
     -v $(pwd):/workspace -w /workspace \
-    registry.baidubce.com/device/paddle-xpu:$(uname -m)-py310 bash
+    ccr-2vdh3abv-pub.cnc.bj.baidubce.com/device/paddle-xpu:$(uname -m)-py310 bash
 ```
 
 ## 2. Install Paddle Package

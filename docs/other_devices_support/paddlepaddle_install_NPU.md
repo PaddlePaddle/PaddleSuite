@@ -10,9 +10,9 @@ comments: true
 * 拉取镜像，此镜像仅为开发环境，镜像中不包含预编译的飞桨安装包，镜像中已经默认安装了昇腾算子库 CANN-8.0.T13。
 ```bash
 # 适用于 X86 架构
-docker pull registry.baidubce.com/device/paddle-npu:cann80T13-ubuntu20-x86_64-gcc84-py39
+docker pull ccr-2vdh3abv-pub.cnc.bj.baidubce.com/device/paddle-npu:cann80T13-ubuntu20-x86_64-gcc84-py39
 # 适用于 Aarch64 架构
-docker pull registry.baidubce.com/device/paddle-npu:cann80T13-ubuntu20-aarch64-gcc84-py39
+docker pull ccr-2vdh3abv-pub.cnc.bj.baidubce.com/device/paddle-npu:cann80T13-ubuntu20-aarch64-gcc84-py39
 ```
 * 参考如下命令启动容器，ASCEND_RT_VISIBLE_DEVICES 指定可见的 NPU 卡号
 ```bash
@@ -22,7 +22,7 @@ docker run -it --name paddle-npu-dev -v $(pwd):/work \
     -v /usr/local/bin/npu-smi:/usr/local/bin/npu-smi \
     -v /usr/local/dcmi:/usr/local/dcmi \
     -e ASCEND_RT_VISIBLE_DEVICES="0,1,2,3,4,5,6,7" \
-    registry.baidubce.com/device/paddle-npu:cann80T13-ubuntu20-$(uname -m)-gcc84-py39 /bin/bash
+    ccr-2vdh3abv-pub.cnc.bj.baidubce.com/device/paddle-npu:cann80T13-ubuntu20-$(uname -m)-gcc84-py39 /bin/bash
 ```
 ## 2、安装paddle包
 当前提供 Python3.9 的 wheel 安装包。如有其他 Python 版本需求，可以参考[飞桨官方文档](https://www.paddlepaddle.org.cn/install/quick)自行编译安装。
