@@ -161,7 +161,7 @@ def args_cfg():
     paddle2onnx_group.add_argument("--paddle2onnx", action="store_true")
     paddle2onnx_group.add_argument("--paddle_model_dir", type=str)
     paddle2onnx_group.add_argument("--onnx_model_dir", type=str, default="onnx")
-    paddle2onnx_group.add_argument("--opset_version", type=int, default=7)
+    paddle2onnx_group.add_argument("--opset_version", type=int, default=19)
 
     # Parse known arguments to get the pipeline name
     args, remaining_args = parser.parse_known_args()
@@ -287,11 +287,11 @@ def paddle_to_onnx(paddle_model_dir, onnx_model_dir, *, opset_version):
     PD_PARAMS_FILENAME = "inference.pdiparams"
     ONNX_MODEL_FILENAME = "inference.onnx"
     CONFIG_FILENAME = "inference.yml"
+    ADDITIONAL_FILENAMES = ["scaler.pkl"]
 
     def _check_input_dir(input_dir):
         if input_dir is None:
             sys.exit("Input directory must be specified")
-        input_dir = Path(input_dir)
         if not input_dir.exists():
             sys.exit(f"{input_dir} does not exist")
         if not input_dir.is_dir():
@@ -315,13 +315,13 @@ def paddle_to_onnx(paddle_model_dir, onnx_model_dir, *, opset_version):
         cmd = [
             "paddle2onnx",
             "--model_dir",
-            input_dir,
+            str(input_dir),
             "--model_filename",
             PD_MODEL_FILENAME,
             "--params_filename",
             PD_PARAMS_FILENAME,
             "--save_file",
-            str(Path(output_dir, ONNX_MODEL_FILENAME)),
+            str(output_dir / ONNX_MODEL_FILENAME),
             "--opset_version",
             str(opset_version),
         ]
@@ -332,18 +332,28 @@ def paddle_to_onnx(paddle_model_dir, onnx_model_dir, *, opset_version):
         logging.info("Paddle2ONNX conversion succeeded")
 
     def _copy_config_file(input_dir, output_dir):
-        src_path = Path(input_dir, CONFIG_FILENAME)
-        dst_path = Path(output_dir, CONFIG_FILENAME)
-        if not (dst_path.exists() and dst_path.samefile(src_path)):
+        src_path = input_dir / CONFIG_FILENAME
+        dst_path = output_dir / CONFIG_FILENAME
+        shutil.copy(src_path, dst_path)
+        logging.info(f"Copied {src_path} to {dst_path}")
+
+    def _copy_additional_files(input_dir, output_dir):
+        for filename in ADDITIONAL_FILENAMES:
+            src_path = input_dir / filename
+            dst_path = output_dir / filename
             shutil.copy(src_path, dst_path)
             logging.info(f"Copied {src_path} to {dst_path}")
 
+    paddle_model_dir = Path(paddle_model_dir)
+    onnx_model_dir = Path(onnx_model_dir)
     logging.info(f"Input dir: {paddle_model_dir}")
     logging.info(f"Output dir: {onnx_model_dir}")
     _check_input_dir(paddle_model_dir)
     _check_paddle2onnx()
     _run_paddle2onnx(paddle_model_dir, onnx_model_dir, opset_version)
-    _copy_config_file(paddle_model_dir, onnx_model_dir)
+    if not (onnx_model_dir.exists() and onnx_model_dir.samefile(paddle_model_dir)):
+        _copy_config_file(paddle_model_dir, onnx_model_dir)
+        _copy_additional_files(paddle_model_dir, onnx_model_dir)
     logging.info("Done")
 
 
