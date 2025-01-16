@@ -14,7 +14,6 @@
 
 from ..utils import logging
 from ..utils.flags import USE_NEW_INFERENCE, NEW_PREDICTOR
-
 if USE_NEW_INFERENCE:
     logging.warning("=" * 20 + " Using pipelines_new " + "=" * 20)
     from .pipelines_new import create_pipeline

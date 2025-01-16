@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from paddlex import create_pipeline
+from paddlex.inference.pipelines_new import create_pipeline
 
 pipeline = create_pipeline(pipeline="OCR")
 

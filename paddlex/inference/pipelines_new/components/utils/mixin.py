@@ -18,6 +18,7 @@ from pathlib import Path
 import numpy as np
 from PIL import Image
 import pandas as pd
+import re
 
 from .....utils import logging
 from ....utils.io import (
@@ -246,9 +247,15 @@ class MarkdownMixin:
                     )
                 return '\n'.join(img_tags)
 
+            def format_reference():
+                pattern = r'\[\d+\]'
+    # 替换匹配到的内容，在前面添加换行符
+                res = re.sub(pattern, lambda match: '\n' + match.group(), sub_block['reference'])
+                return "\n"+res
+
             def format_table():
                 return "\n"+sub_block['table']
-
+            
             handlers = {
                 'paragraph_title': lambda: format_title(sub_block['paragraph_title']),
                 # 'text_without_layout': lambda: format_title(sub_block['text_without_layout']),
@@ -256,16 +263,17 @@ class MarkdownMixin:
                 'table_title': lambda: format_centered_text('table_title'),
                 'figure_title': lambda: format_centered_text('figure_title'),
                 'chart_title': lambda: format_centered_text('chart_title'),
-                'text': lambda: sub_block['text'].replace('-\n', '').replace('\n', ' ').strip(),
+                # 'text': lambda: sub_block['text'].replace('-\n', '').replace('\n', ' ').strip(),
+                'text': lambda: sub_block['text'].strip('\n'),
                 # 'number': lambda: str(sub_block['number']),
-                'abstract': lambda: "\n"+f"*Abstract*: {sub_block['abstract']}".replace('-\n', '').replace('\n', ' '),
+                'abstract': lambda: "\n"+sub_block['abstract'].strip('\n'),
                 'content': lambda: sub_block['content'].replace('-\n', '').replace('\n', ' ').strip(),
                 'image': format_image,
                 'chart': format_chart,
                 'formula': lambda: f"$${sub_block['formula']}$$".replace('-\n', '').replace('\n', ' '),
                 'table': format_table,
                 # 'reference': lambda: "\n"+f"**Reference**: {sub_block['reference']}".replace('-\n', '').replace('\n', ' ').replace('[','\n['),
-                'reference': lambda: "\n"+f"**Reference**: {sub_block['reference']}",
+                'reference': format_reference,
                 'algorithm': lambda: "\n"+f"**Algorithm**: {sub_block['algorithm']}".replace('-\n', '').replace('\n', ' '),
                 'seal': lambda: "\n"+f"**Seal**: {sub_block['seal']}".replace('-\n', '').replace('\n', ' '),
             }
@@ -273,18 +281,20 @@ class MarkdownMixin:
             markdown_content = ""
             for block in parsing_result: # for each block show ordering results
                 sub_blocks = block['sub_blocks']
-                # last_label = None
-                # last_left = float('inf')
+                last_label = None
+                seg_start_flag = None
+                seg_end_flag = None
                 for sub_block in sorted(sub_blocks, key=lambda x: x.get('sub_index',999)):
                     label = sub_block.get('label')
+                    seg_start_flag = sub_block.get('seg_start_flag')
                     handler = handlers.get(label)
                     if handler:
-                        # if label == last_label == "text"  and abs(last_left - sub_block['layout_bbox'][0]) < 2:
-                        #     markdown_content += "\n\n"+handler()
-                        # else:
-                        markdown_content += "\n"+handler()
-                        # last_label = label
-                        # last_left = sub_block['layout_bbox'][0]
+                        if label == last_label == "text"  and  seg_start_flag == seg_end_flag == False:
+                            markdown_content += " "+handler()
+                        else:
+                            markdown_content += "\n\n"+handler()
+                        last_label = label
+                        seg_end_flag = sub_block.get('seg_end_flag')
 
             return markdown_content
         return _format_data(self)

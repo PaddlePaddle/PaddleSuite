@@ -55,9 +55,10 @@ def process_image_file(image_file, pipeline, save_dir, is_save_gt=True, is_eval=
             total_bleu_score += bleu_score
             total_ard += ard
             total_tau += tau
-        res.save_to_ordering(f"{save_dir}/ordering", is_eval=is_eval, is_only_xycut=is_only_xycut)
+        res.save_to_pdf_order(f"{save_dir}", is_eval=is_eval, is_only_xycut=is_only_xycut)
+        res.save_results(f"{save_dir}")
         # res.save_to_img(f"{save_dir}/images")
-        # res.save_to_json(f"{save_dir}/jsons")
+        res.save_to_json(f"{save_dir}")
 
     return total_bleu_score, total_ard, total_tau
 
@@ -194,7 +195,7 @@ def process_images(image_dir, annotations_path, save_dir="./output", is_save_gt=
         )
 
 
-def main(image_files=None,save_dir = './output/new', is_eval=True, is_only_xycut=False):
+def main(image_files=None,save_dir = './output/new', is_eval=False, is_only_xycut=False):
     save_path = f'{save_dir}/layout_parsing_result.md'
     clear_file(save_path)
     prepare_directories(save_dir)
@@ -208,21 +209,24 @@ def main(image_files=None,save_dir = './output/new', is_eval=True, is_only_xycut
         page_files = pipeline.predict(image_file)
         for res in page_files:
             res.save_to_markdown(f"{save_path}",is_eval=is_eval, is_only_xycut=is_only_xycut)
-            res.save_to_ordering(f"{Path(save_path).parent}/ordering", is_eval=is_eval, is_only_xycut=is_only_xycut)
+            res.save_to_pdf_order(f"{Path(save_path).parent}", is_eval=is_eval, is_only_xycut=is_only_xycut)
             res.save_results(f"{Path(save_path).parent}")
-            # res.save_to_json(f"{Path(save_path).parent}/jsons")
+            res.save_to_json(f"{Path(save_path).parent}")
             # res.save_to_img(f"{Path(save_path).parent}/images")
 
 # 使用封装好的函数
 if __name__ == "__main__":
+    # files_path = "/workspace/shuailiu35/eval_datasets/image70"  # image or pdf
     files_path = "/workspace/shuailiu35/eval_datasets/image70"  # image or pdf
     # files_path = "/workspace/shuailiu35/compare_with_mineru/30/mask_xycut/inputs"  # image or pdf
     # annotations_path = "/workspace/shuailiu35/eval_datasets/instance_val_70.json"  # image or pdf
     annotations_path = None
     save_dir = "/workspace/shuailiu35/compare_with_mineru/70/mask_xycut-v6"
+    # save_dir = "/workspace/shuailiu35/compare_with_mineru/70/xycut"
     # save_dir = "/workspace/shuailiu35/compare_with_mineru/30/mask_xycut-v2"
     # files_path = "/workspace/shuailiu35/eval_datasets/eval_datasets_new"
     # annotations_path = None
+    
     # save_dir = "/workspace/shuailiu35/compare_with_mineru/30/mask_xycut"
     # process_images(image_dir=files_path,
     #                annotations_path=annotations_path,
@@ -251,7 +255,7 @@ if __name__ == "__main__":
     # image_files = ["/workspace/shuailiu35/compare_with_mineru/70/mask_xycut-v2/inputs/12_0401_02168.jpg"]
     # image_files = ["/workspace/shuailiu35/compare_with_mineru/70/mask_xycut-v2/inputs/18_010201_00115.jpg"]
     # image_files = ["/workspace/shuailiu35/compare_with_mineru/70/mask_xycut-v2/inputs/25_00075JL1MLDG8J1XMLC01K0IL9R_44.png"]
-    image_files = ["/workspace/shuailiu35/compare_with_mineru/70/mask_xycut-v1/inputs/28_14145542_601.png"]
+    image_files = ["/workspace/shuailiu35/14-._.pdf"]
     main(image_files,is_eval=False)
 
     # main(output_pdf_path,is_eval=False)

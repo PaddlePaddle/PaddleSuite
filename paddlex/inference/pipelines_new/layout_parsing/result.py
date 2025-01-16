@@ -61,7 +61,7 @@ class LayoutParsingResult(dict, StrMixin, JsonMixin, MarkdownMixin, ImgMixin):
 
         if not os.path.isdir(save_path):
             return
-
+        save_path = os.path.join(save_path, "images")
         img_id = self["img_id"]
         layout_det_res = self["layout_det_res"]
         save_img_path = Path(save_path) / f"layout_det_result_img{img_id}.jpg"
@@ -125,17 +125,32 @@ class LayoutParsingResult(dict, StrMixin, JsonMixin, MarkdownMixin, ImgMixin):
 
     def save_to_json(self, save_path):
         if not save_path.lower().endswith(("json")):
+            save_path = os.path.join(save_path, "jsons")
             save_path = self.get_target_name(save_path)
+            save_dir = Path(save_path).parent.parent.parent
         else:
             save_path = Path(save_path).stem
-        layout_save_path = f"{save_path}_layout.jpg"
-        ocr_save_path = f"{save_path}_ocr.jpg"
-        table_save_path = f"{save_path}_table"
-        table_result_num = len(self["table_result"])
-        for idx in range(table_result_num):
-            self["table_result"][idx]["input_path"] = "{}_{:04d}".format(
-                table_save_path, idx + 1
-            )
+            save_dir = Path(save_path).parent.parent
+
+        self._recursive_img_array2path(self, save_dir ,labels=['img','input_img','output_img','input_path','doc_preprocessor_image']) # markwon path
+
+        image_res_list = []
+        parsing_result = self['layout_parsing_result']
+        for block in parsing_result:
+            sub_blocks = block['sub_blocks']
+            for sub_block in sub_blocks:
+                if sub_block['label'] == 'image':
+                    image_res_list.append(sub_block['image']['img'])
+                elif sub_block['label'] == 'chart':
+                    image_res_list.append(sub_block['chart']['img'])
+    
+        self['input_path'] = self._img_array2path(self['image_array'],save_dir)
+        del self['image_array']
+        # del self['overall_ocr_res']
+        # del self['text_paragraphs_ocr_res']
+        del self['doc_preprocessor_res']
+        # del self['layout_det_res']
+        self['image_res_list'] = image_res_list
 
         if not str(save_path).endswith(".json"):
             save_path = "{}.json".format(save_path)
@@ -204,7 +219,7 @@ class LayoutParsingResult(dict, StrMixin, JsonMixin, MarkdownMixin, ImgMixin):
         # for idx, table_result in enumerate(self["table_result"]):
         #     table_result.save_to_img(f"{table_save_path}_{idx}.jpg")
 
-    def save_to_ordering(self, save_path, is_eval=False, font_path="/workspace/shuailiu35/Roboto-Bold.ttf", is_only_xycut=False):
+    def save_to_pdf_order(self, save_path, is_eval=False, font_path="/workspace/shuailiu35/Roboto-Bold.ttf", is_only_xycut=False):
         """
         Save the layout ordering to an image file.
 
@@ -217,6 +232,7 @@ class LayoutParsingResult(dict, StrMixin, JsonMixin, MarkdownMixin, ImgMixin):
         Returns:
             None
         """
+        save_path = os.path.join(save_path, "ordering")
         save_path = Path(save_path)
         if save_path.suffix.lower() not in (".jpg", ".png"):
             save_path = Path(self.get_target_name(str(save_path)))
@@ -252,7 +268,7 @@ class LayoutParsingResult(dict, StrMixin, JsonMixin, MarkdownMixin, ImgMixin):
             )
 
             # Draw bounding boxes and indices on the image
-            sub_blocks = block['sub_blocks']
+            sub_blocks = parsing_result[block_index]['sub_blocks']
             for sub_block in sub_blocks:
                 bbox = sub_block['layout_bbox']
                 index = sub_block.get('index',None)
@@ -293,7 +309,7 @@ class LayoutParsingResult(dict, StrMixin, JsonMixin, MarkdownMixin, ImgMixin):
                 is_eval=is_eval,
                 is_only_xycut=is_only_xycut
             )
-        self._img_array2path(self['layout_parsing_result'], save_path.parent)
+        self._recursive_img_array2path(self['layout_parsing_result'], save_path.parent,labels=['img'])
         super().save_to_markdown(save_path)
 
     def save_gt_json(self, gt_json_path, is_eval=True, is_only_xycut=False):
@@ -397,7 +413,18 @@ class LayoutParsingResult(dict, StrMixin, JsonMixin, MarkdownMixin, ImgMixin):
             gt_data = json.load(file)
         return gt_data
 
-    def _img_array2path(self, data, save_path):
+    def _img_array2path(self,data,save_path):
+        if isinstance(data, np.ndarray) and data.ndim == 3:  # Check if it's an image array
+            # Generate a unique filename using UUID
+            img_name = f"image_{uuid.uuid4().hex}.png"
+            img_path = Path(save_path) / "imgs" / img_name
+            img_path.parent.mkdir(parents=True, exist_ok=True)  # Ensure the directory exists
+            cv2.imwrite(str(img_path), data)
+            return f"imgs/{img_name}"
+        else:
+            return ValueError
+
+    def _recursive_img_array2path(self, data, save_path, labels=[]):
         """
         Process a dictionary or list to save image arrays to disk and replace them with file paths.
 
@@ -407,18 +434,13 @@ class LayoutParsingResult(dict, StrMixin, JsonMixin, MarkdownMixin, ImgMixin):
         """
         if isinstance(data, dict):
             for k, v in data.items():
-                if k == 'img' and isinstance(v, np.ndarray) and v.ndim == 3:  # Check if it's an image array
-                    # Generate a unique filename using UUID
-                    img_name = f"image_{uuid.uuid4().hex}.png"
-                    img_path = Path(save_path) / "imgs" / img_name
-                    img_path.parent.mkdir(parents=True, exist_ok=True)  # Ensure the directory exists
-                    cv2.imwrite(str(img_path), v)
-                    data[k] = f"imgs/{img_name}"
+                if k in labels and isinstance(v, np.ndarray) and v.ndim == 3:  # Check if it's an image array
+                    data[k] = self._img_array2path(v, save_path)
                 else:
-                    self._img_array2path(v, save_path)
+                    self._recursive_img_array2path(v, save_path,labels)
         elif isinstance(data, list):
             for item in data:
-                self._img_array2path(item, save_path)
+                self._recursive_img_array2path(item, save_path,labels)
 
     def _calculate_overlap_area_2_minbox_area_ratio(self, bbox1, bbox2):
         """
@@ -524,7 +546,7 @@ class LayoutParsingResult(dict, StrMixin, JsonMixin, MarkdownMixin, ImgMixin):
 
     def _text_median_width(self, blocks):
         # widths = [block['layout_bbox'][2] - block['layout_bbox'][0] for block in blocks if block['label'] in ['text','formula','algorithm','reference','content',"doc_title","paragraph_title","abstract"]]
-        widths = [block['layout_bbox'][2] - block['layout_bbox'][0] for block in blocks if block['label'] == 'text']
+        widths = [block['layout_bbox'][2] - block['layout_bbox'][0] for block in blocks if block['label'] in ['text']]
         return np.median(widths) if widths else float('inf')
 
     def _get_layout_property(self, blocks, median_width, no_mask_labels, threshold=0.8):
@@ -816,15 +838,19 @@ class LayoutParsingResult(dict, StrMixin, JsonMixin, MarkdownMixin, ImgMixin):
         """
         if self.is_ordered:
             return 
+        title_text_labels = ["doc_title"]
+        title_labels = ["doc_title", "paragraph_title"]
+        vision_labels = ['image','table','seal','chart','figure']
+        vision_title_labels = ["table_title", 'chart_title', "figure_title"]
+
         layout_parsing_result = self['layout_parsing_result']
         parsing_result = layout_parsing_result[block_index]['sub_blocks']
-        parsing_result, _ = self._remove_overlap_blocks(parsing_result, threshold=0.9, smaller=True)
+        parsing_result, _ = self._remove_overlap_blocks(parsing_result, threshold=0.5, smaller=True)
+        parsing_result = self._get_sub_category(parsing_result,title_text_labels)
 
         if is_only_xycut == False:
             # title_labels = ["doc_title","paragraph_title"]
-            title_text_labels = ["doc_title"]
             doc_flag = False
-            parsing_result = self._get_sub_category(parsing_result,title_text_labels)
             median_width = self._text_median_width(parsing_result)
             parsing_result,projection_direction = self._get_layout_property(parsing_result,
                                                                             median_width,
@@ -832,12 +858,6 @@ class LayoutParsingResult(dict, StrMixin, JsonMixin, MarkdownMixin, ImgMixin):
                                                                             threshold=0.3)
             # Convert bounding boxes to float and remove overlaps
             double_text_blocks, title_text_blocks, title_blocks, vision_blocks, vision_title_blocks, vision_footnote_blocks, other_blocks = [], [], [], [], [], [], []
-            
-            title_labels = ["doc_title", "paragraph_title"]
-            
-            vision_labels = ['image','table','seal','chart','figure']
-
-            vision_title_labels = ["table_title", 'chart_title', "figure_title"]
             
             drop_indexes = []
 
@@ -876,17 +896,22 @@ class LayoutParsingResult(dict, StrMixin, JsonMixin, MarkdownMixin, ImgMixin):
 
         if len(parsing_result)>0:
             # single text label
-            block_bboxes = [block["layout_bbox"] for block in parsing_result]
-            block_bboxes.sort(key=lambda x: (x[0]//20,x[1]))
-            block_bboxes = np.array(block_bboxes)
             if is_only_xycut==False and \
                 (len(double_text_blocks) > len(parsing_result) or projection_direction):
-
+                parsing_result.extend(title_blocks + double_text_blocks)
+                title_blocks = []
+                double_text_blocks = []
+                block_bboxes = [block["layout_bbox"] for block in parsing_result]
+                block_bboxes.sort(key=lambda x: (x[0]//max(20,median_width),x[1]))
+                block_bboxes = np.array(block_bboxes)
                 print("sort by yxcut...")
                 sorted_indices = sort_by_xycut(block_bboxes,
                                                direction=1,
                                                min_gap=1)    
             else:
+                block_bboxes = [block["layout_bbox"] for block in parsing_result]
+                block_bboxes.sort(key=lambda x: (x[0]//20,x[1]))
+                block_bboxes = np.array(block_bboxes)
                 sorted_indices = sort_by_xycut(block_bboxes,
                                                direction=0,
                                                min_gap=20)
@@ -895,130 +920,143 @@ class LayoutParsingResult(dict, StrMixin, JsonMixin, MarkdownMixin, ImgMixin):
 
             for block in parsing_result:
                 block['index'] = sorted_boxes.index(block['layout_bbox'])+1
+                block['sub_index'] = sorted_boxes.index(block['layout_bbox'])+1 
 
-            def nearest_match_(input_blocks,distance_type="manhattan",is_add_index=True):
-                for block in input_blocks:
-                    bbox = block['layout_bbox']
-                    min_distance = float('inf')
-                    min_distance_config = [[float('inf'),float('inf')],float('inf'),float('inf')] # for double text
-                    nearest_gt_index = 0
-                    for match_block in parsing_result:
-                        match_bbox = match_block['layout_bbox']
-                        if distance_type=="nearest_iou_edge_distance":
-                            distance,min_distance_config = self._nearest_iou_edge_distance(bbox, 
-                                                                    match_bbox,
-                                                                    block['sub_label'],
-                                                                    vision_labels=vision_labels,
-                                                                    no_mask_labels=no_mask_labels,
-                                                                    median_width=median_width,
-                                                                    title_labels = title_labels,
-                                                                    title_text=block['title_text'],
-                                                                    sub_title=block['sub_title'],
-                                                                    min_distance_config=min_distance_config)
-                        elif distance_type=="title_text":
-                            if match_block['label'] in title_labels+["abstract"] and match_block['title_text'] != []:
-                                iou_left_up = self._calculate_overlap_area_2_minbox_area_ratio(bbox,match_block['title_text'][0][1])
-                                iou_right_down = self._calculate_overlap_area_2_minbox_area_ratio(bbox,match_block['title_text'][-1][1])
-                                iou = 1-max(iou_left_up,iou_right_down)
-                                distance = self._manhattan_distance(bbox, match_bbox)*iou
-                            else:
-                                distance = float('inf')
-                        elif distance_type=="manhattan":
-                            distance = self._manhattan_distance(bbox, match_bbox)
-                        elif distance_type=="vision_footnote":
-                            if match_block['label'] in vision_labels and match_block['vision_footnote'] != []:
-                                iou_left_up = self._calculate_overlap_area_2_minbox_area_ratio(bbox,match_block['vision_footnote'][0])
-                                iou_right_down = self._calculate_overlap_area_2_minbox_area_ratio(bbox,match_block['vision_footnote'][-1])
-                                iou = 1-max(iou_left_up,iou_right_down)
-                                distance = self._manhattan_distance(bbox, match_bbox)*iou
-                            else:
-                                distance = float('inf')
+        def nearest_match_(input_blocks,distance_type="manhattan",is_add_index=True):
+            for block in input_blocks:
+                bbox = block['layout_bbox']
+                min_distance = float('inf')
+                min_distance_config = [[float('inf'),float('inf')],float('inf'),float('inf')] # for double text
+                nearest_gt_index = 0
+                for match_block in parsing_result:
+                    match_bbox = match_block['layout_bbox']
+                    if distance_type=="nearest_iou_edge_distance":
+                        distance,min_distance_config = self._nearest_iou_edge_distance(bbox, 
+                                                                match_bbox,
+                                                                block['sub_label'],
+                                                                vision_labels=vision_labels,
+                                                                no_mask_labels=no_mask_labels,
+                                                                median_width=median_width,
+                                                                title_labels = title_labels,
+                                                                title_text=block['title_text'],
+                                                                sub_title=block['sub_title'],
+                                                                min_distance_config=min_distance_config,
+                                                                tolerance_len=10)
+                    elif distance_type=="title_text":
+                        if match_block['label'] in title_labels+["abstract"] and match_block['title_text'] != []:
+                            iou_left_up = self._calculate_overlap_area_2_minbox_area_ratio(bbox,match_block['title_text'][0][1])
+                            iou_right_down = self._calculate_overlap_area_2_minbox_area_ratio(bbox,match_block['title_text'][-1][1])
+                            iou = 1-max(iou_left_up,iou_right_down)
+                            distance = self._manhattan_distance(bbox, match_bbox)*iou
                         else:
-                            raise NotImplementedError
-                        
-                        if distance < min_distance:
-                            min_distance = distance
-                            nearest_gt_index = match_block.get('index',999)
-                            
-                    if is_add_index:
-                        block['index'] = nearest_gt_index
+                            distance = float('inf')
+                    elif distance_type=="manhattan":
+                        distance = self._manhattan_distance(bbox, match_bbox)
+                    elif distance_type=="vision_footnote":
+                        if match_block['label'] in vision_labels and match_block['vision_footnote'] != []:
+                            iou_left_up = self._calculate_overlap_area_2_minbox_area_ratio(bbox,match_block['vision_footnote'][0])
+                            iou_right_down = self._calculate_overlap_area_2_minbox_area_ratio(bbox,match_block['vision_footnote'][-1])
+                            iou = 1-max(iou_left_up,iou_right_down)
+                            distance = self._manhattan_distance(bbox, match_bbox)*iou
+                        else:
+                            distance = float('inf')
+                    elif distance_type=="vision_body":
+                        if match_block['label'] in vision_title_labels and block['vision_footnote'] != []:
+                            iou_left_up = self._calculate_overlap_area_2_minbox_area_ratio(match_bbox,block['vision_footnote'][0])
+                            iou_right_down = self._calculate_overlap_area_2_minbox_area_ratio(match_bbox,block['vision_footnote'][-1])
+                            iou = 1-max(iou_left_up,iou_right_down)
+                            distance = self._manhattan_distance(bbox, match_bbox)*iou
+                        else:
+                            distance = float('inf')
                     else:
-                        block['sub_index'] = nearest_gt_index
-
-                    parsing_result.append(block)
+                        raise NotImplementedError
                     
-                # for block in input_blocks:
-                #     parsing_result.append(block)
-            
-            if is_only_xycut == False:
-
-                # title label
-                title_blocks.sort(key=lambda x: (x['layout_bbox'][1]//10,x['layout_bbox'][0]//median_width,x['layout_bbox'][1]**2+x['layout_bbox'][0]**2))
-                nearest_match_(title_blocks,distance_type="nearest_iou_edge_distance")
-                
-                if doc_flag:
-                    # text_sort_labels = ["doc_title","paragraph_title","abstract"]
-                    text_sort_labels = ["doc_title"]
-                    text_label_priority = {label: priority for priority, label in enumerate(text_sort_labels)}
-                    doc_titles = []
-                    for i,block in enumerate(parsing_result):
-                        if block['label'] == "doc_title":
-                            doc_titles.append((i,block['layout_bbox'][1],block['layout_bbox'][0]))
-                    doc_titles.sort(key=lambda x: (x[1],x[2]))
-                    first_doc_title_index = doc_titles[0][0]
-                    parsing_result[first_doc_title_index]['index'] = 1
-                    parsing_result.sort(key=lambda x: (x['index'], text_label_priority.get(x['label'],9999),x['layout_bbox'][1],x['layout_bbox'][0])) 
+                    if distance < min_distance:
+                        min_distance = distance
+                        if is_add_index:
+                            nearest_gt_index = match_block.get('index',999)
+                        else:
+                            nearest_gt_index = match_block.get('sub_index',999) 
+                        
+                if is_add_index:
+                    block['index'] = nearest_gt_index
                 else:
-                    parsing_result.sort(key=lambda x: (x['index'],x['layout_bbox'][1],x['layout_bbox'][0])) 
+                    block['sub_index'] = nearest_gt_index
 
-                for idx,block in enumerate(parsing_result):
-                    block['index'] = idx+1
-                    block['sub_index'] = idx+1
-                
-                # double text label
-                double_text_blocks.sort(key=lambda x: (x['layout_bbox'][1]//10,x['layout_bbox'][0]//median_width,x['layout_bbox'][1]**2+x['layout_bbox'][0]**2))
-                nearest_match_(double_text_blocks,distance_type="nearest_iou_edge_distance")
+                parsing_result.append(block)
+                    
+            # for block in input_blocks:
+            #     parsing_result.append(block)
+        
+        if is_only_xycut == False:
+
+            # double text label
+            double_text_blocks.sort(key=lambda x: (x['layout_bbox'][1]//10,x['layout_bbox'][0]//median_width,x['layout_bbox'][1]**2+x['layout_bbox'][0]**2))
+            nearest_match_(double_text_blocks,distance_type="nearest_iou_edge_distance")
+            parsing_result.sort(key=lambda x: (x['index'],x['layout_bbox'][1],x['layout_bbox'][0])) 
+
+            for idx,block in enumerate(parsing_result):
+                block['index'] = idx+1
+                block['sub_index'] = idx+1
+
+            # title label
+            title_blocks.sort(key=lambda x: (x['layout_bbox'][1]//10,x['layout_bbox'][0]//median_width,x['layout_bbox'][1]**2+x['layout_bbox'][0]**2))
+            nearest_match_(title_blocks,distance_type="nearest_iou_edge_distance")
+            
+            if doc_flag:
+                # text_sort_labels = ["doc_title","paragraph_title","abstract"]
+                text_sort_labels = ["doc_title"]
+                text_label_priority = {label: priority for priority, label in enumerate(text_sort_labels)}
+                doc_titles = []
+                for i,block in enumerate(parsing_result):
+                    if block['label'] == "doc_title":
+                        doc_titles.append((i,block['layout_bbox'][1],block['layout_bbox'][0]))
+                doc_titles.sort(key=lambda x: (x[1],x[2]))
+                first_doc_title_index = doc_titles[0][0]
+                parsing_result[first_doc_title_index]['index'] = 1
+                parsing_result.sort(key=lambda x: (x['index'], text_label_priority.get(x['label'],9999),x['layout_bbox'][1],x['layout_bbox'][0])) 
+            else:
                 parsing_result.sort(key=lambda x: (x['index'],x['layout_bbox'][1],x['layout_bbox'][0])) 
 
+            for idx,block in enumerate(parsing_result):
+                block['index'] = idx+1
+                block['sub_index'] = idx+1
+
+            # title-text label
+            nearest_match_(title_text_blocks,distance_type="title_text")
+            text_sort_labels = ["doc_title","paragraph_title","title_text"]
+            text_label_priority = {label: priority for priority, label in enumerate(text_sort_labels)}
+            parsing_result.sort(key=lambda x: (x['index'],text_label_priority.get(x['sub_label'],9999),x['layout_bbox'][1],x['layout_bbox'][0])) 
+
+            for idx,block in enumerate(parsing_result):
+                block['index'] = idx+1
+                block['sub_index'] = idx+1
+
+            if is_eval == False:
+                # image,figure,chart,seal label
+                nearest_match_(vision_title_blocks,distance_type="nearest_iou_edge_distance",is_add_index=False)
+                parsing_result.sort(key=lambda x: (x['sub_index'],x['layout_bbox'][1],x['layout_bbox'][0])) 
+
                 for idx,block in enumerate(parsing_result):
-                    block['index'] = idx+1
                     block['sub_index'] = idx+1
 
-                # title-text label
-                nearest_match_(title_text_blocks,distance_type="title_text")
-                text_sort_labels = ["doc_title","paragraph_title","title_text"]
-                text_label_priority = {label: priority for priority, label in enumerate(text_sort_labels)}
-                parsing_result.sort(key=lambda x: (x['index'],text_label_priority.get(x['sub_label'],9999),x['layout_bbox'][1],x['layout_bbox'][0])) 
+                # image,figure,chart,seal label
+                nearest_match_(vision_blocks,distance_type="nearest_iou_edge_distance",is_add_index=False)
+                parsing_result.sort(key=lambda x: (x['sub_index'],x['layout_bbox'][1],x['layout_bbox'][0])) 
 
                 for idx,block in enumerate(parsing_result):
-                    block['index'] = idx+1
                     block['sub_index'] = idx+1
+                
+                # vision footnote label
+                nearest_match_(vision_footnote_blocks,distance_type="vision_footnote",is_add_index=False)
+                text_label_priority = {'vision_footnote':9999}
+                parsing_result.sort(key=lambda x: (x['sub_index'],text_label_priority.get(x['sub_label'],0),x['layout_bbox'][1],x['layout_bbox'][0])) 
 
-                if is_eval == False:
-                     # image,figure,chart,seal label
-                    nearest_match_(vision_title_blocks,distance_type="nearest_iou_edge_distance",is_add_index=False)
-                    parsing_result.sort(key=lambda x: (x['sub_index'],x['layout_bbox'][1],x['layout_bbox'][0])) 
-
-                    for idx,block in enumerate(parsing_result):
-                        block['sub_index'] = idx+1
-
-                    # image,figure,chart,seal label
-                    nearest_match_(vision_blocks,distance_type="nearest_iou_edge_distance",is_add_index=False)
-                    parsing_result.sort(key=lambda x: (x['sub_index'],x['layout_bbox'][1],x['layout_bbox'][0])) 
-
-                    for idx,block in enumerate(parsing_result):
-                        block['sub_index'] = idx+1
-                    
-                    # vision footnote label
-                    nearest_match_(vision_footnote_blocks,distance_type="vision_footnote",is_add_index=False)
-                    text_label_priority = {'vision_footnote':9999}
-                    parsing_result.sort(key=lambda x: (x['sub_index'],text_label_priority.get(x['sub_label'],0),x['layout_bbox'][1],x['layout_bbox'][0])) 
-
-                    for idx,block in enumerate(parsing_result):
-                        block['sub_index'] = idx+1
-                    
-                    # header、footnote、header_image... label 
-                    nearest_match_(other_blocks,distance_type="manhattan",is_add_index=False)
+                for idx,block in enumerate(parsing_result):
+                    block['sub_index'] = idx+1
+                
+                # header、footnote、header_image... label 
+                nearest_match_(other_blocks,distance_type="manhattan",is_add_index=False)
         
         self.is_ordered = True
     
@@ -1114,7 +1152,7 @@ class LayoutParsingResult(dict, StrMixin, JsonMixin, MarkdownMixin, ImgMixin):
                                input_bbox, match_bbox, 
                                weight=[1, 1, 1, 1], 
                                label='text', no_mask_labels=[], 
-                               min_edge_distances_config=[]):
+                               min_edge_distances_config=[],tolerance_len = 10):
         """
         Calculate the nearest edge distance between two bounding boxes, considering directional weights.
 
@@ -1151,7 +1189,7 @@ class LayoutParsingResult(dict, StrMixin, JsonMixin, MarkdownMixin, ImgMixin):
         if x2 < x1_prime:
             direction_num += 1
             distance[0] = (x1_prime - x2)
-            if abs(distance[0] - min_edge_distance_x) <= 10:
+            if abs(distance[0] - min_edge_distance_x) <= tolerance_len:
                 distance_x = min_edge_distance_x * weight[0]
             else:
                 distance_x = distance[0] * weight[0]
@@ -1159,7 +1197,7 @@ class LayoutParsingResult(dict, StrMixin, JsonMixin, MarkdownMixin, ImgMixin):
         elif x1 > x2_prime:
             direction_num += 1
             distance[1] = (x1 - x2_prime)
-            if abs(distance[1] - min_edge_distance_x) <= 10:
+            if abs(distance[1] - min_edge_distance_x) <= tolerance_len:
                 distance_x = min_edge_distance_x * weight[1]
             else:
                 distance_x = distance[1] * weight[1]
@@ -1171,7 +1209,7 @@ class LayoutParsingResult(dict, StrMixin, JsonMixin, MarkdownMixin, ImgMixin):
         if y2 < y1_prime:
             direction_num += 1
             distance[2] = (y1_prime - y2)
-            if abs(distance[2] - min_edge_distance_y) <= 10:
+            if abs(distance[2] - min_edge_distance_y) <= tolerance_len:
                 distance_y = min_edge_distance_y * weight[2]
             else:
                 distance_y = distance[2] * weight[2]
@@ -1181,7 +1219,7 @@ class LayoutParsingResult(dict, StrMixin, JsonMixin, MarkdownMixin, ImgMixin):
         elif y1 > y2_prime:
             direction_num += 1
             distance[3] = (y1 - y2_prime)
-            if abs(distance[3] - min_edge_distance_y) <= 10:
+            if abs(distance[3] - min_edge_distance_y) <= tolerance_len:
                 distance_y = min_edge_distance_y * weight[3]
             else:
                 distance_y = distance[3] * weight[3]
@@ -1200,7 +1238,7 @@ class LayoutParsingResult(dict, StrMixin, JsonMixin, MarkdownMixin, ImgMixin):
         """Define weights based on the label and orientation."""
         if label == "doc_title":
             return [1, 0.1, 0.1, 1] if horizontal else [0.2, 0.1, 1, 1] # left-down ,  right-left 
-        elif label in ["paragraph_title", "abstract", "figure_title", "chart_title"]:
+        elif label in ["paragraph_title", "abstract", "figure_title", "chart_title", 'image','seal','chart','figure']:
             return [1, 1, 0.1, 1] # down 
         else:
             return [1, 1, 1, 0.1] # up
@@ -1210,7 +1248,8 @@ class LayoutParsingResult(dict, StrMixin, JsonMixin, MarkdownMixin, ImgMixin):
                                    label, vision_labels, no_mask_labels, 
                                    median_width=-1, 
                                    title_labels=[], title_text=[], sub_title=[], 
-                                   min_distance_config=[]):
+                                   min_distance_config=[],
+                                   tolerance_len =10):
         """
         Calculate the nearest IOU edge distance between two bounding boxes.
 
@@ -1265,11 +1304,13 @@ class LayoutParsingResult(dict, StrMixin, JsonMixin, MarkdownMixin, ImgMixin):
 
         # Calculate edge distance
         weight = self._get_weights(label, horizontal1)
+        if label == "abstract":
+            tolerance_len *= 3
         edge_distance, edge_distance_config = self._nearest_edge_distance(input_bbox, match_bbox, weight, 
                                                                         label=label, 
                                                                         no_mask_labels=no_mask_labels, 
                                                                         min_edge_distances_config=min_edge_distances_config,
-                                                                        )
+                                                                        tolerance_len=tolerance_len)
 
         # Weights for combining distances
         iou_edge_weight = [10**6, 10**3, 1, 0.001]
@@ -1282,7 +1323,7 @@ class LayoutParsingResult(dict, StrMixin, JsonMixin, MarkdownMixin, ImgMixin):
             left_edge_distance = -x2_prime
 
         min_up_edge_distance = up_edge_distances_config
-        if abs(min_up_edge_distance - up_edge_distance) <= 10:
+        if abs(min_up_edge_distance - up_edge_distance) <= tolerance_len:
             up_edge_distance = min_up_edge_distance
 
         # Calculate total distance

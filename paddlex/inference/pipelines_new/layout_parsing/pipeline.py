@@ -230,7 +230,9 @@ class LayoutParsingPipeline(BasePipeline):
         Returns:
             OCRResult: The predicted OCR result with updated dt_boxes.
         """
-        overall_ocr_res = next(self.general_ocr_pipeline(image_array))
+        overall_ocr_res = next(self.general_ocr_pipeline(image_array, use_doc_orientation_classify=False,
+                                                                      use_doc_unwarping=False,
+                                                                      use_textline_orientation=False))
         dt_boxes = convert_points_to_boxes(overall_ocr_res["dt_polys"])
         overall_ocr_res["dt_boxes"] = dt_boxes
         return overall_ocr_res
@@ -286,8 +288,7 @@ class LayoutParsingPipeline(BasePipeline):
                 self.predict_doc_preprocessor_res(image_array, input_params)
             )
 
-            layout_det_res = next(self.layout_det_model(doc_preprocessor_image))
-            # print(layout_det_res)
+            layout_det_res = next(self.layout_det_model(doc_preprocessor_image,threshold=0.4))
 
             if input_params["use_general_ocr"] or input_params["use_table_recognition"]:
                 overall_ocr_res = self.predict_overall_ocr_res(doc_preprocessor_image)
@@ -305,6 +306,7 @@ class LayoutParsingPipeline(BasePipeline):
                 table_res_list = next(
                     self.table_recognition_pipeline(
                         doc_preprocessor_image,
+                        use_ocr_model=False,
                         use_layout_detection=False,
                         use_doc_orientation_classify=False,
                         use_doc_unwarping=False,
@@ -312,7 +314,10 @@ class LayoutParsingPipeline(BasePipeline):
                         layout_det_res=layout_det_res,
                     )
                 )
-                table_res_list = table_res_list["table_res_list"]
+                if table_res_list:
+                    table_res_list = table_res_list["table_res_list"]
+                else:
+                    table_res_list = []
             else:
                 table_res_list = []
 
@@ -326,18 +331,20 @@ class LayoutParsingPipeline(BasePipeline):
                         layout_det_res=layout_det_res,
                     )
                 )
-                seal_res_list = seal_res_list["seal_res_list"]
+                if seal_res_list:
+                    seal_res_list = seal_res_list["seal_res_list"]
+                else:
+                    seal_res_list = []
             else:
                 seal_res_list = []
             
             for table_res in table_res_list:
                 table_res['layout_bbox'] = table_res['cell_box_list'][0]
             structure_res = get_structure_res(overall_ocr_res, layout_det_res,table_res_list)
-            img_size = image_array.shape[0],image_array.shape[1]
 
             structure_res_list = [{
                 "block_bbox":[0,0,2550,2550],
-                "block_size":img_size,
+                "block_size":[image_array.shape[1],image_array.shape[0]],
                 "sub_blocks":structure_res
             },]
 

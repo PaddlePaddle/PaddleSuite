@@ -13,11 +13,13 @@ if __name__ == '__main__':
     # gt bbox划分细一点，最好是和模型输出block一致,这样可以更准确的计算bleu score
     # gt 不需要考虑图像和表格区数据，只需要考虑文本区数据
 
+    # input_data = load_data_from_json("/workspace/shuailiu35/compare_with_mineru/70/torch_70.json")
+
     # input_jsons = glob.glob("/workspace/shuailiu35/compare_with_mineru/70/mask_xycut-v1/jsons/input_pdf/*.json")
     # input_jsons = glob.glob("/workspace/shuailiu35/compare_with_mineru/70/mask_xycut-v2/jsons/input_pdf/*.json")
-    input_jsons = glob.glob("/workspace/shuailiu35/compare_with_mineru/70/mask_xycut-v5/jsons/input_pdf/*.json")
+    input_jsons = glob.glob("/workspace/shuailiu35/compare_with_mineru/70/mask_xycut-v6/jsons/input_pdf/*.json")
     # input_jsons = glob.glob("/workspace/shuailiu35/compare_with_mineru/70/xycut/jsons/input_pdf/*.json")
-    # input_jsons = glob.glob("/workspace/shuailiu35/compare_with_mineru/30/mask_xycut/jsons/input_pdf/*.json")
+    # input_jsons = glob.glob("/workspace/shuailiu35/compare_with_mineru/30/mask_xycut-v2/jsons/input_pdf/*.json")
     # input_jsons = glob.glob("/workspace/shuailiu35/compare_with_mineru/70/xycut/jsons/input_pdf/*.json")
     input_jsons.sort()
     input_data = []

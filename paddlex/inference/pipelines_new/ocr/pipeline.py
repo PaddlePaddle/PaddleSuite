@@ -51,7 +51,6 @@ class OCRPipeline(BasePipeline):
         super().__init__(
             device=device, pp_option=pp_option, use_hpip=use_hpip, hpi_params=hpi_params
         )
-
         self.use_doc_preprocessor = config.get("use_doc_preprocessor", True)
         if self.use_doc_preprocessor:
             doc_preprocessor_config = config["SubPipelines"]["DocPreprocessor"]
@@ -372,7 +371,7 @@ class OCRPipeline(BasePipeline):
             dt_polys = self._sort_boxes(dt_polys)
 
             single_img_res = {
-                "input_img": input,
+                "input_img": image_array,
                 # TODO: `doc_preprocessor_image` parameter does not need to be retained here, it requires further confirmation.
                 "doc_preprocessor_image": doc_preprocessor_image,
                 "input_path": batch_data[0],

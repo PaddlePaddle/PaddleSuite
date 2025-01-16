@@ -119,9 +119,9 @@ def get_sub_regions_ocr_res(
                 flag_match = False
         if flag_match:
             sub_regions_ocr_res["dt_polys"].append(overall_ocr_res["dt_polys"][box_no])
-            sub_regions_ocr_res["rec_text"].append(overall_ocr_res["rec_text"][box_no])
+            sub_regions_ocr_res["rec_text"].append(overall_ocr_res["rec_texts"][box_no])
             sub_regions_ocr_res["rec_score"].append(
-                overall_ocr_res["rec_score"][box_no]
+                overall_ocr_res["rec_scores"][box_no]
             )
             sub_regions_ocr_res["dt_boxes"].append(overall_ocr_res["dt_boxes"][box_no])
     return sub_regions_ocr_res
@@ -155,6 +155,59 @@ def calculate_iou(box1, box2):
     iou = inter_area / min_area
     return iou
 
+def is_overlaps_y_exceeds_threshold(bbox1, bbox2, overlap_ratio_threshold=0.6):
+        _, y0_1, _, y1_1 = bbox1
+        _, y0_2, _, y1_2 = bbox2
+
+        overlap = max(0, min(y1_1, y1_2) - max(y0_1, y0_2))
+        min_height = min(y1_1 - y0_1, y1_2 - y0_2)
+
+        return (overlap / min_height) > overlap_ratio_threshold
+
+def sort_boxes_from_left_to_right_then_top_to_bottom(layout_bbox, ocr_res, line_height_threshold=0.7):    
+    assert ocr_res['boxes'] and ocr_res['rec_texts']
+
+    # span->line->block
+    boxes = ocr_res['boxes']
+    rec_text = ocr_res['rec_texts']
+    x_min,x_max = layout_bbox[0],layout_bbox[2]
+
+    spans = list(zip(boxes, rec_text))
+    spans.sort(key=lambda span: span[0][1])
+    spans = [list(span) for span in spans]
+
+    lines = []
+    first_span = spans[0]
+    current_line = [first_span]
+    current_y0, current_y1 = first_span[0][1], first_span[0][3]
+
+    for span in spans[1:]:
+        y0, y1 = span[0][1],span[0][3]
+        if is_overlaps_y_exceeds_threshold((0, current_y0, 0, current_y1), (0, y0, 0, y1), line_height_threshold):
+            current_line.append(span)
+            current_y0 = min(current_y0, y0)
+            current_y1 = max(current_y1, y1)
+        else:
+            lines.append(current_line)
+            current_line = [span]
+            current_y0, current_y1 = y0, y1
+
+    if current_line:
+        lines.append(current_line)
+
+    for line in lines:
+        line.sort(key=lambda span: span[0][0])
+        first_span = line[0]
+        end_span = line[-1]
+        if first_span[0][0] - x_min > 20:
+            first_span[1] = '\n ' + first_span[1]
+        if x_max - end_span[0][2] > 20:
+            end_span[1] = end_span[1]+ '\n'
+
+    ocr_res['boxes'] = [span[0] for line in lines for span in line]
+    ocr_res['rec_texts'] = [span[1]+' ' for line in lines for span in line]
+    return ocr_res
+
 def get_structure_res(
     overall_ocr_res: OCRResult, layout_det_res: DetResult, table_res_list
 ) -> OCRResult:
@@ -165,7 +218,7 @@ def get_structure_res(
         overall_ocr_res (OCRResult): An object containing the overall OCR results, including detected text boxes and recognized text. The structure is expected to have:
             - "input_img": The image on which OCR was performed.
             - "dt_boxes": A list of detected text box coordinates.
-            - "rec_text": A list of recognized text corresponding to the detected boxes.
+            - "rec_texts": A list of recognized text corresponding to the detected boxes.
             
         layout_det_res (DetResult): An object containing the layout detection results, including detected layout boxes and their labels. The structure is expected to have:
             - "boxes": A list of dictionaries with keys "coordinate" for box coordinates and "label" for the type of content.
@@ -187,8 +240,10 @@ def get_structure_res(
     for box_info in layout_det_res["boxes"]:
         layout_bbox = box_info["coordinate"]
         label = box_info["label"]
-        rec_texts = []
+        rec_res = {'boxes':[],'rec_texts':[],'flag':False}
         drop_index = []
+        seg_start_flag = True
+        seg_end_flag = True
 
         if label == 'table':
             for i, table_res in enumerate(table_res_list):
@@ -196,7 +251,9 @@ def get_structure_res(
                     structure_boxes.append({
                         "label": label,
                         f"{label}": table_res['pred_html'],
-                        "layout_bbox": layout_bbox
+                        "layout_bbox": layout_bbox,
+                        "seg_start_flag": seg_start_flag,
+                        "seg_end_flag": seg_end_flag
                     })
                     del table_res_list[i]
                     break
@@ -204,13 +261,19 @@ def get_structure_res(
             for box_no in range(len(overall_ocr_res["dt_boxes"])):
                 overall_text_boxes = overall_ocr_res["dt_boxes"]
                 if calculate_iou(layout_bbox, overall_text_boxes[box_no]) > 0.5:
-                    rec_texts.append(
-                        (overall_text_boxes[box_no], overall_ocr_res["rec_text"][box_no])
-                    )
+                    rec_res['boxes'].append(overall_text_boxes[box_no])
+                    rec_res['rec_texts'].append(overall_ocr_res["rec_texts"][box_no])
+                    rec_res['flag'] = True
                     drop_index.append(box_no)
-
-            rec_texts.sort(key=lambda x: (x[0][1], x[0][0]))
-            rec_texts = [x[1] for x in rec_texts]
+            
+            if rec_res['flag']:
+                rec_res = sort_boxes_from_left_to_right_then_top_to_bottom(layout_bbox,rec_res,0.7)
+                rec_res_first_bbox = rec_res['boxes'][0]
+                rec_res_end_bbox = rec_res['boxes'][-1]
+                if rec_res_first_bbox[0] - layout_bbox[0] < 10:
+                    seg_start_flag = False
+                if layout_bbox[2] - rec_res_end_bbox[2] < 10:
+                    seg_end_flag = False
 
             if label in ['chart', 'image']:
                 structure_boxes.append({
@@ -219,13 +282,17 @@ def get_structure_res(
                         "img": input_img[int(layout_bbox[1]):int(layout_bbox[3]), int(layout_bbox[0]):int(layout_bbox[2])],
                         # "image_text": ''.join(rec_texts)  # Uncomment if image text is needed
                     },
-                    "layout_bbox": layout_bbox
+                    "layout_bbox": layout_bbox,
+                    "seg_start_flag": seg_start_flag,
+                    "seg_end_flag": seg_end_flag
                 })
             else:
                 structure_boxes.append({
                     "label": label,
-                    f"{label}": ''.join(rec_texts),
-                    "layout_bbox": layout_bbox
+                    f"{label}": ''.join(rec_res['rec_texts']),
+                    "layout_bbox": layout_bbox,
+                    "seg_start_flag": seg_start_flag,
+                    "seg_end_flag": seg_end_flag
                 })
 
     return structure_boxes
@@ -514,6 +581,9 @@ def calculate_metrics_with_block(input_bboxes, input_indices, gt_bboxes, gt_indi
         tuple: BLEU score, ARD, and TAU values.
     """
     sorted_matched_indices, sorted_gt_indices = match_bboxes(input_bboxes, input_indices, gt_bboxes, gt_indices, iou_threshold=0.5)
+
+    sorted_gt_indices = [index+1 for index,_ in enumerate(sorted_gt_indices)] # if ignore missing results 
+
     if len(sorted_gt_indices) == 0:
         return 1,0,1
 
@@ -534,6 +604,9 @@ def calculate_metrics_with_block(input_bboxes, input_indices, gt_bboxes, gt_indi
         import math
         if math.isnan(tau):
             tau = 0
+        
+    if bleu_score < 0.95:
+        print(sorted_matched_indices,sorted_gt_indices)
 
     return bleu_score, ard, tau
 
@@ -587,6 +660,8 @@ def calculate_metrics_with_page(input_data, gt_data, iou_threshold=0.5, is_order
             if 0 in gt_indices:
                 gt_indices = [index+1 for index in gt_indices]
             bleu_score, ard, tau = calculate_metrics_with_block(input_bboxes, input_indices, gt_bboxes, gt_indices)
+            if bleu_score < 0.95:
+                print(block_index,bleu_score,ard,tau)
             total_bleu_score += bleu_score
             total_ard += ard
             total_tau += tau
@@ -604,7 +679,7 @@ def paddlex_generate_input_data(data, gt_data):
     Returns:
         list: Formatted list of input data.
     """
-    parsing_result = data['layout_parsing_result']['parsing_result']
+    parsing_result = data['layout_parsing_result']
     input_data = [{
         'block_bbox': block['block_bbox'],
         'sub_indices': [],
@@ -615,8 +690,9 @@ def paddlex_generate_input_data(data, gt_data):
     for block_index, block in enumerate(parsing_result):
         sub_blocks = block['sub_blocks']
         for sub_block in sub_blocks:
-            input_data[block_index]["sub_bboxes"].append(list(map(int, np.array(sub_block["layout_bbox"]) * np.array(input_data[block_index]['page_scale'] * 2))))
-            input_data[block_index]["sub_indices"].append(int(sub_block["index"]))
+            if sub_block.get('index'):
+                input_data[block_index]["sub_bboxes"].append(list(map(int, np.array(sub_block["layout_bbox"]) * np.array(input_data[block_index]['page_scale'] * 2))))
+                input_data[block_index]["sub_indices"].append(int(sub_block["index"]))
 
     return input_data
 
@@ -667,3 +743,5 @@ def load_data_from_json(path):
     with open(path, 'r', encoding='utf-8') as file:
         data = json.load(file)
     return data
+
+

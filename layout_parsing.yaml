@@ -10,7 +10,7 @@ SubModules:
   LayoutDetection:
     module_name: layout_detection
     model_name: RT-DETR-H_layout_23cls
-    model_dir: null
+    model_dir: "http://10.214.40.11:8902/inference.tar"
     batch_size: 1
 
 SubPipelines:
