@@ -21,6 +21,7 @@ import PIL
 from ...common.tokenizer.bert_tokenizer import BertTokenizer
 from .....utils.lazy_loader import LazyLoader
 
+# NOTE: LazyLoader is used to avoid conflicts between ultra-infer and Paddle
 paddle = LazyLoader("lazy_paddle", globals(), "paddle")
 T = LazyLoader("T", globals(), "paddle.vision.transforms")
 F = LazyLoader("F", globals(), "paddle.nn.functional")

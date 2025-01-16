@@ -267,6 +267,7 @@ def adapt_stale_fwd_patch(self, name, value):
     return value
 
 
+# NOTE:
 # Modification:
 #   class InitTrackerMeta(type(paddle.nn.Layer)) -> class InitTrackerMeta(type)
 # Context:
