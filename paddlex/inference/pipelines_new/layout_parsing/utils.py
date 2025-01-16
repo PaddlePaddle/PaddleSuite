@@ -22,11 +22,8 @@ import cv2
 from typing import Dict
 import uuid
 from pathlib import Path
-from PIL import Image, ImageDraw
 from ..ocr.result import OCRResult
 from ...models_new.object_detection.result import DetResult
-from nltk.translate.bleu_score import sentence_bleu
-from scipy.stats import kendalltau
 from typing import List
 
 
