@@ -45,8 +45,20 @@ class BEVFusionDatasetChecker(BaseDatasetChecker):
         if not osp.exists(anno_file):
             raise DatasetFileNotFoundError(file_path=anno_file)
         val_mate = self.get_data(anno_file, max_sample_num)
+        train_sample_paths = []
+        val_sample_paths = []
 
-        meta = {"train_mate": train_mate, "val_mate": val_mate}
+        for item in train_mate:
+            train_sample_paths.append(item["lidar_path"])
+
+        for item in val_mate:
+            val_sample_paths.append(item["lidar_path"])
+        meta = {
+            "train_meta": train_mate,
+            "val_meta": val_mate,
+            "train_sample_paths": train_sample_paths,
+            "val_sample_paths": val_sample_paths,
+        }
         return meta
 
     def get_data(self, ann_file, max_sample_num):
@@ -88,7 +100,7 @@ class BEVFusionDatasetChecker(BaseDatasetChecker):
         Returns:
             str: show type
         """
-        return "path for images and lidar"
+        return "txt"
 
     def get_dataset_type(self) -> str:
         """return the dataset type

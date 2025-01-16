@@ -1,12 +1,13 @@
 Global:
   model: BEVFusion
   mode: check_dataset
-  dataset_dir: "/paddle/dataset/paddlex/3d/nuscenes"
+  dataset_dir: "/paddle/dataset/paddlex/3d/nuscenes_demo"
   device: gpu:0,1,2,3
   output: "output"
   load_cam_from: "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/BEVFusion_camera_pretrained.pdparams"
   load_lidar_from: "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/BEVFusion_lidar_pretrained.pdparams"
   datart_prefix: True
+  version: "mini"
 
 CheckDataset:
   convert:

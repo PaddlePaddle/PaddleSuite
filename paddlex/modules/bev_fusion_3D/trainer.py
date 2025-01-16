@@ -32,6 +32,7 @@ class BEVFusionTrainer(BaseTrainer):
             self.global_config.dataset_dir,
             self.global_config.get("datart_prefix", True),
             "NuscenesMMDataset",
+            version=self.global_config.get("version", "mini"),
         )
 
     def _update_pretrained_model(self):
@@ -66,4 +67,6 @@ class BEVFusionTrainer(BaseTrainer):
         """
         train_args = {"device": self.get_device()}
         train_args["dy2st"] = self.train_config.get("dy2st", False)
+        if self.global_config.output is not None:
+            train_args["save_dir"] = self.global_config.output
         return train_args

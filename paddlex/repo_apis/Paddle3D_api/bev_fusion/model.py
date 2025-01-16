@@ -49,6 +49,7 @@ class BEVFusionModel(BaseModel):
         else:
             # `save_dir` is None
             save_dir = abspath(osp.join("output", "train"))
+
         if dy2st:
             raise ValueError(f"`dy2st`={dy2st} is not supported.")
         if device in ("cpu", "gpu"):
@@ -91,11 +92,11 @@ class BEVFusionModel(BaseModel):
         if profile is not None:
             cli_args.append(CLIArgument("--profiler_options", profile))
 
-        log_interval = kwargs.pop("log_interval", None)
+        log_interval = kwargs.pop("log_interval", 1)
         if log_interval is not None:
             cli_args.append(CLIArgument("--log_interval", log_interval))
 
-        save_interval = kwargs.pop("save_interval", None)
+        save_interval = kwargs.pop("save_interval", 1)
         if save_interval is not None:
             cli_args.append(CLIArgument("--save_interval", save_interval))
 
@@ -173,11 +174,14 @@ class BEVFusionModel(BaseModel):
         raise_unsupported_api_error("predict", self.__class__)
 
     def export(self, weight_path, save_dir, **kwargs):
-        weight_path = abspath(weight_path)
+        # weight_path = abspath(weight_path)
+        if not weight_path.startswith("http"):
+            weight_path = abspath(weight_path)
         save_dir = abspath(save_dir)
 
         # Update YAML config file
         config = self.config.copy()
+        # config.update_pretrained_weights(weight_path)
 
         # Parse CLI arguments
         cli_args = []

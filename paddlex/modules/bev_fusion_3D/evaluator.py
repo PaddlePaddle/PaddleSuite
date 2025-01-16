@@ -27,7 +27,10 @@ class BEVFusionEvaluator(BaseEvaluator):
         if self.eval_config.batch_size is not None:
             self.pdx_config.update_batch_size(self.eval_config.batch_size)
         self.pdx_config.update_dataset(
-            self.global_config.dataset_dir, "NuscenesMMDataset"
+            self.global_config.dataset_dir,
+            self.global_config.datart_prefix,
+            "NuscenesMMDataset",
+            version=self.global_config.version,
         )
         self.pdx_config.update_weights(self.eval_config.weight_path)
 
