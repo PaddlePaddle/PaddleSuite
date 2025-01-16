@@ -244,6 +244,7 @@ class LayoutParsingResult(BaseCVResult, HtmlMixin, XlsxMixin, MarkdownMixin):
         parsing_result = self['layout_parsing_result']
         for block_index, _ in enumerate(parsing_result):
             get_layout_ordering(
+                self,
                 block_index=block_index,
                 no_mask_labels=['text', 'formula', 'algorithm', "reference", "content", "abstract"],
             )
@@ -281,6 +282,7 @@ class LayoutParsingResult(BaseCVResult, HtmlMixin, XlsxMixin, MarkdownMixin):
         parsing_result = self['layout_parsing_result']
         for block_index, _ in enumerate(parsing_result):
             get_layout_ordering(
+                self,
                 block_index=block_index,
                 no_mask_labels=['text', 'formula', 'algorithm', 'reference', 'content', 'abstract'],
             )
