@@ -616,7 +616,6 @@ class MarkdownMixin:
 
             def format_reference():
                 pattern = r'\[\d+\]'
-    # 替换匹配到的内容，在前面添加换行符
                 res = re.sub(pattern, lambda match: '\n' + match.group(), sub_block['reference'])
                 return "\n"+res
 
@@ -625,12 +624,10 @@ class MarkdownMixin:
             
             handlers = {
                 'paragraph_title': lambda: format_title(sub_block['paragraph_title']),
-                # 'text_without_layout': lambda: format_title(sub_block['text_without_layout']),
                 'doc_title': lambda: f"# {sub_block['doc_title']}".replace('-\n', '').replace('\n', ' '),
                 'table_title': lambda: format_centered_text('table_title'),
                 'figure_title': lambda: format_centered_text('figure_title'),
                 'chart_title': lambda: format_centered_text('chart_title'),
-                # 'text': lambda: sub_block['text'].replace('-\n', '').replace('\n', ' ').strip(),
                 'text': lambda: sub_block['text'].strip('\n'),
                 # 'number': lambda: str(sub_block['number']),
                 'abstract': lambda: "\n"+sub_block['abstract'].strip('\n'),
@@ -639,7 +636,6 @@ class MarkdownMixin:
                 'chart': format_chart,
                 'formula': lambda: f"$${sub_block['formula']}$$".replace('-\n', '').replace('\n', ' '),
                 'table': format_table,
-                # 'reference': lambda: "\n"+f"**Reference**: {sub_block['reference']}".replace('-\n', '').replace('\n', ' ').replace('[','\n['),
                 'reference': format_reference,
                 'algorithm': lambda: "\n"+f"**Algorithm**: {sub_block['algorithm']}".replace('-\n', '').replace('\n', ' '),
                 'seal': lambda: "\n"+f"**Seal**: {sub_block['seal']}".replace('-\n', '').replace('\n', ' '),
