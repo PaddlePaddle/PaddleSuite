@@ -78,10 +78,7 @@ class BasePipeline(ABC, metaclass=AutoRegisterABCMetaClass):
         if "model_config_error" in config:
             raise ValueError(config["model_config_error"])
 
-        model_dir = config["model_dir"]
-        if model_dir == None:
-            model_dir = config["model_name"]
-
+        model_dir = config.get("model_dir", None)
         hpi_params = config.get("hpi_params", None)
 
         from .. import create_predictor
