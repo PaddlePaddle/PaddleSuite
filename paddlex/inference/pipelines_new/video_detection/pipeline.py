@@ -52,7 +52,11 @@ class VideoDetectionPipeline(BasePipeline):
         self.video_detection_model = self.create_model(video_detection_model_config)
 
     def predict(
-        self, input: str | list[str] | np.ndarray | list[np.ndarray], **kwargs
+        self,
+        input: str | list[str] | np.ndarray | list[np.ndarray],
+        nms_thresh: float = 0.5,
+        score_thresh: float = 0.4,
+        **kwargs
     ) -> DetVideoResult:
         """Predicts video detection results for the given input.
 
@@ -64,4 +68,6 @@ class VideoDetectionPipeline(BasePipeline):
             DetVideoResult: The predicted video detection results.
         """
 
-        yield from self.video_detection_model(input)
+        yield from self.video_detection_model(
+            input, nms_thresh=nms_thresh, score_thresh=score_thresh
+        )

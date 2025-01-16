@@ -50,20 +50,22 @@ class DocPreprocessorPipeline(BasePipeline):
             device=device, pp_option=pp_option, use_hpip=use_hpip, hpi_params=hpi_params
         )
 
-        self.use_doc_orientation_classify = True
-        if "use_doc_orientation_classify" in config:
-            self.use_doc_orientation_classify = config["use_doc_orientation_classify"]
-
-        self.use_doc_unwarping = True
-        if "use_doc_unwarping" in config:
-            self.use_doc_unwarping = config["use_doc_unwarping"]
-
+        self.use_doc_orientation_classify = config.get(
+            "use_doc_orientation_classify", True
+        )
         if self.use_doc_orientation_classify:
-            doc_ori_classify_config = config["SubModules"]["DocOrientationClassify"]
+            doc_ori_classify_config = config.get("SubModules", {}).get(
+                "DocOrientationClassify",
+                {"model_config_error": "config error for doc_ori_classify_model!"},
+            )
             self.doc_ori_classify_model = self.create_model(doc_ori_classify_config)
 
+        self.use_doc_unwarping = config.get("use_doc_unwarping", True)
         if self.use_doc_unwarping:
-            doc_unwarping_config = config["SubModules"]["DocUnwarping"]
+            doc_unwarping_config = config.get("SubModules", {}).get(
+                "DocUnwarping",
+                {"model_config_error": "config error for doc_unwarping_model!"},
+            )
             self.doc_unwarping_model = self.create_model(doc_unwarping_config)
 
         self.batch_sampler = ImageBatchSampler(batch_size=1)
@@ -188,7 +190,7 @@ class DocPreprocessorPipeline(BasePipeline):
 
             single_img_res = {
                 "input_path": input_path,
-                "input_image": image_array,
+                "input_img": image_array,
                 "model_settings": model_settings,
                 "angle": angle,
                 "rot_img": rot_img,

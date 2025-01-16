@@ -12,12 +12,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .common import CVResult, BaseResult
-from .common import SortQuadBoxes, SortPolyBoxes
-from .common import CropByPolys, CropByBoxes
-from .common import convert_points_to_boxes
-from .utils.mixin import HtmlMixin, XlsxMixin
-from .chat_server.base import BaseChat
-from .retriever.base import BaseRetriever
-from .prompt_engeering.base import BaseGeneratePrompt
-from .faisser import FaissBuilder, FaissIndexer, IndexData
+from ...common.result import BaseCVResult
+from ..pp_shitu_v2.result import draw_box
+
+
+class FaceRecResult(BaseCVResult):
+
+    def _to_img(self):
+        """apply"""
+        boxes = [
+            {
+                "coordinate": box["coordinate"],
+                "label": box["labels"][0] if box["labels"] is not None else "Unknown",
+                "score": box["rec_scores"][0] if box["rec_scores"] is not None else 0,
+            }
+            for box in self["boxes"]
+        ]
+        image = draw_box(self["input_img"][..., ::-1], boxes)
+        return {"res": image}
