@@ -50,19 +50,9 @@ PIPELINE_ARGUMENTS = {
             "help": "Sets the box threshold for text detection.",
         },
         {
-            "name": "--text_det_max_candidates",
-            "type": int,
-            "help": "Sets the maximum number of candidate boxes for text detection.",
-        },
-        {
             "name": "--text_det_unclip_ratio",
             "type": float,
             "help": "Sets the unclip ratio for text detection.",
-        },
-        {
-            "name": "--text_det_use_dilation",
-            "type": bool,
-            "help": "Determines whether to use dilation in text detection.",
         },
         {
             "name": "--text_rec_score_thresh",
