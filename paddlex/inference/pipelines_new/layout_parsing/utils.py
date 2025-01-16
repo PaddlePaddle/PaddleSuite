@@ -273,7 +273,7 @@ def get_structure_res(
                 if rec_res_first_bbox[0] - layout_bbox[0] < 10:
                     seg_start_flag = False
                 if layout_bbox[2] - rec_res_end_bbox[2] < 10:
-                    seg_end_flag = False
+                    seg_end_flag = False 
 
             if label in ['chart', 'image']:
                 structure_boxes.append({
