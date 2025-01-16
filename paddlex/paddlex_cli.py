@@ -340,6 +340,8 @@ def paddle_to_onnx(paddle_model_dir, onnx_model_dir, *, opset_version):
     def _copy_additional_files(input_dir, output_dir):
         for filename in ADDITIONAL_FILENAMES:
             src_path = input_dir / filename
+            if not src_path.exists():
+                continue
             dst_path = output_dir / filename
             shutil.copy(src_path, dst_path)
             logging.info(f"Copied {src_path} to {dst_path}")
