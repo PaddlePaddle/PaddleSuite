@@ -42,6 +42,16 @@ class LayoutParsingResult(BaseCVResult, HtmlMixin, XlsxMixin, StrMixin, JsonMixi
         MarkdownMixin.__init__(self)
         self.is_ordered = False
         
+    
+    def save_all(self, save_path):
+        for func in self._show_funcs:
+            signature = inspect.signature(func)
+            if "save_path" in signature.parameters:
+                func(save_path=save_path)
+            else:
+                func()
+        HtmlMixin.__init__(self)
+        XlsxMixin.__init__(self)
 
     def _to_img(self) -> Dict[str, np.ndarray]:
         res_img_dict = {}
