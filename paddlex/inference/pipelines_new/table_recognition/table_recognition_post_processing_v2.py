@@ -80,11 +80,7 @@ def distance(box_1: list, box_2: list) -> float:
     """
     x1, y1, x2, y2 = box_1
     x3, y3, x4, y4 = box_2
-    center1_x = (x1 + x2) / 2
-    center1_y = (y1 + y2) / 2
-    center2_x = (x3 + x4) / 2
-    center2_y = (y3 + y4) / 2
-    dis = math.sqrt((center2_x - center1_x) ** 2 + (center2_y - center1_y) ** 2)
+    dis = abs(x3 - x1) + abs(y3 - y1) + abs(x4 - x2) + abs(y4 - y2)
     dis_2 = abs(x3 - x1) + abs(y3 - y1)
     dis_3 = abs(x4 - x2) + abs(y4 - y2)
     return dis + min(dis_2, dis_3)
@@ -136,13 +132,6 @@ def match_table_and_ocr(cell_box_list: list, ocr_dt_boxes: list) -> dict:
         ocr_box = ocr_box.astype(np.float32)
         distances = []
         for j, table_box in enumerate(cell_box_list):
-            if len(table_box) == 8:
-                    table_box = [
-                        np.min(table_box[0::2]),
-                        np.min(table_box[1::2]),
-                        np.max(table_box[0::2]),
-                        np.max(table_box[1::2]),
-                    ]
             distances.append(
                 (distance(table_box, ocr_box), 1.0 - compute_iou(table_box, ocr_box))
             )  # compute iou and l1 distance
@@ -217,53 +206,9 @@ def get_html_result(
     html += "".join(end_structure)
     return html
 
-def sort_boxes(boxes):
-    '''
-    对输入的矩形框列表进行排序，使用 DBSCAN 算法基于左上角 y 坐标（y1）进行聚类，
-    然后在每一行内按照左上角 x 坐标（x1）从左到右排序。
-
-    参数:
-    boxes (list of lists): 输入的矩形框列表，每个矩形框格式为 [x1, y1, x2, y2]。
-
-    返回:
-    sorted_boxes (list of lists): 排序后的矩形框列表。
-    '''
-    import numpy as np
-    from sklearn.cluster import DBSCAN
-
-    # 提取左上角 y 坐标（y1）
-    y1_coords = np.array([box[1] for box in boxes])
-    y1_coords = y1_coords.reshape(-1, 1)  # 转换为二维数组
-
-    # 根据数据的 y 范围，选择合适的 eps 参数
-    y_range = y1_coords.max() - y1_coords.min()
-    eps = y_range / 50  # 可以根据需要调整分母
-
-    # 使用 DBSCAN 进行聚类
-    db = DBSCAN(eps=eps, min_samples=1).fit(y1_coords)
-    labels = db.labels_
-
-    # 将矩形框按照标签分组
-    clusters = {}
-    for label, box in zip(labels, boxes):
-        if label not in clusters:
-            clusters[label] = []
-        clusters[label].append(box)
-
-    # 按照行的 y 坐标排序
-    # 计算每一行的平均 y1 值，然后按照从上到下排序
-    sorted_rows = sorted(clusters.items(), key=lambda item: np.mean([box[1] for box in item[1]]))
-
-    # 在每一行内，按照 x1 坐标排序
-    sorted_boxes = []
-    for label, row in sorted_rows:
-        row_sorted = sorted(row, key=lambda x: x[0])
-        sorted_boxes.extend(row_sorted)
-
-    return sorted_boxes
 
 def get_table_recognition_res(
-    table_box: list, table_structure_pred: dict, table_cells_pred: dict, overall_ocr_res: OCRResult
+    table_box: list, table_structure_pred: dict, overall_ocr_res: OCRResult
 ) -> SingleTableRecognitionResult:
     """
     Retrieve table recognition result from cropped image info, table structure prediction, and overall OCR result.
@@ -271,7 +216,6 @@ def get_table_recognition_res(
     Args:
         table_box (list): Information about the location of cropped image, including the bounding box.
         table_structure_pred (dict): Predicted table structure.
-        table_cells_pred (dict): Predicted table cells structure.
         overall_ocr_res (OCRResult): Overall OCR result from the input image.
 
     Returns:
@@ -281,7 +225,7 @@ def get_table_recognition_res(
     table_ocr_pred = get_sub_regions_ocr_res(overall_ocr_res, table_box)
 
     crop_start_point = [table_box[0][0], table_box[0][1]]
-    img_shape = overall_ocr_res["input_img"].shape[0:2]
+    img_shape = overall_ocr_res["doc_preprocessor_image"].shape[0:2]
 
     convert_table_structure_pred_bbox(table_structure_pred, crop_start_point, img_shape)
 
@@ -289,9 +233,6 @@ def get_table_recognition_res(
     cell_box_list = table_structure_pred["cell_box_list"]
     ocr_dt_boxes = table_ocr_pred["dt_boxes"]
     ocr_text_res = table_ocr_pred["rec_text"]
-
-    cell_box_list = sort_boxes(cell_box_list)
-    ocr_dt_boxes = sort_boxes(ocr_dt_boxes)
 
     matched_index = match_table_and_ocr(cell_box_list, ocr_dt_boxes)
     pred_html = get_html_result(matched_index, ocr_text_res, structures)

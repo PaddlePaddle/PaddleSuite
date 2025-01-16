@@ -19,9 +19,11 @@ import cv2
 from ..base import BasePipeline
 from ..components import CropByBoxes
 from ..layout_parsing.utils import convert_points_to_boxes
-from .utils import get_neighbor_boxes_idx
-from .table_recognition_post_processingv2 import get_table_recognition_res
-from .resultv2 import SingleTableRecognitionResult, TableRecognitionResult
+
+from .result import FormulaRecognitionResult
+from ...models_new.formula_recognition.result import (
+    FormulaRecResult as SingleFormulaRecognitionResult,
+)
 from ....utils import logging
 from ...utils.pp_option import PaddlePredictorOption
 from ...common.reader import ReadImage
@@ -33,10 +35,10 @@ from ..doc_preprocessor.result import DocPreprocessorResult
 from ...models_new.object_detection.result import DetResult
 
 
-class TableRecognitionPipelinev2(BasePipeline):
-    """Table Recognition Pipeline"""
+class FormulaRecognitionPipeline(BasePipeline):
+    """Formula Recognition Pipeline"""
 
-    entities = ["table_recognition"]
+    entities = ["formula_recognition"]
 
     def __init__(
         self,
@@ -73,28 +75,12 @@ class TableRecognitionPipelinev2(BasePipeline):
         self.use_layout_detection = True
         if "use_layout_detection" in config:
             self.use_layout_detection = config["use_layout_detection"]
-
         if self.use_layout_detection:
             layout_det_config = config["SubModules"]["LayoutDetection"]
             self.layout_det_model = self.create_model(layout_det_config)
 
-        table_cls_config = config["SubModules"]["TableClassification"]
-        wired_table_rec_config = config["SubModules"]["WiredTableStructureRecognition"]
-        wireless_table_rec_config = config["SubModules"]["WirelessTableStructureRecognition"]
-        wired_table_cells_det_config = config["SubModules"]["WiredTableCellsDetection"]
-        wireless_table_cells_det_config = config["SubModules"]["WirelessTableCellsDetection"]
-        self.table_cls_model = self.create_model(table_cls_config)
-        self.wired_table_rec_model = self.create_model(wired_table_rec_config)
-        self.wireless_table_rec_model = self.create_model(wireless_table_rec_config)
-        self.wired_table_cells_detection_model = self.create_model(wired_table_cells_det_config)
-        self.wireless_table_cells_detection_model = self.create_model(wireless_table_cells_det_config)
-
-        self.use_ocr_model = True
-        if "use_ocr_model" in config:
-            self.use_ocr_model = config["use_ocr_model"]
-        if self.use_ocr_model:
-            general_ocr_config = config["SubPipelines"]["GeneralOCR"]
-            self.general_ocr_pipeline = self.create_pipeline(general_ocr_config)
+        formula_recognition_config = config["SubModules"]["FormulaRecognition"]
+        self.formula_recognition_model = self.create_model(formula_recognition_config)
 
         self._crop_by_boxes = CropByBoxes()
 
@@ -102,15 +88,13 @@ class TableRecognitionPipelinev2(BasePipeline):
         self.img_reader = ReadImage(format="BGR")
 
     def check_input_params_valid(
-        self, input_params: Dict, overall_ocr_res: OCRResult, layout_det_res: DetResult
+        self, input_params: Dict, layout_det_res: DetResult
     ) -> bool:
         """
         Check if the input parameters are valid based on the initialized models.
 
         Args:
             input_params (Dict): A dictionary containing input parameters.
-            overall_ocr_res (OCRResult): Overall OCR result obtained after running the OCR pipeline.
-                The overall OCR result with convert_points_to_boxes information.
             layout_det_res (DetResult): The layout detection result.
         Returns:
             bool: True if all required models are initialized according to input parameters, False otherwise.
@@ -132,19 +116,6 @@ class TableRecognitionPipelinev2(BasePipeline):
             if not self.use_layout_detection:
                 logging.error(
                     "Set use_layout_detection, but the models for layout detection are not initialized."
-                )
-                return False
-
-        if input_params["use_ocr_model"]:
-            if overall_ocr_res is not None:
-                logging.error(
-                    "The OCR models have already been initialized, please set use_ocr_model=False"
-                )
-                return False
-
-            if not self.use_ocr_model:
-                logging.error(
-                    "Set use_ocr_model, but the models for OCR are not initialized."
                 )
                 return False
 
@@ -180,45 +151,24 @@ class TableRecognitionPipelinev2(BasePipeline):
             doc_preprocessor_image = image_array
         return doc_preprocessor_res, doc_preprocessor_image
 
-    def predict_single_table_recognition_res(
+    def predict_single_formula_recognition_res(
         self,
         image_array: np.ndarray,
-        overall_ocr_res: OCRResult,
-        table_box: list,
-        flag_find_nei_text: bool = True,
-    ) -> SingleTableRecognitionResult:
+    ) -> SingleFormulaRecognitionResult:
         """
-        Predict table recognition results from an image array, layout detection results, and OCR results.
+        Predict formula recognition results from an image array, layout detection results.
 
         Args:
             image_array (np.ndarray): The input image represented as a numpy array.
-            overall_ocr_res (OCRResult): Overall OCR result obtained after running the OCR pipeline.
-                The overall OCR results containing text recognition information.
-            table_box (list): The table box coordinates.
+            formula_box (list): The formula box coordinates.
             flag_find_nei_text (bool): Whether to find neighboring text.
         Returns:
-            SingleTableRecognitionResult: single table recognition result.
+            SingleFormulaRecognitionResult: single formula recognition result.
         """
-        table_cls_pred = next(self.table_cls_model(image_array))
-        if table_cls_pred == 0:
-            table_structure_pred = next(self.wired_table_rec_model(image_array))
-            table_cells_pred = next(self.wired_table_cells_detection_model(image_array))
-        else:
-            table_structure_pred = next(self.wireless_table_rec_model(image_array))
-            table_cells_pred = next(self.wireless_table_cells_detection_model(image_array))
-        single_table_recognition_res = get_table_recognition_res(
-            table_box, table_structure_pred, table_cells_pred, overall_ocr_res
-        )
-        neighbor_text = ""
-        if flag_find_nei_text:
-            match_idx_list = get_neighbor_boxes_idx(
-                overall_ocr_res["dt_boxes"], table_box
-            )
-            if len(match_idx_list) > 0:
-                for idx in match_idx_list:
-                    neighbor_text += overall_ocr_res["rec_text"][idx] + "; "
-        single_table_recognition_res["neighbor_text"] = neighbor_text
-        return single_table_recognition_res
+
+        formula_recognition_pred = next(self.formula_recognition_model(image_array))
+
+        return formula_recognition_pred
 
     def predict(
         self,
@@ -226,10 +176,9 @@ class TableRecognitionPipelinev2(BasePipeline):
         use_layout_detection: bool = True,
         use_doc_orientation_classify: bool = False,
         use_doc_unwarping: bool = False,
-        overall_ocr_res: OCRResult = None,
         layout_det_res: DetResult = None,
         **kwargs
-    ) -> TableRecognitionResult:
+    ) -> FormulaRecognitionResult:
         """
         This function predicts the layout parsing result for the given input.
 
@@ -238,14 +187,12 @@ class TableRecognitionPipelinev2(BasePipeline):
             use_layout_detection (bool): Whether to use layout detection.
             use_doc_orientation_classify (bool): Whether to use document orientation classification.
             use_doc_unwarping (bool): Whether to use document unwarping.
-            overall_ocr_res (OCRResult): The overall OCR result with convert_points_to_boxes information.
-                It will be used if it is not None and use_ocr_model is False.
             layout_det_res (DetResult): The layout detection result.
                 It will be used if it is not None and use_layout_detection is False.
             **kwargs: Additional keyword arguments.
 
         Returns:
-            TableRecognitionResult: The predicted table recognition result.
+            formulaRecognitionResult: The predicted formula recognition result.
         """
 
         input_params = {
@@ -253,7 +200,6 @@ class TableRecognitionPipelinev2(BasePipeline):
             "use_doc_preprocessor": self.use_doc_preprocessor,
             "use_doc_orientation_classify": use_doc_orientation_classify,
             "use_doc_unwarping": use_doc_unwarping,
-            "use_ocr_model": self.use_ocr_model,
         }
 
         if use_doc_orientation_classify or use_doc_unwarping:
@@ -261,64 +207,53 @@ class TableRecognitionPipelinev2(BasePipeline):
         else:
             input_params["use_doc_preprocessor"] = False
 
-        if not self.check_input_params_valid(
-            input_params, overall_ocr_res, layout_det_res
-        ):
+        if not self.check_input_params_valid(input_params, layout_det_res):
             yield None
 
         for img_id, batch_data in enumerate(self.batch_sampler(input)):
             image_array = self.img_reader(batch_data)[0]
+            input_path = batch_data[0]
             img_id += 1
 
             doc_preprocessor_res, doc_preprocessor_image = (
                 self.predict_doc_preprocessor_res(image_array, input_params)
             )
 
-            if self.use_ocr_model:
-                overall_ocr_res = next(
-                    self.general_ocr_pipeline(doc_preprocessor_image)
-                )
-                dt_boxes = convert_points_to_boxes(overall_ocr_res["dt_polys"])
-                overall_ocr_res["dt_boxes"] = dt_boxes
+            formula_res_list = []
+            formula_region_id = 1
 
-            table_res_list = []
-            table_region_id = 1
             if not input_params["use_layout_detection"] and layout_det_res is None:
                 layout_det_res = {}
                 img_height, img_width = doc_preprocessor_image.shape[:2]
-                table_box = [0, 0, img_width - 1, img_height - 1]
-                single_table_rec_res = self.predict_single_table_recognition_res(
+                single_formula_rec_res = self.predict_single_formula_recognition_res(
                     doc_preprocessor_image,
-                    overall_ocr_res,
-                    table_box,
-                    flag_find_nei_text=False,
                 )
-                single_table_rec_res["table_region_id"] = table_region_id
-                table_res_list.append(single_table_rec_res)
-                table_region_id += 1
+                single_formula_rec_res["formula_region_id"] = formula_region_id
+                formula_res_list.append(single_formula_rec_res)
+                formula_region_id += 1
             else:
                 if input_params["use_layout_detection"]:
                     layout_det_res = next(self.layout_det_model(doc_preprocessor_image))
                 for box_info in layout_det_res["boxes"]:
-                    if box_info["label"].lower() in ["table"]:
+                    if box_info["label"].lower() in ["formula"]:
                         crop_img_info = self._crop_by_boxes(image_array, [box_info])
                         crop_img_info = crop_img_info[0]
-                        table_box = crop_img_info["box"]
-                        single_table_rec_res = (
-                            self.predict_single_table_recognition_res(
-                                crop_img_info["img"], overall_ocr_res, table_box
+                        single_formula_rec_res = (
+                            self.predict_single_formula_recognition_res(
+                                crop_img_info["img"]
                             )
                         )
-                        single_table_rec_res["table_region_id"] = table_region_id
-                        table_res_list.append(single_table_rec_res)
-                        table_region_id += 1
+                        single_formula_rec_res["formula_region_id"] = formula_region_id
+                        single_formula_rec_res["dt_polys"] = box_info["coordinate"]
+                        formula_res_list.append(single_formula_rec_res)
+                        formula_region_id += 1
 
             single_img_res = {
                 "layout_det_res": layout_det_res,
                 "doc_preprocessor_res": doc_preprocessor_res,
-                "overall_ocr_res": overall_ocr_res,
-                "table_res_list": table_res_list,
+                "formula_res_list": formula_res_list,
                 "input_params": input_params,
                 "img_id": img_id,
+                "img_name": input_path,
             }
-            yield TableRecognitionResult(single_img_res)
+            yield FormulaRecognitionResult(single_img_res)

@@ -1,14 +1,14 @@
 
-pipeline_name: table_recognitionv2
+pipeline_name: table_recognition_v2
 
-use_layout_detection: True
-use_doc_preprocessor: True
+use_doc_preprocessor: False
+use_layout_detection: False
 use_ocr_model: True
 
 SubModules:
   LayoutDetection:
     module_name: layout_detection
-    model_name: RT-DETR-H_layout_3cls
+    model_name: RT-DETR-H_layout_17cls
     model_dir: null
     batch_size: 1
   

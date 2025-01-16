@@ -22,11 +22,6 @@ from ..common.vision import funcs as F
 class Pad:
     """Pad the image."""
 
-    INPUT_KEYS = "img"
-    OUTPUT_KEYS = ["img", "img_size"]
-    DEAULT_INPUTS = {"img": "img"}
-    DEAULT_OUTPUTS = {"img": "img", "img_size": "img_size"}
-
     def __init__(self, target_size, val=127.5):
         """
         Initialize the instance.

@@ -12,9 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from typing import Dict
 import math
 import random
 from pathlib import Path
+import copy
 import numpy as np
 import cv2
 import PIL
@@ -26,36 +28,21 @@ from ...common.result import BaseCVResult
 class DocPreprocessorResult(BaseCVResult):
     """doc preprocessor result"""
 
-    def save_to_img(self, save_path: str, *args, **kwargs) -> None:
-        """
-        Save the image to the specified path.
-
-        Args:
-            save_path (str): The path to save the image.
-                If the path does not end with '.jpg' or '.png', it appends '_res_doc_preprocess_<img_id>.jpg'
-                to the path where <img_id> is retrieved from the object's 'img_id' attribute.
-            *args: Variable length argument list.
-            **kwargs: Arbitrary keyword arguments.
-
-        Returns:
-            None
-        """
-        if not str(save_path).lower().endswith((".jpg", ".png")):
-            img_id = self["img_id"]
-            save_path = Path(save_path) / f"res_doc_preprocess_{img_id}.jpg"
-        super().save_to_img(save_path, *args, **kwargs)
-
-    def _to_img(self) -> PIL.Image:
+    def _to_img(self) -> Dict[str, Image.Image]:
         """
         Generate an image combining the original, rotated, and unwarping images.
 
         Returns:
-            PIL.Image: A new image that displays the original, rotated, and unwarping images side by side.
+            Dict[Image.Image]: A new image combining the original, rotated, and unwarping images
         """
         image = self["input_image"][:, :, ::-1]
-        angle = self["angle"]
         rot_img = self["rot_img"][:, :, ::-1]
+        angle = self["angle"]
         output_img = self["output_img"][:, :, ::-1]
+        use_doc_orientation_classify = self["model_settings"][
+            "use_doc_orientation_classify"
+        ]
+        use_doc_unwarping = self["model_settings"]["use_doc_unwarping"]
         h1, w1 = image.shape[0:2]
         h2, w2 = rot_img.shape[0:2]
         h3, w3 = output_img.shape[0:2]
@@ -67,6 +54,8 @@ class DocPreprocessorResult(BaseCVResult):
 
         draw_text = ImageDraw.Draw(img_show)
         txt_list = ["Original Image", "Rotated Image", "Unwarping Image"]
+        txt_list[1] = f"Rotated Image ({use_doc_orientation_classify}, {angle})"
+        txt_list[2] = f"Unwarping Image ({use_doc_unwarping})"
         region_w_list = [w1, w2, w3]
         beg_w_list = [0, w1, w1 + w2]
         for tno in range(len(txt_list)):
@@ -75,4 +64,5 @@ class DocPreprocessorResult(BaseCVResult):
             draw_text.text(
                 [10 + beg_w_list[tno], h + 2], txt, fill=(0, 0, 0), font=font
             )
-        return img_show
+        imgs = {"preprocessed_img": img_show}
+        return imgs
