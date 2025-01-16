@@ -17,10 +17,13 @@ from typing import Dict
 import numpy as np
 import copy
 import cv2
-from ...common.result import BaseCVResult, HtmlMixin, XlsxMixin, StrMixin, JsonMixin
+from pathlib import Path
+from PIL import Image, ImageDraw
+from .utils import recursive_img_array2path,get_layout_ordering
+from ...common.result import BaseCVResult, HtmlMixin, XlsxMixin, StrMixin, JsonMixin, MarkdownMixin
 
 
-class LayoutParsingResult(BaseCVResult, HtmlMixin, XlsxMixin):
+class LayoutParsingResult(BaseCVResult, HtmlMixin, XlsxMixin, MarkdownMixin):
     """Layout Parsing Result"""
 
     def __init__(self, data) -> None:
@@ -28,6 +31,9 @@ class LayoutParsingResult(BaseCVResult, HtmlMixin, XlsxMixin):
         super().__init__(data)
         HtmlMixin.__init__(self)
         XlsxMixin.__init__(self)
+        MarkdownMixin.__init__(self)
+        JsonMixin.__init__(self)
+        self.already_sorted = False
 
     def _to_img(self) -> Dict[str, np.ndarray]:
         res_img_dict = {}
@@ -209,3 +215,98 @@ class LayoutParsingResult(BaseCVResult, HtmlMixin, XlsxMixin):
                 key = f"table_{table_region_id}"
                 res_xlsx_dict[key] = table_res.xlsx["pred"]
         return res_xlsx_dict
+
+    def _to_pdf_order(self, save_path):
+        """
+        Save the layout ordering to an image file.
+
+        Args:
+            save_path (str or Path): The path where the image should be saved.
+            font_path (str): Path to the font file used for drawing text.
+
+        Returns:
+            None
+        """
+        input_name = self["input_path"]
+        if save_path.suffix.lower() not in (".jpg", ".png"):
+            save_path = Path(save_path).with_suffix(f'{input_name}.jpg')
+        else:
+            save_path = save_path.with_suffix('')
+        ordering_image_path = save_path.parent / f"{save_path.stem}_ordering.jpg"
+
+        try:
+            image = Image.fromarray(self["doc_preprocessor_res"]["output_img"])
+        except IOError as e:
+            print(f"Error opening image: {e}")
+            return
+
+        draw = ImageDraw.Draw(image,'RGBA')
+
+        parsing_result = self['layout_parsing_result']
+        for block_index, _ in enumerate(parsing_result):
+            get_layout_ordering(
+                block_index=block_index,
+                no_mask_labels=['text', 'formula', 'algorithm', "reference", "content", "abstract"],
+            )
+
+            sub_blocks = parsing_result[block_index]['sub_blocks']
+            for sub_block in sub_blocks:
+                bbox = sub_block['layout_bbox']
+                index = sub_block.get('index',None)
+                label = sub_block['sub_label']
+                fill_color = self.get_show_color(label)
+                draw.rectangle(bbox, fill=fill_color)
+                if index is not None:
+                    text_position = (bbox[2]+2, bbox[1] - 10)
+                    draw.text(text_position, str(index), fill="red")
+
+        # Ensure the directory exists and save the image
+        ordering_image_path.parent.mkdir(parents=True, exist_ok=True)
+        print(f"Saving ordering image to {ordering_image_path}")
+        image.save(str(ordering_image_path))
+
+    def _to_markdown(self, save_path):
+        """
+        Save the parsing result to a Markdown file.
+
+        Args:
+            save_path (str or Path): The path where the Markdown file should be saved.
+
+        Returns:
+            None
+        """
+        save_path = Path(save_path)
+        if not save_path.suffix.lower() == ".md":
+            save_path = save_path / f"layout_parsing_result.md"
+
+        parsing_result = self['layout_parsing_result']
+        for block_index, _ in enumerate(parsing_result):
+            get_layout_ordering(
+                block_index=block_index,
+                no_mask_labels=['text', 'formula', 'algorithm', 'reference', 'content', 'abstract'],
+            )
+        recursive_img_array2path(self['layout_parsing_result'], save_path.parent,labels=['img'])
+        super()._to_markdown(save_path)        
+    
+    def get_show_color(self,label):
+        label_colors = {
+        'paragraph_title': (102, 102, 255, 100),  # Medium Blue (from 'titles_list')
+        'doc_title': (255, 248, 220, 100),        # Cornsilk
+        'table_title': (255, 255, 102, 100),      # Light Yellow (from 'tables_caption_list')
+        'figure_title': (102, 178, 255, 100),     # Sky Blue (from 'imgs_caption_list')
+        'chart_title': (221, 160, 221, 100),      # Plum
+        'vision_footnote': (144, 238, 144, 100),  # Light Green
+        'text': (153, 0, 76, 100),                # Deep Purple (from 'texts_list')
+        'formula': (0, 255, 0, 100),              # Bright Green (from 'interequations_list')
+        'abstract': (255, 239, 213, 100),         # Papaya Whip
+        'content': (40, 169, 92, 100),            # Medium Green (from 'lists_list' and 'indexs_list')
+        'seal': (158, 158, 158, 100),             # Neutral Gray (from 'dropped_bbox_list')
+        'table': (204, 204, 0, 100),              # Olive Yellow (from 'tables_body_list')
+        'image': (153, 255, 51, 100),             # Bright Green (from 'imgs_body_list')
+        'figure': (153, 255, 51, 100),             # Bright Green (from 'imgs_body_list')
+        'chart': (216, 191, 216, 100),            # Thistle
+        'reference': (229, 255, 204, 100),        # Pale Yellow-Green (from 'tables_footnote_list')
+        'algorithm': (255, 250, 240, 100)         # Floral White
+        }
+        default_color = (158, 158, 158, 100)
+        return label_colors.get(label, default_color)

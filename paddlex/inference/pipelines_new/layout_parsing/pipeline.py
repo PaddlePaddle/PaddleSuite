@@ -17,7 +17,7 @@ import os, sys
 import numpy as np
 import cv2
 from ..base import BasePipeline
-from .utils import get_sub_regions_ocr_res
+from .utils import get_sub_regions_ocr_res,get_structure_res
 from ..components import convert_points_to_boxes
 from .result import LayoutParsingResult
 from ....utils import logging
@@ -396,6 +396,16 @@ class LayoutParsingPipeline(BasePipeline):
             else:
                 formula_res_list = []
 
+            for table_res in table_res_list:
+                table_res['layout_bbox'] = table_res['cell_box_list'][0]
+
+            structure_res = get_structure_res(overall_ocr_res, layout_det_res,table_res_list)
+            structure_res_list = [{
+                "block_bbox":[0,0,2550,2550],
+                "block_size":[image_array.shape[1],image_array.shape[0]],
+                "sub_blocks":structure_res
+            },]
+
             single_img_res = {
                 "input_path": input_path,
                 "doc_preprocessor_res": doc_preprocessor_res,
@@ -405,6 +415,7 @@ class LayoutParsingPipeline(BasePipeline):
                 "table_res_list": table_res_list,
                 "seal_res_list": seal_res_list,
                 "formula_res_list": formula_res_list,
+                "layout_parsing_result": structure_res_list,
                 "model_settings": model_settings,
             }
             yield LayoutParsingResult(single_img_res)
