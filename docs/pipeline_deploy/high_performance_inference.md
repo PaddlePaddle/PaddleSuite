@@ -6,13 +6,37 @@ comments: true
 
 在实际生产环境中，许多应用对部署策略的性能指标（尤其是响应速度）有着较严苛的标准，以确保系统的高效运行与用户体验的流畅性。为此，PaddleX 提供高性能推理插件，旨在对模型推理及前后处理进行深度性能优化，实现端到端流程的显著提速。本文档将首先介绍高性能推理插件的安装和使用方式，然后列举目前支持使用高性能推理插件的产线与模型。
 
-## 1.高性能推理插件的安装与使用
+## 目录
+
+- [1. 基础使用方法](#1.-基础使用方法)
+  - [1.1 安装高性能推理插件](#1.1-安装高性能推理插件)
+  - [1.2 启用高性能推理插件](#1.2-启用高性能推理插件)
+- [2. 进阶使用方法](#2.-进阶使用方法)
+  - [2.1 修改高性能推理配置](#2.1-修改高性能推理配置)
+  - [2.2 二次开发高性能推理插件](#2.2-二次开发高性能推理插件)
+- [3. 支持使用高性能推理插件的产线与模型](#3.-支持使用高性能推理插件的产线与模型)
+
+## 1. 基础使用方法
 
 使用高性能推理插件前，请确保您已经按照[PaddleX本地安装教程](../installation/installation.md) 完成了PaddleX的安装，且按照PaddleX产线命令行使用说明或PaddleX产线Python脚本使用说明跑通了产线的快速推理。
 
 ### 1.1 安装高性能推理插件
 
-在下表中根据处理器架构、操作系统、设备类型、Python 版本等信息，找到对应的安装指令并在部署环境中执行。请将 `{paddlex 版本号}` 替换为实际的 paddlex 的版本号，例如当前最新的稳定版本 `3.0.0b2`。如果需要使用开发分支对应的版本，请将 `{paddlex 版本号}` 替换为 `0.0.0.dev0`。
+根据设备类型，执行如下指令，安装高性能推理插件：
+
+若设备类型为CPU：
+
+```bash
+paddlex --install hpi-cpu
+```
+
+若设备类型为GPU：
+
+```bash
+paddlex --install hpi-gpu
+```
+
+目前高性能推理支持的处理器架构、操作系统、设备类型和 Python 版本如下表所示：
 
 <table>
   <tr>
@@ -20,7 +44,6 @@ comments: true
     <th>操作系统</th>
     <th>设备类型</th>
     <th>Python 版本</th>
-    <th>安装指令</th>
   </tr>
   <tr>
     <td rowspan="7">x86-64</td>
@@ -29,84 +52,62 @@ comments: true
   </tr>
   <tr>
     <td>3.8</td>
-    <td>curl -s https://paddle-model-ecology.bj.bcebos.com/paddlex/PaddleX3.0/deploy/paddlex_hpi/install_script/{paddlex 版本号}/install_paddlex_hpi.py | python3.8 - --arch x86_64 --os linux --device cpu --py 38</td>
   </tr>
   <tr>
     <td>3.9</td>
-    <td>curl -s https://paddle-model-ecology.bj.bcebos.com/paddlex/PaddleX3.0/deploy/paddlex_hpi/install_script/{paddlex 版本号}/install_paddlex_hpi.py | python3.9 - --arch x86_64 --os linux --device cpu --py 39</td>
   </tr>
   <tr>
     <td>3.10</td>
-    <td>curl -s https://paddle-model-ecology.bj.bcebos.com/paddlex/PaddleX3.0/deploy/paddlex_hpi/install_script/{paddlex 版本号}/install_paddlex_hpi.py | python3.10 - --arch x86_64 --os linux --device cpu --py 310</td>
   </tr>
   <tr>
     <td rowspan="3">GPU&nbsp;（CUDA&nbsp;11.8&nbsp;+&nbsp;cuDNN&nbsp;8.6）</td>
     <td>3.8</td>
-    <td>curl -s https://paddle-model-ecology.bj.bcebos.com/paddlex/PaddleX3.0/deploy/paddlex_hpi/install_script/{paddlex 版本号}/install_paddlex_hpi.py | python3.8 - --arch x86_64 --os linux --device gpu_cuda118_cudnn86 --py 38</td>
   </tr>
   <tr>
     <td>3.9</td>
-    <td>curl -s https://paddle-model-ecology.bj.bcebos.com/paddlex/PaddleX3.0/deploy/paddlex_hpi/install_script/{paddlex 版本号}/install_paddlex_hpi.py | python3.9 - --arch x86_64 --os linux --device gpu_cuda118_cudnn86 --py 39</td>
   </tr>
   <tr>
     <td>3.10</td>
-    <td>curl -s https://paddle-model-ecology.bj.bcebos.com/paddlex/PaddleX3.0/deploy/paddlex_hpi/install_script/{paddlex 版本号}/install_paddlex_hpi.py | python3.10 - --arch x86_64 --os linux --device gpu_cuda118_cudnn86 --py 310</td>
   </tr>
 </table>
 
-* 对于 Linux 系统，使用 Bash 执行安装指令。
-* 当使用 NVIDIA GPU 时，请使用与环境匹配的 CUDA 和 cuDNN 版本对应的安装指令，否则，将无法正常使用高性能推理插件。
-* 当设备类型为 CPU 时，安装的高性能推理插件仅支持使用 CPU 进行推理；对于其他设备类型，安装的高性能推理插件则支持使用 CPU 或其他设备进行推理。
+### 1.2 启用高性能推理插件
 
-### 1.2 获取序列号与激活
-
-在 [飞桨AI Studio星河社区-人工智能学习与实训社区](https://aistudio.baidu.com/paddlex/commercialization) 页面的“开源模型产线部署序列号咨询与获取”部分选择“立即获取”，如下图所示：
-
-<img src="https://raw.githubusercontent.com/cuicheng01/PaddleX_doc_images/main/images/pipeline_deploy/image-1.png">
-
-选择需要部署的产线，并点击“获取”。之后，可以在页面下方的“开源产线部署SDK序列号管理”部分找到获取到的序列号：
-
-<img src="https://raw.githubusercontent.com/cuicheng01/PaddleX_doc_images/main/images/pipeline_deploy/image-2.png">
-
-使用序列号完成激活后，即可使用高性能推理插件。PaddleX 提供离线激活和在线激活两种方式（均只支持 Linux 系统）：
-
-* 联网激活：在使用推理 API 或 CLI 时，通过参数指定序列号及联网激活，使程序自动完成激活。
-* 离线激活：按照序列号管理界面中的指引（点击“操作”中的“离线激活”），获取机器的设备指纹，并将序列号与设备指纹绑定以获取证书，完成激活。使用这种激活方式，需要手动将证书存放在机器的 `${HOME}/.baidu/paddlex/licenses` 目录中（如果目录不存在，需要创建目录），并在使用推理 API 或 CLI 时指定序列号。
-请注意：每个序列号只能绑定到唯一的设备指纹，且只能绑定一次。这意味着用户如果使用不同的机器部署模型，则必须为每台机器准备单独的序列号。
-
-### 1.3 启用高性能推理插件
-
-对于 Linux 系统，如果在 Docker 容器中使用高性能推理插件，请为容器挂载宿主机的 `/dev/disk/by-uuid` 与 `${HOME}/.baidu/paddlex/licenses` 目录。
-
-对于 PaddleX CLI，指定 `--use_hpip`，并设置序列号，即可启用高性能推理插件。如果希望进行联网激活，在第一次使用序列号时，需指定 `--update_license`，以通用图像分类产线为例：
+对于 PaddleX CLI，指定 `--use_hpip`，即可启用高性能推理插件。以通用图像分类产线为例：
 
 ```bash
 paddlex \
     --pipeline image_classification \
     --input https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/general_image_classification_001.jpg \
     --device gpu:0 \
-    --use_hpip \
-    --serial_number {序列号}
-
-# 如果希望进行联网激活
-paddlex \
-    --pipeline image_classification \
-    --input https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/general_image_classification_001.jpg \
-    --device gpu:0 \
-    --use_hpip \
-    --serial_number {序列号}
-    --update_license
+    --use_hpip
 ```
 
-对于 PaddleX Python API，启用高性能推理插件的方法类似。仍以通用图像分类产线为例：
+对于 PaddleX Python API，启用高性能推理插件的方法类似。以通用图像分类产线和图像分类模块为例：
+
+通用图像分类产线：
 
 ```python
 from paddlex import create_pipeline
 
 pipeline = create_pipeline(
     pipeline="image_classification",
-    use_hpip=True,
-    hpi_params={"serial_number": "{序列号}"},
+    device="gpu",
+    use_hpip=True
+)
+
+output = pipeline.predict("https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/general_image_classification_001.jpg")
+```
+
+图像分类模块：
+
+```python
+from paddlex import create_model
+
+model = create_model(
+    "ResNet18",
+    device="gpu",
+    use_hpip=True
 )
 
 output = pipeline.predict("https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/general_image_classification_001.jpg")
@@ -114,24 +115,52 @@ output = pipeline.predict("https://paddle-model-ecology.bj.bcebos.com/paddlex/im
 
 启用高性能推理插件得到的推理结果与未启用插件时一致。对于部分模型，在首次启用高性能推理插件时，可能需要花费较长时间完成推理引擎的构建。PaddleX 将在推理引擎的第一次构建完成后将相关信息缓存在模型目录，并在后续复用缓存中的内容以提升初始化速度。
 
-### 1.4 修改高性能推理配置
+## 2. 进阶使用方法
 
-PaddleX 结合模型信息与运行环境信息为每个模型提供默认的高性能推理配置。这些默认配置经过精心准备，以便在数个常见场景中可用，且能够取得较优的性能。因此，通常用户可能并不用关心如何这些配置的具体细节。然而，由于实际部署环境与需求的多样性，使用默认配置可能无法在特定场景获取理想的性能，甚至可能出现推理失败的情况。对于默认配置无法满足要求的情形，用户可以通过修改模型目录中 `inference.yml` 文件中 `Hpi` 字段（如果该字段不存在，需要新增）的方式，手动调整配置。以下列举两种常见的情形：
+### 2.1 修改高性能推理配置
+
+PaddleX 结合模型信息与运行环境信息为每个模型提供默认的高性能推理配置。这些默认配置经过精心准备，以便在数个常见场景中可用，且能够取得较优的性能。因此，通常用户可能并不用关心如何这些配置的具体细节。然而，由于实际部署环境与需求的多样性，使用默认配置可能无法在特定场景获取理想的性能，甚至可能出现推理失败的情况。对于默认配置无法满足要求的情形，用户可以手动调整配置。以下列举两种常见的情形：
 
 - 更换推理后端：
 
-    当默认的推理后端不可用时，需要手动更换推理后端。用户需要修改 `selected_backends` 字段（如果不存在，需要新增）。
+    对于模型产线，通过更改产线 yaml 中的字段，即可更换推理后端，以通用图像分类产线的 `image_classification.yaml` 为例：
 
     ```yaml
-    Hpi:
       ...
-      selected_backends:
-        cpu: paddle_infer
-        gpu: onnx_runtime
+      SubModules:
+        ImageClassification:
+          ...
+          hpi_params:
+            config:
+              selected_backends:
+                cpu: openvino
+                gpu: paddle_infer
+              backend_config:
+                paddle_infer:
+                  enable_trt: True
+                  trt_precision: FP16
       ...
     ```
 
-    其中每一项均按照 `{设备类型}: {推理后端名称}` 的格式填写。
+    对于产线模块，通过传入 `hpi_params` 参数中的 `selected_backends` 和 `backend_config` 字段，即可更换推理后端，以图像分类模块为例：
+
+    ```python
+    from paddlex import create_model
+
+    model = create_model(
+        "ResNet18",
+        device="gpu",
+        use_hpip=True,
+        hpi_params={
+            "config": {
+                "selected_backends": {"cpu": "openvino", "gpu": "paddle_infer"},
+                "backend_config": {"paddle_infer": {"enable_trt": True, "trt_precision": "FP16"}}
+            }
+        }
+    )
+
+    output = pipeline.predict("https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/general_image_classification_001.jpg")
+    ```
 
     目前所有可选的推理后端如下：
 
@@ -142,7 +171,7 @@ PaddleX 结合模型信息与运行环境信息为每个模型提供默认的高
 
 - 修改 Paddle Inference 或 TensorRT 的动态形状配置：
 
-    动态形状是 TensorRT 延迟指定部分或全部张量维度直到运行时的能力。当默认的动态形状配置无法满足需求（例如，模型可能需要范围外的输入形状），用户需要修改状推理后端配置中的 `trt_dynamic_shapes` 或 `dynamic_shapes` 字段：
+    动态形状是 TensorRT 延迟指定部分或全部张量维度直到运行时的能力。当默认的动态形状配置无法满足需求（例如，模型可能需要范围外的输入形状），用户需要修改模型目录中 `inference.yml` 文件中 `Hpi` 字段中的 `trt_dynamic_shapes` 或 `dynamic_shapes` 字段：
 
     ```yaml
     Hpi:
@@ -172,7 +201,78 @@ PaddleX 结合模型信息与运行环境信息为每个模型提供默认的高
 
     在完成修改后，请删除模型目录中的缓存文件（`shape_range_info.pbtxt` 与 `trt_serialized` 开头的文件）。
 
-## 2、支持使用高性能推理插件的产线与模型
+### 2.2 二次开发高性能推理插件
+
+对高性能推理插件进行二次开发可以为特定应用场景提供更高的灵活性和性能优化选项。通过使用 `paddlex-hpi` 和  `ultra-infer` 提供的接口和功能模块，编写自定义的推理逻辑。这可能包括：
+
+- 自定义数据预处理或后处理逻辑。
+- 实现特定算子的优化。
+- 支持特殊的输入/输出格式。
+- 集成第三方加速库。
+- ......
+
+二次开发高性能推理插件流程如下：
+
+#### 1. 按需修改 `paddlex-hpi` 和 `ultra-infer` 代码
+
+高性能推理插件源代码位于 `libs` 目录下，包含两部分：
+
+- `paddlex-hpi`，适配层，适配 `PaddleX` 与 `ultra-infer`。
+- `ultra-infer`，底层，前后处理加速和多后端推理。
+
+#### 2. 安装 `paddlex-hpi`
+
+对 `paddlex-hpi` 修改完成后，通过如下方式安装 `paddlex-hpi`。
+
+方式一：本地安装
+
+```shell
+cd PaddleX/libs/paddlex-hpi
+pip install -e .[test]
+```
+
+方式二：whl包安装
+
+```shell
+cd PaddleX/libs/paddlex-hpi
+bash ./scripts/build_wheel.sh
+python -m pip install ./wheels/original/paddlex_hpi*.whl
+```
+
+#### 3. 安装 `ultra-infer`
+
+对 `ultra-infer` 修改完成后，通过如下方式安装 `ultra-infer`。
+
+`ultra-infer` 需要编译whl包，编译脚本位于`PaddleX/libs/ultra-infer/scripts/linux/set_up_docker_and_build_py.sh` ，编译默认编译GPU版本和包含 `Paddle Inference`、`OpenVINO`、`TensorRT`、`ONNX Runtime` 四种推理后端的 `ultra-infer`。
+
+```shell
+# 编译
+# export PYTHON_VERSION=...
+# export WITH_GPU=...
+# export ENABLE_ORT_BACKEND=...
+# export ...
+
+cd PaddleX/libs/ultra-infer/scripts/linux
+bash set_up_docker_and_build_py.sh
+
+# 安装
+python -m pip install ../../python/dist/ultra_infer*.whl
+```
+
+编译时可根据需求修改如下选项：
+| 选项 | 说明 |
+|:------------------------|:------------------------------------|
+| http_proxy             | 在下载三方库时使用具体的http代理，默认空 |
+| PYTHON_VERSION | Python版本，默认3.10.0 |
+| WITH_GPU | 是否编译支持Nvidia-GPU，默认ON |
+| ENABLE_ORT_BACKEND      | 是否编译集成ONNX Runtime后端，默认ON |
+| ENABLE_PADDLE_BACKEND   | 是否编译集成Paddle Inference后端，默认ON |
+| ENABLE_TRT_BACKEND   | 是否编译集成TensorRT后端，默认ON|
+| ENABLE_OPENVINO_BACKEND | 是否编译集成OpenVINO后端(仅支持CPU)，默认ON|
+| ENABLE_VISION           | 是否编译集成视觉模型的部署模块，默认ON|
+| ENABLE_TEXT             | 是否编译集成文本NLP模型的部署模块，默认ON|
+
+## 3. 支持使用高性能推理插件的产线与模型
 
 <table>
   <tr>
@@ -258,7 +358,7 @@ PaddleX 结合模型信息与运行环境信息为每个模型提供默认的高
   <tr>
     <td>通用实例分割</td>
     <td>实例分割</td>
-    <td>Mask-RT-DETR-S ❌</td>
+    <td>Mask-RT-DETR-S ❌</br>PP-YOLOE_seg-S ❌</br>SOLOv2 ❌</td>
   </tr>
 
   <tr>
@@ -276,19 +376,19 @@ PaddleX 结合模型信息与运行环境信息为每个模型提供默认的高
   <tr>
     <td>时序预测</td>
     <td>时序预测</td>
-    <td>❌</td>
+    <td>✅</td>
   </tr>
 
   <tr>
     <td>时序异常检测</td>
     <td>时序异常预测</td>
-    <td>❌</td>
+    <td>TimesNet_ad ❌</td>
   </tr>
 
   <tr>
     <td>时序分类</td>
     <td>时序分类</td>
-    <td>❌</td>
+    <td>✅</td>
   </tr>
 
   <tr>
