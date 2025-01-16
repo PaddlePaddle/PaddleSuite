@@ -12,10 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import List, Optional
+from typing import Optional
 
-from pydantic import BaseModel, Field
-from typing_extensions import Annotated, Literal, TypeAlias
+from pydantic import BaseModel
+from typing_extensions import Literal, TypeAlias
 
 FileType: TypeAlias = Literal[0, 1]
 
@@ -27,26 +27,3 @@ class BaseInferRequest(BaseModel):
     # consistent with the parameters of the wrapped function though.
     useDocOrientationClassify: Optional[bool] = None
     useDocUnwarping: Optional[bool] = None
-
-
-Point: TypeAlias = Annotated[List[int], Field(min_length=2, max_length=2)]
-Polygon: TypeAlias = Annotated[List[Point], Field(min_length=3)]
-
-
-class Text(BaseModel):
-    poly: Polygon
-    text: str
-    score: float
-
-
-BoundingBox: TypeAlias = Annotated[List[float], Field(min_length=4, max_length=4)]
-
-
-class Table(BaseModel):
-    bbox: BoundingBox
-    html: str
-
-
-class Formula(BaseModel):
-    poly: Polygon
-    latex: str

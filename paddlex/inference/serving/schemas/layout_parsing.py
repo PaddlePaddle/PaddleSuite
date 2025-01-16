@@ -12,19 +12,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Final, List, Literal, Optional
+from typing import Dict, Final, List, Optional
 
 from pydantic import BaseModel, Field
 from typing_extensions import Annotated
 
 from ..infra.models import DataInfo, PrimaryOperations
-from .shared import object_detection, ocr
+from .shared import ocr
 
 __all__ = [
     "INFER_ENDPOINT",
     "InferenceParams",
     "InferRequest",
-    "LayoutElement",
     "LayoutParsingResult",
     "InferResult",
     "PRIMARY_OPERATIONS",
@@ -44,16 +43,10 @@ class InferRequest(ocr.BaseInferRequest):
     inferenceParams: Optional[InferenceParams] = None
 
 
-class LayoutElement(BaseModel):
-    bbox: object_detection.BoundingBox
-    label: str
-    text: str
-    layoutType: Literal["single", "double"]
-    image: Optional[str] = None
-
-
 class LayoutParsingResult(BaseModel):
-    layoutElements: List[LayoutElement]
+    prunedResult: dict
+    outputImages: Optional[Dict[str, str]] = None
+    inputImage: Optional[str] = None
 
 
 class InferResult(BaseModel):

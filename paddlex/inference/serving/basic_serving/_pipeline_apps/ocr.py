@@ -21,7 +21,7 @@ from ...infra.config import AppConfig
 from ...infra.models import ResultResponse
 from ...schemas.ocr import INFER_ENDPOINT, InferRequest, InferResult
 from .._app import create_app, primary_operation
-from ._common import image as image_common
+from ._common import common
 from ._common import ocr as ocr_common
 
 
@@ -43,39 +43,56 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
         log_id = serving_utils.generate_log_id()
 
         if request.inferenceParams is not None:
-            max_long_side = request.inferenceParams.maxLongSide
+            inference_params = request.inferenceParams.model_dump(exclude_unset=True)
         else:
-            max_long_side = None
+            inference_params = {}
 
         images, data_info = await ocr_common.get_images(request, ctx)
 
         result = await pipeline.infer(
             images,
-            use_textline_orientation=request.useTextLineOrientation,
             use_doc_orientation_classify=request.useDocOrientationClassify,
             use_doc_unwarping=request.useDocUnwarping,
+            use_textline_orientation=request.useTextLineOrientation,
+            text_det_limit_side_len=inference_params.get("textDetLimitSideLen"),
+            text_det_limit_type=inference_params.get("textDetLimitType"),
+            text_det_thresh=inference_params.get("textDetThresh"),
+            text_det_box_thresh=inference_params.get("textDetBoxThresh"),
+            text_det_unclip_ratio=inference_params.get("textDetUnclipRatio"),
+            text_rec_score_thresh=inference_params.get("textRecScoreThresh"),
         )
 
         ocr_results: List[Dict[str, Any]] = []
-        for i, item in enumerate(result):
-            texts: List[Dict[str, Any]] = []
-            for poly, text, score in zip(
-                item["dt_polys"], item["rec_text"], item["rec_score"]
-            ):
-                texts.append(dict(poly=poly, text=text, score=score))
+        for i, (img, item) in enumerate(zip(images, result)):
             if ctx.config.visualize:
-                image = await serving_utils.call_async(
-                    image_common.postprocess_image,
+                output_images = await serving_utils.call_async(
+                    common.postprocess_images,
                     item.img,
-                    log_id=log_id,
-                    filename=f"image_{i}.jpg",
+                    log_id,
+                    filename_template=f"output/{{key}}_{i}.jpg",
+                    file_storage=ctx.extra["file_storage"],
+                    return_urls=ctx.extra["return_img_urls"],
+                    max_img_size=ctx.extra["max_output_img_size"],
+                )
+                input_image = await serving_utils.call_async(
+                    common.postprocess_image,
+                    img,
+                    log_id,
+                    f"input/image_{i}.jpg",
                     file_storage=ctx.extra["file_storage"],
                     return_url=ctx.extra["return_img_urls"],
                     max_img_size=ctx.extra["max_output_img_size"],
                 )
             else:
-                image = None
-            ocr_results.append(dict(texts=texts, image=image))
+                input_image = None
+                output_images = None
+            ocr_results.append(
+                dict(
+                    prunedResult=common.prune_result(item.json["res"]),
+                    outputImages=output_images,
+                    inputImage=input_image,
+                )
+            )
 
         return ResultResponse[InferResult](
             logId=log_id,

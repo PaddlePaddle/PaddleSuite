@@ -12,14 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import os
 from typing import Any, Dict, List
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 
 from ...infra import utils as serving_utils
 from ...infra.config import AppConfig
 from ...infra.models import ResultResponse
-from ...schemas.small_object_detection import INFER_ENDPOINT, InferRequest, InferResult
+from ...schemas.video_detection import INFER_ENDPOINT, InferRequest, InferResult
 from .._app import create_app, primary_operation
 
 
@@ -38,36 +39,56 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
         aiohttp_session = ctx.aiohttp_session
 
         file_bytes = await serving_utils.get_raw_bytes_async(
-            request.image, aiohttp_session
+            request.video, aiohttp_session
         )
-        image = serving_utils.image_bytes_to_array(file_bytes)
+        ext = serving_utils.infer_file_ext(request.video)
+        if ext is None:
+            raise HTTPException(
+                status_code=422, detail="File extension cannot be inferred"
+            )
+        video_path = await serving_utils.call_async(
+            serving_utils.write_to_temp_file,
+            file_bytes,
+            suffix=ext,
+        )
+
         if request.inferenceParams is not None:
-            threshold = request.inferenceParams.threshold
+            nms_thresh = request.inferenceParams.nmsThresh
+            score_thresh = request.inferenceParams.scoreThresh
         else:
-            threshold = None
+            nms_thresh = None
+            score_thresh = None
 
-        result = (await pipeline.infer(image, threshold=threshold))[0]
+        try:
+            result = (
+                await pipeline.infer(
+                    video_path, nms_thresh=nms_thresh, score_thresh=score_thresh
+                )
+            )[0]
+        finally:
+            await serving_utils.call_async(os.unlink, video_path)
 
-        objects: List[Dict[str, Any]] = []
-        for obj in result["boxes"]:
-            objects.append(
+        frames: List[Dict[str, Any]] = []
+        for i, item in enumerate(result["result"]):
+            objs: List[Dict[str, Any]] = []
+            for obj in item:
+                objs.append(
+                    dict(
+                        bbox=obj[0],
+                        categoryName=obj[2],
+                        score=obj[1],
+                    )
+                )
+            frames.append(
                 dict(
-                    bbox=obj["coordinate"],
-                    categoryId=obj["cls_id"],
-                    categoryName=obj["label"],
-                    score=obj["score"],
+                    index=i,
+                    detectedObjects=objs,
                 )
             )
-        if ctx.config.visualize:
-            output_image_base64 = serving_utils.base64_encode(
-                serving_utils.image_to_bytes(result.img["res"])
-            )
-        else:
-            output_image_base64 = None
 
         return ResultResponse[InferResult](
             logId=serving_utils.generate_log_id(),
-            result=InferResult(detectedObjects=objects, image=output_image_base64),
+            result=InferResult(frames=frames),
         )
 
     return app

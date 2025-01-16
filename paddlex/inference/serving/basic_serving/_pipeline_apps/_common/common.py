@@ -13,14 +13,31 @@
 # limitations under the License.
 
 import os
-from typing import Optional, Tuple
+from typing import Dict, Optional, Tuple
 
 import cv2
 import numpy as np
 from numpy.typing import ArrayLike
+from PIL.Image import Image
 
 from ....infra import utils as serving_utils
 from ....infra.storage import Storage, SupportsGetURL
+
+
+def prune_result(result: dict) -> dict:
+    def _process_obj(obj):
+        if isinstance(obj, dict):
+            return {
+                k: _process_obj(v) for k, v in obj.items() if k not in KEYS_TO_REMOVE
+            }
+        elif isinstance(obj, list):
+            return [_process_obj(item) for item in obj]
+        else:
+            return obj
+
+    KEYS_TO_REMOVE = ["input_path"]
+
+    return _process_obj(result)
 
 
 def postprocess_image(
@@ -58,3 +75,24 @@ def postprocess_image(
             assert isinstance(file_storage, SupportsGetURL)
             return file_storage.get_url(key)
     return serving_utils.base64_encode(img_bytes)
+
+
+def postprocess_images(
+    images: Dict[str, Image],
+    log_id: str,
+    filename_template: str = "{key}.jpg",
+    file_storage: Optional[Storage] = None,
+    return_urls: bool = False,
+    max_img_size: Optional[Tuple[int, int]] = None,
+) -> Dict[str, str]:
+    output_images: Dict[str, str] = {}
+    for key, img in images.items():
+        output_images[key] = postprocess_image(
+            img,
+            log_id=log_id,
+            filename=filename_template.format(key=key),
+            file_storage=file_storage,
+            return_url=return_urls,
+            max_img_size=max_img_size,
+        )
+    return output_images

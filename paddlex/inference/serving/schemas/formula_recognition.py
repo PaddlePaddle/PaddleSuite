@@ -12,17 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Final, List, Optional
+from typing import Dict, Final, List, Optional
 
-from pydantic import BaseModel, Field
-from typing_extensions import Annotated
+from pydantic import BaseModel
 
 from ..infra.models import DataInfo, PrimaryOperations
 from .shared import ocr
 
 __all__ = [
     "INFER_ENDPOINT",
-    "InferenceParams",
     "InferRequest",
     "FormulaRecResult",
     "InferResult",
@@ -32,20 +30,14 @@ __all__ = [
 INFER_ENDPOINT: Final[str] = "/formula-recognition"
 
 
-class InferenceParams(BaseModel):
-    maxLongSide: Optional[Annotated[int, Field(gt=0)]] = None
-
-
 class InferRequest(ocr.BaseInferRequest):
-    useTextLineOrientation: Optional[bool] = False
-    inferenceParams: Optional[InferenceParams] = None
+    useLayoutDetection: Optional[bool] = False
 
 
 class FormulaRecResult(BaseModel):
-    formulas: List[ocr.Formula]
+    prunedResult: dict
+    outputImages: Optional[Dict[str, str]] = None
     inputImage: Optional[str] = None
-    layoutImage: Optional[str] = None
-    ocrImage: Optional[str] = None
 
 
 class InferResult(BaseModel):

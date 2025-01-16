@@ -43,6 +43,7 @@ class InferRequest(BaseModel):
 class DetectedObject(BaseModel):
     bbox: object_detection.BoundingBox
     categoryId: int
+    categoryName: str
     score: float
 
 

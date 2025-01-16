@@ -12,10 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Final, List, Literal, Optional
+from typing import Dict, Final, List, Optional
 
-from pydantic import BaseModel, Field
-from typing_extensions import Annotated
+from pydantic import BaseModel
+from typing_extensions import Literal
 
 from ..infra.models import DataInfo, PrimaryOperations
 from .shared import ocr
@@ -33,14 +33,12 @@ INFER_ENDPOINT: Final[str] = "/ocr"
 
 
 class InferenceParams(BaseModel):
-    textDetLimitSideLen: Optional[Annotated[int, Field(gt=0)]] = None
-    textDetLimitType: Optional[Literal[""]] = None
+    textDetLimitSideLen: Optional[int] = None
+    textDetLimitType: Optional[Literal["min", "max"]] = None
     # Better to use "threshold"? Be consistent with the pipeline API though.
     textDetThresh: Optional[float] = None
     textDetBoxThresh: Optional[float] = None
-    textDetMaxCandidates: Optional[float] = None
     textDetUnclipRatio: Optional[float] = None
-    textDetUseDilation: Optional[bool] = None
     textRecScoreThresh: Optional[float] = None
 
 
@@ -50,8 +48,9 @@ class InferRequest(ocr.BaseInferRequest):
 
 
 class OCRResult(BaseModel):
-    texts: List[ocr.Text]
-    image: Optional[str] = None
+    prunedResult: dict
+    outputImages: Optional[Dict[str, str]] = None
+    inputImage: Optional[str] = None
 
 
 class InferResult(BaseModel):

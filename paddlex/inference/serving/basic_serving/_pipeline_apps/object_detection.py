@@ -42,11 +42,19 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
         )
         image = serving_utils.image_bytes_to_array(file_bytes)
         if request.inferenceParams is not None:
-            threshold = request.inferenceParams.threshold
+            inference_params = request.inferenceParams.model_dump(exclude_unset=True)
         else:
-            threshold = None
+            inference_params = {}
 
-        result = (await pipeline.infer(image, threshold=threshold))[0]
+        result = (
+            await pipeline.infer(
+                image,
+                threshold=inference_params.get("threshold"),
+                layout_nms=inference_params.get("layoutNms"),
+                layout_unclip_ratio=inference_params.get("layoutUnclipRatio"),
+                layout_merge_bboxes_mode=inference_params.get("layoutMergeBboxesMode"),
+            )
+        )[0]
 
         objects: List[Dict[str, Any]] = []
         for obj in result["boxes"]:
@@ -54,6 +62,7 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
                 dict(
                     bbox=obj["coordinate"],
                     categoryId=obj["cls_id"],
+                    categoryName=obj["label"],
                     score=obj["score"],
                 )
             )

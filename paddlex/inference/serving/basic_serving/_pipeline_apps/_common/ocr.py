@@ -12,12 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import asyncio
-from typing import Awaitable, Final, List, Optional, Tuple, Union
+from typing import Final, List, Tuple, Union
 
 import numpy as np
 from fastapi import HTTPException
-from numpy.typing import ArrayLike
 from typing_extensions import Literal
 
 from ....infra import utils as serving_utils
@@ -25,7 +23,6 @@ from ....infra.models import ImageInfo, PDFInfo
 from ....infra.storage import SupportsGetURL, create_storage
 from ....schemas.shared.ocr import BaseInferRequest
 from ..._app import AppContext
-from .image import postprocess_image
 
 DEFAULT_MAX_NUM_INPUT_IMGS: Final[int] = 10
 DEFAULT_MAX_OUTPUT_IMG_SIZE: Final[Tuple[int, int]] = (2000, 2000)
@@ -91,54 +88,3 @@ async def get_images(
     )
 
     return images, data_info
-
-
-async def postprocess_images(
-    *,
-    log_id: str,
-    index: int,
-    app_context: AppContext,
-    input_image: Optional[ArrayLike] = None,
-    layout_image: Optional[ArrayLike] = None,
-    ocr_image: Optional[ArrayLike] = None,
-) -> List[str]:
-    if input_image is None and layout_image is None and ocr_image is None:
-        raise ValueError("At least one of the images must be provided.")
-    file_storage = app_context.extra["file_storage"]
-    return_img_urls = app_context.extra["return_img_urls"]
-    max_img_size = app_context.extra["max_output_img_size"]
-    futures: List[Awaitable] = []
-    if input_image is not None:
-        future = serving_utils.call_async(
-            postprocess_image,
-            input_image,
-            log_id=log_id,
-            filename=f"input_image_{index}.jpg",
-            file_storage=file_storage,
-            return_url=return_img_urls,
-            max_img_size=max_img_size,
-        )
-        futures.append(future)
-    if layout_image is not None:
-        future = serving_utils.call_async(
-            postprocess_image,
-            layout_image,
-            log_id=log_id,
-            filename=f"layout_image_{index}.jpg",
-            file_storage=file_storage,
-            return_url=return_img_urls,
-            max_img_size=max_img_size,
-        )
-        futures.append(future)
-    if ocr_image is not None:
-        future = serving_utils.call_async(
-            postprocess_image,
-            ocr_image,
-            log_id=log_id,
-            filename=f"ocr_image_{index}.jpg",
-            file_storage=file_storage,
-            return_url=return_img_urls,
-            max_img_size=max_img_size,
-        )
-        futures.append(future)
-    return await asyncio.gather(*futures)

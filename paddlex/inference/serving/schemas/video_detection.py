@@ -12,37 +12,48 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Dict, Final, List, Optional
+from typing import Final, List, Optional
 
 from pydantic import BaseModel
 
-from ..infra.models import DataInfo, PrimaryOperations
-from .shared import ocr
+from ..infra.models import PrimaryOperations
+from .shared import object_detection
 
 __all__ = [
     "INFER_ENDPOINT",
+    "InferenceParams",
     "InferRequest",
-    "TableRecResult",
+    "DetectedObject",
     "InferResult",
     "PRIMARY_OPERATIONS",
 ]
 
-INFER_ENDPOINT: Final[str] = "/table-recognition"
+INFER_ENDPOINT: Final[str] = "/video-detection"
 
 
-class InferRequest(ocr.BaseInferRequest):
-    pass
+class InferenceParams(BaseModel):
+    nmsThresh: Optional[float] = None
+    scoreThresh: Optional[float] = None
 
 
-class TableRecResult(BaseModel):
-    prunedResult: dict
-    outputImages: Optional[Dict[str, str]] = None
-    inputImage: Optional[str] = None
+class InferRequest(BaseModel):
+    video: str
+    inferenceParams: Optional[InferenceParams] = None
+
+
+class DetectedObject(BaseModel):
+    bbox: object_detection.BoundingBox
+    categoryName: str
+    score: float
+
+
+class Frame(BaseModel):
+    index: int
+    detectedObjects: List[DetectedObject]
 
 
 class InferResult(BaseModel):
-    tableRecResults: List[TableRecResult]
-    dataInfo: DataInfo
+    frames: List[Frame]
 
 
 PRIMARY_OPERATIONS: Final[PrimaryOperations] = {

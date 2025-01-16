@@ -14,13 +14,14 @@
 
 from typing import Any, Dict, List
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI
 
 from ...infra import utils as serving_utils
 from ...infra.config import AppConfig
 from ...infra.models import ResultResponse
 from ...schemas.formula_recognition import INFER_ENDPOINT, InferRequest, InferResult
 from .._app import create_app, primary_operation
+from ._common import common
 from ._common import ocr as ocr_common
 
 
@@ -30,10 +31,6 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
     )
 
     ocr_common.update_app_context(ctx)
-    ctx.extra["return_ocr_imgs"] = False
-    if ctx.config.extra:
-        if "return_ocr_imgs" in ctx.config.extra:
-            ctx.extra["return_ocr_imgs"] = ctx.config.extra["return_ocr_imgs"]
 
     @primary_operation(
         app,
@@ -47,48 +44,42 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
 
         images, data_info = await ocr_common.get_images(request, ctx)
 
-        result = await pipeline.infer(images)
+        result = await pipeline.infer(
+            images,
+            use_layout_detection=request.useLayoutDetection,
+            use_doc_orientation_classify=request.useDocOrientationClassify,
+            use_doc_unwarping=request.useDocUnwarping,
+        )
 
         formula_rec_results: List[Dict[str, Any]] = []
         for i, (img, item) in enumerate(zip(images, result)):
-            formulas: List[Dict[str, Any]] = []
-            for poly, latex in zip(item["dt_polys"], item["rec_formula"]):
-                formulas.append(
-                    dict(
-                        poly=poly,
-                        latex=latex,
-                    )
-                )
             if ctx.config.visualize:
-                layout_img = item["layout_result"].img
-                if ctx.extra["return_ocr_imgs"]:
-                    ocr_img = item["formula_result"].img
-                    if ocr_img is None:
-                        raise HTTPException(
-                            status_code=500, detail="Failed to get the OCR image"
-                        )
-                else:
-                    ocr_img = None
-                output_imgs = await ocr_common.postprocess_images(
-                    log_id=log_id,
-                    index=i,
-                    app_context=ctx,
-                    input_image=img,
-                    layout_image=layout_img,
-                    ocr_image=ocr_img,
+                output_images = await serving_utils.call_async(
+                    common.postprocess_images,
+                    item.img,
+                    log_id,
+                    filename_template=f"output/{{key}}_{i}.jpg",
+                    file_storage=ctx.extra["file_storage"],
+                    return_urls=ctx.extra["return_img_urls"],
+                    max_img_size=ctx.extra["max_output_img_size"],
                 )
-                if ocr_img is not None:
-                    input_img, layout_img, ocr_img = output_imgs
-                else:
-                    input_img, layout_img = output_imgs
+                input_image = await serving_utils.call_async(
+                    common.postprocess_image,
+                    img,
+                    log_id,
+                    f"input/image_{i}.jpg",
+                    file_storage=ctx.extra["file_storage"],
+                    return_url=ctx.extra["return_img_urls"],
+                    max_img_size=ctx.extra["max_output_img_size"],
+                )
             else:
-                input_img, layout_img, ocr_img = None, None, None
+                input_image = None
+                output_images = None
             formula_rec_results.append(
                 dict(
-                    formulas=formulas,
-                    inputImage=input_img,
-                    layoutImage=layout_img,
-                    ocrImage=ocr_img,
+                    prunedResult=common.prune_result(item.json["res"]),
+                    outputImages=output_images,
+                    inputImage=input_image,
                 )
             )
 

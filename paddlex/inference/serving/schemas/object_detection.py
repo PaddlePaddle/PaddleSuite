@@ -12,9 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Final, List, Optional
+from typing import Final, List, Optional, Union
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
+from typing_extensions import Annotated, Literal
 
 from ..infra.models import PrimaryOperations
 from .shared import object_detection
@@ -33,6 +34,11 @@ INFER_ENDPOINT: Final[str] = "/object-detection"
 
 class InferenceParams(BaseModel):
     threshold: Optional[float] = None
+    layoutNms: Optional[bool] = None
+    layoutUnclipRatio: Optional[
+        Union[float, Annotated[List[float], Field(min_length=2, max_length=2)]]
+    ] = None
+    layoutMergeBboxesMode: Optional[Literal["union", "large", "small"]] = None
 
 
 class InferRequest(BaseModel):
@@ -43,6 +49,7 @@ class InferRequest(BaseModel):
 class DetectedObject(BaseModel):
     bbox: object_detection.BoundingBox
     categoryId: int
+    categoryName: str
     score: float
 
 
