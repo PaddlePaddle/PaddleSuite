@@ -17,7 +17,7 @@ from paddlex import create_pipeline
 pipeline = create_pipeline(pipeline="object_detection")
 
 output = pipeline.predict(
-    "/ssd2/sunting/1230/yowo_x/yowo_x_new/PaddleX/dataset/cc_chatfile/output_200/Sparks_of_Artificial_General_Intelligence-Early_experiments_with_GPT-4_26.png",
+    "./test_samples/general_layout.png",
     threshold={0: 0.45, 2: 0.48, 7: 0.4},
     layout_nms=True,
     layout_merge_bboxes_mode="large",
@@ -25,11 +25,11 @@ output = pipeline.predict(
 )
 
 # output = pipeline.predict(
-#     "test_samples/layout_image.jpg",
+#     "./test_samples/general_layout.png",
 # )
 
 # output = pipeline.predict(
-#     "test_samples/layout_image.jpg",
+#     "./test_samples/general_layout.png",
 #     threshold={0: 0.45, 2: 0.48, 7: 0.4},
 #     layout_nms=False,
 #     layout_merge_bboxes_mode="small", 
