@@ -17,6 +17,7 @@ import os, sys
 import numpy as np
 import cv2
 from ..base import BasePipeline
+from ..components import convert_points_to_boxes
 from .utils import  get_sub_regions_ocr_res, get_structure_res
 from .result import LayoutParsingResult
 from ....utils import logging
@@ -317,7 +318,7 @@ class LayoutParsingPipeline(BasePipeline):
 
             doc_preprocessor_image = doc_preprocessor_res["output_img"]
 
-            layout_det_res = next(self.layout_det_model(doc_preprocessor_image,threshold=0.4))
+            layout_det_res = next(self.layout_det_model(doc_preprocessor_image))
 
             if (
                 model_settings["use_general_ocr"]
