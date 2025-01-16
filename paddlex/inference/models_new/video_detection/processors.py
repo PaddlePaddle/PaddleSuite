@@ -425,7 +425,7 @@ class DetVideoPostProcess:
             for out in outputs:
                 preds = []
                 out = paddle.to_tensor(out)
-                all_boxes = get_region_boxes(out, 0.3, len(self.labels))
+                all_boxes = get_region_boxes(out, num_classes=len(self.labels))
                 for i in range(out.shape[0]):
                     boxes = all_boxes[i]
                     boxes = nms(boxes, nms_thresh)
