@@ -43,10 +43,10 @@ class MLClasPredictor(ClasPredictor):
         super().__init__(*args, **kwargs)
 
     def _get_result_class(self) -> type:
-        """Returns the result class, TopkResult.
+        """Returns the result class, MLClassResult.
 
         Returns:
-            type: The TopkResult class.
+            type: The MLClassResult class.
         """
 
         return MLClassResult
@@ -74,7 +74,10 @@ class MLClasPredictor(ClasPredictor):
         batch_preds = self.infer(x=x)
         batch_class_ids, batch_scores, batch_label_names = self.postprocessors[
             "MultiLabelThreshOutput"
-        ](preds=batch_preds, threshold=threshold or self.threshold)
+        ](
+            preds=batch_preds,
+            threshold=self.threshold if threshold is None else threshold,
+        )
         return {
             "input_path": batch_data,
             "input_img": batch_raw_imgs,

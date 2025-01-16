@@ -25,8 +25,10 @@ from .modules import (
 
 
 # TODO(gaotingquan): support _ModelBasedConfig
-def create_model(model=None, *args, **kwargs):
-    return _ModelBasedInference(model, *args, **kwargs)
+def create_model(model_name, model_dir=None, *args, **kwargs):
+    return _ModelBasedInference(
+        model_name=model_name, model_dir=model_dir, *args, **kwargs
+    )
 
 
 class _BaseModel:
@@ -61,6 +63,13 @@ class _ModelBasedInference(_BaseModel):
 
     def set_predictor(self, **kwargs):
         self._predictor.set_predictor(**kwargs)
+
+    def __getattr__(self, name):
+        if hasattr(self._predictor, name):
+            return getattr(self._predictor, name)
+        raise AttributeError(
+            f"'{self.__class__.__name__}' object has no attribute '{name}'"
+        )
 
 
 class _ModelBasedConfig(_BaseModel):
