@@ -855,7 +855,7 @@ def _get_sub_category( blocks, title_labels):
     return blocks     
 
 
-def get_layout_ordering(block_index=-1,no_mask_labels=[]):
+def get_layout_ordering(data,block_index=-1,no_mask_labels=[]):
     """
     Process layout parsing results to remove overlapping bounding boxes 
     and assign an ordering index based on their positions.
@@ -871,7 +871,7 @@ def get_layout_ordering(block_index=-1,no_mask_labels=[]):
     vision_labels = ['image','table','seal','chart','figure']
     vision_title_labels = ["table_title", 'chart_title', "figure_title"]
 
-    layout_parsing_result = self['layout_parsing_result']
+    layout_parsing_result = data['layout_parsing_result']
     parsing_result = layout_parsing_result[block_index]['sub_blocks']
     parsing_result, _ = _remove_overlap_blocks(parsing_result, threshold=0.5, smaller=True)
     parsing_result = _get_sub_category(parsing_result,title_text_labels)
