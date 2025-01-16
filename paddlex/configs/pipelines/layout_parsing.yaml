@@ -10,7 +10,7 @@ use_formula_recognition: True
 SubModules:
   LayoutDetection:
     module_name: layout_detection
-    model_name: RT-DETR-H_layout_23cls
+    model_name: RT-DETR-H_layout_17cls
     model_dir: null
 
 SubPipelines:
@@ -29,23 +29,6 @@ SubPipelines:
         model_dir: null
 
   GeneralOCR:
-    SubPipelines:
-      DocPreprocessor:
-        pipeline_name: doc_preprocessor
-        use_doc_orientation_classify: True
-        use_doc_unwarping: True
-        SubModules:
-          DocOrientationClassify:
-            module_name: doc_text_orientation
-            model_name: PP-LCNet_x1_0_doc_ori
-            model_dir: null
-            batch_size: 1
-          DocUnwarping:
-            module_name: image_unwarping
-            model_name: UVDoc
-            model_dir: null
-            batch_size: 1
-
     pipeline_name: OCR
     text_type: general
     use_doc_preprocessor: False

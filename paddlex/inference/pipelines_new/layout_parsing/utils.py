@@ -125,7 +125,7 @@ def calculate_iou(box1, box2):
     iou = inter_area / min_area
     return iou
 
-def is_overlaps_y_exceeds_threshold(bbox1, bbox2, overlap_ratio_threshold=0.6):
+def _whether_overlaps_y_exceeds_threshold(bbox1, bbox2, overlap_ratio_threshold=0.6):
         _, y0_1, _, y1_1 = bbox1
         _, y0_2, _, y1_2 = bbox2
 
@@ -134,7 +134,7 @@ def is_overlaps_y_exceeds_threshold(bbox1, bbox2, overlap_ratio_threshold=0.6):
 
         return (overlap / min_height) > overlap_ratio_threshold
 
-def sort_boxes_from_left_to_right_then_top_to_bottom(layout_bbox, ocr_res, line_height_threshold=0.7):    
+def _sort_box_by_y_projection(layout_bbox, ocr_res, line_height_threshold=0.7):    
     assert ocr_res['boxes'] and ocr_res['rec_texts']
 
     # span->line->block
@@ -153,7 +153,7 @@ def sort_boxes_from_left_to_right_then_top_to_bottom(layout_bbox, ocr_res, line_
 
     for span in spans[1:]:
         y0, y1 = span[0][1],span[0][3]
-        if is_overlaps_y_exceeds_threshold((0, current_y0, 0, current_y1), (0, y0, 0, y1), line_height_threshold):
+        if _whether_overlaps_y_exceeds_threshold((0, current_y0, 0, current_y1), (0, y0, 0, y1), line_height_threshold):
             current_line.append(span)
             current_y0 = min(current_y0, y0)
             current_y1 = max(current_y1, y1)
@@ -237,12 +237,12 @@ def get_structure_res(
                     drop_index.append(box_no)
             
             if rec_res['flag']:
-                rec_res = sort_boxes_from_left_to_right_then_top_to_bottom(layout_bbox,rec_res,0.7)
+                rec_res = _sort_box_by_y_projection(layout_bbox,rec_res,0.7)
                 rec_res_first_bbox = rec_res['boxes'][0]
                 rec_res_end_bbox = rec_res['boxes'][-1]
-                if rec_res_first_bbox[0] - layout_bbox[0] < 10:
+                if rec_res_first_bbox[0] - layout_bbox[0] < 20:
                     seg_start_flag = False
-                if layout_bbox[2] - rec_res_end_bbox[2] < 10:
+                if layout_bbox[2] - rec_res_end_bbox[2] < 20:
                     seg_end_flag = False 
 
             if label in ['chart', 'image']:
@@ -250,7 +250,6 @@ def get_structure_res(
                     "label": label,
                     f"{label}": {
                         "img": input_img[int(layout_bbox[1]):int(layout_bbox[3]), int(layout_bbox[0]):int(layout_bbox[2])],
-                        # "image_text": ''.join(rec_texts)  # Uncomment if image text is needed
                     },
                     "layout_bbox": layout_bbox,
                     "seg_start_flag": seg_start_flag,

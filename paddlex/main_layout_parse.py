@@ -49,13 +49,13 @@ def process_image_file(image_file, pipeline, save_dir, is_save_gt=True, is_eval=
     total_bleu_score, total_ard, total_tau = 0, 0, 0
     for res in page_files:
         if is_save_gt:
-            res.save_gt_json(gt_path, is_eval=True, is_only_xycut=is_only_xycut)
+            res.save_gt_json(gt_path, is_eval=True)
         if is_eval and gt_json_path:
             bleu_score, ard, tau = res.eval_layout_ordering(gt_json_path=gt_json_path)
             total_bleu_score += bleu_score
             total_ard += ard
             total_tau += tau
-        res.save_to_pdf_order(f"{save_dir}", is_eval=is_eval, is_only_xycut=is_only_xycut)
+        res.save_to_pdf_order(f"{save_dir}")
         res.save_results(f"{save_dir}")
         # res.save_to_img(f"{save_dir}/images")
         res.save_to_json(f"{save_dir}")
@@ -111,7 +111,7 @@ def get_gt_json_and_eval(image_files=None, save_dir="./output", is_save_gt=True,
 #         shutil.copy(pdf_path, output_pdf_path)
 #         print(f"PDF copy path: {output_pdf_path}")
 
-#     get_gt_json_and_eval(image_files=output_pdf_path, save_dir=save_dir, is_save_gt=is_save_gt, is_eval=is_eval, gt_json_path=gt_json_path, is_only_xycut=is_only_xycut)
+#     get_gt_json_and_eval(image_files=output_pdf_path, save_dir=save_dir, is_save_gt=is_save_gt, gt_json_path=gt_json_path)
 def find_images_recursively(image_dir, extensions):
     image_files = []
     for root, _, files in os.walk(image_dir):
@@ -208,10 +208,10 @@ def main(image_files=None,save_dir = './output/new', is_eval=False, is_only_xycu
     for image_file in image_files:
         page_files = pipeline.predict(image_file)
         for res in page_files:
-            res.save_to_markdown(f"{save_path}",is_eval=is_eval, is_only_xycut=is_only_xycut)
-            res.save_to_pdf_order(f"{Path(save_path).parent}", is_eval=is_eval, is_only_xycut=is_only_xycut)
-            res.save_results(f"{Path(save_path).parent}")
-            res.save_to_json(f"{Path(save_path).parent}")
+            res.save_to_markdown(f"{save_path}",is_eval=is_eval)
+            res.save_to_pdf_order(f"{Path(save_path).parent}")
+            # res.save_results(f"{Path(save_path).parent}")
+            # res.save_to_json(f"{Path(save_path).parent}")
             # res.save_to_img(f"{Path(save_path).parent}/images")
 
 # 使用封装好的函数

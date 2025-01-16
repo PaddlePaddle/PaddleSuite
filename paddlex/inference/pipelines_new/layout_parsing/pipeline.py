@@ -17,12 +17,7 @@ import os, sys
 import numpy as np
 import cv2
 from ..base import BasePipeline
-<<<<<<< HEAD
-from .utils import convert_points_to_boxes, get_sub_regions_ocr_res, get_structure_res
-=======
-from .utils import get_sub_regions_ocr_res
-from ..components import convert_points_to_boxes
->>>>>>> upstream/develop
+from .utils import  get_sub_regions_ocr_res, get_structure_res
 from .result import LayoutParsingResult
 from ....utils import logging
 from ...utils.pp_option import PaddlePredictorOption
@@ -235,27 +230,6 @@ class LayoutParsingPipeline(BasePipeline):
         if use_seal_recognition is None:
             use_seal_recognition = self.use_seal_recognition
 
-<<<<<<< HEAD
-        Returns:
-            OCRResult: The predicted OCR result with updated dt_boxes.
-        """
-        overall_ocr_res = next(self.general_ocr_pipeline(image_array, use_doc_orientation_classify=False,
-                                                                      use_doc_unwarping=False,
-                                                                      use_textline_orientation=False))
-        dt_boxes = convert_points_to_boxes(overall_ocr_res["dt_polys"])
-        overall_ocr_res["dt_boxes"] = dt_boxes
-        return overall_ocr_res
-
-    def predict(
-        self,
-        inputs: str | list[str] | np.ndarray | list[np.ndarray],
-        use_doc_orientation_classify: bool = False,
-        use_doc_unwarping: bool = False,
-        use_general_ocr: bool = True,
-        use_seal_recognition: bool = True,
-        use_table_recognition: bool = True,
-        **kwargs
-=======
         if use_table_recognition is None:
             use_table_recognition = self.use_table_recognition
 
@@ -292,8 +266,7 @@ class LayoutParsingPipeline(BasePipeline):
         seal_det_unclip_ratio: Optional[float] = None,
         seal_rec_score_thresh: Optional[float] = None,
         **kwargs,
->>>>>>> upstream/develop
-    ) -> LayoutParsingResult:
+    ) -> LayoutParsingResult:       
         """
         This function predicts the layout parsing result for the given input.
 
@@ -322,9 +295,6 @@ class LayoutParsingPipeline(BasePipeline):
         if not self.check_model_settings_valid(model_settings):
             yield {"error": "the input params for model settings are invalid!"}
 
-<<<<<<< HEAD
-        for img_id, batch_data in enumerate(self.batch_sampler(inputs)):
-=======
         for img_id, batch_data in enumerate(self.batch_sampler(input)):
             if not isinstance(batch_data[0], str):
                 # TODO: add support input_pth for ndarray and pdf
@@ -332,7 +302,6 @@ class LayoutParsingPipeline(BasePipeline):
             else:
                 input_path = batch_data[0]
 
->>>>>>> upstream/develop
             image_array = self.img_reader(batch_data)[0]
 
             if model_settings["use_doc_preprocessor"]:
@@ -379,11 +348,6 @@ class LayoutParsingPipeline(BasePipeline):
                 table_res_all = next(
                     self.table_recognition_pipeline(
                         doc_preprocessor_image,
-<<<<<<< HEAD
-                        use_ocr_model=False,
-                        use_layout_detection=False,
-=======
->>>>>>> upstream/develop
                         use_doc_orientation_classify=False,
                         use_doc_unwarping=False,
                         use_layout_detection=False,
@@ -392,14 +356,7 @@ class LayoutParsingPipeline(BasePipeline):
                         layout_det_res=layout_det_res,
                     )
                 )
-<<<<<<< HEAD
-                if table_res_list:
-                    table_res_list = table_res_list["table_res_list"]
-                else:
-                    table_res_list = []
-=======
                 table_res_list = table_res_all["table_res_list"]
->>>>>>> upstream/develop
             else:
                 table_res_list = []
 
@@ -419,21 +376,14 @@ class LayoutParsingPipeline(BasePipeline):
                         seal_rec_score_thresh=seal_rec_score_thresh,
                     )
                 )
-<<<<<<< HEAD
-                if seal_res_list:
-                    seal_res_list = seal_res_list["seal_res_list"]
-                else:
-                    seal_res_list = []
-=======
                 seal_res_list = seal_res_all["seal_res_list"]
->>>>>>> upstream/develop
             else:
                 seal_res_list = []
             
             for table_res in table_res_list:
                 table_res['layout_bbox'] = table_res['cell_box_list'][0]
-            structure_res = get_structure_res(overall_ocr_res, layout_det_res,table_res_list)
 
+            structure_res = get_structure_res(overall_ocr_res, layout_det_res,table_res_list)
             structure_res_list = [{
                 "block_bbox":[0,0,2550,2550],
                 "block_size":[image_array.shape[1],image_array.shape[0]],
@@ -463,17 +413,13 @@ class LayoutParsingPipeline(BasePipeline):
                 "text_paragraphs_ocr_res": text_paragraphs_ocr_res,
                 "table_res_list": table_res_list,
                 "seal_res_list": seal_res_list,
-<<<<<<< HEAD
                 "layout_parsing_result": structure_res_list,
                 "image_array": image_array,
-                "input_params": input_params,
                 "img_id": img_id,
-=======
                 "formula_res_list": formula_res_list,
                 "model_settings": model_settings,
->>>>>>> upstream/develop
             }
 
-            yield LayoutParsingResult(single_img_res,img_id,inputs)
+            yield LayoutParsingResult(single_img_res,img_id,input)
 
     
