@@ -246,7 +246,7 @@ python main.py -c paddlex/configs/human_detection/PP-YOLOE-S_human.yaml \
 
 1.**产线集成**
 
-行人检测模块可以集成的PaddleX产线有[**人体关键点检测**](../../../pipeline_usage/tutorials/cv_pipelines/human_keypoint_detection.md)，只需要替换模型路径即可完成相关产线的关键点检测模块的模型更新。在产线集成中，你可以使用高性能部署和服务化部署来部署你得到的模型。
+行人检测模块可以集成的PaddleX产线有[**人体关键点检测**](../../../pipeline_usage/tutorials/cv_pipelines/human_keypoint_detection.md)，只需要替换模型路径即可完成相关产线的行人检测模块的模型更新。在产线集成中，你可以使用高性能部署和服务化部署来部署你得到的模型。
 
 2.**模块集成**
 
