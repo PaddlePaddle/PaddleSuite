@@ -53,7 +53,7 @@ class LazyLoader(types.ModuleType):
         self._module = module
 
     def __getattr__(self, item):
-        logging.debug("lazy load in : %s", inspect.currentframe().f_back)
+        logging.debug("lazy load in : %s" % inspect.currentframe().f_back)
         if not self.loaded:
             # HACK: For circumventing shared library symbol conflicts when
             # importing paddlex_hpi
