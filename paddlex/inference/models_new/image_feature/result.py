@@ -18,7 +18,10 @@ from PIL import Image
 from ...common.result import BaseResult, StrMixin, JsonMixin
 
 
-class IdentityResult(BaseResult, StrMixin, JsonMixin):
+class IdentityResult(BaseResult):
+    def __init__(self, data: dict) -> None:
+        super().__init__(data)
+
     def _to_str(self, *args, **kwargs):
         data = copy.deepcopy(self)
         data.pop("input_img")

@@ -14,6 +14,7 @@
 
 import os
 from pathlib import Path
+from typing import Dict
 import copy
 import math
 import random
@@ -22,63 +23,11 @@ import cv2
 import PIL
 from PIL import Image, ImageDraw, ImageFont
 from ....utils.fonts import PINGFANG_FONT_FILE_PATH, create_font
-from ...common.result import BaseCVResult
+from ...common.result import BaseCVResult, StrMixin, JsonMixin
 
 
 class OCRResult(BaseCVResult):
     """OCR result"""
-
-    def save_to_json(
-        self,
-        save_path: str,
-        indent: int = 4,
-        ensure_ascii: bool = False,
-        save_ndarray: bool = False,
-        *args,
-        **kwargs,
-    ) -> None:
-        """Save the JSON representation of the object to a file.
-
-        Args:
-            save_path (str): The path to save the JSON file. If the save path does not end with '.json', it appends the base name and suffix of the input path.
-            indent (int): The number of spaces to indent for pretty printing. Default is 4.
-            ensure_ascii (bool): If False, non-ASCII characters will be included in the output. Default is False.
-            save_ndarray (bool): If True, save the numpy arrays in the result. Default is False.
-            *args: Additional positional arguments to pass to the underlying writer.
-            **kwargs: Additional keyword arguments to pass to the underlying writer.
-        """
-        img_id = self["img_id"]
-
-        # TODO : Support determining the output name based on the input name.
-        os.makedirs(save_path, exist_ok=True)
-        save_path = os.path.join(save_path, "res.json")
-
-        base_name, ext = os.path.splitext(save_path)
-        save_path = f"{base_name}_{img_id}{ext}"
-
-        def remove_ndarray(d):
-            """
-            Remove all keys from the dictionary whose values are numpy arrays.
-            """
-            keys_to_delete = []
-            for key, value in d.items():
-                if isinstance(value, dict):
-                    remove_ndarray(value)
-                    if all(isinstance(v, np.ndarray) for v in value.values()):
-                        keys_to_delete.append(key)
-                elif isinstance(value, np.ndarray):
-                    keys_to_delete.append(key)
-            for key in keys_to_delete:
-                del d[key]
-
-        if not save_ndarray:
-            self_copy = copy.deepcopy(self)
-            remove_ndarray(self_copy)
-            super(type(self_copy), self_copy).save_to_json(
-                save_path, indent, ensure_ascii, *args, **kwargs
-            )
-        else:
-            super().save_to_json(save_path, indent, ensure_ascii, *args, **kwargs)
 
     def get_minarea_rect(self, points: np.ndarray) -> np.ndarray:
         """
@@ -114,33 +63,24 @@ class OCRResult(BaseCVResult):
 
         return box
 
-    def _to_img(self) -> PIL.Image:
+    def _to_img(self) -> Dict[str, Image.Image]:
         """
         Converts the internal data to a PIL Image with detection and recognition results.
 
         Returns:
-            PIL.Image: An image with detection boxes, texts, and scores blended on it.
+            Dict[Image.Image]: A dictionary containing two images: 'doc_preprocessor_res' and 'ocr_res_img'.
         """
-
-        # TODO(gaotingquan): mv to postprocess
-        drop_score = 0.5
-
-        boxes = self["dt_polys"]
-        txts = self["rec_text"]
-        scores = self["rec_score"]
-        image = self["doc_preprocessor_image"]
+        boxes = self["rec_polys"]
+        txts = self["rec_texts"]
+        image = self["doc_preprocessor_res"]["output_img"]
         h, w = image.shape[0:2]
         image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         img_left = Image.fromarray(image_rgb)
         img_right = np.ones((h, w, 3), dtype=np.uint8) * 255
         random.seed(0)
         draw_left = ImageDraw.Draw(img_left)
-        if txts is None or len(txts) != len(boxes):
-            txts = [None] * len(boxes)
         for idx, (box, txt) in enumerate(zip(boxes, txts)):
             try:
-                if scores is not None and scores[idx] < drop_score:
-                    continue
                 color = (
                     random.randint(0, 255),
                     random.randint(0, 255),
@@ -169,13 +109,66 @@ class OCRResult(BaseCVResult):
         img_show.paste(img_left, (0, 0, w, h))
         img_show.paste(Image.fromarray(img_right), (w, 0, w * 2, h))
 
-        input_params = self["input_params"]
-        img_id = self["img_id"]
+        model_settings = self["model_settings"]
+        res_img_dict = {f"ocr_res_img": img_show}
+        if model_settings["use_doc_preprocessor"]:
+            res_img_dict.update(**self["doc_preprocessor_res"].img)
+        return res_img_dict
 
-        return {
-            **self["doc_preprocessor_res"].img,
-            f"res_ocr_{img_id}": img_show,
-        }
+    def _to_str(self, *args, **kwargs) -> Dict[str, str]:
+        """Converts the instance's attributes to a dictionary and then to a string.
+
+        Args:
+            *args: Additional positional arguments passed to the base class method.
+            **kwargs: Additional keyword arguments passed to the base class method.
+
+        Returns:
+            Dict[str, str]: A dictionary with the instance's attributes converted to strings.
+        """
+        data = {}
+        data["input_path"] = self["input_path"]
+        data["model_settings"] = self["model_settings"]
+        if self["model_settings"]["use_doc_preprocessor"]:
+            data["doc_preprocessor_res"] = self["doc_preprocessor_res"].str["res"]
+        data["dt_polys"] = self["dt_polys"]
+        data["text_det_params"] = self["text_det_params"]
+        data["text_type"] = self["text_type"]
+        if self["model_settings"]["use_textline_orientation"]:
+            data["textline_orientation_angle"] = self["textline_orientation_angle"]
+        data["text_rec_score_thresh"] = self["text_rec_score_thresh"]
+        data["rec_texts"] = self["rec_texts"]
+        data["rec_scores"] = self["rec_scores"]
+        data["rec_polys"] = self["rec_polys"]
+        data["rec_boxes"] = self["rec_boxes"]
+        return StrMixin._to_str(data, *args, **kwargs)
+
+    def _to_json(self, *args, **kwargs) -> Dict[str, str]:
+        """
+        Converts the object's data to a JSON dictionary.
+
+        Args:
+            *args: Positional arguments passed to the JsonMixin._to_json method.
+            **kwargs: Keyword arguments passed to the JsonMixin._to_json method.
+
+        Returns:
+            Dict[str, str]: A dictionary containing the object's data in JSON format.
+        """
+        data = {}
+        data["input_path"] = self["input_path"]
+        data["model_settings"] = self["model_settings"]
+        if self["model_settings"]["use_doc_preprocessor"]:
+            data["doc_preprocessor_res"] = self["doc_preprocessor_res"].json["res"]
+        data["dt_polys"] = self["dt_polys"]
+        data["text_det_params"] = self["text_det_params"]
+        data["text_type"] = self["text_type"]
+        if self["model_settings"]["use_textline_orientation"]:
+            data["textline_orientation_angle"] = self["textline_orientation_angle"]
+        data["text_rec_score_thresh"] = self["text_rec_score_thresh"]
+        data["rec_texts"] = self["rec_texts"]
+        data["rec_scores"] = self["rec_scores"]
+        data["rec_polys"] = self["rec_polys"]
+        data["rec_boxes"] = self["rec_boxes"]
+        return JsonMixin._to_json(data, *args, **kwargs)
 
 
 # Adds a function comment according to Google Style Guide

@@ -212,13 +212,16 @@ class ErnieBotRetriever(BaseRetriever):
             str: A concatenated string of all unique contexts found.
         """
         C = []
+        all_C = ""
         for query_text in query_text_list:
             QUESTION = query_text
             time.sleep(sleep_time)
             docs = vectorstore.similarity_search_with_relevance_scores(QUESTION, k=topk)
             context = [(document.page_content, score) for document, score in docs]
             context = sorted(context, key=lambda x: x[1])
-            C.extend([x[0] for x in context[::-1]])
-        C = list(set(C))
-        all_C = " ".join(C)
+            for text, score in context[::-1]:
+                if score >= -0.1:
+                    if len(all_C) + len(text) > min_characters:
+                        break
+                    all_C += text
         return all_C

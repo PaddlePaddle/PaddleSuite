@@ -87,4 +87,4 @@ class AttributeRecResult(BaseCVResult):
             for box in self["boxes"]
         ]
         image = draw_attribute_result(image, boxes)
-        return image
+        return {"res": image}
