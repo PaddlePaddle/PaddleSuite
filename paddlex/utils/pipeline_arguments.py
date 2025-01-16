@@ -116,4 +116,12 @@ PIPELINE_ARGUMENTS = {
         },
     ],
     "ts_classification": None,
+    "formula_recognition": None,
+    "video_classification": [
+        {
+            "name": "--topk",
+            "type": int,
+            "help": "Sets the Top-K value for video classification.",
+        },
+    ],
 }

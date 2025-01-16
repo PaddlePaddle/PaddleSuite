@@ -84,7 +84,8 @@ class BasePipeline(ABC, metaclass=AutoRegisterABCMetaClass):
         from .. import create_predictor
 
         model = create_predictor(
-            model=model_dir,
+            model_name=config["model_name"],
+            model_dir=model_dir,
             device=self.device,
             pp_option=self.pp_option,
             use_hpip=self.use_hpip,
