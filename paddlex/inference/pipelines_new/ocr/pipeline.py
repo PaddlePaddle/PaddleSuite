@@ -386,6 +386,6 @@ class OCRPipeline(BasePipeline):
                 rec_boxes = convert_points_to_boxes(single_img_res["rec_polys"])
                 single_img_res["rec_boxes"] = rec_boxes
             else:
-                single_img_res["rec_boxes"] = single_img_res["rec_polys"]
-
+                single_img_res["rec_boxes"] = np.array([])
+                
             yield OCRResult(single_img_res)
