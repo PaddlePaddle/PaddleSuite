@@ -48,9 +48,10 @@ class OpenVocabularyDetectionPipeline(BasePipeline):
             device=device, pp_option=pp_option, use_hpip=use_hpip, hpi_params=hpi_params
         )
 
-        open_vocabulary_detection_model_config = config["SubModules"][
-            "OpenVocabularyDetection"
-        ]
+        open_vocabulary_detection_model_config = config.get("SubModules", {}).get(
+            "OpenVocabularyDetection",
+            {"model_config_error": "config error for doc_ori_classify_model!"},
+        )
         self.open_vocabulary_detection_model = self.create_model(
             open_vocabulary_detection_model_config
         )

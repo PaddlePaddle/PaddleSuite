@@ -51,11 +51,17 @@ class OpenVocabularySegmentationPipeline(BasePipeline):
         )
 
         # create box-prompted SAM-H
-        box_prompted_model_cfg = config["SubModules"]["BoxPromptSegmentation"]
+        box_prompted_model_cfg = config.get("SubModules", {}).get(
+            "BoxPromptSegmentation",
+            {"model_config_error": "config error for doc_ori_classify_model!"},
+        )
         self.box_prompted_model = self.create_model(box_prompted_model_cfg)
 
         # create point-prompted SAM-H
-        point_prompted_model_cfg = config["SubModules"]["PointPromptSegmentation"]
+        point_prompted_model_cfg = config.get("SubModules", {}).get(
+            "PointPromptSegmentation",
+            {"model_config_error": "config error for doc_ori_classify_model!"},
+        )
         self.point_prompted_model = self.create_model(point_prompted_model_cfg)
 
     def predict(

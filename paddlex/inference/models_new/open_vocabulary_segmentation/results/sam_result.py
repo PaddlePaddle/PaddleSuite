@@ -36,7 +36,8 @@ def draw_segm(im, masks, mask_info, alpha=0.7):
     masks = np.array(masks)
     masks = masks.astype(np.uint8)
     for i in range(masks.shape[0]):
-        mask, clsid = masks[i], mask_info[i]["class_id"]
+        mask = masks[i]
+        clsid = random.randint(0, len(get_colormap(rgb=True)) - 1)
 
         if clsid not in clsid2color:
             color_index = i % len(color_list)
@@ -117,7 +118,6 @@ class SAMSegResult(BaseCVResult):
         mask_infos = [
             {
                 "label": prompt_type,
-                "class_id": random.randint(0, len(get_colormap(rgb=True)) - 1),
                 "prompt": p,
             }
             for p in prompts
@@ -135,14 +135,14 @@ class SAMSegResult(BaseCVResult):
         image = draw_segm(image, masks, mask_infos)
         return {"res": image}
 
-    def _to_str(self, _, *args, **kwargs):
+    def _to_str(self, *args, **kwargs):
         data = copy.deepcopy(self)
         data["masks"] = "..."
-        data["input_img"] = "..."
+        data.pop("input_img")
         return StrMixin._to_str(data, *args, **kwargs)
 
     def _to_json(self, *args, **kwargs):
         data = copy.deepcopy(self)
         data["masks"] = "..."
-        data["input_img"] = "..."
+        data.pop("input_img")
         return JsonMixin._to_json(data, *args, **kwargs)
