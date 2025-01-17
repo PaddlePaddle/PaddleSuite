@@ -13,11 +13,11 @@
 # limitations under the License.
 
 from .base_result import BaseResult
-from .mixin import StrMixin, JsonMixin, CSVMixin
+from .mixin import CSVMixin
 from ...utils.io import CSVWriter
 
 
-class BaseTSResult(BaseResult, StrMixin, JsonMixin, CSVMixin):
+class BaseTSResult(BaseResult, CSVMixin):
     """Base class for times series results."""
 
     INPUT_TS_KEY = "input_ts"
@@ -39,6 +39,4 @@ class BaseTSResult(BaseResult, StrMixin, JsonMixin, CSVMixin):
         self._ts_writer = CSVWriter(backend="pandas")
 
         super().__init__(data)
-        StrMixin.__init__(self)
-        JsonMixin.__init__(self)
         CSVMixin.__init__(self, "pandas")

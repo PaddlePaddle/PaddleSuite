@@ -25,8 +25,10 @@ from .modules import (
 
 
 # TODO(gaotingquan): support _ModelBasedConfig
-def create_model(model=None, *args, **kwargs):
-    return _ModelBasedInference(model, *args, **kwargs)
+def create_model(model_name, model_dir=None, *args, **kwargs):
+    return _ModelBasedInference(
+        model_name=model_name, model_dir=model_dir, *args, **kwargs
+    )
 
 
 class _BaseModel:
