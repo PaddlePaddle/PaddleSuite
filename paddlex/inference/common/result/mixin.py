@@ -11,36 +11,42 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+from __future__ import annotations
 
-from typing import Union, Tuple, List, Dict, Any, Iterator
-from abc import abstractmethod
-from pathlib import Path
-import mimetypes
-import json
 import copy
+import json
+import mimetypes
+import re
+from abc import abstractmethod
+from collections.abc import Iterator
+from pathlib import Path
+from typing import Any
+from typing import Dict
+from typing import List
+from typing import Tuple
+from typing import Union
+
 import numpy as np
-from PIL import Image
 import pandas as pd
+from PIL import Image
 
 from ....utils import logging
-from ...utils.io import (
-    JsonWriter,
-    ImageReader,
-    ImageWriter,
-    CSVWriter,
-    HtmlWriter,
-    XlsxWriter,
-    TextWriter,
-    VideoWriter,
-    MarkdownWriter
-)
+from ...utils.io import CSVWriter
+from ...utils.io import HtmlWriter
+from ...utils.io import ImageReader
+from ...utils.io import ImageWriter
+from ...utils.io import JsonWriter
+from ...utils.io import MarkdownWriter
+from ...utils.io import TextWriter
+from ...utils.io import VideoWriter
+from ...utils.io import XlsxWriter
 
 
 class StrMixin:
     """Mixin class for adding string conversion capabilities."""
 
     @property
-    def str(self) -> Dict[str, str]:
+    def str(self) -> dict[str, str]:
         """Property to get the string representation of the result.
 
         Returns:
@@ -76,7 +82,7 @@ class JsonMixin:
         self._json_writer = JsonWriter()
         self._save_funcs.append(self.save_to_json)
 
-    def _to_json(self) -> Dict[str, Dict[str, Any]]:
+    def _to_json(self) -> dict[str, dict[str, Any]]:
         """Convert the object to a JSON-serializable format.
 
         Returns:
@@ -110,7 +116,7 @@ class JsonMixin:
         return {"res": _format_data(copy.deepcopy(self))}
 
     @property
-    def json(self) -> Dict[str, Dict[str, Any]]:
+    def json(self) -> dict[str, dict[str, Any]]:
         """Property to get the JSON representation of the result.
 
         Returns:
@@ -124,8 +130,8 @@ class JsonMixin:
         save_path: str,
         indent: int = 4,
         ensure_ascii: bool = False,
-        *args: List,
-        **kwargs: Dict,
+        *args: list,
+        **kwargs: dict,
     ) -> None:
         """Save the JSON representation of the object to a file.
 
@@ -149,12 +155,15 @@ class JsonMixin:
             for key in self.json:
                 save_path = base_save_path / f"{stem}_{key}.json"
                 self._json_writer.write(
-                    save_path.as_posix(), self.json[key], *args, **kwargs
+                    save_path.as_posix(),
+                    self.json[key],
+                    *args,
+                    **kwargs,
                 )
         else:
             if len(self.json) > 1:
                 logging.warning(
-                    f"The result has multiple json files need to be saved. But the `save_path` has been specfied as `{save_path}`!"
+                    f"The result has multiple json files need to be saved. But the `save_path` has been specfied as `{save_path}`!",
                 )
             self._json_writer.write(
                 save_path,
@@ -166,7 +175,10 @@ class JsonMixin:
             )
 
     def print(
-        self, json_format: bool = False, indent: int = 4, ensure_ascii: bool = False
+        self,
+        json_format: bool = False,
+        indent: int = 4,
+        ensure_ascii: bool = False,
     ) -> None:
         """Print the string representation of the result.
 
@@ -176,7 +188,11 @@ class JsonMixin:
             ensure_ascii (bool): If True, ensure all characters are ASCII. Default is False.
         """
         if json_format:
-            str_ = json.dumps(self.json, indent=indent, ensure_ascii=ensure_ascii)
+            str_ = json.dumps(
+                self.json,
+                indent=indent,
+                ensure_ascii=ensure_ascii,
+            )
         else:
             str_ = str(self.json)
         logging.info(str_)
@@ -185,7 +201,7 @@ class JsonMixin:
 class Base64Mixin:
     """Mixin class for adding Base64 encoding capabilities."""
 
-    def __init__(self, *args: List, **kwargs: Dict) -> None:
+    def __init__(self, *args: list, **kwargs: dict) -> None:
         """Initializes the Base64Mixin.
 
         Args:
@@ -196,7 +212,7 @@ class Base64Mixin:
         self._save_funcs.append(self.save_to_base64)
 
     @abstractmethod
-    def _to_base64(self) -> Dict[str, str]:
+    def _to_base64(self) -> dict[str, str]:
         """Abstract method to convert the result to Base64.
 
         Returns:
@@ -205,7 +221,7 @@ class Base64Mixin:
         raise NotImplementedError
 
     @property
-    def base64(self) -> Dict[str, str]:
+    def base64(self) -> dict[str, str]:
         """
         Property that returns the Base64 encoded content.
 
@@ -214,7 +230,7 @@ class Base64Mixin:
         """
         return self._to_base64()
 
-    def save_to_base64(self, save_path: str, *args: List, **kwargs: Dict) -> None:
+    def save_to_base64(self, save_path: str, *args: list, **kwargs: dict) -> None:
         """Saves the Base64 encoded content to the specified path.
 
         Args:
@@ -223,7 +239,7 @@ class Base64Mixin:
             *args: Additional positional arguments that will be passed to the base64 writer.
             **kwargs: Additional keyword arguments that will be passed to the base64 writer.
         """
-        if not str(save_path).lower().endswith((".b64")):
+        if not str(save_path).lower().endswith(".b64"):
             fp = Path(self["input_path"])
             stem = fp.stem
             suffix = fp.suffix
@@ -231,22 +247,28 @@ class Base64Mixin:
             for key in self.base64:
                 save_path = base_save_path / f"{stem}_{key}.b64"
                 self._base64_writer.write(
-                    save_path.as_posix(), self.base64[key], *args, **kwargs
+                    save_path.as_posix(),
+                    self.base64[key],
+                    *args,
+                    **kwargs,
                 )
         else:
             if len(self.base64) > 1:
                 logging.warning(
-                    f"The result has multiple base64 files need to be saved. But the `save_path` has been specfied as `{save_path}`!"
+                    f"The result has multiple base64 files need to be saved. But the `save_path` has been specfied as `{save_path}`!",
                 )
             self._base64_writer.write(
-                save_path, self.base64[list(self.base64.keys())[0]], *args, **kwargs
+                save_path,
+                self.base64[list(self.base64.keys())[0]],
+                *args,
+                **kwargs,
             )
 
 
 class ImgMixin:
     """Mixin class for adding image handling capabilities."""
 
-    def __init__(self, backend: str = "pillow", *args: List, **kwargs: Dict) -> None:
+    def __init__(self, backend: str = "pillow", *args: list, **kwargs: dict) -> None:
         """Initializes ImgMixin.
 
         Args:
@@ -258,7 +280,7 @@ class ImgMixin:
         self._save_funcs.append(self.save_to_img)
 
     @abstractmethod
-    def _to_img(self) -> Dict[str, Image.Image]:
+    def _to_img(self) -> dict[str, Image.Image]:
         """Abstract method to convert the result to an image.
 
         Returns:
@@ -267,7 +289,7 @@ class ImgMixin:
         raise NotImplementedError
 
     @property
-    def img(self) -> Dict[str, Image.Image]:
+    def img(self) -> dict[str, Image.Image]:
         """Property to get the image representation of the result.
 
         Returns:
@@ -275,7 +297,7 @@ class ImgMixin:
         """
         return self._to_img()
 
-    def save_to_img(self, save_path: str, *args: List, **kwargs: Dict) -> None:
+    def save_to_img(self, save_path: str, *args: list, **kwargs: dict) -> None:
         """Saves the image representation of the result to the specified path.
 
         Args:
@@ -296,22 +318,28 @@ class ImgMixin:
             for key in self.img:
                 save_path = base_save_path / f"{stem}_{key}{suffix}"
                 self._img_writer.write(
-                    save_path.as_posix(), self.img[key], *args, **kwargs
+                    save_path.as_posix(),
+                    self.img[key],
+                    *args,
+                    **kwargs,
                 )
         else:
             if len(self.img) > 1:
                 logging.warning(
-                    f"The result has multiple img files need to be saved. But the `save_path` has been specfied as `{save_path}`!"
+                    f"The result has multiple img files need to be saved. But the `save_path` has been specfied as `{save_path}`!",
                 )
             self._img_writer.write(
-                save_path, self.img[list(self.img.keys())[0]], *args, **kwargs
+                save_path,
+                self.img[list(self.img.keys())[0]],
+                *args,
+                **kwargs,
             )
 
 
 class CSVMixin:
     """Mixin class for adding CSV handling capabilities."""
 
-    def __init__(self, backend: str = "pandas", *args: List, **kwargs: Dict) -> None:
+    def __init__(self, backend: str = "pandas", *args: list, **kwargs: dict) -> None:
         """Initializes the CSVMixin.
 
         Args:
@@ -325,7 +353,7 @@ class CSVMixin:
         self._save_funcs.append(self.save_to_csv)
 
     @property
-    def csv(self) -> Dict[str, pd.DataFrame]:
+    def csv(self) -> dict[str, pd.DataFrame]:
         """Property to get the pandas Dataframe representation of the result.
 
         Returns:
@@ -334,7 +362,7 @@ class CSVMixin:
         return self._to_csv()
 
     @abstractmethod
-    def _to_csv(self) -> Dict[str, pd.DataFrame]:
+    def _to_csv(self) -> dict[str, pd.DataFrame]:
         """Abstract method to convert the result to pandas.DataFrame.
 
         Returns:
@@ -342,7 +370,7 @@ class CSVMixin:
         """
         raise NotImplementedError
 
-    def save_to_csv(self, save_path: str, *args: List, **kwargs: Dict) -> None:
+    def save_to_csv(self, save_path: str, *args: list, **kwargs: dict) -> None:
         """Saves the result to a CSV file.
 
         Args:
@@ -363,22 +391,28 @@ class CSVMixin:
             for key in self.csv:
                 save_path = base_save_path / f"{stem}_{key}.csv"
                 self._csv_writer.write(
-                    save_path.as_posix(), self.csv[key], *args, **kwargs
+                    save_path.as_posix(),
+                    self.csv[key],
+                    *args,
+                    **kwargs,
                 )
         else:
             if len(self.csv) > 1:
                 logging.warning(
-                    f"The result has multiple csv files need to be saved. But the `save_path` has been specfied as `{save_path}`!"
+                    f"The result has multiple csv files need to be saved. But the `save_path` has been specfied as `{save_path}`!",
                 )
             self._csv_writer.write(
-                save_path, self.csv[list(self.csv.keys())[0]], *args, **kwargs
+                save_path,
+                self.csv[list(self.csv.keys())[0]],
+                *args,
+                **kwargs,
             )
 
 
 class HtmlMixin:
     """Mixin class for adding HTML handling capabilities."""
 
-    def __init__(self, *args: List, **kwargs: Dict) -> None:
+    def __init__(self, *args: list, **kwargs: dict) -> None:
         """
         Initializes the HTML writer and appends the save_to_html method to the save functions list.
 
@@ -390,7 +424,7 @@ class HtmlMixin:
         self._save_funcs.append(self.save_to_html)
 
     @property
-    def html(self) -> Dict[str, str]:
+    def html(self) -> dict[str, str]:
         """Property to get the HTML representation of the result.
 
         Returns:
@@ -399,7 +433,7 @@ class HtmlMixin:
         return self._to_html()
 
     @abstractmethod
-    def _to_html(self) -> Dict[str, str]:
+    def _to_html(self) -> dict[str, str]:
         """Abstract method to convert the result to str type HTML representation.
 
         Returns:
@@ -407,7 +441,7 @@ class HtmlMixin:
         """
         raise NotImplementedError
 
-    def save_to_html(self, save_path: str, *args: List, **kwargs: Dict) -> None:
+    def save_to_html(self, save_path: str, *args: list, **kwargs: dict) -> None:
         """Saves the HTML representation of the object to the specified path.
 
         Args:
@@ -427,22 +461,28 @@ class HtmlMixin:
             for key in self.html:
                 save_path = base_save_path / f"{stem}_{key}.html"
                 self._html_writer.write(
-                    save_path.as_posix(), self.html[key], *args, **kwargs
+                    save_path.as_posix(),
+                    self.html[key],
+                    *args,
+                    **kwargs,
                 )
         else:
             if len(self.html) > 1:
                 logging.warning(
-                    f"The result has multiple html files need to be saved. But the `save_path` has been specfied as `{save_path}`!"
+                    f"The result has multiple html files need to be saved. But the `save_path` has been specfied as `{save_path}`!",
                 )
             self._html_writer.write(
-                save_path, self.html[list(self.html.keys())[0]], *args, **kwargs
+                save_path,
+                self.html[list(self.html.keys())[0]],
+                *args,
+                **kwargs,
             )
 
 
 class XlsxMixin:
     """Mixin class for adding XLSX handling capabilities."""
 
-    def __init__(self, *args: List, **kwargs: Dict) -> None:
+    def __init__(self, *args: list, **kwargs: dict) -> None:
         """Initializes the XLSX writer and appends the save_to_xlsx method to the save functions.
 
         Args:
@@ -453,7 +493,7 @@ class XlsxMixin:
         self._save_funcs.append(self.save_to_xlsx)
 
     @property
-    def xlsx(self) -> Dict[str, str]:
+    def xlsx(self) -> dict[str, str]:
         """Property to get the XLSX representation of the result.
 
         Returns:
@@ -462,7 +502,7 @@ class XlsxMixin:
         return self._to_xlsx()
 
     @abstractmethod
-    def _to_xlsx(self) -> Dict[str, str]:
+    def _to_xlsx(self) -> dict[str, str]:
         """Abstract method to convert the result to str type XLSX representation.
 
         Returns:
@@ -470,7 +510,7 @@ class XlsxMixin:
         """
         raise NotImplementedError
 
-    def save_to_xlsx(self, save_path: str, *args: List, **kwargs: Dict) -> None:
+    def save_to_xlsx(self, save_path: str, *args: list, **kwargs: dict) -> None:
         """Saves the HTML representation to an XLSX file.
 
         Args:
@@ -495,22 +535,28 @@ class XlsxMixin:
             for key in self.xlsx:
                 save_path = base_save_path / f"{stem}_{key}.xlsx"
                 self._xlsx_writer.write(
-                    save_path.as_posix(), self.xlsx[key], *args, **kwargs
+                    save_path.as_posix(),
+                    self.xlsx[key],
+                    *args,
+                    **kwargs,
                 )
         else:
             if len(self.xlsx) > 1:
                 logging.warning(
-                    f"The result has multiple xlsx files need to be saved. But the `save_path` has been specfied as `{save_path}`!"
+                    f"The result has multiple xlsx files need to be saved. But the `save_path` has been specfied as `{save_path}`!",
                 )
             self._xlsx_writer.write(
-                save_path, self.xlsx[list(self.xlsx.keys())[0]], *args, **kwargs
+                save_path,
+                self.xlsx[list(self.xlsx.keys())[0]],
+                *args,
+                **kwargs,
             )
 
 
 class VideoMixin:
     """Mixin class for adding Video handling capabilities."""
 
-    def __init__(self, backend: str = "opencv", *args: List, **kwargs: Dict) -> None:
+    def __init__(self, backend: str = "opencv", *args: list, **kwargs: dict) -> None:
         """Initializes VideoMixin.
 
         Args:
@@ -522,7 +568,7 @@ class VideoMixin:
         self._save_funcs.append(self.save_to_video)
 
     @abstractmethod
-    def _to_video(self) -> Dict[str, np.array]:
+    def _to_video(self) -> dict[str, np.array]:
         """Abstract method to convert the result to a video.
 
         Returns:
@@ -531,7 +577,7 @@ class VideoMixin:
         raise NotImplementedError
 
     @property
-    def video(self) -> Dict[str, np.array]:
+    def video(self) -> dict[str, np.array]:
         """Property to get the video representation of the result.
 
         Returns:
@@ -539,7 +585,7 @@ class VideoMixin:
         """
         return self._to_video()
 
-    def save_to_video(self, save_path: str, *args: List, **kwargs: Dict) -> None:
+    def save_to_video(self, save_path: str, *args: list, **kwargs: dict) -> None:
         """Saves the video representation of the result to the specified path.
 
         Args:
@@ -562,15 +608,21 @@ class VideoMixin:
             for key in self.video:
                 save_path = base_save_path / f"{stem}_{key}{suffix}"
                 video_writer.write(
-                    save_path.as_posix(), self.video[key], *args, **kwargs
+                    save_path.as_posix(),
+                    self.video[key],
+                    *args,
+                    **kwargs,
                 )
         else:
             if len(self.video) > 1:
                 logging.warning(
-                    f"The result has multiple video files need to be saved. But the `save_path` has been specfied as `{save_path}`!"
+                    f"The result has multiple video files need to be saved. But the `save_path` has been specfied as `{save_path}`!",
                 )
             video_writer.write(
-                save_path, self.video[list(self.video.keys())[0]], *args, **kwargs
+                save_path,
+                self.video[list(self.video.keys())[0]],
+                *args,
+                **kwargs,
             )
 
 
@@ -583,83 +635,143 @@ class MarkdownMixin:
         def _format_data(obj):
 
             def format_title(content_value):
-                content_value = content_value.rstrip('.')
-                level = content_value.count('.') + 1 if '.' in content_value else 1
-                return f"{'#' * level} {content_value}".replace('-\n', '').replace('\n', ' ')
+                content_value = content_value.rstrip(".")
+                level = (
+                    content_value.count(
+                        ".",
+                    )
+                    + 1
+                    if "." in content_value
+                    else 1
+                )
+                return f"{'#' * level} {content_value}".replace("-\n", "").replace(
+                    "\n",
+                    " ",
+                )
 
             def format_centered_text(key):
-                return f'<div style="text-align: center;">{sub_block[key]}</div>'.replace('-\n', '').replace('\n', ' ')+'\n'
+                return (
+                    f'<div style="text-align: center;">{sub_block[key]}</div>'.replace(
+                        "-\n",
+                        "",
+                    ).replace("\n", " ")
+                    + "\n"
+                )
 
             def format_image():
                 img_tags = []
-                if 'img' in sub_block['image']:
-                    img_tags.append('<div style="text-align: center;"><img src="{}" alt="Image" /></div>'.format(
-                        sub_block["image"]["img"].replace('-\n', '').replace('\n', ' '))
+                if "img" in sub_block["image"]:
+                    img_tags.append(
+                        '<div style="text-align: center;"><img src="{}" alt="Image" /></div>'.format(
+                            sub_block["image"]["img"]
+                            .replace("-\n", "")
+                            .replace("\n", " "),
+                        ),
                     )
-                if 'image_text' in sub_block['image']:
-                    img_tags.append('<div style="text-align: center;">{}</div>'.format(
-                        sub_block["image"]["image_text"].replace('-\n', '').replace('\n', ' '))
+                if "image_text" in sub_block["image"]:
+                    img_tags.append(
+                        '<div style="text-align: center;">{}</div>'.format(
+                            sub_block["image"]["image_text"]
+                            .replace("-\n", "")
+                            .replace("\n", " "),
+                        ),
                     )
-                return '\n'.join(img_tags)
-            
+                return "\n".join(img_tags)
+
             def format_chart():
                 img_tags = []
-                if 'img' in sub_block['chart']:
-                    img_tags.append('<div style="text-align: center;"><img src="{}" alt="Image" /></div>'.format(
-                        sub_block["chart"]["img"].replace('-\n', '').replace('\n', ' '))
+                if "img" in sub_block["chart"]:
+                    img_tags.append(
+                        '<div style="text-align: center;"><img src="{}" alt="Image" /></div>'.format(
+                            sub_block["chart"]["img"]
+                            .replace("-\n", "")
+                            .replace("\n", " "),
+                        ),
                     )
-                if 'image_text' in sub_block['chart']:
-                    img_tags.append('<div style="text-align: center;">{}</div>'.format(
-                        sub_block["chart"]["image_text"].replace('-\n', '').replace('\n', ' '))
+                if "image_text" in sub_block["chart"]:
+                    img_tags.append(
+                        '<div style="text-align: center;">{}</div>'.format(
+                            sub_block["chart"]["image_text"]
+                            .replace("-\n", "")
+                            .replace("\n", " "),
+                        ),
                     )
-                return '\n'.join(img_tags)
+                return "\n".join(img_tags)
 
             def format_reference():
-                pattern = r'\[\d+\]'
-                res = re.sub(pattern, lambda match: '\n' + match.group(), sub_block['reference'])
-                return "\n"+res
+                pattern = r"\[\d+\]"
+                res = re.sub(
+                    pattern,
+                    lambda match: "\n" + match.group(),
+                    sub_block["reference"],
+                )
+                return "\n" + res
 
             def format_table():
-                return "\n"+sub_block['table']
-            
+                return "\n" + sub_block["table"]
+
             handlers = {
-                'paragraph_title': lambda: format_title(sub_block['paragraph_title']),
-                'doc_title': lambda: f"# {sub_block['doc_title']}".replace('-\n', '').replace('\n', ' '),
-                'table_title': lambda: format_centered_text('table_title'),
-                'figure_title': lambda: format_centered_text('figure_title'),
-                'chart_title': lambda: format_centered_text('chart_title'),
-                'text': lambda: sub_block['text'].strip('\n'),
+                "paragraph_title": lambda: format_title(sub_block["paragraph_title"]),
+                "doc_title": lambda: f"# {sub_block['doc_title']}".replace(
+                    "-\n",
+                    "",
+                ).replace("\n", " "),
+                "table_title": lambda: format_centered_text("table_title"),
+                "figure_title": lambda: format_centered_text("figure_title"),
+                "chart_title": lambda: format_centered_text("chart_title"),
+                "text": lambda: sub_block["text"].strip("\n"),
                 # 'number': lambda: str(sub_block['number']),
-                'abstract': lambda: "\n"+sub_block['abstract'].strip('\n'),
-                'content': lambda: sub_block['content'].replace('-\n', '').replace('\n', ' ').strip(),
-                'image': format_image,
-                'chart': format_chart,
-                'formula': lambda: f"$${sub_block['formula']}$$".replace('-\n', '').replace('\n', ' '),
-                'table': format_table,
-                'reference': format_reference,
-                'algorithm': lambda: "\n"+f"**Algorithm**: {sub_block['algorithm']}".replace('-\n', '').replace('\n', ' '),
-                'seal': lambda: "\n"+f"**Seal**: {sub_block['seal']}".replace('-\n', '').replace('\n', ' '),
+                "abstract": lambda: "\n" + sub_block["abstract"].strip("\n"),
+                "content": lambda: sub_block["content"]
+                .replace("-\n", "")
+                .replace("\n", " ")
+                .strip(),
+                "image": format_image,
+                "chart": format_chart,
+                "formula": lambda: f"$${sub_block['formula']}$$".replace(
+                    "-\n",
+                    "",
+                ).replace("\n", " "),
+                "table": format_table,
+                "reference": format_reference,
+                "algorithm": lambda: "\n"
+                + f"**Algorithm**: {sub_block['algorithm']}".replace("-\n", "").replace(
+                    "\n",
+                    " ",
+                ),
+                "seal": lambda: "\n"
+                + f"**Seal**: {sub_block['seal']}".replace("-\n", "").replace(
+                    "\n",
+                    " ",
+                ),
             }
-            parsing_result = obj['layout_parsing_result']
+            parsing_result = obj["layout_parsing_result"]
             markdown_content = ""
-            for block in parsing_result: # for each block show ordering results
-                sub_blocks = block['sub_blocks']
+            for block in parsing_result:  # for each block show ordering results
+                sub_blocks = block["sub_blocks"]
                 last_label = None
                 seg_start_flag = None
                 seg_end_flag = None
-                for sub_block in sorted(sub_blocks, key=lambda x: x.get('sub_index',999)):
-                    label = sub_block.get('label')
-                    seg_start_flag = sub_block.get('seg_start_flag')
+                for sub_block in sorted(
+                    sub_blocks,
+                    key=lambda x: x.get("sub_index", 999),
+                ):
+                    label = sub_block.get("label")
+                    seg_start_flag = sub_block.get("seg_start_flag")
                     handler = handlers.get(label)
                     if handler:
-                        if label == last_label == "text"  and  seg_start_flag == seg_end_flag == False:
-                            markdown_content += " "+handler()
+                        if (
+                            label == last_label == "text"
+                            and seg_start_flag == seg_end_flag == False
+                        ):
+                            markdown_content += " " + handler()
                         else:
-                            markdown_content += "\n\n"+handler()
+                            markdown_content += "\n\n" + handler()
                         last_label = label
-                        seg_end_flag = sub_block.get('seg_end_flag')
+                        seg_end_flag = sub_block.get("seg_end_flag")
 
             return markdown_content
+
         return _format_data(self)
 
     @property
@@ -669,9 +781,15 @@ class MarkdownMixin:
     def _to_markdown(self, save_path, *args, **kwargs):
         if not str(save_path).endswith(".md"):
             save_path = Path(save_path) / f"{Path(self['input_path']).stem}.md"
-        self._save_list_data(self._markdown_writer.write, save_path, self.markdown, *args, **kwargs)
-    
-    def _save_list_data(self,save_func, save_path, data, *args, **kwargs):
+        self._save_list_data(
+            self._markdown_writer.write,
+            save_path,
+            self.markdown,
+            *args,
+            **kwargs,
+        )
+
+    def _save_list_data(self, save_func, save_path, data, *args, **kwargs):
         save_path = Path(save_path)
         if data is None:
             return

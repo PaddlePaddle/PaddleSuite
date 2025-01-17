@@ -11,23 +11,30 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+from __future__ import annotations
 
-from typing import Any, Dict, Optional
-import os, sys
-import numpy as np
+import os
+import sys
+from typing import Any
+from typing import Dict
+from typing import Optional
+
 import cv2
-from ..base import BasePipeline
-from .utils import get_sub_regions_ocr_res,get_structure_res
-from ..components import convert_points_to_boxes
-from .result import LayoutParsingResult
+import numpy as np
+
 from ....utils import logging
-from ...utils.pp_option import PaddlePredictorOption
-from ...common.reader import ReadImage
 from ...common.batch_sampler import ImageBatchSampler
+from ...common.reader import ReadImage
+from ...models_new.object_detection.result import DetResult
+from ...utils.pp_option import PaddlePredictorOption
+from ..base import BasePipeline
+from ..components import convert_points_to_boxes
 from ..ocr.result import OCRResult
+from .result import LayoutParsingResult
+from .utils import get_structure_res
+from .utils import get_sub_regions_ocr_res
 
 # [TODO] 待更新models_new到models
-from ...models_new.object_detection.result import DetResult
 
 
 class LayoutParsingPipeline(BasePipeline):
@@ -37,11 +44,11 @@ class LayoutParsingPipeline(BasePipeline):
 
     def __init__(
         self,
-        config: Dict,
+        config: dict,
         device: str = None,
         pp_option: PaddlePredictorOption = None,
         use_hpip: bool = False,
-        hpi_params: Optional[Dict[str, Any]] = None,
+        hpi_params: dict[str, Any] | None = None,
     ) -> None:
         """Initializes the layout parsing pipeline.
 
@@ -54,7 +61,10 @@ class LayoutParsingPipeline(BasePipeline):
         """
 
         super().__init__(
-            device=device, pp_option=pp_option, use_hpip=use_hpip, hpi_params=hpi_params
+            device=device,
+            pp_option=pp_option,
+            use_hpip=use_hpip,
+            hpi_params=hpi_params,
         )
 
         self.inintial_predictor(config)
@@ -63,7 +73,7 @@ class LayoutParsingPipeline(BasePipeline):
 
         self.img_reader = ReadImage(format="BGR")
 
-    def inintial_predictor(self, config: Dict) -> None:
+    def inintial_predictor(self, config: dict) -> None:
         """Initializes the predictor based on the provided configuration.
 
         Args:
@@ -77,17 +87,20 @@ class LayoutParsingPipeline(BasePipeline):
         self.use_general_ocr = config.get("use_general_ocr", True)
         self.use_table_recognition = config.get("use_table_recognition", True)
         self.use_seal_recognition = config.get("use_seal_recognition", True)
-        self.use_formula_recognition = config.get("use_formula_recognition", True)
+        self.use_formula_recognition = config.get(
+            "use_formula_recognition",
+            True,
+        )
 
         if self.use_doc_preprocessor:
             doc_preprocessor_config = config.get("SubPipelines", {}).get(
                 "DocPreprocessor",
                 {
-                    "pipeline_config_error": "config error for doc_preprocessor_pipeline!"
+                    "pipeline_config_error": "config error for doc_preprocessor_pipeline!",
                 },
             )
             self.doc_preprocessor_pipeline = self.create_pipeline(
-                doc_preprocessor_config
+                doc_preprocessor_config,
             )
 
         layout_det_config = config.get("SubModules", {}).get(
@@ -101,45 +114,49 @@ class LayoutParsingPipeline(BasePipeline):
                 "GeneralOCR",
                 {"pipeline_config_error": "config error for general_ocr_pipeline!"},
             )
-            self.general_ocr_pipeline = self.create_pipeline(general_ocr_config)
+            self.general_ocr_pipeline = self.create_pipeline(
+                general_ocr_config,
+            )
 
         if self.use_seal_recognition:
             seal_recognition_config = config.get("SubPipelines", {}).get(
                 "SealRecognition",
                 {
-                    "pipeline_config_error": "config error for seal_recognition_pipeline!"
+                    "pipeline_config_error": "config error for seal_recognition_pipeline!",
                 },
             )
             self.seal_recognition_pipeline = self.create_pipeline(
-                seal_recognition_config
+                seal_recognition_config,
             )
 
         if self.use_table_recognition:
             table_recognition_config = config.get("SubPipelines", {}).get(
                 "TableRecognition",
                 {
-                    "pipeline_config_error": "config error for table_recognition_pipeline!"
+                    "pipeline_config_error": "config error for table_recognition_pipeline!",
                 },
             )
             self.table_recognition_pipeline = self.create_pipeline(
-                table_recognition_config
+                table_recognition_config,
             )
 
         if self.use_formula_recognition:
             formula_recognition_config = config.get("SubPipelines", {}).get(
                 "FormulaRecognition",
                 {
-                    "pipeline_config_error": "config error for formula_recognition_pipeline!"
+                    "pipeline_config_error": "config error for formula_recognition_pipeline!",
                 },
             )
             self.formula_recognition_pipeline = self.create_pipeline(
-                formula_recognition_config
+                formula_recognition_config,
             )
 
         return
 
     def get_text_paragraphs_ocr_res(
-        self, overall_ocr_res: OCRResult, layout_det_res: DetResult
+        self,
+        overall_ocr_res: OCRResult,
+        layout_det_res: DetResult,
     ) -> OCRResult:
         """
         Retrieves the OCR results for text paragraphs, excluding those of formulas, tables, and seals.
@@ -158,7 +175,7 @@ class LayoutParsingPipeline(BasePipeline):
         object_boxes = np.array(object_boxes)
         return get_sub_regions_ocr_res(overall_ocr_res, object_boxes, flag_within=False)
 
-    def check_model_settings_valid(self, input_params: Dict) -> bool:
+    def check_model_settings_valid(self, input_params: dict) -> bool:
         """
         Check if the input parameters are valid based on the initialized models.
 
@@ -171,25 +188,25 @@ class LayoutParsingPipeline(BasePipeline):
 
         if input_params["use_doc_preprocessor"] and not self.use_doc_preprocessor:
             logging.error(
-                "Set use_doc_preprocessor, but the models for doc preprocessor are not initialized."
+                "Set use_doc_preprocessor, but the models for doc preprocessor are not initialized.",
             )
             return False
 
         if input_params["use_general_ocr"] and not self.use_general_ocr:
             logging.error(
-                "Set use_general_ocr, but the models for general OCR are not initialized."
+                "Set use_general_ocr, but the models for general OCR are not initialized.",
             )
             return False
 
         if input_params["use_seal_recognition"] and not self.use_seal_recognition:
             logging.error(
-                "Set use_seal_recognition, but the models for seal recognition are not initialized."
+                "Set use_seal_recognition, but the models for seal recognition are not initialized.",
             )
             return False
 
         if input_params["use_table_recognition"] and not self.use_table_recognition:
             logging.error(
-                "Set use_table_recognition, but the models for table recognition are not initialized."
+                "Set use_table_recognition, but the models for table recognition are not initialized.",
             )
             return False
 
@@ -197,12 +214,12 @@ class LayoutParsingPipeline(BasePipeline):
 
     def get_model_settings(
         self,
-        use_doc_orientation_classify: Optional[bool],
-        use_doc_unwarping: Optional[bool],
-        use_general_ocr: Optional[bool],
-        use_seal_recognition: Optional[bool],
-        use_table_recognition: Optional[bool],
-        use_formula_recognition: Optional[bool],
+        use_doc_orientation_classify: bool | None,
+        use_doc_unwarping: bool | None,
+        use_general_ocr: bool | None,
+        use_seal_recognition: bool | None,
+        use_table_recognition: bool | None,
+        use_formula_recognition: bool | None,
     ) -> dict:
         """
         Get the model settings based on the provided parameters or default values.
@@ -248,24 +265,24 @@ class LayoutParsingPipeline(BasePipeline):
     def predict(
         self,
         input: str | list[str] | np.ndarray | list[np.ndarray],
-        use_doc_orientation_classify: Optional[bool] = None,
-        use_doc_unwarping: Optional[bool] = None,
-        use_general_ocr: Optional[bool] = None,
-        use_seal_recognition: Optional[bool] = None,
-        use_table_recognition: Optional[bool] = None,
-        use_formula_recognition: Optional[bool] = None,
-        text_det_limit_side_len: Optional[int] = None,
-        text_det_limit_type: Optional[str] = None,
-        text_det_thresh: Optional[float] = None,
-        text_det_box_thresh: Optional[float] = None,
-        text_det_unclip_ratio: Optional[float] = None,
-        text_rec_score_thresh: Optional[float] = None,
-        seal_det_limit_side_len: Optional[int] = None,
-        seal_det_limit_type: Optional[str] = None,
-        seal_det_thresh: Optional[float] = None,
-        seal_det_box_thresh: Optional[float] = None,
-        seal_det_unclip_ratio: Optional[float] = None,
-        seal_rec_score_thresh: Optional[float] = None,
+        use_doc_orientation_classify: bool | None = None,
+        use_doc_unwarping: bool | None = None,
+        use_general_ocr: bool | None = None,
+        use_seal_recognition: bool | None = None,
+        use_table_recognition: bool | None = None,
+        use_formula_recognition: bool | None = None,
+        text_det_limit_side_len: int | None = None,
+        text_det_limit_type: str | None = None,
+        text_det_thresh: float | None = None,
+        text_det_box_thresh: float | None = None,
+        text_det_unclip_ratio: float | None = None,
+        text_rec_score_thresh: float | None = None,
+        seal_det_limit_side_len: int | None = None,
+        seal_det_limit_type: str | None = None,
+        seal_det_thresh: float | None = None,
+        seal_det_box_thresh: float | None = None,
+        seal_det_unclip_ratio: float | None = None,
+        seal_rec_score_thresh: float | None = None,
         **kwargs,
     ) -> LayoutParsingResult:
         """
@@ -311,14 +328,16 @@ class LayoutParsingPipeline(BasePipeline):
                         image_array,
                         use_doc_orientation_classify=use_doc_orientation_classify,
                         use_doc_unwarping=use_doc_unwarping,
-                    )
+                    ),
                 )
             else:
                 doc_preprocessor_res = {"output_img": image_array}
 
             doc_preprocessor_image = doc_preprocessor_res["output_img"]
 
-            layout_det_res = next(self.layout_det_model(doc_preprocessor_image))
+            layout_det_res = next(
+                self.layout_det_model(doc_preprocessor_image),
+            )
 
             if (
                 model_settings["use_general_ocr"]
@@ -333,14 +352,15 @@ class LayoutParsingPipeline(BasePipeline):
                         text_det_box_thresh=text_det_box_thresh,
                         text_det_unclip_ratio=text_det_unclip_ratio,
                         text_rec_score_thresh=text_rec_score_thresh,
-                    )
+                    ),
                 )
             else:
                 overall_ocr_res = {}
 
             if model_settings["use_general_ocr"]:
                 text_paragraphs_ocr_res = self.get_text_paragraphs_ocr_res(
-                    overall_ocr_res, layout_det_res
+                    overall_ocr_res,
+                    layout_det_res,
                 )
             else:
                 text_paragraphs_ocr_res = {}
@@ -355,7 +375,7 @@ class LayoutParsingPipeline(BasePipeline):
                         use_ocr_model=False,
                         overall_ocr_res=overall_ocr_res,
                         layout_det_res=layout_det_res,
-                    )
+                    ),
                 )
                 table_res_list = table_res_all["table_res_list"]
             else:
@@ -375,7 +395,7 @@ class LayoutParsingPipeline(BasePipeline):
                         seal_det_box_thresh=seal_det_box_thresh,
                         seal_det_unclip_ratio=seal_det_unclip_ratio,
                         seal_rec_score_thresh=seal_rec_score_thresh,
-                    )
+                    ),
                 )
                 seal_res_list = seal_res_all["seal_res_list"]
             else:
@@ -389,7 +409,7 @@ class LayoutParsingPipeline(BasePipeline):
                         use_doc_orientation_classify=False,
                         use_doc_unwarping=False,
                         layout_det_res=layout_det_res,
-                    )
+                    ),
                 )
                 formula_res_list = formula_res_all["formula_res_list"]
                 print(formula_res_list)
@@ -397,14 +417,20 @@ class LayoutParsingPipeline(BasePipeline):
                 formula_res_list = []
 
             for table_res in table_res_list:
-                table_res['layout_bbox'] = table_res['cell_box_list'][0]
+                table_res["layout_bbox"] = table_res["cell_box_list"][0]
 
-            structure_res = get_structure_res(overall_ocr_res, layout_det_res,table_res_list)
-            structure_res_list = [{
-                "block_bbox":[0,0,2550,2550],
-                "block_size":[image_array.shape[1],image_array.shape[0]],
-                "sub_blocks":structure_res
-            },]
+            structure_res = get_structure_res(
+                overall_ocr_res,
+                layout_det_res,
+                table_res_list,
+            )
+            structure_res_list = [
+                {
+                    "block_bbox": [0, 0, 2550, 2550],
+                    "block_size": [image_array.shape[1], image_array.shape[0]],
+                    "sub_blocks": structure_res,
+                },
+            ]
 
             single_img_res = {
                 "input_path": input_path,

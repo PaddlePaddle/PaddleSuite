@@ -11,20 +11,20 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+from __future__ import annotations
 
-__all__ = ["get_sub_regions_ocr_res"]
+__all__ = [
+    "get_sub_regions_ocr_res",
+    "get_layout_ordering",
+    "recursive_img_array2path",
+]
 
-import copy
-import os
-import json
 import numpy as np
 import cv2
-from typing import Dict
 import uuid
 from pathlib import Path
 from ..ocr.result import OCRResult
 from ...models_new.object_detection.result import DetResult
-from typing import List
 
 
 def get_overlap_boxes_idx(src_boxes: np.ndarray, ref_boxes: np.ndarray) -> list:
@@ -55,7 +55,9 @@ def get_overlap_boxes_idx(src_boxes: np.ndarray, ref_boxes: np.ndarray) -> list:
 
 
 def get_sub_regions_ocr_res(
-    overall_ocr_res: OCRResult, object_boxes: list, flag_within: bool = True
+    overall_ocr_res: OCRResult,
+    object_boxes: list,
+    flag_within: bool = True,
 ) -> OCRResult:
     """
     Filters OCR results to only include text boxes within specified object boxes based on a flag.
@@ -90,16 +92,16 @@ def get_sub_regions_ocr_res(
                 flag_match = False
         if flag_match:
             sub_regions_ocr_res["rec_polys"].append(
-                overall_ocr_res["rec_polys"][box_no]
+                overall_ocr_res["rec_polys"][box_no],
             )
             sub_regions_ocr_res["rec_texts"].append(
-                overall_ocr_res["rec_texts"][box_no]
+                overall_ocr_res["rec_texts"][box_no],
             )
             sub_regions_ocr_res["rec_scores"].append(
-                overall_ocr_res["rec_scores"][box_no]
+                overall_ocr_res["rec_scores"][box_no],
             )
             sub_regions_ocr_res["rec_boxes"].append(
-                overall_ocr_res["rec_boxes"][box_no]
+                overall_ocr_res["rec_boxes"][box_no],
             )
     return sub_regions_ocr_res
 
@@ -164,7 +166,9 @@ def _sort_box_by_y_projection(layout_bbox, ocr_res, line_height_threshold=0.7):
     for span in spans[1:]:
         y0, y1 = span[0][1], span[0][3]
         if _whether_overlaps_y_exceeds_threshold(
-            (0, current_y0, 0, current_y1), (0, y0, 0, y1), line_height_threshold
+            (0, current_y0, 0, current_y1),
+            (0, y0, 0, y1),
+            line_height_threshold,
         ):
             current_line.append(span)
             current_y0 = min(current_y0, y0)
@@ -192,7 +196,9 @@ def _sort_box_by_y_projection(layout_bbox, ocr_res, line_height_threshold=0.7):
 
 
 def get_structure_res(
-    overall_ocr_res: OCRResult, layout_det_res: DetResult, table_res_list
+    overall_ocr_res: OCRResult,
+    layout_det_res: DetResult,
+    table_res_list,
 ) -> OCRResult:
     """
     Extract structured information from OCR and layout detection results.
@@ -238,7 +244,7 @@ def get_structure_res(
                             "layout_bbox": layout_bbox,
                             "seg_start_flag": seg_start_flag,
                             "seg_end_flag": seg_end_flag,
-                        }
+                        },
                     )
                     del table_res_list[i]
                     break
@@ -247,7 +253,9 @@ def get_structure_res(
                 overall_text_boxes = overall_ocr_res["dt_boxes"]
                 if calculate_iou(layout_bbox, overall_text_boxes[box_no]) > 0.5:
                     rec_res["boxes"].append(overall_text_boxes[box_no])
-                    rec_res["rec_texts"].append(overall_ocr_res["rec_texts"][box_no])
+                    rec_res["rec_texts"].append(
+                        overall_ocr_res["rec_texts"][box_no],
+                    )
                     rec_res["flag"] = True
                     drop_index.append(box_no)
 
@@ -273,7 +281,7 @@ def get_structure_res(
                         "layout_bbox": layout_bbox,
                         "seg_start_flag": seg_start_flag,
                         "seg_end_flag": seg_end_flag,
-                    }
+                    },
                 )
             else:
                 structure_boxes.append(
@@ -283,7 +291,7 @@ def get_structure_res(
                         "layout_bbox": layout_bbox,
                         "seg_start_flag": seg_start_flag,
                         "seg_end_flag": seg_end_flag,
-                    }
+                    },
                 )
 
     return structure_boxes
@@ -334,16 +342,19 @@ def split_projection_profile(arr_values: np.ndarray, min_value: float, min_gap: 
 
     # Determine start and end indices of segments
     segment_starts = np.insert(
-        significant_indices[gap_indices + 1], 0, significant_indices[0]
+        significant_indices[gap_indices + 1],
+        0,
+        significant_indices[0],
     )
     segment_ends = np.append(
-        significant_indices[gap_indices], significant_indices[-1] + 1
+        significant_indices[gap_indices],
+        significant_indices[-1] + 1,
     )
 
     return segment_starts, segment_ends
 
 
-def recursive_yx_cut(boxes: np.ndarray, indices: List[int], res: List[int], min_gap=1):
+def recursive_yx_cut(boxes: np.ndarray, indices: list[int], res: list[int], min_gap=1):
     """
     Recursively project and segment bounding boxes, starting with Y-axis and followed by X-axis.
 
@@ -404,7 +415,7 @@ def recursive_yx_cut(boxes: np.ndarray, indices: List[int], res: List[int], min_
             )
 
 
-def recursive_xy_cut(boxes: np.ndarray, indices: List[int], res: List[int], min_gap=1):
+def recursive_xy_cut(boxes: np.ndarray, indices: list[int], res: list[int], min_gap=1):
     """
     Recursively performs X-axis projection followed by Y-axis projection to segment bounding boxes.
 
@@ -470,9 +481,23 @@ def sort_by_xycut(block_bboxes, direction=0, min_gap=1):
     block_bboxes = np.asarray(block_bboxes).astype(int)
     res = []
     if direction == 1:
-        recursive_yx_cut(block_bboxes, np.arange(len(block_bboxes)), res, min_gap)
+        recursive_yx_cut(
+            block_bboxes,
+            np.arange(
+                len(block_bboxes),
+            ),
+            res,
+            min_gap,
+        )
     else:
-        recursive_xy_cut(block_bboxes, np.arange(len(block_bboxes)), res, min_gap)
+        recursive_xy_cut(
+            block_bboxes,
+            np.arange(
+                len(block_bboxes),
+            ),
+            res,
+            min_gap,
+        )
     return res
 
 
@@ -482,7 +507,8 @@ def _img_array2path(data, save_path):
         img_name = f"image_{uuid.uuid4().hex}.png"
         img_path = Path(save_path) / "imgs" / img_name
         img_path.parent.mkdir(
-            parents=True, exist_ok=True
+            parents=True,
+            exist_ok=True,
         )  # Ensure the directory exists
         cv2.imwrite(str(img_path), data)
         return f"imgs/{img_name}"
@@ -592,7 +618,10 @@ def _remove_overlap_blocks(blocks, threshold=0.65, smaller=True):
                 continue
             # Check for overlap and determine which block to remove
             overlap_box_index = _get_minbox_if_overlap_by_ratio(
-                block1["layout_bbox"], block2["layout_bbox"], threshold, smaller=smaller
+                block1["layout_bbox"],
+                block2["layout_bbox"],
+                threshold,
+                smaller=smaller,
             )
             if overlap_box_index is not None:
                 if overlap_box_index == 1:
@@ -634,7 +663,10 @@ def _get_layout_property(blocks, median_width, no_mask_labels, threshold=0.8):
         list: Updated list of blocks with layout information.
     """
     blocks.sort(
-        key=lambda x: (x["layout_bbox"][0], (x["layout_bbox"][2] - x["layout_bbox"][0]))
+        key=lambda x: (
+            x["layout_bbox"][0],
+            (x["layout_bbox"][2] - x["layout_bbox"][0]),
+        ),
     )
     check_single_layout = {}
     page_min_x, page_max_x = float("inf"), 0
@@ -661,14 +693,19 @@ def _get_layout_property(blocks, median_width, no_mask_labels, threshold=0.8):
                 continue
 
             x_min_j, _, x_max_j, _ = other_block["layout_bbox"]
-            x_match_min, x_match_max = max(x_min_i, x_min_j), min(x_max_i, x_max_j)
+            x_match_min, x_match_max = max(
+                x_min_i,
+                x_min_j,
+            ), min(x_max_i, x_max_j)
             match_block_iou = (x_match_max - x_match_min) / (x_max_j - x_min_j)
 
             if match_block_iou > 0:
                 cover_count += 1
                 if match_block_iou > threshold:
                     cover_with_threshold_count += 1
-                    match_block_with_threshold_indexes.append((j, match_block_iou))
+                    match_block_with_threshold_indexes.append(
+                        (j, match_block_iou),
+                    )
                 x_min_i = x_match_max
                 if x_min_i >= x_max_i:
                     break
@@ -792,7 +829,11 @@ def _get_sub_category(blocks, title_labels):
             bbox2 = block2["layout_bbox"]
             x1_prime, y1_prime, x2_prime, y2_prime = bbox2
             is_horizontal_2 = _get_bbox_direction(bbox2)
-            match_block_iou = _get_projection_iou(bbox2, bbox1, is_horizontal_1)
+            match_block_iou = _get_projection_iou(
+                bbox2,
+                bbox1,
+                is_horizontal_1,
+            )
 
             def distance_(is_horizontal, is_left_up):
                 if is_horizontal:
@@ -810,7 +851,8 @@ def _get_sub_category(blocks, title_labels):
             block_iou_threshold = 0.1
             if block1["label"] in sub_title_labels:
                 match_block_iou = _calculate_overlap_area_2_minbox_area_ratio(
-                    bbox2, bbox1
+                    bbox2,
+                    bbox1,
                 )
                 block_iou_threshold = 0.7
 
@@ -861,7 +903,10 @@ def _get_sub_category(blocks, title_labels):
         vision_footnote = []
 
         def get_sub_category_(
-            title_text_direction, title_text_index, label, is_left_up=True
+            title_text_direction,
+            title_text_index,
+            label,
+            is_left_up=True,
         ):
             direction_ = [1, 3] if is_left_up else [2, 4]
             if (
@@ -970,7 +1015,7 @@ def _get_sub_category(blocks, title_labels):
     return blocks
 
 
-def get_layout_ordering(data, no_mask_labels=[],already_sorted=False):
+def get_layout_ordering(data, no_mask_labels=[], already_sorted=False):
     """
     Process layout parsing results to remove overlapping bounding boxes
     and assign an ordering index based on their positions.
@@ -988,14 +1033,19 @@ def get_layout_ordering(data, no_mask_labels=[],already_sorted=False):
 
     parsing_result = data["sub_blocks"]
     parsing_result, _ = _remove_overlap_blocks(
-        parsing_result, threshold=0.5, smaller=True
+        parsing_result,
+        threshold=0.5,
+        smaller=True,
     )
     parsing_result = _get_sub_category(parsing_result, title_text_labels)
 
     doc_flag = False
     median_width = _text_median_width(parsing_result)
     parsing_result, projection_direction = _get_layout_property(
-        parsing_result, median_width, no_mask_labels=no_mask_labels, threshold=0.3
+        parsing_result,
+        median_width,
+        no_mask_labels=no_mask_labels,
+        threshold=0.3,
     )
     # Convert bounding boxes to float and remove overlaps
     (
@@ -1050,15 +1100,28 @@ def get_layout_ordering(data, no_mask_labels=[],already_sorted=False):
             title_blocks = []
             double_text_blocks = []
             block_bboxes = [block["layout_bbox"] for block in parsing_result]
-            block_bboxes.sort(key=lambda x: (x[0] // max(20, median_width), x[1]))
+            block_bboxes.sort(
+                key=lambda x: (
+                    x[0] // max(20, median_width),
+                    x[1],
+                ),
+            )
             block_bboxes = np.array(block_bboxes)
             print("sort by yxcut...")
-            sorted_indices = sort_by_xycut(block_bboxes, direction=1, min_gap=1)
+            sorted_indices = sort_by_xycut(
+                block_bboxes,
+                direction=1,
+                min_gap=1,
+            )
         else:
             block_bboxes = [block["layout_bbox"] for block in parsing_result]
             block_bboxes.sort(key=lambda x: (x[0] // 20, x[1]))
             block_bboxes = np.array(block_bboxes)
-            sorted_indices = sort_by_xycut(block_bboxes, direction=0, min_gap=20)
+            sorted_indices = sort_by_xycut(
+                block_bboxes,
+                direction=0,
+                min_gap=20,
+            )
 
         sorted_boxes = block_bboxes[sorted_indices].tolist()
 
@@ -1098,10 +1161,12 @@ def get_layout_ordering(data, no_mask_labels=[],already_sorted=False):
                         and match_block["title_text"] != []
                     ):
                         iou_left_up = _calculate_overlap_area_2_minbox_area_ratio(
-                            bbox, match_block["title_text"][0][1]
+                            bbox,
+                            match_block["title_text"][0][1],
                         )
                         iou_right_down = _calculate_overlap_area_2_minbox_area_ratio(
-                            bbox, match_block["title_text"][-1][1]
+                            bbox,
+                            match_block["title_text"][-1][1],
                         )
                         iou = 1 - max(iou_left_up, iou_right_down)
                         distance = _manhattan_distance(bbox, match_bbox) * iou
@@ -1115,10 +1180,12 @@ def get_layout_ordering(data, no_mask_labels=[],already_sorted=False):
                         and match_block["vision_footnote"] != []
                     ):
                         iou_left_up = _calculate_overlap_area_2_minbox_area_ratio(
-                            bbox, match_block["vision_footnote"][0]
+                            bbox,
+                            match_block["vision_footnote"][0],
                         )
                         iou_right_down = _calculate_overlap_area_2_minbox_area_ratio(
-                            bbox, match_block["vision_footnote"][-1]
+                            bbox,
+                            match_block["vision_footnote"][-1],
                         )
                         iou = 1 - max(iou_left_up, iou_right_down)
                         distance = _manhattan_distance(bbox, match_bbox) * iou
@@ -1130,10 +1197,12 @@ def get_layout_ordering(data, no_mask_labels=[],already_sorted=False):
                         and block["vision_footnote"] != []
                     ):
                         iou_left_up = _calculate_overlap_area_2_minbox_area_ratio(
-                            match_bbox, block["vision_footnote"][0]
+                            match_bbox,
+                            block["vision_footnote"][0],
                         )
                         iou_right_down = _calculate_overlap_area_2_minbox_area_ratio(
-                            match_bbox, block["vision_footnote"][-1]
+                            match_bbox,
+                            block["vision_footnote"][-1],
                         )
                         iou = 1 - max(iou_left_up, iou_right_down)
                         distance = _manhattan_distance(bbox, match_bbox) * iou
@@ -1162,11 +1231,14 @@ def get_layout_ordering(data, no_mask_labels=[],already_sorted=False):
             x["layout_bbox"][1] // 10,
             x["layout_bbox"][0] // median_width,
             x["layout_bbox"][1] ** 2 + x["layout_bbox"][0] ** 2,
-        )
+        ),
     )
-    nearest_match_(double_text_blocks, distance_type="nearest_iou_edge_distance")
+    nearest_match_(
+        double_text_blocks,
+        distance_type="nearest_iou_edge_distance",
+    )
     parsing_result.sort(
-        key=lambda x: (x["index"], x["layout_bbox"][1], x["layout_bbox"][0])
+        key=lambda x: (x["index"], x["layout_bbox"][1], x["layout_bbox"][0]),
     )
 
     for idx, block in enumerate(parsing_result):
@@ -1179,7 +1251,7 @@ def get_layout_ordering(data, no_mask_labels=[],already_sorted=False):
             x["layout_bbox"][1] // 10,
             x["layout_bbox"][0] // median_width,
             x["layout_bbox"][1] ** 2 + x["layout_bbox"][0] ** 2,
-        )
+        ),
     )
     nearest_match_(title_blocks, distance_type="nearest_iou_edge_distance")
 
@@ -1192,7 +1264,9 @@ def get_layout_ordering(data, no_mask_labels=[],already_sorted=False):
         doc_titles = []
         for i, block in enumerate(parsing_result):
             if block["label"] == "doc_title":
-                doc_titles.append((i, block["layout_bbox"][1], block["layout_bbox"][0]))
+                doc_titles.append(
+                    (i, block["layout_bbox"][1], block["layout_bbox"][0]),
+                )
         doc_titles.sort(key=lambda x: (x[1], x[2]))
         first_doc_title_index = doc_titles[0][0]
         parsing_result[first_doc_title_index]["index"] = 1
@@ -1202,11 +1276,15 @@ def get_layout_ordering(data, no_mask_labels=[],already_sorted=False):
                 text_label_priority.get(x["label"], 9999),
                 x["layout_bbox"][1],
                 x["layout_bbox"][0],
-            )
+            ),
         )
     else:
         parsing_result.sort(
-            key=lambda x: (x["index"], x["layout_bbox"][1], x["layout_bbox"][0])
+            key=lambda x: (
+                x["index"],
+                x["layout_bbox"][1],
+                x["layout_bbox"][0],
+            ),
         )
 
     for idx, block in enumerate(parsing_result):
@@ -1225,7 +1303,7 @@ def get_layout_ordering(data, no_mask_labels=[],already_sorted=False):
             text_label_priority.get(x["sub_label"], 9999),
             x["layout_bbox"][1],
             x["layout_bbox"][0],
-        )
+        ),
     )
 
     for idx, block in enumerate(parsing_result):
@@ -1239,7 +1317,11 @@ def get_layout_ordering(data, no_mask_labels=[],already_sorted=False):
         is_add_index=False,
     )
     parsing_result.sort(
-        key=lambda x: (x["sub_index"], x["layout_bbox"][1], x["layout_bbox"][0])
+        key=lambda x: (
+            x["sub_index"],
+            x["layout_bbox"][1],
+            x["layout_bbox"][0],
+        ),
     )
 
     for idx, block in enumerate(parsing_result):
@@ -1247,10 +1329,16 @@ def get_layout_ordering(data, no_mask_labels=[],already_sorted=False):
 
     # image,figure,chart,seal label
     nearest_match_(
-        vision_blocks, distance_type="nearest_iou_edge_distance", is_add_index=False
+        vision_blocks,
+        distance_type="nearest_iou_edge_distance",
+        is_add_index=False,
     )
     parsing_result.sort(
-        key=lambda x: (x["sub_index"], x["layout_bbox"][1], x["layout_bbox"][0])
+        key=lambda x: (
+            x["sub_index"],
+            x["layout_bbox"][1],
+            x["layout_bbox"][0],
+        ),
     )
 
     for idx, block in enumerate(parsing_result):
@@ -1258,7 +1346,9 @@ def get_layout_ordering(data, no_mask_labels=[],already_sorted=False):
 
     # vision footnote label
     nearest_match_(
-        vision_footnote_blocks, distance_type="vision_footnote", is_add_index=False
+        vision_footnote_blocks,
+        distance_type="vision_footnote",
+        is_add_index=False,
     )
     text_label_priority = {"vision_footnote": 9999}
     parsing_result.sort(
@@ -1267,7 +1357,7 @@ def get_layout_ordering(data, no_mask_labels=[],already_sorted=False):
             text_label_priority.get(x["sub_label"], 0),
             x["layout_bbox"][1],
             x["layout_bbox"][0],
-        )
+        ),
     )
 
     for idx, block in enumerate(parsing_result):
@@ -1287,7 +1377,11 @@ def _generate_input_data(parsing_result):
     :return: A formatted list of input data
     """
     input_data = [
-        {"block_bbox": block["block_bbox"], "sub_indices": [], "sub_bboxes": []}
+        {
+            "block_bbox": block["block_bbox"],
+            "sub_indices": [],
+            "sub_bboxes": [],
+        }
         for block in parsing_result
     ]
 
@@ -1306,9 +1400,11 @@ def _generate_input_data(parsing_result):
         )
         for sub_block in sub_blocks:
             input_data[block_index]["sub_bboxes"].append(
-                list(map(int, sub_block["layout_bbox"]))
+                list(map(int, sub_block["layout_bbox"])),
             )
-            input_data[block_index]["sub_indices"].append(int(sub_block["index"]))
+            input_data[block_index]["sub_indices"].append(
+                int(sub_block["index"]),
+            )
 
     return input_data
 
@@ -1318,7 +1414,11 @@ def _manhattan_distance(point1, point2, weight_x=1, weight_y=1):
 
 
 def _calculate_horizontal_distance(
-    input_bbox, match_bbox, height, disperse, title_text
+    input_bbox,
+    match_bbox,
+    height,
+    disperse,
+    title_text,
 ):
     """
     Calculate the horizontal distance between two bounding boxes, considering title text adjustments.
@@ -1399,14 +1499,18 @@ def _nearest_edge_distance(
         weight (list, optional): Directional weights for the edge distances [left, right, up, down]. Defaults to [1, 1, 1, 1].
         label (str, optional): The label/type of the object in the bounding box (e.g., 'text'). Defaults to 'text'.
         no_mask_labels (list, optional): Labels for which no masking is applied when calculating edge distances. Defaults to an empty list.
-        min_edge_distances_config (list, optional): Configuration for minimum edge distances [min_edge_distance_x, min_edge_distance_y]. Defaults to [float('inf'), float('inf')].
+        min_edge_distances_config (list, optional): Configuration for minimum edge distances [min_edge_distance_x, min_edge_distance_y].
+        Defaults to [float('inf'), float('inf')].
 
     Returns:
         tuple: A tuple containing:
             - The calculated minimum edge distance between the bounding boxes.
             - A list with the minimum edge distances in the x and y directions.
     """
-    match_bbox_iou = _calculate_overlap_area_2_minbox_area_ratio(input_bbox, match_bbox)
+    match_bbox_iou = _calculate_overlap_area_2_minbox_area_ratio(
+        input_bbox,
+        match_bbox,
+    )
     if match_bbox_iou > 0 and label not in no_mask_labels:
         return 0, [0, 0]
 
@@ -1556,14 +1660,22 @@ def _nearest_iou_edge_distance(
         if horizontal1:
             return (
                 _calculate_horizontal_distance(
-                    input_bbox, match_bbox, height, disperse, title_text
+                    input_bbox,
+                    match_bbox,
+                    height,
+                    disperse,
+                    title_text,
                 ),
                 min_distance_config,
             )
         else:
             return (
                 _calculate_vertical_distance(
-                    input_bbox, match_bbox, width, disperse, title_text
+                    input_bbox,
+                    match_bbox,
+                    width,
+                    disperse,
+                    title_text,
                 ),
                 min_distance_config,
             )
@@ -1572,7 +1684,15 @@ def _nearest_iou_edge_distance(
     if sub_title:
         for sub in sub_title:
             x1_, y1_, x2_, y2_ = sub
-            x1, y1, x2, y2 = min(x1, x1_), min(y1, y1_), max(x2, x2_), max(y2, y2_)
+            x1, y1, x2, y2 = (
+                min(x1, x1_),
+                min(
+                    y1,
+                    y1_,
+                ),
+                max(x2, x2_),
+                max(y2, y2_),
+            )
         input_bbox = [x1, y1, x2, y2]
 
     # Calculate edge distance

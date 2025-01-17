@@ -11,15 +11,25 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+from __future__ import annotations
 
-from typing import Dict
-import numpy as np
 import copy
-import cv2
 from pathlib import Path
-from PIL import Image, ImageDraw
-from .utils import recursive_img_array2path,get_layout_ordering
-from ...common.result import BaseCVResult, HtmlMixin, XlsxMixin, StrMixin, JsonMixin, MarkdownMixin
+from typing import Dict
+
+import cv2
+import numpy as np
+from PIL import Image
+from PIL import ImageDraw
+
+from ...common.result import BaseCVResult
+from ...common.result import HtmlMixin
+from ...common.result import JsonMixin
+from ...common.result import MarkdownMixin
+from ...common.result import StrMixin
+from ...common.result import XlsxMixin
+from .utils import get_layout_ordering
+from .utils import recursive_img_array2path
 
 
 class LayoutParsingResult(BaseCVResult, HtmlMixin, XlsxMixin, MarkdownMixin):
@@ -34,7 +44,7 @@ class LayoutParsingResult(BaseCVResult, HtmlMixin, XlsxMixin, MarkdownMixin):
         JsonMixin.__init__(self)
         self.already_sorted = False
 
-    def _to_img(self) -> Dict[str, np.ndarray]:
+    def _to_img(self) -> dict[str, np.ndarray]:
         res_img_dict = {}
         model_settings = self["model_settings"]
         if model_settings["use_doc_preprocessor"]:
@@ -55,13 +65,21 @@ class LayoutParsingResult(BaseCVResult, HtmlMixin, XlsxMixin, MarkdownMixin):
             res_img_dict["text_paragraphs_ocr_res"] = general_ocr_res.img["ocr_res_img"]
 
         if model_settings["use_table_recognition"] and len(self["table_res_list"]) > 0:
-            table_cell_img = copy.deepcopy(self["doc_preprocessor_res"]["output_img"])
+            table_cell_img = copy.deepcopy(
+                self["doc_preprocessor_res"]["output_img"],
+            )
             for sno in range(len(self["table_res_list"])):
                 table_res = self["table_res_list"][sno]
                 cell_box_list = table_res["cell_box_list"]
                 for box in cell_box_list:
-                    x1, y1, x2, y2 = [int(pos) for pos in box]
-                    cv2.rectangle(table_cell_img, (x1, y1), (x2, y2), (255, 0, 0), 2)
+                    x1, y1, x2, y2 = (int(pos) for pos in box)
+                    cv2.rectangle(
+                        table_cell_img,
+                        (x1, y1),
+                        (x2, y2),
+                        (255, 0, 0),
+                        2,
+                    )
             res_img_dict["table_cell_img"] = table_cell_img
 
         if model_settings["use_seal_recognition"] and len(self["seal_res_list"]) > 0:
@@ -85,7 +103,7 @@ class LayoutParsingResult(BaseCVResult, HtmlMixin, XlsxMixin, MarkdownMixin):
 
         return res_img_dict
 
-    def _to_str(self, *args, **kwargs) -> Dict[str, str]:
+    def _to_str(self, *args, **kwargs) -> dict[str, str]:
         """Converts the instance's attributes to a dictionary and then to a string.
 
         Args:
@@ -134,7 +152,7 @@ class LayoutParsingResult(BaseCVResult, HtmlMixin, XlsxMixin, MarkdownMixin):
 
         return StrMixin._to_str(data, *args, **kwargs)
 
-    def _to_json(self, *args, **kwargs) -> Dict[str, str]:
+    def _to_json(self, *args, **kwargs) -> dict[str, str]:
         """
         Converts the object's data to a JSON dictionary.
 
@@ -183,7 +201,7 @@ class LayoutParsingResult(BaseCVResult, HtmlMixin, XlsxMixin, MarkdownMixin):
                 data["formula_res_list"].append(formula_res.json["res"])
         return JsonMixin._to_json(data, *args, **kwargs)
 
-    def _to_html(self) -> Dict[str, str]:
+    def _to_html(self) -> dict[str, str]:
         """Converts the prediction to its corresponding HTML representation.
 
         Returns:
@@ -199,7 +217,7 @@ class LayoutParsingResult(BaseCVResult, HtmlMixin, XlsxMixin, MarkdownMixin):
                 res_html_dict[key] = table_res.html["pred"]
         return res_html_dict
 
-    def _to_xlsx(self) -> Dict[str, str]:
+    def _to_xlsx(self) -> dict[str, str]:
         """Converts the prediction HTML to an XLSX file path.
 
         Returns:
@@ -228,40 +246,47 @@ class LayoutParsingResult(BaseCVResult, HtmlMixin, XlsxMixin, MarkdownMixin):
         """
         input_name = self["input_path"]
         if save_path.suffix.lower() not in (".jpg", ".png"):
-            save_path = Path(save_path).with_suffix(f'{input_name}.jpg')
+            save_path = Path(save_path).with_suffix(f"{input_name}.jpg")
         else:
-            save_path = save_path.with_suffix('')
+            save_path = save_path.with_suffix("")
         ordering_image_path = save_path.parent / f"{save_path.stem}_ordering.jpg"
 
         try:
             image = Image.fromarray(self["doc_preprocessor_res"]["output_img"])
-        except IOError as e:
+        except OSError as e:
             print(f"Error opening image: {e}")
             return
 
-        draw = ImageDraw.Draw(image,'RGBA')
+        draw = ImageDraw.Draw(image, "RGBA")
 
-        parsing_result = self['layout_parsing_result']
+        parsing_result = self["layout_parsing_result"]
         for block in parsing_result:
             if self.already_sorted == False:
                 block = get_layout_ordering(
                     block,
-                    no_mask_labels=['text', 'formula', 'algorithm', "reference", "content", "abstract"],
-                    self.already_sorted
+                    no_mask_labels=[
+                        "text",
+                        "formula",
+                        "algorithm",
+                        "reference",
+                        "content",
+                        "abstract",
+                    ],
+                    already_sorted=self.already_sorted,
                 )
 
-            sub_blocks = block['sub_blocks']
+            sub_blocks = block["sub_blocks"]
             for sub_block in sub_blocks:
-                bbox = sub_block['layout_bbox']
-                index = sub_block.get('index',None)
-                label = sub_block['sub_label']
+                bbox = sub_block["layout_bbox"]
+                index = sub_block.get("index", None)
+                label = sub_block["sub_label"]
                 fill_color = self.get_show_color(label)
                 draw.rectangle(bbox, fill=fill_color)
                 if index is not None:
-                    text_position = (bbox[2]+2, bbox[1] - 10)
+                    text_position = (bbox[2] + 2, bbox[1] - 10)
                     draw.text(text_position, str(index), fill="red")
         self.already_sorted == True
-        
+
         # Ensure the directory exists and save the image
         ordering_image_path.parent.mkdir(parents=True, exist_ok=True)
         print(f"Saving ordering image to {ordering_image_path}")
@@ -281,37 +306,59 @@ class LayoutParsingResult(BaseCVResult, HtmlMixin, XlsxMixin, MarkdownMixin):
         if not save_path.suffix.lower() == ".md":
             save_path = save_path / f"layout_parsing_result.md"
 
-        parsing_result = self['layout_parsing_result']
+        parsing_result = self["layout_parsing_result"]
         for block in parsing_result:
             if self.already_sorted == False:
                 block = get_layout_ordering(
                     block,
-                    no_mask_labels=['text', 'formula', 'algorithm', "reference", "content", "abstract"],
-                    self.already_sorted
+                    no_mask_labels=[
+                        "text",
+                        "formula",
+                        "algorithm",
+                        "reference",
+                        "content",
+                        "abstract",
+                    ],
+                    already_sorted=self.already_sorted,
                 )
         self.already_sorted == True
-        recursive_img_array2path(self['layout_parsing_result'], save_path.parent,labels=['img'])
-        super()._to_markdown(save_path)        
-    
-    def get_show_color(self,label):
+        recursive_img_array2path(
+            self["layout_parsing_result"],
+            save_path.parent,
+            labels=["img"],
+        )
+        super()._to_markdown(save_path)
+
+    def get_show_color(self, label):
         label_colors = {
-        'paragraph_title': (102, 102, 255, 100),  # Medium Blue (from 'titles_list')
-        'doc_title': (255, 248, 220, 100),        # Cornsilk
-        'table_title': (255, 255, 102, 100),      # Light Yellow (from 'tables_caption_list')
-        'figure_title': (102, 178, 255, 100),     # Sky Blue (from 'imgs_caption_list')
-        'chart_title': (221, 160, 221, 100),      # Plum
-        'vision_footnote': (144, 238, 144, 100),  # Light Green
-        'text': (153, 0, 76, 100),                # Deep Purple (from 'texts_list')
-        'formula': (0, 255, 0, 100),              # Bright Green (from 'interequations_list')
-        'abstract': (255, 239, 213, 100),         # Papaya Whip
-        'content': (40, 169, 92, 100),            # Medium Green (from 'lists_list' and 'indexs_list')
-        'seal': (158, 158, 158, 100),             # Neutral Gray (from 'dropped_bbox_list')
-        'table': (204, 204, 0, 100),              # Olive Yellow (from 'tables_body_list')
-        'image': (153, 255, 51, 100),             # Bright Green (from 'imgs_body_list')
-        'figure': (153, 255, 51, 100),             # Bright Green (from 'imgs_body_list')
-        'chart': (216, 191, 216, 100),            # Thistle
-        'reference': (229, 255, 204, 100),        # Pale Yellow-Green (from 'tables_footnote_list')
-        'algorithm': (255, 250, 240, 100)         # Floral White
+            # Medium Blue (from 'titles_list')
+            "paragraph_title": (102, 102, 255, 100),
+            "doc_title": (255, 248, 220, 100),  # Cornsilk
+            # Light Yellow (from 'tables_caption_list')
+            "table_title": (255, 255, 102, 100),
+            # Sky Blue (from 'imgs_caption_list')
+            "figure_title": (102, 178, 255, 100),
+            "chart_title": (221, 160, 221, 100),  # Plum
+            "vision_footnote": (144, 238, 144, 100),  # Light Green
+            # Deep Purple (from 'texts_list')
+            "text": (153, 0, 76, 100),
+            # Bright Green (from 'interequations_list')
+            "formula": (0, 255, 0, 100),
+            "abstract": (255, 239, 213, 100),  # Papaya Whip
+            # Medium Green (from 'lists_list' and 'indexs_list')
+            "content": (40, 169, 92, 100),
+            # Neutral Gray (from 'dropped_bbox_list')
+            "seal": (158, 158, 158, 100),
+            # Olive Yellow (from 'tables_body_list')
+            "table": (204, 204, 0, 100),
+            # Bright Green (from 'imgs_body_list')
+            "image": (153, 255, 51, 100),
+            # Bright Green (from 'imgs_body_list')
+            "figure": (153, 255, 51, 100),
+            "chart": (216, 191, 216, 100),  # Thistle
+            # Pale Yellow-Green (from 'tables_footnote_list')
+            "reference": (229, 255, 204, 100),
+            "algorithm": (255, 250, 240, 100),  # Floral White
         }
         default_color = (158, 158, 158, 100)
         return label_colors.get(label, default_color)
