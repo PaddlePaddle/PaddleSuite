@@ -96,7 +96,7 @@ class JsonMixin:
             elif isinstance(obj, np.ndarray):
                 return [_format_data(item) for item in obj.tolist()]
             elif isinstance(obj, pd.DataFrame):
-                return obj.to_json(orient="records", force_ascii=False)
+                return json.loads(obj.to_json(orient="records", force_ascii=False))
             elif isinstance(obj, Path):
                 return obj.as_posix()
             elif isinstance(obj, dict):
