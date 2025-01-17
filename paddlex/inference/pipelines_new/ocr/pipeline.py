@@ -372,8 +372,10 @@ class OCRPipeline(BasePipeline):
                             all_subs_of_img
                         )
                     ]
-                    single_img_res["textline_orientation_angle"] = angles
                     all_subs_of_img = self.rotate_image(all_subs_of_img, angles)
+                else:
+                    angles = [-1] * len(all_subs_of_img)
+                single_img_res["textline_orientation_angles"] = angles
 
                 rno = -1
                 for rec_res in self.text_rec_model(all_subs_of_img):
