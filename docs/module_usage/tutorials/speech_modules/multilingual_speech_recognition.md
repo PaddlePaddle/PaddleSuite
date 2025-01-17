@@ -10,7 +10,7 @@ comments: true
 ## 二、支持模型列表
 
 ### Whisper Model
-模型 | 模型下载链接 | 训练数据 | 模型大小 | 介绍 | 字准 |
+模型 | 模型下载链接 | 训练数据 | 模型大小 | 介绍 | 词错率 |
 :-----------: | :-----:| :-------: | :-----: | :-----: |:---------:|
 Whisper | [whisper_large](https://paddlespeech.bj.bcebos.com/whisper/whisper_model_20221122/whisper-large-model.tar.gz) </br>[whisper_medium](https://paddlespeech.bj.bcebos.com/whisper/whisper_model_20221122/whisper-medium-model.tar.gz) </br>[whisper_small](https://paddlespeech.bj.bcebos.com/whisper/whisper_model_20221122/whisper-small-model.tar.gz) </br>[whisper_base](https://paddlespeech.bj.bcebos.com/whisper/whisper_model_20221122/whisper-base-model.tar.gz) </br>[whisper_tiny](https://paddlespeech.bj.bcebos.com/whisper/whisper_model_20221122/whisper-tiny-model.tar.gz) </br> | 680kh from internet | large: 5.8G,</br>medium: 2.9G,</br>small: 923M,</br>base: 277M,</br>tiny: 145M | Encoder:Transformer,</br> Decoder:Transformer, </br>Decoding method: </br>Greedy search | 2.7 </br>(large, Librispeech) |
 
