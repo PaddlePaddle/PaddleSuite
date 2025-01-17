@@ -46,7 +46,7 @@ class AttributeRecPipeline(BasePipeline):
         self._crop_by_boxes = CropByBoxes()
         self._img_reader = ReadImage(format="BGR")
 
-        self.det_threshold = config["SubModules"]["Detection"].get("threshold", 0.7)
+        self.det_threshold = config["SubModules"]["Detection"].get("threshold", 0.5)
         self.cls_threshold = config["SubModules"]["Classification"].get(
             "threshold", 0.7
         )
@@ -79,12 +79,12 @@ class AttributeRecPipeline(BasePipeline):
     def get_final_result(self, input_data, raw_img, det_res, rec_res):
         single_img_res = {"input_path": input_data, "input_img": raw_img, "boxes": []}
         for i, obj in enumerate(det_res["boxes"]):
-            rec_scores = rec_res["score"][i]
+            cls_scores = rec_res["score"][i]
             labels = rec_res["label"][i]
             single_img_res["boxes"].append(
                 {
                     "labels": labels,
-                    "rec_scores": rec_scores,
+                    "cls_scores": cls_scores,
                     "det_score": obj["score"],
                     "coordinate": obj["coordinate"],
                 }
