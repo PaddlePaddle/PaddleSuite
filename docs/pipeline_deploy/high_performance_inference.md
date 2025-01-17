@@ -24,13 +24,13 @@ comments: true
 
 根据设备类型，执行如下指令，安装高性能推理插件：
 
-若设备类型为CPU：
+如果你的设备是 CPU，请使用以下命令安装 PaddleX 的 CPU 版本：
 
 ```bash
 paddlex --install hpi-cpu
 ```
 
-若设备类型为GPU：
+如果你的设备是 GPU，请使用以下命令安装 PaddleX 的 GPU 版本。请注意，GPU 版本包含了 CPU 版本的所有功能，因此无需单独安装 CPU 版本：
 
 ```bash
 paddlex --install hpi-gpu
@@ -119,7 +119,9 @@ output = pipeline.predict("https://paddle-model-ecology.bj.bcebos.com/paddlex/im
 
 ### 2.1 修改高性能推理配置
 
-PaddleX 结合模型信息与运行环境信息为每个模型提供默认的高性能推理配置。这些默认配置经过精心准备，以便在数个常见场景中可用，且能够取得较优的性能。因此，通常用户可能并不用关心如何这些配置的具体细节。然而，由于实际部署环境与需求的多样性，使用默认配置可能无法在特定场景获取理想的性能，甚至可能出现推理失败的情况。对于默认配置无法满足要求的情形，用户可以手动调整配置。以下列举两种常见的情形：
+PaddleX 结合模型信息与运行环境信息为每个模型提供默认的高性能推理配置，其中包括推理后端和推理后端的配置。例如 ResNet18 模型，CPU 设备默认的推理后端为 onnx_runtime，GPU 设备默认的推理后端为 tensorrt FP16。
+这些默认配置经过精心准备，以便在数个常见场景中可用，且能够取得较优的性能。因此，通常用户可能并不用关心如何这些配置的具体细节。
+然而，由于实际部署环境与需求的多样性，使用默认配置可能无法在特定场景获取理想的性能，甚至可能出现推理失败的情况。对于默认配置无法满足要求的情形，用户可以手动调整配置。以下列举两种常见的情形：
 
 - 更换推理后端：
 
@@ -199,7 +201,6 @@ PaddleX 结合模型信息与运行环境信息为每个模型提供默认的高
                       - [1, 3, 300, 300]
                       - [4, 3, 300, 300]
                       - [32, 3, 1200, 1200]
-                  ...
                 # TensorRT 后端配置
                 tensorrt:
                   precision: FP32
@@ -272,33 +273,11 @@ PaddleX 结合模型信息与运行环境信息为每个模型提供默认的高
 
 二次开发高性能推理插件流程如下：
 
-#### 1. 按需修改 `paddlex-hpi` 和 `ultra-infer` 代码
+#### a. 按需修改 `ultra-infer` 代码
 
-高性能推理插件源代码位于 `libs` 目录下，包含两部分：
+`ultra-infer`，是高性能推理功能的底层依赖，包含前后处理加速和多后端推理。位于 `libs` 目录下。
 
-- `paddlex-hpi`，适配层，适配 `PaddleX` 与 `ultra-infer`。
-- `ultra-infer`，底层，前后处理加速和多后端推理。
-
-#### 2. 安装 `paddlex-hpi`
-
-对 `paddlex-hpi` 修改完成后，通过如下方式安装 `paddlex-hpi`。
-
-方式一：本地安装
-
-```shell
-cd PaddleX/libs/paddlex-hpi
-pip install -e .[test]
-```
-
-方式二：whl包安装
-
-```shell
-cd PaddleX/libs/paddlex-hpi
-bash ./scripts/build_wheel.sh
-python -m pip install ./wheels/original/paddlex_hpi*.whl
-```
-
-#### 3. 安装 `ultra-infer`
+#### b. 安装 `ultra-infer`
 
 对 `ultra-infer` 修改完成后，通过如下方式安装 `ultra-infer`。
 
@@ -322,14 +301,14 @@ python -m pip install ../../python/dist/ultra_infer*.whl
 | 选项 | 说明 |
 |:------------------------|:------------------------------------|
 | http_proxy             | 在下载三方库时使用具体的http代理，默认空 |
-| PYTHON_VERSION | Python版本，默认3.10.0 |
-| WITH_GPU | 是否编译支持Nvidia-GPU，默认ON |
-| ENABLE_ORT_BACKEND      | 是否编译集成ONNX Runtime后端，默认ON |
-| ENABLE_PADDLE_BACKEND   | 是否编译集成Paddle Inference后端，默认ON |
-| ENABLE_TRT_BACKEND   | 是否编译集成TensorRT后端，默认ON|
-| ENABLE_OPENVINO_BACKEND | 是否编译集成OpenVINO后端(仅支持CPU)，默认ON|
-| ENABLE_VISION           | 是否编译集成视觉模型的部署模块，默认ON|
-| ENABLE_TEXT             | 是否编译集成文本NLP模型的部署模块，默认ON|
+| PYTHON_VERSION | Python版本，默认 `3.10.0` |
+| WITH_GPU | 是否编译支持Nvidia-GPU，默认 `ON` |
+| ENABLE_ORT_BACKEND      | 是否编译集成ONNX Runtime后端，默认 `ON` |
+| ENABLE_PADDLE_BACKEND   | 是否编译集成Paddle Inference后端，默认 `ON` |
+| ENABLE_TRT_BACKEND   | 是否编译集成TensorRT后端，默认 `ON` |
+| ENABLE_OPENVINO_BACKEND | 是否编译集成OpenVINO后端(仅支持CPU)，默认 `ON` |
+| ENABLE_VISION           | 是否编译集成视觉模型的部署模块，默认 `ON` |
+| ENABLE_TEXT             | 是否编译集成文本NLP模型的部署模块，默认 `ON` |
 
 ## 3. 支持使用高性能推理插件的产线与模型
 
@@ -550,23 +529,23 @@ python -m pip install ../../python/dist/ultra_infer*.whl
   <tr>
     <td rowspan="2">行人属性识别</td>
     <td>行人检测</td>
-    <td>❌</td>
+    <td>✅</td>
   </tr>
 
   <tr>
     <td>行人属性识别</td>
-    <td>❌</td>
+    <td>✅</td>
   </tr>
 
   <tr>
     <td rowspan="2">车辆属性识别</td>
     <td>车辆检测</td>
-    <td>❌</td>
+    <td>✅</td>
   </tr>
 
   <tr>
     <td>车辆属性识别</td>
-    <td>❌</td>
+    <td>✅</td>
   </tr>
 
   <tr>
