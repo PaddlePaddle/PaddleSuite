@@ -39,7 +39,6 @@ class PP_ChatOCRv4_Pipeline(PP_ChatOCR_Pipeline):
         device: str = None,
         pp_option: PaddlePredictorOption = None,
         use_hpip: bool = False,
-        hpi_params: Optional[Dict[str, Any]] = None,
     ) -> None:
         """Initializes the pp-chatocrv3-doc pipeline.
 
@@ -48,13 +47,10 @@ class PP_ChatOCRv4_Pipeline(PP_ChatOCR_Pipeline):
             device (str, optional): Device to run the predictions on. Defaults to None.
             pp_option (PaddlePredictorOption, optional): PaddlePredictor options. Defaults to None.
             use_hpip (bool, optional): Whether to use high-performance inference (hpip) for prediction. Defaults to False.
-            hpi_params (Optional[Dict[str, Any]], optional): HPIP parameters. Defaults to None.
             use_layout_parsing (bool, optional): Whether to use layout parsing. Defaults to True.
         """
 
-        super().__init__(
-            device=device, pp_option=pp_option, use_hpip=use_hpip, hpi_params=hpi_params
-        )
+        super().__init__(device=device, pp_option=pp_option, use_hpip=use_hpip)
 
         self.pipeline_name = config["pipeline_name"]
 

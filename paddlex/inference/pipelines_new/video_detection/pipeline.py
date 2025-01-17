@@ -32,7 +32,6 @@ class VideoDetectionPipeline(BasePipeline):
         device: str = None,
         pp_option: PaddlePredictorOption = None,
         use_hpip: bool = False,
-        hpi_params: Optional[Dict[str, Any]] = None,
     ) -> None:
         """
         Initializes the class with given configurations and options.
@@ -42,17 +41,18 @@ class VideoDetectionPipeline(BasePipeline):
             device (str): The device to run the prediction on. Default is None.
             pp_option (PaddlePredictorOption): Options for PaddlePaddle predictor. Default is None.
             use_hpip (bool): Whether to use high-performance inference (hpip) for prediction. Defaults to False.
-            hpi_params (Optional[Dict[str, Any]]): HPIP specific parameters. Default is None.
         """
-        super().__init__(
-            device=device, pp_option=pp_option, use_hpip=use_hpip, hpi_params=hpi_params
-        )
+        super().__init__(device=device, pp_option=pp_option, use_hpip=use_hpip)
 
         video_detection_model_config = config["SubModules"]["VideoDetection"]
         self.video_detection_model = self.create_model(video_detection_model_config)
 
     def predict(
-        self, input: str | list[str] | np.ndarray | list[np.ndarray], **kwargs
+        self,
+        input: str | list[str] | np.ndarray | list[np.ndarray],
+        nms_thresh: float = 0.5,
+        score_thresh: float = 0.4,
+        **kwargs
     ) -> DetVideoResult:
         """Predicts video detection results for the given input.
 
@@ -64,4 +64,6 @@ class VideoDetectionPipeline(BasePipeline):
             DetVideoResult: The predicted video detection results.
         """
 
-        yield from self.video_detection_model(input)
+        yield from self.video_detection_model(
+            input, nms_thresh=nms_thresh, score_thresh=score_thresh
+        )

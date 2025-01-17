@@ -41,7 +41,6 @@ class OCRPipeline(BasePipeline):
         device: Optional[str] = None,
         pp_option: Optional[PaddlePredictorOption] = None,
         use_hpip: bool = False,
-        hpi_params: Optional[Dict[str, Any]] = None,
     ) -> None:
         """
         Initializes the class with given configurations and options.
@@ -51,11 +50,8 @@ class OCRPipeline(BasePipeline):
             device (str, optional): Device to run the predictions on. Defaults to None.
             pp_option (PaddlePredictorOption, optional): PaddlePredictor options. Defaults to None.
             use_hpip (bool, optional): Whether to use high-performance inference (hpip) for prediction. Defaults to False.
-            hpi_params (Optional[Dict[str, Any]], optional): HPIP parameters. Defaults to None.
         """
-        super().__init__(
-            device=device, pp_option=pp_option, use_hpip=use_hpip, hpi_params=hpi_params
-        )
+        super().__init__(device=device, pp_option=pp_option, use_hpip=use_hpip)
 
         self.use_doc_preprocessor = config.get("use_doc_preprocessor", True)
         if self.use_doc_preprocessor:
@@ -214,7 +210,10 @@ class OCRPipeline(BasePipeline):
         if use_doc_orientation_classify is None and use_doc_unwarping is None:
             use_doc_preprocessor = self.use_doc_preprocessor
         else:
-            use_doc_preprocessor = True
+            if use_doc_orientation_classify is True or use_doc_unwarping is True:
+                use_doc_preprocessor = True
+            else:
+                use_doc_preprocessor = False
 
         if use_textline_orientation is None:
             use_textline_orientation = self.use_textline_orientation
@@ -369,8 +368,10 @@ class OCRPipeline(BasePipeline):
                             all_subs_of_img
                         )
                     ]
-                    single_img_res["textline_orientation_angle"] = angles
                     all_subs_of_img = self.rotate_image(all_subs_of_img, angles)
+                else:
+                    angles = [-1] * len(all_subs_of_img)
+                single_img_res["textline_orientation_angles"] = angles
 
                 rno = -1
                 for rec_res in self.text_rec_model(all_subs_of_img):
