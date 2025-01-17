@@ -8,7 +8,7 @@ use_ocr_model: True
 SubModules:
   LayoutDetection:
     module_name: layout_detection
-    model_name: RT-DETR-H_layout_17cls
+    model_name: PicoDet_layout_1x_table
     model_dir: null
   
   TableClassification:
