@@ -71,6 +71,6 @@ class ImageClassificationPipeline(BasePipeline):
         Returns:
             TopkResult: The predicted top k results.
         """
-      
+
         topk = kwargs.pop("topk", self.topk)
         yield from self.image_classification_model(input, topk=topk)

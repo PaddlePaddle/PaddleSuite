@@ -110,9 +110,7 @@ class BasePipeline(ABC, metaclass=AutoRegisterABCMetaClass):
 
         from . import create_pipeline
 
-        pipeline_name = config["pipeline_name"]
         pipeline = create_pipeline(
-            pipeline_name,
             config=config,
             device=self.device,
             pp_option=self.pp_option,

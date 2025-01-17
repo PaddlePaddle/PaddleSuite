@@ -241,12 +241,13 @@ def pipeline_predict(
 
 
 def serve(pipeline, *, device, use_hpip, serial_number, update_license, host, port):
-    from .inference.pipelines.serving import create_pipeline_app, run_server
+    from .inference import create_pipeline, load_pipeline_config
+    from .inference.serving.basic_serving import create_pipeline_app, run_server
 
     hpi_params = _get_hpi_params(serial_number, update_license)
     pipeline_config = load_pipeline_config(pipeline)
-    pipeline = create_pipeline_from_config(
-        pipeline_config, device=device, use_hpip=use_hpip, hpi_params=hpi_params
+    pipeline = create_pipeline(
+        config=pipeline_config, device=device, use_hpip=use_hpip, hpi_params=hpi_params
     )
     app = create_pipeline_app(pipeline, pipeline_config)
     run_server(app, host=host, port=port, debug=False)
