@@ -20,7 +20,7 @@ output = pipeline.predict("./test_samples/table_recognition.jpg")
 
 for res in output:
     res.print()
-    res.save_to_img("/workspace/jieru/pipe_out")
-    res.save_to_json("/workspace/jieru/pipe_out")
-    res.save_to_xlsx("/workspace/jieru/pipe_out")
-    res.save_to_html("/workspace/jieru/pipe_out")
+    res.save_to_img("./output")
+    res.save_to_json("./output")
+    res.save_to_xlsx("./output")
+    res.save_to_html("./output")
