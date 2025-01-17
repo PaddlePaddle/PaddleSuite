@@ -12,5 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .pipeline import TableRecognitionPipeline
-from .pipeline_v2 import TableRecognitionPipelineV2
+from paddlex import create_pipeline
+
+pipeline = create_pipeline(pipeline="table_recognition_v2")
+
+output = pipeline.predict("./test_samples/table_recognition.jpg")
+
+for res in output:
+    res.print()
+    res.save_to_img("./output")
+    res.save_to_json("./output")
+    res.save_to_xlsx("./output")
+    res.save_to_html("./output")

@@ -26,6 +26,7 @@ from .image_classification import ImageClassificationPipeline
 from .object_detection import ObjectDetectionPipeline
 from .seal_recognition import SealRecognitionPipeline
 from .table_recognition import TableRecognitionPipeline
+from .table_recognition import TableRecognitionPipelineV2
 from .multilingual_speech_recognition import MultilingualSpeechRecognitionPipeline
 from .formula_recognition import FormulaRecognitionPipeline
 from .image_multilabel_classification import ImageMultiLabelClassificationPipeline
