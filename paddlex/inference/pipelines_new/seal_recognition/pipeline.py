@@ -182,9 +182,7 @@ class SealRecognitionPipeline(BasePipeline):
                 input_path = f"{img_id}"
             else:
                 input_path = batch_data[0]
-
             image_array = self.img_reader(batch_data)[0]
-
             if model_settings["use_doc_preprocessor"]:
                 doc_preprocessor_res = next(
                     self.doc_preprocessor_pipeline(
