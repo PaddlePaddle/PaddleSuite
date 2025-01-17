@@ -100,7 +100,6 @@ def create_pipeline(
     device: str = None,
     pp_option: PaddlePredictorOption = None,
     use_hpip: bool = False,
-    hpi_params: Optional[Dict[str, Any]] = None,
     *args,
     **kwargs,
 ) -> BasePipeline:
@@ -115,7 +114,6 @@ def create_pipeline(
         device (str, optional): The device to run the pipeline on. Defaults to None.
         pp_option (PaddlePredictorOption, optional): The options for the PaddlePredictor. Defaults to None.
         use_hpip (bool, optional): Whether to use high-performance inference (hpip) for prediction. Defaults to False.
-        hpi_params (Optional[Dict[str, Any]], optional): Additional parameters for hpip. Defaults to None.
         *args: Additional positional arguments.
         **kwargs: Additional keyword arguments.
 
@@ -134,7 +132,6 @@ def create_pipeline(
         device=device,
         pp_option=pp_option,
         use_hpip=use_hpip,
-        hpi_params=hpi_params,
         *args,
         **kwargs,
     )

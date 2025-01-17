@@ -133,13 +133,13 @@ class OCRResult(BaseCVResult):
         data["dt_polys"] = self["dt_polys"]
         data["text_det_params"] = self["text_det_params"]
         data["text_type"] = self["text_type"]
-        if self["model_settings"]["use_textline_orientation"]:
-            data["textline_orientation_angle"] = self["textline_orientation_angle"]
+        data["textline_orientation_angles"] = self["textline_orientation_angles"]
         data["text_rec_score_thresh"] = self["text_rec_score_thresh"]
         data["rec_texts"] = self["rec_texts"]
         data["rec_scores"] = self["rec_scores"]
         data["rec_polys"] = self["rec_polys"]
         data["rec_boxes"] = self["rec_boxes"]
+        
         return StrMixin._to_str(data, *args, **kwargs)
 
     def _to_json(self, *args, **kwargs) -> Dict[str, str]:
@@ -161,8 +161,7 @@ class OCRResult(BaseCVResult):
         data["dt_polys"] = self["dt_polys"]
         data["text_det_params"] = self["text_det_params"]
         data["text_type"] = self["text_type"]
-        if self["model_settings"]["use_textline_orientation"]:
-            data["textline_orientation_angle"] = self["textline_orientation_angle"]
+        data["textline_orientation_angles"] = self["textline_orientation_angles"]
         data["text_rec_score_thresh"] = self["text_rec_score_thresh"]
         data["rec_texts"] = self["rec_texts"]
         data["rec_scores"] = self["rec_scores"]

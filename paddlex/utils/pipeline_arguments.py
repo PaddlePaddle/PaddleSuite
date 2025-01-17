@@ -50,19 +50,9 @@ PIPELINE_ARGUMENTS = {
             "help": "Sets the box threshold for text detection.",
         },
         {
-            "name": "--text_det_max_candidates",
-            "type": int,
-            "help": "Sets the maximum number of candidate boxes for text detection.",
-        },
-        {
             "name": "--text_det_unclip_ratio",
             "type": float,
             "help": "Sets the unclip ratio for text detection.",
-        },
-        {
-            "name": "--text_det_use_dilation",
-            "type": bool,
-            "help": "Determines whether to use dilation in text detection.",
         },
         {
             "name": "--text_rec_score_thresh",
@@ -115,8 +105,17 @@ PIPELINE_ARGUMENTS = {
             "help": "Sets the threshold for vehicle attribute recognition.",
         },
     ],
-    "ts_classification": None,
+    "table_recognition": None,
+    "layout_parsing": None,
+    "seal_recognition": None,
+    "ts_cls": None,
+    "ts_fc": None,
+    "ts_ad": None,
     "formula_recognition": None,
+    "instance_segmentation": None,
+    "semantic_segmentation": None,
+    "small_object_detection": None,
+    "anomaly_detection": None,
     "video_classification": [
         {
             "name": "--topk",
@@ -124,4 +123,5 @@ PIPELINE_ARGUMENTS = {
             "help": "Sets the Top-K value for video classification.",
         },
     ],
+
 }
