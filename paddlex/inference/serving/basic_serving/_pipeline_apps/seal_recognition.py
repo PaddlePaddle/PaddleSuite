@@ -21,6 +21,7 @@ from ...infra.config import AppConfig
 from ...infra.models import ResultResponse
 from ...schemas.seal_recognition import INFER_ENDPOINT, InferRequest, InferResult
 from .._app import create_app, primary_operation
+from ._common import common
 from ._common import ocr as ocr_common
 
 
@@ -42,39 +43,55 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
         log_id = serving_utils.generate_log_id()
 
         images, data_info = await ocr_common.get_images(request, ctx)
+        if request.inferenceParams is not None:
+            inference_params = request.inferenceParams.model_dump(exclude_unset=True)
+        else:
+            inference_params = {}
 
         result = await pipeline.infer(
             images,
             use_doc_orientation_classify=request.useDocOrientationClassify,
             use_doc_unwarping=request.useDocUnwarping,
+            use_layout_detection=request.useLayoutDetection,
+            seal_det_limit_side_len=inference_params.get("sealDetLimitSideLen"),
+            seal_det_limit_type=inference_params.get("sealDetLimitType"),
+            seal_det_thresh=inference_params.get("sealDetThresh"),
+            seal_det_box_thresh=inference_params.get("sealDetBoxThresh"),
+            seal_det_unclip_ratio=inference_params.get("sealDetUnclipRatio"),
+            seal_rec_score_thresh=inference_params.get("sealRecScoreThresh"),
         )
 
         seal_rec_results: List[Dict[str, Any]] = []
         for i, (img, item) in enumerate(zip(images, result)):
-            texts: List[Dict[str, Any]] = []
-            for poly, text, score in zip(
-                item["ocr_result"]["dt_polys"],
-                item["ocr_result"]["rec_text"],
-                item["ocr_result"]["rec_score"],
-            ):
-                texts.append(dict(poly=poly, text=text, score=score))
+            pruned_res = common.prune_result(item.json["res"])
             if ctx.config.visualize:
-                input_img, layout_img, ocr_img = await ocr_common.postprocess_images(
-                    log_id=log_id,
-                    index=i,
-                    app_context=ctx,
-                    input_image=img,
-                    layout_image=item["layout_result"].img,
-                    ocr_image=item["ocr_result"].img,
+                output_imgs = item.img
+                imgs = {
+                    "input_img": img,
+                    "seal_rec_img": output_imgs["seal_res_img"],
+                }
+                if "preprocessed_img" in output_imgs:
+                    imgs["preprocessed_img"] = (output_imgs["preprocessed_img"],)
+                if "layout_detection_result" in item:
+                    imgs["layout_det_img"] = item["layout_detection_result"].img["res"]
+                imgs = await serving_utils.call_async(
+                    common.postprocess_images,
+                    imgs,
+                    log_id,
+                    filename_template=f"{{key}}_{i}.jpg",
+                    file_storage=ctx.extra["file_storage"],
+                    return_urls=ctx.extra["return_img_urls"],
+                    max_img_size=ctx.extra["max_output_img_size"],
                 )
             else:
-                input_img, layout_img, ocr_img = None, None, None
+                imgs = {}
             seal_rec_results.append(
                 dict(
-                    texts=texts,
-                    inputImage=input_img,
-                    layoutImage=layout_img,
-                    ocrImage=ocr_img,
+                    prunedResult=pruned_res,
+                    inputImage=imgs.get("input_img"),
+                    layoutDetImage=imgs.get("layout_det_img"),
+                    sealRecImage=imgs.get("seal_rec_img"),
+                    preprocessedImage=imgs.get("preprocesed_img"),
                 )
             )
 

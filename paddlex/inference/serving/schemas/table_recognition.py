@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Dict, Final, List, Optional
+from typing import Final, List, Optional
 
 from pydantic import BaseModel
 
@@ -36,8 +36,10 @@ class InferRequest(ocr.BaseInferRequest):
 
 class TableRecResult(BaseModel):
     prunedResult: dict
-    outputImages: Optional[Dict[str, str]] = None
     inputImage: Optional[str] = None
+    layoutDetImage: Optional[str] = None
+    ocrImage: Optional[str] = None
+    preprocessedImage: Optional[str] = None
 
 
 class InferResult(BaseModel):

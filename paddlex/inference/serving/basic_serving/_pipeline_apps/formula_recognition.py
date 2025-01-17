@@ -53,33 +53,35 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
 
         formula_rec_results: List[Dict[str, Any]] = []
         for i, (img, item) in enumerate(zip(images, result)):
+            pruned_res = common.prune_result(item.json["res"])
             if ctx.config.visualize:
-                output_images = await serving_utils.call_async(
+                output_imgs = item.img
+                imgs = {
+                    "input_img": img,
+                    "formula_rec_img": output_imgs["formula_res_img"],
+                }
+                if "preprocessed_img" in output_imgs:
+                    imgs["preprocessed_img"] = (output_imgs["preprocessed_img"],)
+                if "layout_detection_result" in item:
+                    imgs["layout_det_img"] = item["layout_detection_result"].img["res"]
+                imgs = await serving_utils.call_async(
                     common.postprocess_images,
-                    item.img,
+                    imgs,
                     log_id,
-                    filename_template=f"output/{{key}}_{i}.jpg",
+                    filename_template=f"{{key}}_{i}.jpg",
                     file_storage=ctx.extra["file_storage"],
                     return_urls=ctx.extra["return_img_urls"],
                     max_img_size=ctx.extra["max_output_img_size"],
                 )
-                input_image = await serving_utils.call_async(
-                    common.postprocess_image,
-                    img,
-                    log_id,
-                    f"input/image_{i}.jpg",
-                    file_storage=ctx.extra["file_storage"],
-                    return_url=ctx.extra["return_img_urls"],
-                    max_img_size=ctx.extra["max_output_img_size"],
-                )
             else:
-                input_image = None
-                output_images = None
+                imgs = {}
             formula_rec_results.append(
                 dict(
-                    prunedResult=common.prune_result(item.json["res"]),
-                    outputImages=output_images,
-                    inputImage=input_image,
+                    prunedResult=pruned_res,
+                    inputImage=imgs.get("input_img"),
+                    layoutDetImage=imgs.get("layout_det_img"),
+                    formulaRecImage=imgs.get("formula_rec_img"),
+                    preprocessedImage=imgs.get("preprocesed_img"),
                 )
             )
 

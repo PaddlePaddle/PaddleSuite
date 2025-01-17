@@ -42,12 +42,11 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
 
         log_id = serving_utils.generate_log_id()
 
+        images, data_info = await ocr_common.get_images(request, ctx)
         if request.inferenceParams is not None:
             inference_params = request.inferenceParams.model_dump(exclude_unset=True)
         else:
             inference_params = {}
-
-        images, data_info = await ocr_common.get_images(request, ctx)
 
         result = await pipeline.infer(
             images,
@@ -64,33 +63,31 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
 
         ocr_results: List[Dict[str, Any]] = []
         for i, (img, item) in enumerate(zip(images, result)):
+            pruned_res = common.prune_result(item.json["res"])
             if ctx.config.visualize:
-                output_images = await serving_utils.call_async(
+                output_imgs = item.img
+                imgs = {
+                    "input_img": img,
+                    "ocr_img": output_imgs["ocr_res_img"],
+                    "preprocessed_img": output_imgs["preprocessed_img"],
+                }
+                imgs = await serving_utils.call_async(
                     common.postprocess_images,
-                    item.img,
+                    imgs,
                     log_id,
-                    filename_template=f"output/{{key}}_{i}.jpg",
+                    filename_template=f"{{key}}_{i}.jpg",
                     file_storage=ctx.extra["file_storage"],
                     return_urls=ctx.extra["return_img_urls"],
                     max_img_size=ctx.extra["max_output_img_size"],
                 )
-                input_image = await serving_utils.call_async(
-                    common.postprocess_image,
-                    img,
-                    log_id,
-                    f"input/image_{i}.jpg",
-                    file_storage=ctx.extra["file_storage"],
-                    return_url=ctx.extra["return_img_urls"],
-                    max_img_size=ctx.extra["max_output_img_size"],
-                )
             else:
-                input_image = None
-                output_images = None
+                imgs = {}
             ocr_results.append(
                 dict(
-                    prunedResult=common.prune_result(item.json["res"]),
-                    outputImages=output_images,
-                    inputImage=input_image,
+                    prunedResult=pruned_res,
+                    inputImage=imgs.get("input_img"),
+                    ocrImage=imgs.get("ocr_img"),
+                    preprocessedImage=imgs.get("preprocessed_img"),
                 )
             )
 

@@ -12,9 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Dict, Final, List, Optional
+from typing import Final, List, Optional
 
 from pydantic import BaseModel
+from typing_extensions import Literal
 
 from ..infra.models import DataInfo, PrimaryOperations
 from .shared import ocr
@@ -30,14 +31,26 @@ __all__ = [
 INFER_ENDPOINT: Final[str] = "/seal-recognition"
 
 
+class InferenceParams(BaseModel):
+    sealDetLimitSideLen: Optional[int] = None
+    sealDetLimitType: Optional[Literal["min", "max"]] = None
+    sealDetThresh: Optional[float] = None
+    sealDetBoxThresh: Optional[float] = None
+    sealDetUnclipRatio: Optional[float] = None
+    sealRecScoreThresh: Optional[float] = None
+
+
 class InferRequest(ocr.BaseInferRequest):
-    pass
+    useLayoutDetection: Optional[bool] = False
+    inferenceParams: Optional[InferenceParams] = None
 
 
 class SealRecResult(BaseModel):
     prunedResult: dict
-    outputImages: Optional[Dict[str, str]] = None
     inputImage: Optional[str] = None
+    layoutDetImage: Optional[str] = None
+    ocrImage: Optional[str] = None
+    preprocessedImage: Optional[str] = None
 
 
 class InferResult(BaseModel):
