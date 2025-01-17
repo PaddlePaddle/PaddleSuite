@@ -68,12 +68,11 @@ def create_pipeline_app(pipeline: Any, app_config: AppConfig) -> FastAPI:
                 output_imgs = item.img
                 imgs = {
                     "input_img": img,
-                    "seal_rec_img": output_imgs["seal_res_img"],
+                    "layout_det_img": output_imgs["layout_det_res"],
+                    "seal_rec_img": output_imgs["seal_res_region1"],
                 }
                 if "preprocessed_img" in output_imgs:
                     imgs["preprocessed_img"] = (output_imgs["preprocessed_img"],)
-                if "layout_detection_result" in item:
-                    imgs["layout_det_img"] = item["layout_detection_result"].img["res"]
                 imgs = await serving_utils.call_async(
                     common.postprocess_images,
                     imgs,
