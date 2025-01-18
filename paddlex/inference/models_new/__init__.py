@@ -49,6 +49,8 @@ from .multilingual_speech_recognition import WhisperPredictor
 from .video_classification import VideoClasPredictor
 from .video_detection import VideoDetPredictor
 
+from .bev_detection_3d import BEVDet3DPredictor
+
 
 def _create_hp_predictor(
     model_name, model_dir, device, config, hpi_params, *args, **kwargs

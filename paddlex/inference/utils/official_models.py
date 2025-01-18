@@ -329,6 +329,7 @@ PP-LCNet_x1_0_vehicle_attribute_infer.tar",
     "GroundingDINO-T": "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0rc0/GroundingDINO-T_infer.tar",
     "SAM-H_box": "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0rc0/SAM-H_box_infer.tar",
     "SAM-H_point": "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0rc0/SAM-H_point_infer.tar",
+    "BEVFusion": "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/BEVFusion.tar",
 }
 
 

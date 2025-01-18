@@ -1,0 +1,36 @@
+Global:
+  model: BEVFusion
+  mode: check_dataset
+  dataset_dir: "/paddle/dataset/paddlex/3d/nuscenes"
+  device: gpu:0,1,2,3
+  output: "output"
+  load_cam_from: /paddle/model/paddlex/3d/camera.pdparams
+  load_lidar_from: /paddle/model/paddlex/3d/lidar.pdparams
+
+CheckDataset:
+  convert:
+    enable: False
+  split:
+    enable: False
+
+Train:
+  epochs: 2
+  batch_size: 2
+  learning_rate: 0.001
+  warmup_steps: 150
+
+Evaluate:
+  batch_size: 1
+  weight_path: /paddle/model/paddlex/3d/fusion.pdparams
+
+
+Export:
+  weight_path: /paddle/model/paddlex/3d/fusion.pdparams
+
+
+Predict:
+  batch_size: 1
+  model_dir: "output_bevfusion"
+  input: "https://paddle-model-ecology.bj.bcebos.com/paddlex/det_3d/demo_det_3d/nuscenes_infos_val.pkl"
+  kernel_option:
+    run_mode: paddle
