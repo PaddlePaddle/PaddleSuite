@@ -16,6 +16,7 @@ __all__ = [
     "get_sub_regions_ocr_res",
     "get_layout_ordering",
     "recursive_img_array2path",
+    "get_show_color",
 ]
 
 import numpy as np
@@ -503,7 +504,16 @@ def sort_by_xycut(block_bboxes, direction=0, min_gap=1):
 
 
 def _img_array2path(data, save_path):
-    if isinstance(data, np.ndarray) and data.ndim == 3:  # Check if it's an image array
+    """
+    Save an image array to disk and return the file path.
+    Args:
+        data (np.ndarray): An image represented as a numpy array.
+        save_path (str or Path): The base path where images should be saved.
+
+    Returns:
+        str: The relative path of the saved image file.
+    """
+    if isinstance(data, np.ndarray) and data.ndim == 3:
         # Generate a unique filename using UUID
         img_name = f"image_{uuid.uuid4().hex}.png"
         img_path = Path(save_path) / "imgs" / img_name
@@ -1747,3 +1757,38 @@ def _nearest_iou_edge_distance(
         ]
 
     return distance, min_distance_config
+
+
+def get_show_color(label):
+    label_colors = {
+        # Medium Blue (from 'titles_list')
+        "paragraph_title": (102, 102, 255, 100),
+        "doc_title": (255, 248, 220, 100),  # Cornsilk
+        # Light Yellow (from 'tables_caption_list')
+        "table_title": (255, 255, 102, 100),
+        # Sky Blue (from 'imgs_caption_list')
+        "figure_title": (102, 178, 255, 100),
+        "chart_title": (221, 160, 221, 100),  # Plum
+        "vision_footnote": (144, 238, 144, 100),  # Light Green
+        # Deep Purple (from 'texts_list')
+        "text": (153, 0, 76, 100),
+        # Bright Green (from 'interequations_list')
+        "formula": (0, 255, 0, 100),
+        "abstract": (255, 239, 213, 100),  # Papaya Whip
+        # Medium Green (from 'lists_list' and 'indexs_list')
+        "content": (40, 169, 92, 100),
+        # Neutral Gray (from 'dropped_bbox_list')
+        "seal": (158, 158, 158, 100),
+        # Olive Yellow (from 'tables_body_list')
+        "table": (204, 204, 0, 100),
+        # Bright Green (from 'imgs_body_list')
+        "image": (153, 255, 51, 100),
+        # Bright Green (from 'imgs_body_list')
+        "figure": (153, 255, 51, 100),
+        "chart": (216, 191, 216, 100),  # Thistle
+        # Pale Yellow-Green (from 'tables_footnote_list')
+        "reference": (229, 255, 204, 100),
+        "algorithm": (255, 250, 240, 100),  # Floral White
+    }
+    default_color = (158, 158, 158, 100)
+    return label_colors.get(label, default_color)

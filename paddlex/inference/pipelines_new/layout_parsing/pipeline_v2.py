@@ -30,15 +30,15 @@ from ...utils.pp_option import PaddlePredictorOption
 from ..base import BasePipeline
 from ..components import convert_points_to_boxes
 from ..ocr.result import OCRResult
-from .result import LayoutParsingResult
+from .result_v2 import LayoutParsingResultV2
 from .utils import get_structure_res
 from .utils import get_sub_regions_ocr_res
 
 # [TODO] 待更新models_new到models
 
 
-class LayoutParsingPipeline(BasePipeline):
-    """Layout Parsing Pipeline"""
+class LayoutParsingPipelineV2(BasePipeline):
+    """Layout Parsing Pipeline V2"""
 
     entities = ["layout_parsing"]
 
@@ -48,7 +48,6 @@ class LayoutParsingPipeline(BasePipeline):
         device: str = None,
         pp_option: PaddlePredictorOption = None,
         use_hpip: bool = False,
-        hpi_params: dict[str, Any] | None = None,
     ) -> None:
         """Initializes the layout parsing pipeline.
 
@@ -57,14 +56,12 @@ class LayoutParsingPipeline(BasePipeline):
             device (str, optional): Device to run the predictions on. Defaults to None.
             pp_option (PaddlePredictorOption, optional): PaddlePredictor options. Defaults to None.
             use_hpip (bool, optional): Whether to use high-performance inference (hpip) for prediction. Defaults to False.
-            hpi_params (Optional[Dict[str, Any]], optional): HPIP parameters. Defaults to None.
         """
 
         super().__init__(
             device=device,
             pp_option=pp_option,
             use_hpip=use_hpip,
-            hpi_params=hpi_params,
         )
 
         self.inintial_predictor(config)
@@ -284,7 +281,7 @@ class LayoutParsingPipeline(BasePipeline):
         seal_det_unclip_ratio: float | None = None,
         seal_rec_score_thresh: float | None = None,
         **kwargs,
-    ) -> LayoutParsingResult:
+    ) -> LayoutParsingResultV2:
         """
         This function predicts the layout parsing result for the given input.
 
@@ -298,7 +295,7 @@ class LayoutParsingPipeline(BasePipeline):
             **kwargs: Additional keyword arguments.
 
         Returns:
-            LayoutParsingResult: The predicted layout parsing result.
+            LayoutParsingResultV2: The predicted layout parsing result.
         """
 
         model_settings = self.get_model_settings(
@@ -443,4 +440,4 @@ class LayoutParsingPipeline(BasePipeline):
                 "layout_parsing_result": structure_res_list,
                 "model_settings": model_settings,
             }
-            yield LayoutParsingResult(single_img_res)
+            yield LayoutParsingResultV2(single_img_res)

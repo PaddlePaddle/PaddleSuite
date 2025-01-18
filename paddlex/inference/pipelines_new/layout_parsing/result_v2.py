@@ -18,6 +18,7 @@ from pathlib import Path
 from typing import Dict
 
 import cv2
+import re
 import numpy as np
 from PIL import Image
 from PIL import ImageDraw
@@ -32,10 +33,11 @@ from ...common.result import (
 )
 from .utils import get_layout_ordering
 from .utils import recursive_img_array2path
+from .utils import get_show_color
 
 
-class LayoutParsingResult(BaseCVResult, HtmlMixin, XlsxMixin, MarkdownMixin):
-    """Layout Parsing Result"""
+class LayoutParsingResultV2(BaseCVResult, HtmlMixin, XlsxMixin, MarkdownMixin):
+    """Layout Parsing Result V2"""
 
     def __init__(self, data) -> None:
         """Initializes a new instance of the class with the specified data."""
@@ -283,7 +285,7 @@ class LayoutParsingResult(BaseCVResult, HtmlMixin, XlsxMixin, MarkdownMixin):
                 bbox = sub_block["layout_bbox"]
                 index = sub_block.get("index", None)
                 label = sub_block["sub_label"]
-                fill_color = self.get_show_color(label)
+                fill_color = get_show_color(label)
                 draw.rectangle(bbox, fill=fill_color)
                 if index is not None:
                     text_position = (bbox[2] + 2, bbox[1] - 10)
@@ -295,7 +297,7 @@ class LayoutParsingResult(BaseCVResult, HtmlMixin, XlsxMixin, MarkdownMixin):
         print(f"Saving ordering image to {ordering_image_path}")
         image.save(str(ordering_image_path))
 
-    def save_to_markdown(self, save_path):
+    def _to_markdown(self, save_path):
         """
         Save the parsing result to a Markdown file.
 
@@ -330,38 +332,145 @@ class LayoutParsingResult(BaseCVResult, HtmlMixin, XlsxMixin, MarkdownMixin):
             save_path.parent,
             labels=["img"],
         )
-        super().save_to_markdown(save_path)
 
-    def get_show_color(self, label):
-        label_colors = {
-            # Medium Blue (from 'titles_list')
-            "paragraph_title": (102, 102, 255, 100),
-            "doc_title": (255, 248, 220, 100),  # Cornsilk
-            # Light Yellow (from 'tables_caption_list')
-            "table_title": (255, 255, 102, 100),
-            # Sky Blue (from 'imgs_caption_list')
-            "figure_title": (102, 178, 255, 100),
-            "chart_title": (221, 160, 221, 100),  # Plum
-            "vision_footnote": (144, 238, 144, 100),  # Light Green
-            # Deep Purple (from 'texts_list')
-            "text": (153, 0, 76, 100),
-            # Bright Green (from 'interequations_list')
-            "formula": (0, 255, 0, 100),
-            "abstract": (255, 239, 213, 100),  # Papaya Whip
-            # Medium Green (from 'lists_list' and 'indexs_list')
-            "content": (40, 169, 92, 100),
-            # Neutral Gray (from 'dropped_bbox_list')
-            "seal": (158, 158, 158, 100),
-            # Olive Yellow (from 'tables_body_list')
-            "table": (204, 204, 0, 100),
-            # Bright Green (from 'imgs_body_list')
-            "image": (153, 255, 51, 100),
-            # Bright Green (from 'imgs_body_list')
-            "figure": (153, 255, 51, 100),
-            "chart": (216, 191, 216, 100),  # Thistle
-            # Pale Yellow-Green (from 'tables_footnote_list')
-            "reference": (229, 255, 204, 100),
-            "algorithm": (255, 250, 240, 100),  # Floral White
-        }
-        default_color = (158, 158, 158, 100)
-        return label_colors.get(label, default_color)
+        def _format_data(obj):
+
+            def format_title(content_value):
+                content_value = content_value.rstrip(".")
+                level = (
+                    content_value.count(
+                        ".",
+                    )
+                    + 1
+                    if "." in content_value
+                    else 1
+                )
+                return f"{'#' * level} {content_value}".replace("-\n", "").replace(
+                    "\n",
+                    " ",
+                )
+
+            def format_centered_text(key):
+                return (
+                    f'<div style="text-align: center;">{sub_block[key]}</div>'.replace(
+                        "-\n",
+                        "",
+                    ).replace("\n", " ")
+                    + "\n"
+                )
+
+            def format_image():
+                img_tags = []
+                if "img" in sub_block["image"]:
+                    img_tags.append(
+                        '<div style="text-align: center;"><img src="{}" alt="Image" /></div>'.format(
+                            sub_block["image"]["img"]
+                            .replace("-\n", "")
+                            .replace("\n", " "),
+                        ),
+                    )
+                if "image_text" in sub_block["image"]:
+                    img_tags.append(
+                        '<div style="text-align: center;">{}</div>'.format(
+                            sub_block["image"]["image_text"]
+                            .replace("-\n", "")
+                            .replace("\n", " "),
+                        ),
+                    )
+                return "\n".join(img_tags)
+
+            def format_chart():
+                img_tags = []
+                if "img" in sub_block["chart"]:
+                    img_tags.append(
+                        '<div style="text-align: center;"><img src="{}" alt="Image" /></div>'.format(
+                            sub_block["chart"]["img"]
+                            .replace("-\n", "")
+                            .replace("\n", " "),
+                        ),
+                    )
+                if "image_text" in sub_block["chart"]:
+                    img_tags.append(
+                        '<div style="text-align: center;">{}</div>'.format(
+                            sub_block["chart"]["image_text"]
+                            .replace("-\n", "")
+                            .replace("\n", " "),
+                        ),
+                    )
+                return "\n".join(img_tags)
+
+            def format_reference():
+                pattern = r"\[\d+\]"
+                res = re.sub(
+                    pattern,
+                    lambda match: "\n" + match.group(),
+                    sub_block["reference"],
+                )
+                return "\n" + res
+
+            def format_table():
+                return "\n" + sub_block["table"]
+
+            handlers = {
+                "paragraph_title": lambda: format_title(sub_block["paragraph_title"]),
+                "doc_title": lambda: f"# {sub_block['doc_title']}".replace(
+                    "-\n",
+                    "",
+                ).replace("\n", " "),
+                "table_title": lambda: format_centered_text("table_title"),
+                "figure_title": lambda: format_centered_text("figure_title"),
+                "chart_title": lambda: format_centered_text("chart_title"),
+                "text": lambda: sub_block["text"].strip("\n"),
+                # 'number': lambda: str(sub_block['number']),
+                "abstract": lambda: "\n" + sub_block["abstract"].strip("\n"),
+                "content": lambda: sub_block["content"]
+                .replace("-\n", "")
+                .replace("\n", " ")
+                .strip(),
+                "image": format_image,
+                "chart": format_chart,
+                "formula": lambda: f"$${sub_block['formula']}$$".replace(
+                    "-\n",
+                    "",
+                ).replace("\n", " "),
+                "table": format_table,
+                "reference": format_reference,
+                "algorithm": lambda: "\n"
+                + f"**Algorithm**: {sub_block['algorithm']}".replace("-\n", "").replace(
+                    "\n",
+                    " ",
+                ),
+                "seal": lambda: "\n"
+                + f"**Seal**: {sub_block['seal']}".replace("-\n", "").replace(
+                    "\n",
+                    " ",
+                ),
+            }
+            parsing_result = obj["layout_parsing_result"]
+            markdown_content = ""
+            for block in parsing_result:  # for each block show ordering results
+                sub_blocks = block["sub_blocks"]
+                last_label = None
+                seg_start_flag = None
+                seg_end_flag = None
+                for sub_block in sorted(
+                    sub_blocks,
+                    key=lambda x: x.get("sub_index", 999),
+                ):
+                    label = sub_block.get("label")
+                    seg_start_flag = sub_block.get("seg_start_flag")
+                    handler = handlers.get(label)
+                    if handler:
+                        if (
+                            label == last_label == "text"
+                            and seg_start_flag == seg_end_flag == False
+                        ):
+                            markdown_content += " " + handler()
+                        else:
+                            markdown_content += "\n\n" + handler()
+                        last_label = label
+                        seg_end_flag = sub_block.get("seg_end_flag")
+
+            return markdown_content
+
+        return _format_data(self)
