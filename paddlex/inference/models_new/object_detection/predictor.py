@@ -310,6 +310,7 @@ class DetPredictor(BasicPredictor):
             "CenterNet",
             "BlazeFace",
             "BlazeFace-FPN-SSH",
+            "PP-DocLayout-L",
         ]
         if any(name in self.model_name for name in models_required_imgsize):
             ordered_required_keys = (
