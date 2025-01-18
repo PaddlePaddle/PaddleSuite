@@ -592,18 +592,20 @@ class MarkdownMixin:
         raise NotImplementedError
 
     @property
-    def markdown(self, save_path=None):
-        return self._to_markdown(save_path)
+    def markdown(self):
+        return self._to_markdown(self.save_path)
 
     def save_to_markdown(self, save_path, *args, **kwargs):
         save_path = Path(save_path)
         if not save_path.suffix.lower() == ".md":
             save_path = save_path / f"layout_parsing_result.md"
 
+        self.save_path = save_path
+
         self._save_list_data(
             self._markdown_writer.write,
             save_path,
-            self.markdown(save_path),
+            self.markdown,
             *args,
             **kwargs,
         )

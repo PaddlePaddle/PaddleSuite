@@ -115,6 +115,9 @@ def calculate_iou(box1, box2):
     Returns:
         float: The IoU value.
     """
+    box1 = list(map(int, box1))
+    box2 = list(map(int, box2))
+
     x1_min, y1_min, x1_max, y1_max = box1
     x2_min, y2_min, x2_max, y2_max = box2
 
