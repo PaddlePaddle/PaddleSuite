@@ -308,8 +308,6 @@ class LayoutParsingResultV2(BaseCVResult, HtmlMixin, XlsxMixin, MarkdownMixin):
             None
         """
         save_path = Path(save_path)
-        if not save_path.suffix.lower() == ".md":
-            save_path = save_path / f"layout_parsing_result.md"
 
         parsing_result = self["layout_parsing_result"]
         for block in parsing_result:
