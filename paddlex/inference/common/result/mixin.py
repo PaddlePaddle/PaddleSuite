@@ -581,11 +581,10 @@ class MarkdownMixin:
         self._markdown_writer = MarkdownWriter(*args, **kwargs)
         self._save_funcs.append(self.save_to_markdown)
 
-    def _to_markdown(self, save_path=None):
+    @abstractmethod
+    def _to_markdown(self):
         """
         Convert the result to markdown format.
-        Args:
-            save_path: str
         Returns:
             Dict
         """
@@ -593,8 +592,8 @@ class MarkdownMixin:
 
     @property
     def markdown(self):
-        return self._to_markdown(self.save_path)
-
+        return self._to_markdown()
+        
     def save_to_markdown(self, save_path, *args, **kwargs):
         save_path = Path(save_path)
         if not save_path.suffix.lower() == ".md":
