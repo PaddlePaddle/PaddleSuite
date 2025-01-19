@@ -333,8 +333,8 @@ for res in output:
 <td><code>model_name</code></td>
 <td>模型名称</td>
 <td><code>str</code></td>
+<td>所有PaddleX支持的模型名称</td>
 <td>无</td>
-<td><code>PP-OCRv4_mobile_rec</code></td>
 </tr>
 <tr>
 <td><code>model_dir</code></td>

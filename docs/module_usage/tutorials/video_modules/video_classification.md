@@ -42,46 +42,8 @@ PP-TSM是一种百度飞桨视觉团队自研的视频分类模型。该模型�
 
 
 
-<p><b>注：以上精度指标为 <a href="https://github.com/PaddlePaddle/PaddleVideo/blob/develop/docs/zh-CN/dataset/k400.md">K400</a> 验证集 Top1 Acc。所有模型 GPU 推理耗时基于 NVIDIA Tesla T4 机器，精度类型为 FP32， CPU 推理速度基于 Intel(R) Xeon(R) Gold 5117 CPU @ 2.00GHz，线程数为8，精度类型为 FP32。</b></p></details>
+<p><b>注：以上精度指标为 <a href="https://github.com/PaddlePaddle/PaddleVideo/blob/develop/docs/zh-CN/dataset/k400.md">K400</a> 验证集 Top1 Acc。</b></p></details>
 
-> ❗ 以上列出的是目标检测模块重点支持的<b>3个核心模型</b>，该模块总共支持<b>3个模型</b>，完整的模型列表如下：
-
-<details><summary> 👉模型列表详情</summary>
-<table>
-<tr>
-<th>模型</th><th>模型下载链接</th>
-<th>Top1 Acc(%)</th>
-<th>模型存储大小 (M)</th>
-<th>介绍</th>
-</tr>
-<tr>
-<td>PPTSM_ResNet50_k400_8frames_uniform</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PPTSM_ResNet50_k400_8frames_uniform_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PPTSM_ResNet50_k400_8frames_uniform_pretrained.pdparams">训练模型</a></td>
-<td>74.36</td>
-<td>93.4 M</td>
-<td rowspan="1">
-PP-TSM是一种百度飞桨视觉团队自研的视频分类模型。该模型基于ResNet-50骨干网络进行优化，从数据增强、网络结构微调、训练策略、BN层优化、预训练模型选择、模型蒸馏等6个方面进行模型调优，在中心采样评估方式下，Kinetics-400上精度较原论文实现提升3.95个点
-</td>
-</tr>
-
-<tr>
-<td>PP-TSMv2-LCNetV2_8frames_uniform</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PP-TSMv2-LCNetV2_8frames_uniform_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-TSMv2-LCNetV2_8frames_uniform_pretrained.pdparams">训练模型</a></td>
-<td>71.71</td>
-<td>22.5 M</td>
-<td rowspan="2">PP-TSMv2是轻量化的视频分类模型，基于CPU端模型PP-LCNetV2进行优化，从骨干网络与预训练模型选择、数据增强、tsm模块调优、输入帧数优化、解码速度优化、DML蒸馏、LTA模块等7个方面进行模型调优，在中心采样评估方式下，精度达到75.16%，输入10s视频在CPU端的推理速度仅需456ms。</td>
-</tr>
-<tr>
-<td>PPTSMv2_LCNet_k400_16frames_uniform</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/PPTSMv2_LCNet_k400_16frames_uniform_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PPTSMv2_LCNet_k400_16frames_uniform_pretrained.pdparams">训练模型</a></td>
-<td>73.11</td>
-<td>22.5 M</td>
-</tr>
-
-</table>
-
-
-
-<p><b>注：以上精度指标为 <a href="https://github.com/PaddlePaddle/PaddleVideo/blob/develop/docs/zh-CN/dataset/k400.md">K400</a> 验证集 Top1 Acc。所有模型 GPU 推理耗时基于 NVIDIA Tesla T4 机器，精度类型为 FP32， CPU 推理速度基于 Intel(R) Xeon(R) Gold 5117 CPU @ 2.00GHz，线程数为8，精度类型为 FP32。</b></p></details>
-
-</details>
 
 ## 三、快速集成
 > ❗ 在快速集成前，请先安装 PaddleX 的 wheel 包，详细请参考 [PaddleX本地安装教程](../../../installation/installation.md)。
@@ -130,18 +92,18 @@ for res in output:
 </tr>
 </thead>
 <tr>
-<td><code>model</code></td>
+<td><code>model_name</code></td>
 <td>模型名称</td>
 <td><code>str</code></td>
+<td>所有PaddleX支持的模型名称</td>
 <td>无</td>
-<td><code>PP-OCRv4_mobile_rec</code></td>
 </tr>
 <tr>
 <td><code>model_dir</code></td>
 <td>模型存储路径</td>
 <td><code>str</code></td>
 <td>无</td>
-<td><code>null</code></td>
+<td>无</td>
 </tr>
 </table>
 

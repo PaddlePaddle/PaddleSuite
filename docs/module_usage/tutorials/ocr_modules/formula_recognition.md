@@ -61,60 +61,6 @@ comments: true
 <b>注：以上精度指标测量自 LaTeX-OCR公式识别测试集。</b>
 
 
-> ❗ 以上列出的是公式识别模块重点支持的<b>4个核心模型</b>，该模块总共支持<b>4个模型</b>，完整的模型列表如下：
-
-<details><summary> 👉模型列表详情</summary>
-<table>
-<tr>
-<th>模型</th><th>模型下载链接</th>
-<th>Avg-BLEU</th>
-<th>GPU推理耗时 (ms)</th>
-<th>模型存储大小 (M)</th>
-<th>介绍</th>
-</tr>
-<td>UniMERNet</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0rc0/UniMERNet_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/UniMERNet_pretrained.pdparams">训练模型</a></td>
-<td>0.8613</td>
-<td>2266.96</td>
-<td>1.4 G</td>
-<td>UniMERNet是由上海AI Lab研发的一款公式识别模型。该模型采用Donut Swin作为编码器，MBartDecoder作为解码器，并通过在包含简单公式、复杂公式、扫描捕捉公式和手写公式在内的一百万数据集上进行训练，大幅提升了模型对真实场景公式的识别准确率</td>
-<tr>
-<td>PP-FormulaNet-S</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0rc0/PP-FormulaNet-S_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-FormulaNet-S_pretrained.pdparams">训练模型</a></td>
-<td>0.8712</td>
-<td>202.25</td>
-<td>167.9 M</td>
-<td rowspan="2">PP-FormulaNet 是由百度飞桨视觉团队开发的一款先进的公式识别模型。PP-FormulaNet-S 版本采用了 PP-HGNetV2-B4 作为其骨干网络，通过并行掩码和模型蒸馏等技术，大幅提升了模型的推理速度，同时保持了较高的识别精度，特别适合对推理速度有较高要求的应用场景。而 PP-FormulaNet-L 版本则基于 Vary_VIT_B 作为骨干网络，并在大规模公式数据集上进行了深入训练，在复杂公式的识别方面，相较于PP-FormulaNet-S表现出显著的提升。 </td>
-
-</tr>
-<td>PP-FormulaNet-L</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0rc0/PP-FormulaNet-L_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/PP-FormulaNet-L_pretrained.pdparams">训练模型</a></td>
-<td>0.9213</td>
-<td>1976.52</td>
-<td>535.2 M</td>
-</table>
-
-<b>注：以上精度指标测量自 PaddleX 内部自建公式识别测试集。所有模型 GPU 推理耗时基于 Tesla V100 GPUs 机器，精度类型为 FP32</b>
-
-
-<table>
-<tr>
-<th>模型</th><th>模型下载链接</th>
-<th>BLEU score</th>
-<th>normed edit distance</th>
-<th>ExpRate （%）</th>
-<th>模型存储大小 (M)</th>
-<th>介绍</th>
-</tr>
-<tr>
-<td>LaTeX_OCR_rec</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0rc0/LaTeX_OCR_rec_infer.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/LaTeX_OCR_rec_pretrained.pdparams">训练模型</a></td>
-<td>0.8821</td>
-<td>0.0823</td>
-<td>40.01</td>
-<td>89.7 M</td>
-<td>LaTeX-OCR是一种基于自回归大模型的公式识别算法，通过采用 Hybrid ViT 作为骨干网络，transformer作为解码器，显著提升了公式识别的准确性</td>
-</tr>
-</table>
-
-<b>注：以上精度指标测量自 LaTeX-OCR公式识别测试集。</b>
-</details>
 
 ## 三、快速集成
 > ❗ 在快速集成前，请先安装 PaddleX 的 wheel 包，详细请参考 [PaddleX本地安装教程](../../../installation/installation.md)
@@ -136,14 +82,14 @@ for res in output:
 ```
 运行结果参数含义如下：
 - `input_path`：表示输入待预测公式图像的路径
-- `rec_formula`：表示公式图像的预测结果
+- `rec_formula`：表示公式图像的预测LaTeX源码
 
 
 可视化图片如下：
 
 <img src="https://raw.githubusercontent.com/cuicheng01/PaddleX_doc_images/refs/heads/main/images/modules/formula_recog/general_formula_rec_001_res.png">
 
-** 注：如果您需要对公式识别产线进行可视化，需要运行如下命令来对LaTeX渲染环境进行安装：
+<b> 注：如果您需要对公式识别产线进行可视化，需要运行如下命令来对LaTeX渲染环境进行安装：</b>
 ```bash
 sudo apt-get update
 sudo apt-get install texlive texlive-latex-base texlive-latex-extra -y
@@ -166,8 +112,8 @@ sudo apt-get install texlive texlive-latex-base texlive-latex-extra -y
 <td><code>model_name</code></td>
 <td>模型名称</td>
 <td><code>str</code></td>
+<td>所有PaddleX支持的模型名称</td>
 <td>无</td>
-<td><code>PP-FormulaNet-S</code></td>
 </tr>
 <tr>
 <td><code>model_dir</code></td>
