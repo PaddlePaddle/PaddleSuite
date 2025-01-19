@@ -593,7 +593,7 @@ class MarkdownMixin:
     @property
     def markdown(self):
         return self._to_markdown()
-        
+
     def save_to_markdown(self, save_path, *args, **kwargs):
         save_path = Path(save_path)
         if not save_path.suffix.lower() == ".md":

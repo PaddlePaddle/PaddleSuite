@@ -297,17 +297,14 @@ class LayoutParsingResultV2(BaseCVResult, HtmlMixin, XlsxMixin, MarkdownMixin):
         print(f"Saving ordering image to {ordering_image_path}")
         image.save(str(ordering_image_path))
 
-    def _to_markdown(self, save_path):
+    def _to_markdown(self):
         """
         Save the parsing result to a Markdown file.
 
-        Args:
-            save_path (str or Path): The path where the Markdown file should be saved.
-
         Returns:
-            None
+            Dict
         """
-        save_path = Path(save_path)
+        save_path = Path(self.save_path)
 
         parsing_result = self["layout_parsing_result"]
         for block in parsing_result:
