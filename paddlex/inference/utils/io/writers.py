@@ -329,15 +329,26 @@ class PILImageWriterBackend(_ImageWriterBackend):
 
     def _write_obj(self, out_path, obj):
         """write image object by PIL"""
-        if isinstance(obj, Image.Image):
-            img = obj
-        elif isinstance(obj, np.ndarray):
-            img = Image.fromarray(obj)
-        else:
-            raise TypeError("Unsupported object type")
+        img = self._process_obj(obj)
         if len(img.getbands()) == 4:
             self.format = "PNG"
         return img.save(out_path, format=self.format)
+
+    def _process_obj(self, obj):
+        """process the input object to an Image instance"""
+        if isinstance(obj, dict):
+            for key, value in obj.items():
+                try:
+                    return self._process_obj(value)
+                except TypeError:
+                    continue
+            raise TypeError(f"No valid image found in dictionary: {obj}")
+        if isinstance(obj, Image.Image):
+            return obj
+        elif isinstance(obj, np.ndarray):
+            return Image.fromarray(obj)
+        else:
+            raise TypeError(f"Unsupported object type: {type(obj)}")
 
 
 class _VideoWriterBackend(_BaseWriterBackend):
