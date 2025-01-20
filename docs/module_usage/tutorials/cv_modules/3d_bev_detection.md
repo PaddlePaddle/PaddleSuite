@@ -20,7 +20,9 @@ comments: true
 <td>BEVFusion</td><td><a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0b2/BEVFusion.tar">推理模型</a>/<a href="https://paddle-model-ecology.bj.bcebos.com/paddlex/official_pretrained_model/BEVFusion.pdparams">训练模型</a></td>
 <td>53.9</td>
 <td>60.9</td>
+
 <td rowspan="2">BEVFusion是一种在BEV视角下的多模态融合模型，采用两个分支处理不同模态的数据，得到lidar和camera在BEV视角下的特征，camera分支采用LSS这种自底向上的方式来显式的生成图像BEV特征，lidar分支采用经典的点云检测网络，最后对两种模态的BEV特征进行对齐和融合，应用于检测head或分割head
+
 </td>
 </tr>
 <tr>
@@ -28,7 +30,9 @@ comments: true
 
 </table>
 
+
 <p><b>注：以上精度指标为<a href="https://www.nuscenes.org/nuscenes">nuscenes</a>验证集 mAP(0.5:0.95), NDS 60.9, 精度类型为 FP32。</b></p></details>
+
 
 ## 三、快速集成
 > ❗ 在快速集成前，请先安装 PaddleX 的 wheel 包，详细请参考 [PaddleX本地安装教程](../../../installation/installation.md)
@@ -41,7 +45,6 @@ model = create_model("BEVFusion")
 output = model.predict("nuscenes_infos_val.pkl", batch_size=1)
 for res in output:
     res.print(json_format=False)
-    res.save_to_img("./output/")
     res.save_to_json("./output/")
 ```
 
