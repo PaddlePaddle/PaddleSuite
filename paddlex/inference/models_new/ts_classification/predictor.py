@@ -27,7 +27,6 @@ from ..common import (
     TimeFeature,
     TStoArray,
     TStoBatch,
-    StaticInfer,
 )
 
 from .processors import GetCls, BuildPadMask
@@ -89,11 +88,7 @@ class TSClsPredictor(BasicPredictor):
         preprocessors["BuildPadMask"] = BuildPadMask(self.config["input_data"])
         preprocessors["TStoArray"] = TStoArray(self.config["input_data"])
         preprocessors["TStoBatch"] = TStoBatch()
-        infer = StaticInfer(
-            model_dir=self.model_dir,
-            model_prefix=self.MODEL_FILE_PREFIX,
-            option=self.pp_option,
-        )
+        infer = self.create_static_infer()
         postprocessors = {}
         postprocessors["GetCls"] = GetCls()
         return preprocessors, infer, postprocessors

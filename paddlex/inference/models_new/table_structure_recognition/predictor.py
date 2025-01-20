@@ -25,7 +25,6 @@ from ..common import (
     Normalize,
     ToCHWImage,
     ToBatch,
-    StaticInfer,
 )
 from ..base import BasicPredictor
 from .processors import Pad, TableLabelDecode
@@ -59,11 +58,7 @@ class TablePredictor(BasicPredictor):
                 preprocessors.append(op)
         preprocessors.append(ToBatch())
 
-        infer = StaticInfer(
-            model_dir=self.model_dir,
-            model_prefix=self.MODEL_FILE_PREFIX,
-            option=self.pp_option,
-        )
+        infer = self.create_static_infer()
 
         postprocessors = TableLabelDecode(
             model_name=self.config["Global"]["model_name"],

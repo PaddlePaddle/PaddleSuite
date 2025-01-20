@@ -30,6 +30,6 @@ from .ts import (
     TStoArray,
     TStoBatch,
 )
-from .static_infer import StaticInfer
+from .static_infer import StaticInfer, PaddleInfer, MultibackendInfer
 
 from .tokenizer import PretrainedTokenizer, PretrainedTokenizer

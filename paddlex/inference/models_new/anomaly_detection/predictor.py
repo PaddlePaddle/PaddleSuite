@@ -82,11 +82,7 @@ class UadPredictor(BasicPredictor):
             preprocessors[name] = op
         preprocessors["ToBatch"] = ToBatch()
 
-        infer = StaticInfer(
-            model_dir=self.model_dir,
-            model_prefix=self.MODEL_FILE_PREFIX,
-            option=self.pp_option,
-        )
+        infer = self.create_static_infer()
         postprocessors = {"Map_to_mask": MapToMask()}
         return preprocessors, infer, postprocessors
 

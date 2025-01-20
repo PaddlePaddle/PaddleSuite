@@ -27,7 +27,6 @@ from ..common import (
     TimeFeature,
     TStoArray,
     TStoBatch,
-    StaticInfer,
 )
 from .processors import ArraytoTS, TSDeNormalize
 from ..base import BasicPredictor
@@ -94,11 +93,7 @@ class TSFcPredictor(BasicPredictor):
             )
         preprocessors["TStoArray"] = TStoArray(self.config["input_data"])
         preprocessors["TStoBatch"] = TStoBatch()
-        infer = StaticInfer(
-            model_dir=self.model_dir,
-            model_prefix=self.MODEL_FILE_PREFIX,
-            option=self.pp_option,
-        )
+        infer = self.create_static_infer()
         postprocessors = {}
         postprocessors["ArraytoTS"] = ArraytoTS(self.config["info_params"])
         if self.config.get("scale", None):

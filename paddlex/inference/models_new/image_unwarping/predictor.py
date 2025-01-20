@@ -22,7 +22,6 @@ from ..common import (
     Normalize,
     ToCHWImage,
     ToBatch,
-    StaticInfer,
 )
 from ..base import BasicPredictor
 from .processors import DocTrPostProcess
@@ -71,11 +70,7 @@ class WarpPredictor(BasicPredictor):
         preprocessors["ToCHW"] = ToCHWImage()
         preprocessors["ToBatch"] = ToBatch()
 
-        infer = StaticInfer(
-            model_dir=self.model_dir,
-            model_prefix=self.MODEL_FILE_PREFIX,
-            option=self.pp_option,
-        )
+        infer = self.create_static_infer()
 
         postprocessors = {"DocTrPostProcess": DocTrPostProcess()}
         return preprocessors, infer, postprocessors

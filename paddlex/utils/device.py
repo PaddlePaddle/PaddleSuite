@@ -22,7 +22,7 @@ from .errors import raise_unsupported_device_error
 SUPPORTED_DEVICE_TYPE = ["cpu", "gpu", "xpu", "npu", "mlu", "gcu"]
 
 
-def _constr_device(device_type, device_ids):
+def constr_device(device_type, device_ids):
     if device_ids:
         device_ids = ",".join(map(str, device_ids))
         return f"{device_type}:{device_ids}"
@@ -42,7 +42,7 @@ def get_default_device():
     if not avail_gpus:
         return "cpu"
     else:
-        return _constr_device("gpu", [avail_gpus[0]])
+        return constr_device("gpu", [avail_gpus[0]])
 
 
 def parse_device(device):
@@ -72,9 +72,9 @@ def update_device_num(device, num):
     device_type, device_ids = parse_device(device)
     if device_ids:
         assert len(device_ids) >= num
-        return _constr_device(device_type, device_ids[:num])
+        return constr_device(device_type, device_ids[:num])
     else:
-        return _constr_device(device_type, device_ids)
+        return constr_device(device_type, device_ids)
 
 
 def set_env_for_device(device):

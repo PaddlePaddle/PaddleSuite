@@ -21,7 +21,6 @@ from ..common import (
     ResizeByShort,
     Normalize,
     ToCHWImage,
-    StaticInfer,
 )
 from ..base import BasicPredictor
 from .processors import OCRReisizeNormImg, CTCLabelDecode, ToBatch
@@ -57,11 +56,7 @@ class TextRecPredictor(BasicPredictor):
                 pre_tfs[name] = op
         pre_tfs["ToBatch"] = ToBatch()
 
-        infer = StaticInfer(
-            model_dir=self.model_dir,
-            model_prefix=self.MODEL_FILE_PREFIX,
-            option=self.pp_option,
-        )
+        infer = self.create_static_infer()
 
         post_op = self.build_postprocess(**self.config["PostProcess"])
         return pre_tfs, infer, post_op
