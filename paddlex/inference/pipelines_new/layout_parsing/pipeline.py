@@ -25,7 +25,6 @@ from ...utils.pp_option import PaddlePredictorOption
 from ...common.reader import ReadImage
 from ...common.batch_sampler import ImageBatchSampler
 from ..ocr.result import OCRResult
-from ..doc_preprocessor.result import DocPreprocessorResult
 
 # [TODO] 待更新models_new到models
 from ...models_new.object_detection.result import DetResult
@@ -42,7 +41,6 @@ class LayoutParsingPipeline(BasePipeline):
         device: str = None,
         pp_option: PaddlePredictorOption = None,
         use_hpip: bool = False,
-        hpi_params: Optional[Dict[str, Any]] = None,
     ) -> None:
         """Initializes the layout parsing pipeline.
 
@@ -51,12 +49,9 @@ class LayoutParsingPipeline(BasePipeline):
             device (str, optional): Device to run the predictions on. Defaults to None.
             pp_option (PaddlePredictorOption, optional): PaddlePredictor options. Defaults to None.
             use_hpip (bool, optional): Whether to use high-performance inference (hpip) for prediction. Defaults to False.
-            hpi_params (Optional[Dict[str, Any]], optional): HPIP parameters. Defaults to None.
         """
 
-        super().__init__(
-            device=device, pp_option=pp_option, use_hpip=use_hpip, hpi_params=hpi_params
-        )
+        super().__init__(device=device, pp_option=pp_option, use_hpip=use_hpip)
 
         self.inintial_predictor(config)
 
@@ -78,6 +73,7 @@ class LayoutParsingPipeline(BasePipeline):
         self.use_general_ocr = config.get("use_general_ocr", True)
         self.use_table_recognition = config.get("use_table_recognition", True)
         self.use_seal_recognition = config.get("use_seal_recognition", True)
+        self.use_formula_recognition = config.get("use_formula_recognition", True)
 
         if self.use_doc_preprocessor:
             doc_preprocessor_config = config.get("SubPipelines", {}).get(
@@ -123,6 +119,17 @@ class LayoutParsingPipeline(BasePipeline):
             )
             self.table_recognition_pipeline = self.create_pipeline(
                 table_recognition_config
+            )
+
+        if self.use_formula_recognition:
+            formula_recognition_config = config.get("SubPipelines", {}).get(
+                "FormulaRecognition",
+                {
+                    "pipeline_config_error": "config error for formula_recognition_pipeline!"
+                },
+            )
+            self.formula_recognition_pipeline = self.create_pipeline(
+                formula_recognition_config
             )
 
         return
@@ -191,6 +198,7 @@ class LayoutParsingPipeline(BasePipeline):
         use_general_ocr: Optional[bool],
         use_seal_recognition: Optional[bool],
         use_table_recognition: Optional[bool],
+        use_formula_recognition: Optional[bool],
     ) -> dict:
         """
         Get the model settings based on the provided parameters or default values.
@@ -222,11 +230,15 @@ class LayoutParsingPipeline(BasePipeline):
         if use_table_recognition is None:
             use_table_recognition = self.use_table_recognition
 
+        if use_formula_recognition is None:
+            use_formula_recognition = self.use_formula_recognition
+
         return dict(
             use_doc_preprocessor=use_doc_preprocessor,
             use_general_ocr=use_general_ocr,
             use_seal_recognition=use_seal_recognition,
             use_table_recognition=use_table_recognition,
+            use_formula_recognition=use_formula_recognition,
         )
 
     def predict(
@@ -237,6 +249,7 @@ class LayoutParsingPipeline(BasePipeline):
         use_general_ocr: Optional[bool] = None,
         use_seal_recognition: Optional[bool] = None,
         use_table_recognition: Optional[bool] = None,
+        use_formula_recognition: Optional[bool] = None,
         text_det_limit_side_len: Optional[int] = None,
         text_det_limit_type: Optional[str] = None,
         text_det_thresh: Optional[float] = None,
@@ -273,6 +286,7 @@ class LayoutParsingPipeline(BasePipeline):
             use_general_ocr,
             use_seal_recognition,
             use_table_recognition,
+            use_formula_recognition,
         )
 
         if not self.check_model_settings_valid(model_settings):
@@ -281,7 +295,7 @@ class LayoutParsingPipeline(BasePipeline):
         for img_id, batch_data in enumerate(self.batch_sampler(input)):
             if not isinstance(batch_data[0], str):
                 # TODO: add support input_pth for ndarray and pdf
-                input_path = f"{img_id}"
+                input_path = f"{img_id}.jpg"
             else:
                 input_path = batch_data[0]
 
@@ -363,6 +377,21 @@ class LayoutParsingPipeline(BasePipeline):
             else:
                 seal_res_list = []
 
+            if model_settings["use_formula_recognition"]:
+                formula_res_all = next(
+                    self.formula_recognition_pipeline(
+                        doc_preprocessor_image,
+                        use_layout_detection=False,
+                        use_doc_orientation_classify=False,
+                        use_doc_unwarping=False,
+                        layout_det_res=layout_det_res,
+                    )
+                )
+                formula_res_list = formula_res_all["formula_res_list"]
+                print(formula_res_list)
+            else:
+                formula_res_list = []
+
             single_img_res = {
                 "input_path": input_path,
                 "doc_preprocessor_res": doc_preprocessor_res,
@@ -371,6 +400,7 @@ class LayoutParsingPipeline(BasePipeline):
                 "text_paragraphs_ocr_res": text_paragraphs_ocr_res,
                 "table_res_list": table_res_list,
                 "seal_res_list": seal_res_list,
+                "formula_res_list": formula_res_list,
                 "model_settings": model_settings,
             }
             yield LayoutParsingResult(single_img_res)

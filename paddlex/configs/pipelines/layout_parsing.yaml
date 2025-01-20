@@ -5,11 +5,12 @@ use_doc_preprocessor: True
 use_general_ocr: True
 use_seal_recognition: True
 use_table_recognition: True
+use_formula_recognition: True
 
 SubModules:
   LayoutDetection:
     module_name: layout_detection
-    model_name: RT-DETR-H_layout_3cls
+    model_name: RT-DETR-H_layout_17cls
     model_dir: null
 
 SubPipelines:
@@ -87,3 +88,14 @@ SubPipelines:
             model_dir: null
             batch_size: 1
             score_thresh: 0
+    
+  FormulaRecognition:
+    pipeline_name: formula_recognition
+    use_layout_detection: False
+    use_doc_preprocessor: False
+    SubModules:
+      FormulaRecognition:
+        module_name: formula_recognition
+        model_name: PP-FormulaNet-L
+        model_dir: null
+        batch_size: 5

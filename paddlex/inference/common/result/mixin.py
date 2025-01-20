@@ -18,6 +18,7 @@ from pathlib import Path
 import mimetypes
 import json
 import copy
+import re
 import numpy as np
 from PIL import Image
 import pandas as pd
@@ -32,6 +33,7 @@ from ...utils.io import (
     XlsxWriter,
     TextWriter,
     VideoWriter,
+    MarkdownWriter,
 )
 
 
@@ -61,7 +63,7 @@ class StrMixin:
         Returns:
             Dict[str, str]: The string representation of the result.
         """
-        return {"res": str(self)}
+        return {"res": self}
 
     def print(self) -> None:
         """Print the string representation of the result."""
@@ -96,7 +98,7 @@ class JsonMixin:
             elif isinstance(obj, np.ndarray):
                 return [_format_data(item) for item in obj.tolist()]
             elif isinstance(obj, pd.DataFrame):
-                return obj.to_json(orient="records", force_ascii=False)
+                return json.loads(obj.to_json(orient="records", force_ascii=False))
             elif isinstance(obj, Path):
                 return obj.as_posix()
             elif isinstance(obj, dict):
@@ -163,6 +165,26 @@ class JsonMixin:
                 *args,
                 **kwargs,
             )
+
+    def print(
+        self, json_format: bool = False, indent: int = 4, ensure_ascii: bool = False
+    ) -> None:
+        """Print the string representation of the result.
+
+        Args:
+            json_format (bool): If True, print a JSON formatted string. Default is False.
+            indent (int): Number of spaces to indent for JSON formatting. Default is 4.
+            ensure_ascii (bool): If True, ensure all characters are ASCII. Default is False.
+        """
+        if json_format:
+            str_ = json.dumps(
+                self.__class__._to_str(self.json["res"]),
+                indent=indent,
+                ensure_ascii=ensure_ascii,
+            )
+        else:
+            str_ = str(self.__class__._to_str(self.json["res"]))
+        logging.info(str_)
 
 
 class Base64Mixin:
@@ -555,3 +577,55 @@ class VideoMixin:
             video_writer.write(
                 save_path, self.video[list(self.video.keys())[0]], *args, **kwargs
             )
+
+
+class MarkdownMixin:
+
+    def __init__(self, *args: list, **kwargs: dict):
+        self._markdown_writer = MarkdownWriter(*args, **kwargs)
+        self._save_funcs.append(self.save_to_markdown)
+
+    @abstractmethod
+    def _to_markdown(self):
+        """
+        Convert the result to markdown format.
+        Returns:
+            Dict
+        """
+        raise NotImplementedError
+
+    @property
+    def markdown(self):
+        return self._to_markdown()
+
+    def save_to_markdown(self, save_path, *args, **kwargs):
+        save_path = Path(save_path)
+        if not save_path.suffix.lower() == ".md":
+            save_path = save_path / f"layout_parsing_result.md"
+
+        self.save_path = save_path
+
+        self._save_list_data(
+            self._markdown_writer.write,
+            save_path,
+            self.markdown,
+            *args,
+            **kwargs,
+        )
+
+    def _save_list_data(self, save_func, save_path, data, *args, **kwargs):
+        save_path = Path(save_path)
+        if data is None:
+            return
+        if isinstance(data, list):
+            for idx, single in enumerate(data):
+                save_func(
+                    (
+                        save_path.parent / f"{save_path.stem}_{idx}{save_path.suffix}"
+                    ).as_posix(),
+                    single,
+                    *args,
+                    **kwargs,
+                )
+        save_func(save_path.as_posix(), data, *args, **kwargs)
+        logging.info(f"The result has been saved in {save_path}.")

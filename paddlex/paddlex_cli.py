@@ -124,14 +124,6 @@ def args_cfg():
         "--use_hpip", action="store_true", help="Enable HPIP acceleration if available."
     )
     pipeline_group.add_argument(
-        "--serial_number", type=str, help="Serial number for device identification."
-    )
-    pipeline_group.add_argument(
-        "--update_license",
-        action="store_true",
-        help="Update the software license information.",
-    )
-    pipeline_group.add_argument(
         "--get_pipeline_config",
         type=str,
         default=None,
@@ -251,15 +243,10 @@ def pipeline_predict(
     device,
     save_path,
     use_hpip,
-    serial_number,
-    update_license,
     **pipeline_args,
 ):
     """pipeline predict"""
-    hpi_params = _get_hpi_params(serial_number, update_license)
-    pipeline = create_pipeline(
-        pipeline, device=device, use_hpip=use_hpip, hpi_params=hpi_params
-    )
+    pipeline = create_pipeline(pipeline, device=device, use_hpip=use_hpip)
     result = pipeline.predict(input, **pipeline_args)
     for res in result:
         res.print()
@@ -267,13 +254,12 @@ def pipeline_predict(
             res.save_all(save_path=save_path)
 
 
-def serve(pipeline, *, device, use_hpip, serial_number, update_license, host, port):
+def serve(pipeline, *, device, use_hpip, host, port):
     from .inference.pipelines.serving import create_pipeline_app, run_server
 
-    hpi_params = _get_hpi_params(serial_number, update_license)
     pipeline_config = load_pipeline_config(pipeline)
     pipeline = create_pipeline_from_config(
-        pipeline_config, device=device, use_hpip=use_hpip, hpi_params=hpi_params
+        pipeline_config, device=device, use_hpip=use_hpip
     )
     app = create_pipeline_app(pipeline, pipeline_config)
     run_server(app, host=host, port=port, debug=False)
@@ -377,8 +363,6 @@ def main():
             args.pipeline,
             device=args.device,
             use_hpip=args.use_hpip,
-            serial_number=args.serial_number,
-            update_license=args.update_license,
             host=args.host,
             port=args.port,
         )
@@ -393,19 +377,19 @@ def main():
             interactive_get_pipeline(args.get_pipeline_config, args.save_path)
         else:
             pipeline_args_dict = {}
-            for arg in pipeline_args:
-                arg_name = arg["name"].lstrip("-")
-                if hasattr(args, arg_name):
-                    pipeline_args_dict[arg_name] = getattr(args, arg_name)
-                else:
-                    logging.warning(f"Argument {arg_name} is missing in args")
+            from .utils.flags import USE_NEW_INFERENCE
+            if USE_NEW_INFERENCE:
+                for arg in pipeline_args:
+                    arg_name = arg["name"].lstrip("-")
+                    if hasattr(args, arg_name):
+                        pipeline_args_dict[arg_name] = getattr(args, arg_name)
+                    else:
+                        logging.warning(f"Argument {arg_name} is missing in args")
             return pipeline_predict(
                 args.pipeline,
                 args.input,
                 args.device,
                 args.save_path,
                 use_hpip=args.use_hpip,
-                serial_number=args.serial_number,
-                update_license=args.update_license,
                 **pipeline_args_dict,
             )

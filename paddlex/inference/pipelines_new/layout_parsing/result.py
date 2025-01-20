@@ -66,6 +66,18 @@ class LayoutParsingResult(BaseCVResult, HtmlMixin, XlsxMixin):
                 sub_seal_res_dict = seal_res.img
                 key = f"seal_res_region{seal_region_id}"
                 res_img_dict[key] = sub_seal_res_dict["ocr_res_img"]
+
+        if (
+            model_settings["use_formula_recognition"]
+            and len(self["formula_res_list"]) > 0
+        ):
+            for sno in range(len(self["formula_res_list"])):
+                formula_res = self["formula_res_list"][sno]
+                formula_region_id = formula_res["formula_region_id"]
+                sub_formula_res_dict = formula_res.img
+                key = f"formula_res_region{formula_region_id}"
+                res_img_dict[key] = sub_formula_res_dict
+
         return res_img_dict
 
     def _to_str(self, *args, **kwargs) -> Dict[str, str]:
@@ -106,6 +118,15 @@ class LayoutParsingResult(BaseCVResult, HtmlMixin, XlsxMixin):
             for sno in range(len(self["seal_res_list"])):
                 seal_res = self["seal_res_list"][sno]
                 data["seal_res_list"].append(seal_res.str["res"])
+        if (
+            model_settings["use_formula_recognition"]
+            and len(self["formula_res_list"]) > 0
+        ):
+            data["formula_res_list"] = []
+            for sno in range(len(self["formula_res_list"])):
+                formula_res = self["formula_res_list"][sno]
+                data["formula_res_list"].append(formula_res.str["res"])
+
         return StrMixin._to_str(data, *args, **kwargs)
 
     def _to_json(self, *args, **kwargs) -> Dict[str, str]:
@@ -147,6 +168,14 @@ class LayoutParsingResult(BaseCVResult, HtmlMixin, XlsxMixin):
             for sno in range(len(self["seal_res_list"])):
                 seal_res = self["seal_res_list"][sno]
                 data["seal_res_list"].append(seal_res.json["res"])
+        if (
+            model_settings["use_formula_recognition"]
+            and len(self["formula_res_list"]) > 0
+        ):
+            data["formula_res_list"] = []
+            for sno in range(len(self["formula_res_list"])):
+                formula_res = self["formula_res_list"][sno]
+                data["formula_res_list"].append(formula_res.json["res"])
         return JsonMixin._to_json(data, *args, **kwargs)
 
     def _to_html(self) -> Dict[str, str]:
