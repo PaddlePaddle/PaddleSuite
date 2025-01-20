@@ -12,54 +12,38 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import json
-import os
-import os.path as osp
-from collections import defaultdict
 from pathlib import Path
-from nuscenes import NuScenes
 import pickle
 
-from ..base import BaseDatasetChecker
-from ...utils.errors import DatasetFileNotFoundError
-from ...utils.misc import abspath
-from .model_list import MODELS
+from ...base import BaseDatasetChecker
+from .dataset_src import check, deep_analyse
+from ..model_list import MODELS
 
 
 class BEVFusionDatasetChecker(BaseDatasetChecker):
     entities = MODELS
 
-    def check_dataset(self, dataset_dir):
-        dataset_dir = abspath(dataset_dir)
-        max_sample_num = 5
+    def check_dataset(self, dataset_dir: str) -> dict:
+        """check if the dataset meets the specifications and get dataset summary
 
-        if not osp.exists(dataset_dir) or not osp.isdir(dataset_dir):
-            raise DatasetFileNotFoundError(file_path=dataset_dir)
+        Args:
+            dataset_dir (str): the root directory of dataset.
+            sample_num (int): the number to be sampled.
+        Returns:
+            dict: dataset summary.
+        """
+        return check(dataset_dir)
 
-        anno_file = osp.join(dataset_dir, "nuscenes_infos_train.pkl")
-        if not osp.exists(anno_file):
-            raise DatasetFileNotFoundError(file_path=anno_file)
-        train_mate = self.get_data(anno_file, max_sample_num)
+    def analyse(self, dataset_dir: str) -> dict:
+        """deep analyse dataset
 
-        anno_file = osp.join(dataset_dir, "nuscenes_infos_val.pkl")
-        if not osp.exists(anno_file):
-            raise DatasetFileNotFoundError(file_path=anno_file)
-        val_mate = self.get_data(anno_file, max_sample_num)
-        train_sample_paths = []
-        val_sample_paths = []
+        Args:
+            dataset_dir (str): the root directory of dataset.
 
-        for item in train_mate:
-            train_sample_paths.append(item["lidar_path"])
-
-        for item in val_mate:
-            val_sample_paths.append(item["lidar_path"])
-        meta = {
-            "train_meta": train_mate,
-            "val_meta": val_mate,
-            "train_sample_paths": train_sample_paths,
-            "val_sample_paths": val_sample_paths,
-        }
-        return meta
+        Returns:
+            dict: the deep analysis results.
+        """
+        return deep_analyse(dataset_dir, self.output)
 
     def get_data(self, ann_file, max_sample_num):
         infos = self.data_infos(ann_file, max_sample_num)
