@@ -30,10 +30,6 @@ from .utils.interactive_get_pipeline import interactive_get_pipeline
 from .utils.pipeline_arguments import PIPELINE_ARGUMENTS
 
 
-def _get_hpi_params(serial_number, update_license):
-    return {"serial_number": serial_number, "update_license": update_license}
-
-
 def args_cfg():
     """parse cli arguments"""
 
@@ -150,10 +146,21 @@ def args_cfg():
     )
 
     ################# paddle2onnx #################
-    paddle2onnx_group.add_argument("--paddle2onnx", action="store_true")
-    paddle2onnx_group.add_argument("--paddle_model_dir", type=str)
-    paddle2onnx_group.add_argument("--onnx_model_dir", type=str, default="onnx")
-    paddle2onnx_group.add_argument("--opset_version", type=int, default=19)
+    paddle2onnx_group.add_argument(
+        "--paddle2onnx", action="store_true", help="Convert Paddle model to ONNX format"
+    )
+    paddle2onnx_group.add_argument(
+        "--paddle_model_dir", type=str, help="Directory containing the Paddle model"
+    )
+    paddle2onnx_group.add_argument(
+        "--onnx_model_dir",
+        type=str,
+        default="onnx",
+        help="Output directory for the ONNX model",
+    )
+    paddle2onnx_group.add_argument(
+        "--opset_version", type=int, default=19, help="Version of the ONNX opset to use"
+    )
 
     # Parse known arguments to get the pipeline name
     args, remaining_args = parser.parse_known_args()
@@ -195,7 +202,9 @@ def install(args):
             )
 
     def _install_paddle2onnx_deps():
-        with as_file(files("paddlex").joinpath("serving_requirements.txt")) as req_file:
+        with as_file(
+            files("paddlex").joinpath("paddle2onnx_requirements.txt")
+        ) as req_file:
             return subprocess.check_call(
                 [sys.executable, "-m", "pip", "install", "-r", str(req_file)]
             )
@@ -378,6 +387,7 @@ def main():
         else:
             pipeline_args_dict = {}
             from .utils.flags import USE_NEW_INFERENCE
+
             if USE_NEW_INFERENCE:
                 for arg in pipeline_args:
                     arg_name = arg["name"].lstrip("-")
